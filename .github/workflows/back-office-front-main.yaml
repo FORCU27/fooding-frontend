@@ -33,7 +33,7 @@ jobs:
           context: .
           file: ./apps/back-office-front/Dockerfile
           push: true
-          tags: hyperrealitycorp/z-app-back-office-front-production
+          tags: hyperrealitycorp/fooding-back-office-front-production
           platforms: linux/amd64, linux/arm64/v8
           build-args: |
             API_SERVER_URL=${{ secrets.API_SERVER_URL }}
@@ -46,7 +46,7 @@ jobs:
           port: ${{ secrets.REMOTE_SSH_PORT }}
           script: |
             source ~/.bashrc
-            bash ./deployment/zapp/back-office-front-production.sh
+            bash ./deployment/fooding/back-office-front-production.sh
       - uses: act10ns/slack@v1
         with:
           status: ${{ job.status }}

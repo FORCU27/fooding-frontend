@@ -1,11 +1,11 @@
-name: landing-front-develop-CI
+name: store-front-main-CI
 
 on:
   push:
-    branches: [develop]
-    tags: [landing-front**]
+    branches: [main]
+    tags: [store-front**]
     paths:
-      - 'apps/landing-front/**'
+      - 'apps/store-front/**'
       - '_config/**'
       - '_package/**'
   workflow_dispatch:
@@ -31,23 +31,22 @@ jobs:
         uses: docker/build-push-action@v3
         with:
           context: .
-          file: ./apps/landing-front/Dockerfile
+          file: ./apps/store-front/Dockerfile
           push: true
-          tags: hyperrealitycorp/fooding-landing-front-stage
+          tags: hyperrealitycorp/fooding-store-front-production
           platforms: linux/amd64, linux/arm64/v8
           build-args: |
-            API_SERVER_URL=${{ secrets.STAGE_API_SERVER_URL }}
-            COMMIT_HASH=${{ github.sha }}
+            API_SERVER_URL=${{ secrets.API_SERVER_URL }}
       - name: Deployment
         uses: appleboy/ssh-action@master
         with:
-          host: ${{ secrets.STAGE_REMOTE_SSH_IP }}
-          username: ${{ secrets.STAGE_REMOTE_SSH_ID }}
-          password: ${{ secrets.STAGE_REMOTE_SSH_PASSWORD }}
-          port: ${{ secrets.STAGE_REMOTE_SSH_PORT }}
+          host: ${{ secrets.REMOTE_SSH_IP }}
+          username: ${{ secrets.REMOTE_SSH_ID }}
+          password: ${{ secrets.REMOTE_SSH_PASSWORD }}
+          port: ${{ secrets.REMOTE_SSH_PORT }}
           script: |
             source ~/.bashrc
-            bash ./deployment/fooding/landing-front-stage.sh
+            bash ./deployment/fooding/store-front-production.sh
       - uses: act10ns/slack@v1
         with:
           status: ${{ job.status }}
