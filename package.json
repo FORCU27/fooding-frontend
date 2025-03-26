@@ -1,0 +1,27 @@
+{
+  "name": "zapp-front",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "build": "turbo run build",
+    "dev": "turbo run dev",
+    "lint": "turbo run lint",
+    "test": "turbo run test",
+    "dev:admin": "turbo dev --filter=back-office-front",
+    "dev:console": "turbo dev --filter=console-front",
+    "dev:landing": "turbo dev --filter=landing-front"
+  },
+  "devDependencies": {
+    "prettier": "^3.4.2",
+    "turbo": "^2.4.0",
+    "typescript": "^5.7.3"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "packageManager": "yarn@4.6.0",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ]
+}
