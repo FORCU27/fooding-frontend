@@ -1,0 +1,14 @@
+{
+  "name": "@repo/prettier-config",
+  "version": "0.0.0",
+  "type": "module",
+  "types": "index.d.ts",
+  "private": true,
+  "main": "index.js",
+  "peerDependencies": {
+    "prettier": ">= 3"
+  },
+  "devDependencies": {
+    "@types/prettier": "^3.0.0"
+  }
+}
