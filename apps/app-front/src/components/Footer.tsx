@@ -1,46 +1,11 @@
 'use client';
 
-import Image from 'next/image';
-import Link from 'next/link';
-
 import styled from '@emotion/styled';
 
 function Footer() {
   return (
     <Wrapper>
-      <div className='footer-container'>
-        <div className='footer-info__logo-wrapper'>
-          <Link href='/' className='footer-info__logo-link'>
-            <Image
-              src='/images/logo.svg'
-              alt='logo'
-              className='footer-info__logo-icon'
-              width={35}
-              height={35}
-              priority
-            />
-            <span className='footer-info__logo-text'>zapp</span>
-          </Link>
-        </div>
-        <div className='footer-info__content-container'>
-          <p className='footer-info__text'>
-            07257 서울특별시 영등포구 국회대로36길 6-1, 2층
-            <br />
-            사업자등록번호 779-81-03359
-            <br />
-            TEL 0507-0178-7546
-            <br />
-          </p>
-          <a href='mailto:support@hyper-x.im' className='footer-info__text-link'>
-            support@hyper-x.im
-          </a>
-          <br />
-        </div>
-        <hr />
-        <div className='footer-info__copy-right__container'>
-          <p className='footer-info__copy-right__text'>ⓒ 2025. HYPER X All Right Reserved.</p>
-        </div>
-      </div>
+      <div className='footer-container'>푸터</div>
     </Wrapper>
   );
 }
