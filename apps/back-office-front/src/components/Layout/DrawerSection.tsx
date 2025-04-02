@@ -13,8 +13,6 @@ interface DrawerSectionProps {
   children: ReactNode;
   menuList: MenuItem[];
   mobileOpen: boolean;
-  isDrawerOpen: boolean;
-  handleDrawerClose: () => void;
   handleDrawerToggle: () => void;
 }
 
@@ -24,7 +22,6 @@ const DrawerSection = ({
   children,
   menuList,
   mobileOpen,
-  isDrawerOpen,
   handleDrawerToggle,
 }: DrawerSectionProps) => {
   return (
@@ -59,13 +56,12 @@ const DrawerSection = ({
               width: drawerWidth,
             },
           }}
-          open={isDrawerOpen}
+          open={true}
         >
           <DrawerMenuList menuList={menuList} />
         </Drawer>
       </Box>
-
-      <MainContent isDrawerOpen={isDrawerOpen}>{children}</MainContent>
+      <MainContent>{children}</MainContent>
     </>
   );
 };

@@ -1,36 +1,22 @@
 'use client';
 
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import React, { useState } from 'react';
 
-import { Box, Button, Container, TextField, Typography, Alert } from '@mui/material';
+import { Box, Button, Container, TextField, Typography } from '@mui/material';
 
-import { useAuth } from '@/libs/auth';
-
-export default function LoginPage() {
+const LoginPage = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
-  const searchParams = useSearchParams();
-  const { login } = useAuth();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError('');
-    setIsLoading(true);
 
-    try {
-      await login({ email, password });
-      const returnTo = searchParams.get('returnTo');
+    console.log(`email: ${email}`);
+    console.log(`password: ${password}`);
 
-      router.push(returnTo || '/');
-    } catch (error) {
-      setError('로그인에 실패했습니다. 이메일과 비밀번호를 확인해주세요.');
-    } finally {
-      setIsLoading(false);
-    }
+    router.push('/');
   };
 
   return (
@@ -38,10 +24,8 @@ export default function LoginPage() {
       component='main'
       maxWidth='xs'
       sx={{
-        position: 'fixed',
-        top: '50%',
-        left: '50%',
-        transform: 'translate(-50%, -50%)',
+        display: 'flex',
+        height: '100%',
       }}
     >
       <Box
@@ -55,13 +39,19 @@ export default function LoginPage() {
         <Box
           sx={{
             width: '100%',
-            backgroundColor: 'background.paper',
             borderRadius: 1,
             p: 3,
             boxShadow: 1,
+            backgroundColor: 'background.paper',
           }}
         >
-          <Typography component='h1' variant='h5' align='center' gutterBottom>
+          <Typography
+            component='h1'
+            variant='h5'
+            align='center'
+            sx={{ color: 'text.primary' }}
+            gutterBottom
+          >
             로그인
           </Typography>
 
@@ -91,24 +81,14 @@ export default function LoginPage() {
               onChange={(e) => setPassword(e.target.value)}
             />
 
-            {error && (
-              <Alert severity='error' sx={{ mt: 2 }}>
-                {error}
-              </Alert>
-            )}
-
-            <Button
-              type='submit'
-              fullWidth
-              variant='contained'
-              disabled={isLoading}
-              sx={{ mt: 3, mb: 2 }}
-            >
-              {isLoading ? '로그인 중...' : '로그인'}
+            <Button type='submit' fullWidth variant='contained' sx={{ mt: 3, mb: 2 }}>
+              로그인
             </Button>
           </Box>
         </Box>
       </Box>
     </Container>
   );
-}
+};
+
+export default LoginPage;
