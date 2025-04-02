@@ -1,33 +1,28 @@
 import React from 'react';
 
-import { Box, Toolbar } from '@mui/material';
+import { Box } from '@mui/material';
 
 interface Props {
-  isDrawerOpen: boolean;
   children: React.ReactNode;
 }
 
 const drawerWidth = 240;
+const appBarHeight = 64;
 
-const MainContent = ({ isDrawerOpen, children }: Props) => (
+const MainContent = ({ children }: Props) => (
   <Box
+    component='main'
     sx={{
-      minHeight: '100vh',
       display: 'flex',
       alignContent: 'center',
       flexDirection: 'column',
-      backgroundColor: '#fff',
       overflow: 'hidden',
-      transition: (theme) =>
-        theme.transitions.create('margin', {
-          easing: theme.transitions.easing.sharp,
-          duration: theme.transitions.duration.leavingScreen,
-        }),
-      width: { sm: `calc(100% - ${isDrawerOpen ? drawerWidth : 0}px)` },
-      ml: { sm: isDrawerOpen ? `${drawerWidth}px` : 0 },
+      width: { sm: `calc(100vw - ${drawerWidth}px)`, xs: '100%' },
+      ml: { sm: `${drawerWidth}px` },
+      height: `calc(100vh - ${appBarHeight}px)`,
+      mt: `${appBarHeight}px`,
     }}
   >
-    <Toolbar />
     {children}
   </Box>
 );
