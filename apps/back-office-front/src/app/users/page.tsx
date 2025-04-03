@@ -2,7 +2,7 @@
 
 import { Box } from '@mui/material';
 
-const DashboardPage = () => {
+const UserListPage = () => {
   return (
     <Box
       sx={{
@@ -10,13 +10,11 @@ const DashboardPage = () => {
         m: 1,
         height: '100%',
         display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
       }}
     >
-      Back-Office
+      유저목록
     </Box>
   );
 };
 
-export default DashboardPage;
+export default UserListPage;

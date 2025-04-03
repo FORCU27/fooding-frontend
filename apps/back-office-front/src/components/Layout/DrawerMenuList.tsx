@@ -1,11 +1,13 @@
 'use client';
 
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import React, { useState } from 'react';
 
+import { Login } from '@mui/icons-material';
 import ExpandLess from '@mui/icons-material/ExpandLess';
 import ExpandMore from '@mui/icons-material/ExpandMore';
-import LogoutIcon from '@mui/icons-material/Logout';
+import { Box } from '@mui/material';
 import Button from '@mui/material/Button';
 import Collapse from '@mui/material/Collapse';
 import List from '@mui/material/List';
@@ -17,24 +19,21 @@ import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 
 import type { MenuItem } from './AdminLayout';
-import { useAuth } from '@/libs/auth';
 
 interface DrawerMenuListProps {
   menuList: MenuItem[];
 }
 
 const DrawerMenuList = ({ menuList }: DrawerMenuListProps) => {
-  const { user, logout } = useAuth();
   const [openSubmenu, setOpenSubmenu] = useState<string | null>(null);
+  const router = useRouter();
 
   const handleSubmenuClick = (menuId: string) => {
     setOpenSubmenu(openSubmenu === menuId ? null : menuId);
   };
 
-  if (!user) return;
-
   return (
-    <div>
+    <Box component='div'>
       <Toolbar
         sx={{
           display: 'flex',
@@ -47,19 +46,19 @@ const DrawerMenuList = ({ menuList }: DrawerMenuListProps) => {
         }}
       >
         <Typography variant='subtitle2' sx={{ color: 'primary.main', fontWeight: 600, mb: 1 }}>
-          ZAPP
+          FOODING
         </Typography>
         <Typography variant='subtitle1' sx={{ color: 'text.primary', fontWeight: 500, mb: 0.5 }}>
-          {user?.nickname || '사용자'}
+          회원정보를 찾을 수 없습니다.
         </Typography>
         <Typography variant='body2' sx={{ color: 'text.secondary', mb: 2 }}>
-          {user?.email || 'email@example.com'}
+          로그인이 필요합니다.
         </Typography>
         <Button
           variant='outlined'
           size='small'
-          startIcon={<LogoutIcon />}
-          onClick={logout}
+          startIcon={<Login />}
+          onClick={() => router.push('/login')}
           fullWidth
           sx={{
             justifyContent: 'flex-start',
@@ -71,7 +70,7 @@ const DrawerMenuList = ({ menuList }: DrawerMenuListProps) => {
             },
           }}
         >
-          로그아웃
+          로그인
         </Button>
       </Toolbar>
       <List>
@@ -79,8 +78,8 @@ const DrawerMenuList = ({ menuList }: DrawerMenuListProps) => {
           <React.Fragment key={item.text}>
             <ListItem disablePadding>
               <ListItemButton onClick={() => item.subMenus && handleSubmenuClick(item.id)}>
-                <ListItemIcon>{item.icon}</ListItemIcon>
-                <ListItemText primary={item.text} />
+                <ListItemIcon sx={{ color: 'text.primary' }}>{item.icon}</ListItemIcon>
+                <ListItemText primary={item.text} sx={{ color: 'text.primary' }} />
                 {item.subMenus && (openSubmenu === item.id ? <ExpandLess /> : <ExpandMore />)}
               </ListItemButton>
             </ListItem>
@@ -93,8 +92,14 @@ const DrawerMenuList = ({ menuList }: DrawerMenuListProps) => {
                       href={subItem.path}
                       style={{ textDecoration: 'none', color: 'inherit' }}
                     >
-                      <ListItemButton sx={{ pl: 4 }}>
-                        <ListItemText primary={subItem.text} />
+                      <ListItemButton sx={{ display: 'flex', justifyContent: 'center' }}>
+                        <ListItemText
+                          primary={subItem.text}
+                          primaryTypographyProps={{
+                            sx: { textAlign: 'center', color: 'text.primary' },
+                          }}
+                          sx={{ textAlign: 'center' }}
+                        />
                       </ListItemButton>
                     </Link>
                   ))}
@@ -104,7 +109,7 @@ const DrawerMenuList = ({ menuList }: DrawerMenuListProps) => {
           </React.Fragment>
         ))}
       </List>
-    </div>
+    </Box>
   );
 };
 
