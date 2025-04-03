@@ -1,0 +1,20 @@
+{
+  "WaitingPage": {
+    "greeting": "歡迎。",
+    "header": "主頁"
+  },
+  "LanguageSelector": {
+    "myLanguage": "繁體字",
+    "ko": "한국어",
+    "en": "ENG",
+    "zh-CN": "简体字",
+    "zh-TW": "繁體字",
+    "ja": "日本語"
+  },
+  "HomePage": {
+    "title": "你好，世界！"
+  },
+  "waiting": {
+    "greeting": "歡迎。"
+  }
+} 
