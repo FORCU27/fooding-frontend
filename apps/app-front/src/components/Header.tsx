@@ -9,7 +9,7 @@ interface HeaderProps {
 }
 
 function Header(props: HeaderProps) {
-  return <Box>Fooding</Box>;
+  return <Box></Box>;
 }
 
 export default Header;
