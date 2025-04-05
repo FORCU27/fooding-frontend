@@ -4,9 +4,11 @@ import styled from '@emotion/styled';
 
 function Footer() {
   return (
-    <Wrapper>
+    <>
+    {/* <Wrapper>
       <div className='footer-container'>푸터</div>
-    </Wrapper>
+    </Wrapper> */}
+    </>
   );
 }
 

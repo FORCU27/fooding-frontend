@@ -10831,7 +10831,6 @@ __metadata:
     moment: "npm:^2.30.1"
     mongoose: "npm:^8.7.0"
     next: "npm:^15.1.6"
-    next-intl: "npm:^4.0.2"
     postcss: "npm:^8"
     prettier: "npm:^3.4.2"
     react: "npm:^18.2.0"
