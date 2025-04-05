@@ -1,19 +1,22 @@
 'use client';
 
-import styled from '@emotion/styled';
-import { NextPage } from 'next';
-import 'animate.css';
+import { Box } from '@mui/material';
 
-import Layout from '@/components/Home/layout';
-
-const Home: NextPage = () => {
+const DashboardPage = () => {
   return (
-    <Wrapper themeColor='light'>
-      <h1>Hello</h1>
-    </Wrapper>
+    <Box
+      sx={{
+        p: 1,
+        m: 1,
+        height: '100%',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+      }}
+    >
+      ceo-front 메인화면
+    </Box>
   );
 };
 
-export default Home;
-
-const Wrapper = styled(Layout)``;
+export default DashboardPage;
