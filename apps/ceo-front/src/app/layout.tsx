@@ -1,6 +1,6 @@
 'use client';
 import Script from 'next/script';
-import { ReactNode } from 'react';
+import { ReactNode, Suspense } from 'react';
 
 import './globals.css';
 import Analytics from '@/components/GA/Analytics';
@@ -35,7 +35,9 @@ export default function RootLayout({ children }: { children: ReactNode }) {
       <body>
         <Layout>
           {children}
-          <Analytics />
+          <Suspense fallback={null}>
+            <Analytics />
+          </Suspense>
         </Layout>
       </body>
     </html>
