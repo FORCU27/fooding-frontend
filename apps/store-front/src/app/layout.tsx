@@ -35,37 +35,39 @@ export default function RootLayout({ children }: { children: ReactNode }) {
 
   return (
     <html lang='en'>
-      {/* Google Analytics 스크립트 로드 */}
-      <Script
-        src={`https://www.googletagmanager.com/gtag/js?id=${GA_TRACKING_ID}`}
-        strategy='afterInteractive'
-      />
-      {/* Google Analytics 초기화 스크립트 */}
-      <Script
-        id='google-analytics'
-        strategy='afterInteractive'
-        dangerouslySetInnerHTML={{
-          __html: `
-              window.dataLayer = window.dataLayer || [];
-              function gtag(){dataLayer.push(arguments);}
-              gtag('js', new Date());
-              gtag('config', '${GA_TRACKING_ID}', {
-                page_path: window.location.pathname,
-              });
-            `,
-        }}
-      />
+      {process.env.NODE_ENV === 'production' && (
+        <>
+          <Script
+            strategy='afterInteractive'
+            src={`https://www.googletagmanager.com/gtag/js?id=${GA_TRACKING_ID}`}
+          />
+          <Script
+            id='gtag-init'
+            strategy='afterInteractive'
+            dangerouslySetInnerHTML={{
+              __html: `
+                  window.dataLayer = window.dataLayer || [];
+                  function gtag(){dataLayer.push(arguments);}
+                  gtag('js', new Date());
+                  gtag('config', '${GA_TRACKING_ID}', {
+                    page_path: window.location.pathname,
+                  });
+                `,
+            }}
+          />
+        </>
+      )}
       <body className='font-pretendard'>
         <Suspense fallback={<div>Loading...</div>}>
           <ThemeRegistry>
             <ThemeProvider theme={theme}>
               <Header theme={theme.palette.mode} />
               {children}
+              <Analytics />
               <Footer />
             </ThemeProvider>
           </ThemeRegistry>
         </Suspense>
-        <Analytics />
       </body>
     </html>
   );

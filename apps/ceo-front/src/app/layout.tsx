@@ -10,29 +10,33 @@ import { GA_TRACKING_ID } from '@/lib/GA/gtag';
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang='en'>
-      {/* Google Analytics 스크립트 로드 */}
-      <Script
-        src={`https://www.googletagmanager.com/gtag/js?id=${GA_TRACKING_ID}`}
-        strategy='afterInteractive'
-      />
-      {/* Google Analytics 초기화 스크립트 */}
-      <Script
-        id='google-analytics'
-        strategy='afterInteractive'
-        dangerouslySetInnerHTML={{
-          __html: `
-              window.dataLayer = window.dataLayer || [];
-              function gtag(){dataLayer.push(arguments);}
-              gtag('js', new Date());
-              gtag('config', '${GA_TRACKING_ID}', {
-                page_path: window.location.pathname,
-              });
-            `,
-        }}
-      />
+      {process.env.NODE_ENV === 'production' && (
+        <>
+          <Script
+            strategy='afterInteractive'
+            src={`https://www.googletagmanager.com/gtag/js?id=${GA_TRACKING_ID}`}
+          />
+          <Script
+            id='gtag-init'
+            strategy='afterInteractive'
+            dangerouslySetInnerHTML={{
+              __html: `
+                  window.dataLayer = window.dataLayer || [];
+                  function gtag(){dataLayer.push(arguments);}
+                  gtag('js', new Date());
+                  gtag('config', '${GA_TRACKING_ID}', {
+                    page_path: window.location.pathname,
+                  });
+                `,
+            }}
+          />
+        </>
+      )}
       <body>
-        <Layout>{children}</Layout>
-        <Analytics />
+        <Layout>
+          {children}
+          <Analytics />
+        </Layout>
       </body>
     </html>
   );
