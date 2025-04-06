@@ -2889,6 +2889,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/gtag.js@npm:^0.0.20":
+  version: 0.0.20
+  resolution: "@types/gtag.js@npm:0.0.20"
+  checksum: 10/5582c540adaec49e0fdf308e0d9921397257c34371b2d0d5acb00e3775aa1aa44e2b19b2ede4cd8ca1eba1df2e3f54aee56eb82ab147846036d6460e4993c8db
+  languageName: node
+  linkType: hard
+
 "@types/http-errors@npm:*":
   version: 2.0.4
   resolution: "@types/http-errors@npm:2.0.4"
@@ -3543,6 +3550,7 @@ __metadata:
     "@repo/ui": "npm:*"
     "@tanstack/react-query": "npm:^5.59.15"
     "@toss/utils": "npm:^1.6.1"
+    "@types/gtag.js": "npm:^0.0.20"
     "@types/node": "npm:^22"
     "@types/react": "npm:^18.2.0"
     "@types/react-dom": "npm:^18.2.0"
@@ -4281,6 +4289,7 @@ __metadata:
     "@repo/ui": "npm:*"
     "@tanstack/react-query": "npm:^5.59.15"
     "@toss/utils": "npm:^1.6.1"
+    "@types/gtag.js": "npm:^0.0.20"
     "@types/node": "npm:^22"
     "@types/react": "npm:^18.2.0"
     "@types/react-dom": "npm:^18.2.0"
@@ -8160,6 +8169,7 @@ __metadata:
     "@repo/ui": "npm:*"
     "@tanstack/react-query": "npm:^5.59.15"
     "@toss/utils": "npm:^1.6.1"
+    "@types/gtag.js": "npm:^0.0.20"
     "@types/node": "npm:^22"
     "@types/react": "npm:^18.2.0"
     "@types/react-dom": "npm:^18.2.0"
@@ -10812,6 +10822,7 @@ __metadata:
     "@repo/ui": "npm:*"
     "@tanstack/react-query": "npm:^5.59.15"
     "@toss/utils": "npm:^1.6.1"
+    "@types/gtag.js": "npm:^0.0.20"
     "@types/node": "npm:^22"
     "@types/react": "npm:^18.2.0"
     "@types/react-dom": "npm:^18.2.0"
