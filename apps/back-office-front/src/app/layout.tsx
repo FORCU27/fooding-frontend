@@ -1,31 +1,20 @@
-'use client';
+import React from 'react';
 
-import React, { Suspense } from 'react';
+import './globals.css';
+import { Metadata } from 'next';
 
 import AdminLayout from '@/components/Layout/AdminLayout';
-import { AuthProvider } from '@/libs/auth';
 
-// 'use client'
-// import { CacheProvider } from '@emotion/react'
-// import { Inter } from 'next/font/google'
-// import { cache } from '@emotion/css'
-
-// const inter = Inter({ subsets: ['latin'] })
-
-// export const metadata = {
-//   title: 'Blog App',
-//   description: 'A simple blog app using Next.js, GraphQL, and MongoDB',
-// }
+export const metadata: Metadata = {
+  title: 'FOODING-BACK-OFFICE',
+  icons: [{ rel: 'icon', url: '/favicon.ico' }],
+};
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang='en'>
-      <body className='font-pretendard'>
-        <Suspense fallback={<div>Loading...</div>}>
-          <AuthProvider>
-            <AdminLayout>{children}</AdminLayout>
-          </AuthProvider>
-        </Suspense>
+      <body>
+        <AdminLayout>{children}</AdminLayout>
       </body>
     </html>
   );

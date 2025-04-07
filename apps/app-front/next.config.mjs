@@ -1,6 +1,10 @@
 /** @type {import('next').NextConfig} */
+import createNextIntlPlugin from 'next-intl/plugin';
 
 const isDev = process.env.NODE_ENV === 'development';
+
+// next-intl 플러그인 생성
+const withNextIntl = createNextIntlPlugin();
 
 const nextConfig = {
   eslint: {
@@ -18,4 +22,5 @@ const nextConfig = {
   // },
 };
 
-export default nextConfig;
+// withNextIntl로 nextConfig를 감싸서 내보내기
+export default withNextIntl(nextConfig);

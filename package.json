@@ -7,9 +7,11 @@
     "dev": "turbo run dev",
     "lint": "turbo run lint",
     "test": "turbo run test",
+    "dev:app": "turbo dev --filter=app-front",
     "dev:admin": "turbo dev --filter=back-office-front",
-    "dev:console": "turbo dev --filter=console-front",
-    "dev:landing": "turbo dev --filter=landing-front"
+    "dev:ceo": "turbo dev --filter=ceo-front",
+    "dev:landing": "turbo dev --filter=landing-front",
+    "dev:store": "turbo dev --filter=store-front"
   },
   "devDependencies": {
     "prettier": "^3.4.2",

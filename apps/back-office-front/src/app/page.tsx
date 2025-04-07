@@ -2,17 +2,21 @@
 
 import { Box } from '@mui/material';
 
-export default function DashboardPage() {
+const DashboardPage = () => {
   return (
     <Box
       sx={{
         p: 1,
+        m: 1,
+        height: '100%',
         display: 'flex',
         justifyContent: 'center',
-        alignContent: 'center',
+        alignItems: 'center',
       }}
     >
-      test컴포넌트자리
+      Back-Office
     </Box>
   );
-}
+};
+
+export default DashboardPage;

@@ -1,47 +1,44 @@
 'use client';
-
+import Script from 'next/script';
 import { ReactNode, Suspense } from 'react';
 
-import { createTheme, ThemeProvider } from '@mui/material';
-
-import Footer from '@/components/Footer';
-import Header from '@/components/Header';
-import ThemeRegistry from '@/lib/mui/registry';
-
 import './globals.css';
+import Analytics from '@/components/GA/Analytics';
+import Layout from '@/components/Home/Layout';
+import { GA_TRACKING_ID } from '@/lib/GA/gtag';
 
 export default function RootLayout({ children }: { children: ReactNode }) {
-  const theme = createTheme({
-    typography: {
-      fontFamily: '"Pretendard", sans-serif',
-    },
-    palette: {
-      mode: 'light', //TODO: 나중에 다크모드 추가?
-    },
-    components: {
-      MuiButton: {
-        styleOverrides: {
-          root: {
-            borderColor: '#c5c5c5',
-            color: '#1a1a1a',
-          },
-        },
-      },
-    },
-  });
-
   return (
     <html lang='en'>
-      <body className='font-pretendard'>
-        <Suspense fallback={<div>Loading...</div>}>
-          <ThemeRegistry>
-            <ThemeProvider theme={theme}>
-              <Header theme={theme.palette.mode} />
-              {children}
-              <Footer />
-            </ThemeProvider>
-          </ThemeRegistry>
-        </Suspense>
+      {process.env.NODE_ENV === 'production' && (
+        <>
+          <Script
+            strategy='afterInteractive'
+            src={`https://www.googletagmanager.com/gtag/js?id=${GA_TRACKING_ID}`}
+          />
+          <Script
+            id='gtag-init'
+            strategy='afterInteractive'
+            dangerouslySetInnerHTML={{
+              __html: `
+                  window.dataLayer = window.dataLayer || [];
+                  function gtag(){dataLayer.push(arguments);}
+                  gtag('js', new Date());
+                  gtag('config', '${GA_TRACKING_ID}', {
+                    page_path: window.location.pathname,
+                  });
+                `,
+            }}
+          />
+        </>
+      )}
+      <body>
+        <Layout>
+          {children}
+          <Suspense fallback={null}>
+            <Analytics />
+          </Suspense>
+        </Layout>
       </body>
     </html>
   );
