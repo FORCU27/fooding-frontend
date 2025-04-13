@@ -1,5 +1,5 @@
 {
-  "name": "app-desktop",
+  "name": "ceo-desktop",
   "version": "1.0.0",
   "scripts": {
     "build": "tsc src/main.ts --outDir build",
