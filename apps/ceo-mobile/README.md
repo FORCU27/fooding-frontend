@@ -18,5 +18,5 @@ yarn andorid
 ```sh
 cd apps/app-mobile/ios
 pod install
-npx react-native run-ios ## yarn ios
+yarn ios
 ```
