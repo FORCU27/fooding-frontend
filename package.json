@@ -10,7 +10,7 @@
     "dev:app": "turbo dev --filter=app-front",
     "dev:admin": "turbo dev --filter=back-office-front",
     "dev:ceo": "turbo dev --filter=ceo-front",
-    "dev:landing": "turbo dev --filter=landing-front",
+    "dev:user": "turbo dev --filter=user-front",
     "dev:store": "turbo dev --filter=store-front"
   },
   "devDependencies": {
