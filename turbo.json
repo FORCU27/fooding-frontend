@@ -6,6 +6,9 @@
       "outputs": [".next/**", "!.next/cache/**", "dist/**"],
       "passThroughEnv": ["*"]
     },
+    "format": {
+      "dependsOn": ["^format"]
+    },
     "lint": {
       "dependsOn": ["^lint"]
     },

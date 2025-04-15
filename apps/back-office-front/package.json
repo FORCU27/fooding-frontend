@@ -5,6 +5,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
+    "format": "prettier --cache --write .",
     "lint": "eslint .",
     "test": "vitest run"
   },

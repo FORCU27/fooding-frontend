@@ -5,8 +5,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint",
     "prettier": "prettier --cache --write .",
+    "lint": "next lint",
     "test": "vitest run"
   },
   "dependencies": {

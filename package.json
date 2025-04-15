@@ -5,6 +5,7 @@
   "scripts": {
     "build": "turbo run build",
     "dev": "turbo run dev",
+    "format": "turbo run format",
     "lint": "turbo run lint",
     "test": "turbo run test",
     "dev:app": "turbo dev --filter=app-front",
