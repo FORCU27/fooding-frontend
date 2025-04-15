@@ -5970,7 +5970,7 @@ __metadata:
     "@types/react-test-renderer": "npm:^19.0.0"
     eslint: "npm:9.19.0"
     jest: "npm:^29.6.3"
-    prettier: "npm:2.8.8"
+    prettier: "npm:3.5.3"
     react: "npm:19.0.0"
     react-native: "npm:0.78.2"
     react-test-renderer: "npm:19.0.0"
@@ -6026,7 +6026,7 @@ __metadata:
     "@types/react-test-renderer": "npm:^19.0.0"
     eslint: "npm:^9.19.0"
     jest: "npm:^29.6.3"
-    prettier: "npm:^3.4.2"
+    prettier: "npm:3.5.3"
     react: "npm:19.0.0"
     react-native: "npm:0.79.0"
     react-test-renderer: "npm:19.0.0"
@@ -6270,7 +6270,7 @@ __metadata:
     next: "npm:^15.1.6"
     next-intl: "npm:^4.0.2"
     postcss: "npm:^8"
-    prettier: "npm:^3.4.2"
+    prettier: "npm:3.5.3"
     react: "npm:^18.2.0"
     react-dom: "npm:^18.2.0"
     react-hook-form: "npm:^7.54.2"
@@ -6764,7 +6764,7 @@ __metadata:
     mongoose: "npm:^8.7.0"
     next: "npm:^15.1.6"
     postcss: "npm:^8"
-    prettier: "npm:^3.4.2"
+    prettier: "npm:3.5.3"
     react: "npm:^18.2.0"
     react-dom: "npm:^18.2.0"
     react-hook-form: "npm:^7.54.2"
@@ -7163,7 +7163,7 @@ __metadata:
     mongoose: "npm:^8.7.0"
     next: "npm:^15.1.6"
     postcss: "npm:^8"
-    prettier: "npm:^3.4.2"
+    prettier: "npm:3.5.3"
     react: "npm:^18.2.0"
     react-dom: "npm:^18.2.0"
     react-hook-form: "npm:^7.54.2"
@@ -14086,7 +14086,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"prettier@npm:*, prettier@npm:^3.4.2":
+"prettier@npm:*, prettier@npm:3.5.3, prettier@npm:^3.4.2":
   version: 3.5.3
   resolution: "prettier@npm:3.5.3"
   bin:
@@ -15727,7 +15727,7 @@ __metadata:
     mongoose: "npm:^8.7.0"
     next: "npm:^15.1.6"
     postcss: "npm:^8"
-    prettier: "npm:^3.4.2"
+    prettier: "npm:3.5.3"
     react: "npm:^18.2.0"
     react-dom: "npm:^18.2.0"
     react-hook-form: "npm:^7.54.2"
@@ -17069,7 +17069,7 @@ __metadata:
     mongoose: "npm:^8.7.0"
     next: "npm:^15.1.6"
     postcss: "npm:^8"
-    prettier: "npm:^3.4.2"
+    prettier: "npm:3.5.3"
     react: "npm:^18.2.0"
     react-dom: "npm:^18.2.0"
     react-hook-form: "npm:^7.54.2"
@@ -17730,7 +17730,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "zapp-front@workspace:."
   dependencies:
-    prettier: "npm:^3.4.2"
+    prettier: "npm:3.5.3"
     turbo: "npm:^2.4.0"
     typescript: "npm:^5.7.3"
   languageName: unknown
