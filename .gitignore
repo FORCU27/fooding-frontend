@@ -19,6 +19,8 @@ dist
 .DS_Store
 *.tsbuildinfo
 .vscode
+.idea
+.turbo
 
 .env
 

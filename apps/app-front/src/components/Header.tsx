@@ -1,7 +1,5 @@
 'use client';
 
-import { Box } from '@mui/material';
-
 interface HeaderProps {
   theme?: 'light' | 'dark';
   window?: () => Window;
@@ -9,10 +7,7 @@ interface HeaderProps {
 }
 
 function Header(props: HeaderProps) {
-  return (
-    <>
-    </>
-  );
+  return <></>;
   // return <Box>Fooding</Box>;
 }
 
