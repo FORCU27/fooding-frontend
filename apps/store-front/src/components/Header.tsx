@@ -2,13 +2,13 @@
 
 import { Box } from '@mui/material';
 
-interface HeaderProps {
-  theme?: 'light' | 'dark';
-  window?: () => Window;
-  children?: React.ReactElement<unknown>;
-}
+// interface HeaderProps {
+//   theme?: 'light' | 'dark';
+//   window?: () => Window;
+//   children?: React.ReactElement<unknown>;
+// }
 
-function Header(props: HeaderProps) {
+function Header() {
   return <Box>Fooding</Box>;
 }
 

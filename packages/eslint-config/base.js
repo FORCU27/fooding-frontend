@@ -17,17 +17,16 @@ const compat = new FlatCompat({
   recommendedConfig: js.configs.recommended,
 });
 
-const baseConfig = compat.config({
+const baseExtends = compat.config({
   extends: [
-    "next/core-web-vitals",
-    "eslint-config-next",
     "plugin:react/recommended",
     "plugin:@typescript-eslint/recommended",
     "prettier",
   ],
 });
 
-const eslintConfig = [
+/** @type {import('eslint').Linter.Config} */
+export default [
   {
     ignores: [
       "dist/**/*",
@@ -39,7 +38,7 @@ const eslintConfig = [
       "**/*.test.tsx",
     ],
   },
-  ...baseConfig,
+  ...baseExtends,
   {
     plugins: {
       "@typescript-eslint": typescriptEslint,
@@ -57,6 +56,7 @@ const eslintConfig = [
       react: { version: "detect" },
     },
     rules: {
+      "react/react-in-jsx-scope": "off",
       "no-use-before-define": [
         "error",
         {
@@ -103,5 +103,3 @@ const eslintConfig = [
     },
   },
 ];
-
-export default eslintConfig;

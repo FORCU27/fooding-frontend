@@ -1,8 +1,9 @@
-
 'use client';
 
 import { ReactNode } from 'react';
+
 import { createTheme, ThemeProvider } from '@mui/material';
+
 import Footer from '@/components/Footer';
 import Header from '@/components/Header';
 import ThemeRegistry from '@/lib/mui/registry';

@@ -1,12 +1,12 @@
 'use client';
 
+import { useServerInsertedHTML } from 'next/navigation';
 import { useState, ReactNode } from 'react';
 
 import createCache from '@emotion/cache';
 import { CacheProvider } from '@emotion/react';
 import CssBaseline from '@mui/material/CssBaseline';
 import { ThemeProvider } from '@mui/material/styles';
-import { useServerInsertedHTML } from 'next/navigation';
 
 import theme from './theme';
 
@@ -48,7 +48,6 @@ export default function ThemeRegistry({ children }: { children: ReactNode }) {
 
     let styles = '';
 
-    // eslint-disable-next-line no-restricted-syntax
     for (const name of names) {
       styles += cache.inserted[name];
     }
@@ -56,7 +55,6 @@ export default function ThemeRegistry({ children }: { children: ReactNode }) {
       <style
         key={cache.key}
         data-emotion={`${cache.key} ${names.join(' ')}`}
-        // eslint-disable-next-line react/no-danger
         dangerouslySetInnerHTML={{
           __html: styles,
         }}

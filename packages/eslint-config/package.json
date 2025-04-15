@@ -2,11 +2,11 @@
   "name": "@repo/eslint-config",
   "version": "0.0.0",
   "type": "module",
-  "types": "index.d.ts",
   "private": true,
-  "main": "index.js",
   "exports": {
-    ".": "./index.js"
+    "./base": "./base.js",
+    "./next": "./next.js",
+    "./react-native": "./react-native.js"
   },
   "devDependencies": {
     "@eslint/compat": "^1.2.6",
@@ -16,7 +16,7 @@
     "@types/eslint": "^9.6.1",
     "@typescript-eslint/eslint-plugin": "^8.23.0",
     "@typescript-eslint/parser": "^8.23.0",
-    "eslint": "^9.19.0",
+    "eslint": "^9.24.0",
     "eslint-config-next": "^15.1.6",
     "eslint-config-prettier": "^10.0.1",
     "eslint-plugin-import": "^2.31.0",
@@ -26,11 +26,7 @@
     "eslint-plugin-react-hooks": "5.1.0",
     "eslint-plugin-turbo": "^2.4.0",
     "globals": "^15.14.0",
-    "prettier": "^3.4.2",
     "turbo": "^2.4.0",
-    "typescript": "^5.7.3"
-  },
-  "peerDependencies": {
-    "typescript": "^5.7.3"
+    "typescript": "^5.8.3"
   }
 }

@@ -1,3 +1,3 @@
-import eslintConfig from '@repo/eslint-config';
+import eslintConfig from '@repo/eslint-config/react-native';
 
 export default eslintConfig;
