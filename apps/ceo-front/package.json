@@ -7,7 +7,8 @@
     "start": "next start",
     "format": "prettier --cache --write .",
     "lint": "next lint",
-    "prettier": "prettier --cache --write .",
+    "type-check": "tsc --noEmit",
+    "type-check:watch": "tsc --noEmit --watch",
     "test": "vitest run"
   },
   "dependencies": {
