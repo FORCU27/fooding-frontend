@@ -1,6 +1,7 @@
 {
   "name": "@repo/prettier-config",
   "version": "0.0.0",
+  "type": "module",
   "types": "index.d.ts",
   "private": true,
   "main": "index.js",
