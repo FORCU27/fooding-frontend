@@ -6,7 +6,7 @@ WORKDIR /app
 
 RUN yarn global add turbo
 COPY . .
-RUN turbo prune --scope=landing-front --docker
+RUN turbo prune --scope=user-front --docker
 
 FROM public.ecr.aws/docker/library/node:20-alpine AS installer
 RUN apk add --no-cache libc6-compat
