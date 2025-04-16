@@ -15,6 +15,3 @@ export default [
   },
 ];
 
-// {
-//   extends: ["next/core-web-vitals", "eslint-config-next"],
-// },
