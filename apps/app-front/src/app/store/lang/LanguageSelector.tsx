@@ -4,7 +4,7 @@ import { useState, useRef, useEffect } from 'react';
 
 import { useTranslations } from 'next-intl';
 
-import { Locale } from '@/libs/i18n/config';
+import { Locale } from '@/i18n/config';
 import { setUserLocale } from '@/services/locale';
 
 export default function LanguageSelector() {
