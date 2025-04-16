@@ -1,0 +1,16 @@
+{
+  "name": "pos-desktop",
+  "version": "1.0.0",
+  "scripts": {
+    "build": "tsc src/main.ts --outDir build",
+    "start": "yarn build && electron ./build/main.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "devDependencies": {
+    "electron": "^35.1.4",
+    "typescript": "^5.8.3"
+  }
+}
