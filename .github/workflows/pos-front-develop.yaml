@@ -1,11 +1,11 @@
-name: landing-front-develop-CI
+name: pos-front-develop-CI
 
 on:
   push:
     branches: [develop]
-    tags: [landing-front**]
+    tags: [pos-front**]
     paths:
-      - 'apps/landing-front/**'
+      - 'apps/pos-front/**'
       - '_config/**'
       - '_package/**'
   workflow_dispatch:
@@ -31,9 +31,9 @@ jobs:
         uses: docker/build-push-action@v3
         with:
           context: .
-          file: ./apps/landing-front/Dockerfile
+          file: ./apps/pos-front/Dockerfile
           push: true
-          tags: hyperrealitycorp/fooding-landing-front-stage
+          tags: hyperrealitycorp/fooding-pos-front-stage
           platforms: linux/amd64, linux/arm64/v8
           build-args: |
             API_SERVER_URL=${{ secrets.STAGE_API_SERVER_URL }}
@@ -47,7 +47,7 @@ jobs:
           port: ${{ secrets.STAGE_REMOTE_SSH_PORT }}
           script: |
             source ~/.bashrc
-            bash ./deployment/fooding/landing-front-stage.sh
+            bash ./deployment/fooding/pos-front-stage.sh
       - uses: act10ns/slack@v1
         with:
           status: ${{ job.status }}
