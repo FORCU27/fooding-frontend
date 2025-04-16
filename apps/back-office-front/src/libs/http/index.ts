@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-import { env } from '@/config';
+import { env } from '@/configs/env';
 
 console.log('env.publicEnv.apiUrl', env.publicEnv.apiUrl);
 

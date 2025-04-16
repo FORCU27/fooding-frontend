@@ -6,7 +6,7 @@ import { ReactNode, Suspense } from 'react';
 import Footer from '@/components/Footer';
 import Analytics from '@/components/GA/Analytics';
 import Header from '@/components/Header';
-import { GA_TRACKING_ID } from '@/lib/GA/gtag';
+import { GA_TRACKING_ID } from '@/libs/ga/gtag';
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (

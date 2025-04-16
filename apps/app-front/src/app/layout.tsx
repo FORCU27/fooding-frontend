@@ -4,8 +4,8 @@ import Script from 'next/script';
 import { ReactNode, Suspense } from 'react';
 
 import Analytics from '@/components/GA/Analytics';
-import IntlProvider from '@/components/provider/IntlProvider';
-import { GA_TRACKING_ID } from '@/lib/GA/gtag';
+import IntlProvider from '@/components/Provider/IntlProvider';
+import { GA_TRACKING_ID } from '@/libs/ga/gtag';
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
