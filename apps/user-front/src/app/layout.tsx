@@ -1,38 +1,14 @@
-'use client';
+import './globals.css';
 
 import Script from 'next/script';
 import { ReactNode, Suspense } from 'react';
-
-import { createTheme, ThemeProvider } from '@mui/material';
 
 import Footer from '@/components/Footer';
 import Analytics from '@/components/GA/Analytics';
 import Header from '@/components/Header';
 import { GA_TRACKING_ID } from '@/lib/GA/gtag';
-import ThemeRegistry from '@/lib/mui/registry';
-
-import './globals.css';
 
 export default function RootLayout({ children }: { children: ReactNode }) {
-  const theme = createTheme({
-    typography: {
-      fontFamily: '"Pretendard", sans-serif',
-    },
-    palette: {
-      mode: 'light', //TODO: 나중에 다크모드 추가?
-    },
-    components: {
-      MuiButton: {
-        styleOverrides: {
-          root: {
-            borderColor: '#c5c5c5',
-            color: '#1a1a1a',
-          },
-        },
-      },
-    },
-  });
-
   return (
     <html lang='en'>
       {process.env.NODE_ENV === 'production' && (
@@ -57,16 +33,12 @@ export default function RootLayout({ children }: { children: ReactNode }) {
           />
         </>
       )}
-      <body className='font-pretendard'>
-        <Suspense fallback={<div>Loading...</div>}>
-          <ThemeRegistry>
-            <ThemeProvider theme={theme}>
-              <Header theme={theme.palette.mode} />
-              {children}
-              <Analytics />
-              <Footer />
-            </ThemeProvider>
-          </ThemeRegistry>
+      <body>
+        <Suspense>
+          <Header />
+          {children}
+          <Footer />
+          <Analytics />
         </Suspense>
       </body>
     </html>

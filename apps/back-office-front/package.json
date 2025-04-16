@@ -2,7 +2,7 @@
   "name": "back-office-front",
   "version": "0.1.0",
   "scripts": {
-    "dev": "next dev",
+    "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
     "format": "prettier --cache --write .",

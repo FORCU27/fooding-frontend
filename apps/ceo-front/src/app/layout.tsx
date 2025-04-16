@@ -1,8 +1,8 @@
-'use client';
+import './globals.css';
+
 import Script from 'next/script';
 import { ReactNode, Suspense } from 'react';
 
-import './globals.css';
 import Analytics from '@/components/GA/Analytics';
 import Layout from '@/components/Home/Layout';
 import { GA_TRACKING_ID } from '@/lib/GA/gtag';
@@ -33,12 +33,12 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         </>
       )}
       <body>
-        <Layout>
-          {children}
-          <Suspense fallback={null}>
+        <Suspense>
+          <Layout>
+            {children}
             <Analytics />
-          </Suspense>
-        </Layout>
+          </Layout>
+        </Suspense>
       </body>
     </html>
   );
