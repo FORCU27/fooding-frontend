@@ -2,7 +2,7 @@
 
 import Image from 'next/image';
 import React, { useState } from 'react';
-
+import { useRouter } from 'next/navigation';
 // 로고 컴포넌트
 const Logo = () => (
   <div className='mb-8 relative w-full'>
@@ -116,23 +116,27 @@ const NumberPad = ({
 );
 
 // 액션 버튼 컴포넌트
-const ActionButtons = ({ isPhoneNumberComplete }: { isPhoneNumberComplete: boolean }) => (
-  <div className='flex justify-between mt-auto'>
-    <button className='w-[48%] h-14 bg-gray-100 text-gray-800 rounded-md hover:bg-gray-200'>
-      웨이팅 목록
-    </button>
-    <button
-      className={`w-[48%] h-14 rounded-md ${
-        isPhoneNumberComplete
-          ? 'bg-blue-500 text-white hover:bg-blue-600'
-          : 'bg-gray-100 text-gray-400'
-      }`}
-      disabled={!isPhoneNumberComplete}
-    >
-      웨이팅 시작
-    </button>
-  </div>
-);
+const ActionButtons = ({ isPhoneNumberComplete }: { isPhoneNumberComplete: boolean }) => {
+  const router = useRouter();
+  return (
+    <div className='flex justify-between mt-auto'>
+      <button className='w-[48%] h-14 bg-gray-100 text-gray-800 rounded-md hover:bg-gray-200'>
+        웨이팅 목록
+      </button>
+      <button
+        className={`w-[48%] h-14 rounded-md ${
+          isPhoneNumberComplete
+            ? 'bg-blue-500 text-white hover:bg-blue-600'
+            : 'bg-gray-100 text-gray-400'
+        }`}
+        disabled={!isPhoneNumberComplete}
+        onClick={() => router.push('/store/register')}
+      >
+        웨이팅 시작
+      </button>
+    </div>
+  );
+};
 
 // 오른쪽 패널 컴포넌트
 const RightPanel = ({
