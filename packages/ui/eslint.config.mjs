@@ -1,17 +1,17 @@
-import { eslintConfig } from "@repo/eslint-config";
+import baseConfig from '@repo/eslint-config/base';
 
 export default [
-  ...eslintConfig,
+  ...baseConfig,
   {
-    files: ["**/*.js", "**/*.jsx", "**/*.ts", "**/*.tsx"],
-    ignores: ["**/*.config.js", "!**/eslint.config.js"],
+    files: ['**/*.js', '**/*.jsx', '**/*.ts', '**/*.tsx'],
+    ignores: ['**/*.config.js', '!**/eslint.config.js'],
     settings: {
-      "import/resolver": {
+      'import/resolver': {
         typescript: {},
       },
 
       react: {
-        version: "detect",
+        version: 'detect',
       },
     },
   },
