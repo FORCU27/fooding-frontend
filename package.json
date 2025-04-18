@@ -24,8 +24,13 @@
     "node": ">=18"
   },
   "packageManager": "yarn@4.6.0",
-  "workspaces": [
-    "apps/*",
-    "packages/*"
-  ]
+  "workspaces": {
+    "packages": [
+      "apps/*",
+      "packages/*"
+    ],
+    "nohoist": [
+      "**/@react-native/gradle-plugin"
+    ]
+  }
 }
