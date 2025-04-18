@@ -1,13 +1,12 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import { WaitingRegisterData } from './types';
 import { TermsStep } from './components/TermsStep';
 import { MemberCountStep } from './components/MemberCountStep';
 import { NameStep } from './components/NameStep';
 import { WaitingStep } from './components/WaitingStep';
-import { useEffect } from 'react';
-import { WaitingRegisterData } from './types';
 
 export default function RegisterPage() {
   const router = useRouter();
