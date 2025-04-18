@@ -106,8 +106,10 @@ export default function RegisterPage() {
             onPrev={prevStep}
           />
         );
+      case 'WAITING':
+        return <WaitingStep countdownTime={countdownTime} />;
       default:
-        return null;
+        step satisfies never;
     }
   };
 
