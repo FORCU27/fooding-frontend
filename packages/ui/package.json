@@ -6,7 +6,7 @@
   "scripts": {
     "build": "tsc",
     "dev": "tsc -w",
-    "lint": "eslint 'src/**/*.{js,ts,jsx,tsx}'",
+    "lint": "eslint 'src/**/*.{js,ts,jsx,tsx}' --max-warnings 0",
     "test": "jest"
   },
   "devDependencies": {

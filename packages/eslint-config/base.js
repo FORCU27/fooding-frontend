@@ -1,62 +1,52 @@
-import { FlatCompat } from "@eslint/eslintrc";
 import js from "@eslint/js";
-import typescriptEslint from "@typescript-eslint/eslint-plugin";
-import tsParser from "@typescript-eslint/parser";
-import _import from "eslint-plugin-import";
+import eslintConfigPrettier from "eslint-config-prettier";
+import turboPlugin from "eslint-plugin-turbo";
+import tseslint from "typescript-eslint";
 import onlyWarn from "eslint-plugin-only-warn";
-import prettier from "eslint-plugin-prettier";
+import importPlugin from "eslint-plugin-import";
+import pluginReact from "eslint-plugin-react";
 import globals from "globals";
-import path from "node:path";
-import { fileURLToPath } from "node:url";
+import pluginReactHooks from "eslint-plugin-react-hooks";
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
-const compat = new FlatCompat({
-  baseDirectory: __dirname,
-  recommendedConfig: js.configs.recommended,
-});
-
-const baseExtends = compat.config({
-  extends: [
-    "plugin:react/recommended",
-    "plugin:@typescript-eslint/recommended",
-    "prettier",
-  ],
-});
-
-/** @type {import('eslint').Linter.Config} */
-export default [
+/**
+ * @type {import("eslint").Linter.Config[]}
+ * */
+export const config = [
+  js.configs.recommended,
+  eslintConfigPrettier,
+  ...tseslint.configs.recommended,
   {
-    ignores: [
-      "dist/**/*",
-      "node_modules/**/*",
-      ".next/**/*",
-      ".github/**/*",
-      "**/*.test.js",
-      "**/*.test.ts",
-      "**/*.test.tsx",
-    ],
+    ...pluginReact.configs.flat.recommended,
+    languageOptions: {
+      ...pluginReact.configs.flat.recommended.languageOptions,
+      globals: {
+        ...globals.serviceworker,
+      },
+    },
   },
-  ...baseExtends,
   {
     plugins: {
-      "@typescript-eslint": typescriptEslint,
-      import: _import,
-      prettier,
-      "only-warn": onlyWarn,
+      "react-hooks": pluginReactHooks,
     },
-    languageOptions: {
-      parser: tsParser,
-      parserOptions: { ecmaFeatures: { jsx: true } },
-      globals: { ...globals.browser },
-    },
-    settings: {
-      "import/resolver": { typescript: {} },
-      react: { version: "detect" },
-    },
+    settings: { react: { version: "detect" } },
     rules: {
+      ...pluginReactHooks.configs.recommended.rules,
       "react/react-in-jsx-scope": "off",
+    },
+  },
+  {
+    plugins: {
+      turbo: turboPlugin,
+      import: importPlugin,
+      onlyWarn,
+    },
+  },
+  {
+    rules: {
+      "import/extensions": "off",
+      "no-undef": "off",
+      "react/react-in-jsx-scope": "off",
+      "turbo/no-undeclared-env-vars": "warn",
       "no-use-before-define": [
         "error",
         {
@@ -77,7 +67,6 @@ export default [
         { namedComponents: ["arrow-function", "function-declaration"] },
       ],
 
-      "import/extensions": ["error", "never"],
       "import/no-extraneous-dependencies": [
         "error",
         { devDependencies: true, peerDependencies: true },
@@ -101,5 +90,16 @@ export default [
         },
       ],
     },
+  },
+  {
+    ignores: [
+      "dist/**/*",
+      "node_modules/**/*",
+      ".next/**/*",
+      ".github/**/*",
+      "**/*.test.js",
+      "**/*.test.ts",
+      "**/*.test.tsx",
+    ],
   },
 ];
