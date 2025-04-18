@@ -1,19 +1,11 @@
-'use client';
-
-import styled from '@emotion/styled';
 import { NextPage } from 'next';
-import 'animate.css';
-
-import Layout from '@/components/Home/layout';
 
 const Home: NextPage = () => {
   return (
-    <Wrapper themeColor='light'>
-      <h1>Hello</h1>
-    </Wrapper>
+    <main className='h-dvh flex justify-center items-center'>
+      <h1>store-front</h1>
+    </main>
   );
 };
 
 export default Home;
-
-const Wrapper = styled(Layout)``;

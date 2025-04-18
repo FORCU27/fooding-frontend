@@ -1,11 +1,11 @@
+import './globals.css';
+
 import Script from 'next/script';
 import { ReactNode, Suspense } from 'react';
 
-import IntlProvider from '../components/provider/IntlProvider';
-import MuiProvider from '../components/provider/MuiProvider';
 import Analytics from '@/components/GA/Analytics';
-import './globals.css';
-import { GA_TRACKING_ID } from '@/lib/GA/gtag';
+import IntlProvider from '@/components/Provider/IntlProvider';
+import { GA_TRACKING_ID } from '@/libs/ga/gtag';
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
@@ -32,13 +32,11 @@ export default function RootLayout({ children }: { children: ReactNode }) {
           />
         </>
       )}
-      <body className='font-pretendard'>
-        <Suspense fallback={<div>Loading...</div>}>
+      <body>
+        <Suspense>
           <IntlProvider>
-            <MuiProvider>
-              {children}
-              <Analytics />
-            </MuiProvider>
+            {children}
+            <Analytics />
           </IntlProvider>
         </Suspense>
       </body>
