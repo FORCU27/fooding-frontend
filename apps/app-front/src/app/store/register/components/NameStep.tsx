@@ -1,8 +1,8 @@
+import { WaitingRegisterData, UpdateWaitingRegisterData } from '../types';
+
 interface NameStepProps {
-  formData: {
-    name: string;
-  };
-  updateFormData: (key: string, value: any) => void;
+  formData: WaitingRegisterData;
+  updateFormData: UpdateWaitingRegisterData;
   onNext: () => void;
   onPrev: () => void;
 }

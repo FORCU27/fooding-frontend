@@ -1,12 +1,8 @@
+import { WaitingRegisterData, UpdateWaitingRegisterData } from '../types';
+
 interface MemberCountStepProps {
-  formData: {
-    members: {
-      adult: number;
-      child: number;
-      childChair: number;
-    };
-  };
-  updateFormData: (key: string, value: any) => void;
+  formData: WaitingRegisterData;
+  updateFormData: UpdateWaitingRegisterData;
   onNext: () => void;
   onPrev: () => void;
 }

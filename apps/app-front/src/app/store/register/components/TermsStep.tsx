@@ -1,13 +1,8 @@
+import { WaitingRegisterData, UpdateWaitingRegisterData } from '../types';
+
 interface TermsStepProps {
-  formData: {
-    terms: {
-      service: boolean;
-      privacy: boolean;
-      privacy2: boolean;
-      marketing: boolean;
-    };
-  };
-  updateFormData: (key: string, value: any) => void;
+  formData: WaitingRegisterData;
+  updateFormData: UpdateWaitingRegisterData;
   onNext: () => void;
 }
 

@@ -7,11 +7,12 @@ import { MemberCountStep } from './components/MemberCountStep';
 import { NameStep } from './components/NameStep';
 import { WaitingStep } from './components/WaitingStep';
 import { useEffect } from 'react';
+import { WaitingRegisterData } from './types';
 
 export default function RegisterPage() {
   const router = useRouter();
   const [step, setStep] = useState(1);
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<WaitingRegisterData>({
     terms: {
       service: false,
       privacy: false,
@@ -26,7 +27,10 @@ export default function RegisterPage() {
     name: '',
   });
 
-  const updateFormData = (key: string, value: any) => {
+  const updateFormData = <K extends keyof WaitingRegisterData>(
+    key: K,
+    value: WaitingRegisterData[K],
+  ) => {
     setFormData((prev) => ({
       ...prev,
       [key]: value,
