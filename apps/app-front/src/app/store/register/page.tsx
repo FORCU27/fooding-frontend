@@ -40,8 +40,8 @@ export default function RegisterPage() {
   const prevStep = () => setStep((prev) => prev - 1);
   const handleCancel = () => router.push('/store/waiting');
 
-  const countdown = 3;
-  const [countdownTime, setCountdownTime] = useState(countdown);
+  const COUNTDOWN = 3;
+  const [countdownTime, setCountdownTime] = useState(COUNTDOWN);
 
   useEffect(() => {
     if (step === 4) {
