@@ -42,10 +42,10 @@ RUN set -x && yarn workspaces list
 RUN set -x && cat apps/store-front/package.json
 
 # packages/ui의 React 버전을 store-front와 맞추기 위한 작업
-RUN cd packages/ui && yarn add react@^18 react-dom@^18 --peer
+# RUN cd packages/ui && yarn add react@^18 react-dom@^18 --peer
 
 # UI 패키지 먼저 빌드
-RUN yarn workspace @repo/ui build
+# RUN yarn workspace @repo/ui build
 
 # Next.js 캐시 정리 후 빌드
 RUN cd apps/store-front && rm -rf .next
