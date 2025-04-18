@@ -6,7 +6,7 @@
     "android": "react-native run-android",
     "ios": "react-native run-ios",
     "format": "prettier --cache --write .",
-    "lint": "eslint .",
+    "lint": "eslint . --max-warnings 0",
     "start": "react-native start",
     "type-check": "tsc --noEmit",
     "type-check:watch": "tsc --noEmit --watch",
