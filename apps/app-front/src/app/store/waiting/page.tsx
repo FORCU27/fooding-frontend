@@ -1,8 +1,9 @@
 'use client';
 
 import Image from 'next/image';
-import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import React, { useState } from 'react';
+
 // 로고 컴포넌트
 const Logo = () => (
   <div className='mb-8 relative w-full'>

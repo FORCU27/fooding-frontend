@@ -1,12 +1,13 @@
 'use client';
 
-import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { WaitingRegisterData } from './types';
-import { TermsStep } from './components/TermsStep';
+import { useState, useEffect } from 'react';
+
 import { MemberCountStep } from './components/MemberCountStep';
 import { NameStep } from './components/NameStep';
+import { TermsStep } from './components/TermsStep';
 import { WaitingStep } from './components/WaitingStep';
+import { WaitingRegisterData } from './types';
 
 const STEPS = ['TERMS', 'MEMBER_COUNT', 'NAME', 'WAITING'] as const;
 type Step = (typeof STEPS)[number];
@@ -81,7 +82,7 @@ export default function RegisterPage() {
     if (countdownTime === 0) {
       router.push('/store/waiting');
     }
-  }, [countdownTime]);
+  }, [countdownTime, router]);
 
   const renderStep = () => {
     switch (step) {
