@@ -6,7 +6,7 @@
     "build": "next build",
     "start": "next start",
     "format": "prettier --cache --write .",
-    "lint": "next lint",
+    "lint": "next lint --max-warnings 0",
     "type-check": "tsc --noEmit",
     "type-check:watch": "tsc --noEmit --watch",
     "test": "vitest"

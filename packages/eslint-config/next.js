@@ -1,4 +1,4 @@
-import baseConfig from "./base.js";
+import { config as baseConfig } from "./base.js";
 import pluginNext from "@next/eslint-plugin-next";
 
 /** @type {import('eslint').Linter.Config} */
@@ -14,4 +14,3 @@ export default [
     },
   },
 ];
-
