@@ -1,6 +1,26 @@
 'use client';
 
+import Link from 'next/link';
 import { useState } from 'react';
+
+// 탭 구성
+const tabs = [
+  { key: 'waiting', label: '웨이팅 중', info: '1팀 • 4명' },
+  { key: 'seated', label: '착석' },
+  { key: 'canceled', label: '취소' },
+];
+
+// 웨이팅 목록 임시 데이터
+const waitingList = [
+  {
+    id: 1,
+    tableNo: 2,
+  },
+  {
+    id: 2,
+    tableNo: 5,
+  },
+];
 
 const Header = () => {
   return (
@@ -34,13 +54,6 @@ const Header = () => {
     </header>
   );
 };
-
-// 탭 구성
-const tabs = [
-  { key: 'waiting', label: '웨이팅 중', info: '1팀 • 4명' },
-  { key: 'seated', label: '착석' },
-  { key: 'canceled', label: '취소' },
-];
 
 const Tab = ({
   activeTab,
@@ -77,45 +90,105 @@ const List = ({ activeTab }: { activeTab: string }) => {
 
   return (
     <div className='p-4 bg-white'>
-      <div className='flex items-center justify-between rounded-md p-4'>
-        <div className='flex flex-col items-center mr-4 bg-gray-100 px-2 py-3 rounded'>
-          <div className='text-lg font-bold mb-2'>1</div>
-          <button className='text-xs font-medium border border-gray-300 px-2 py-0.5 rounded'>
-            메모
-          </button>
-        </div>
+      {waitingList.map((item) => (
+        <Link key={item.id} href={`/admin/waiting/${item.id}`}>
+          <div className='flex items-center justify-between rounded-md p-4 cursor-pointer'>
+            <div className='flex flex-col items-center mr-4 bg-gray-100 px-2 py-3 rounded'>
+              <div className='text-lg font-bold mb-2'>{item.id}</div>
+              <button className='text-xs font-medium border border-gray-300 px-2 py-0.5 rounded'>
+                메모
+              </button>
+            </div>
 
-        <div className='flex flex-col items-center mr-6'>
-          <div className='text-lg font-bold'>2</div>
-          <div className='text-sm font-medium text-gray-700'>현장</div>
-        </div>
+            <div className='flex flex-col items-center mr-6'>
+              <div className='text-lg font-bold'>{item.tableNo}</div>
+              <div className='text-sm font-medium text-gray-700'>현장</div>
+            </div>
 
-        <div className='flex-1 text-sm text-gray-700'>
-          <div className='font-medium mb-1'>
-            총 4명 <span className='mx-2'>•</span> 성인 3 <span className='mx-2'>•</span> 유아 1 -
-            유아용 의자 1
+            <div className='flex-1 text-sm text-gray-700'>
+              <div className='font-medium mb-1'>
+                총 4명 <span className='mx-2'>•</span> 성인 3 <span className='mx-2'>•</span> 유아 1
+                - 유아용 의자 1
+              </div>
+              <div className='mb-1'>
+                강주영 <span className='mx-2'>•</span> 010-1234-5678 <span className='mx-2'>•</span>{' '}
+                5회 방문
+              </div>
+              <div>4분 대기</div>
+            </div>
+
+            <div className='flex items-center gap-3 ml-4 h-24'>
+              <button
+                onClick={(e) => {
+                  e.preventDefault();
+                }}
+                className='bg-teal-400 text-white text-sm font-semibold px-4 py-2 rounded-md w-30 h-full'
+              >
+                호출 (1/2)
+                <br />
+                <span className='text-xs'>02:59</span>
+              </button>
+              <button
+                onClick={(e) => {
+                  e.preventDefault();
+                }}
+                className='bg-indigo-400 text-white text-sm font-semibold px-4 py-2 rounded-md w-30 h-full'
+              >
+                착석
+              </button>
+              <button
+                onClick={(e) => {
+                  e.preventDefault();
+                }}
+                className='bg-rose-400 text-white text-sm font-semibold px-4 py-2 rounded-md w-30 h-full'
+              >
+                취소
+              </button>
+            </div>
           </div>
-          <div className='mb-1'>
-            강주영 <span className='mx-2'>•</span> 010-1234-5678 <span className='mx-2'>•</span> 5회
-            방문
-          </div>
-          <div>4분 대기</div>
-        </div>
+        </Link>
+        // <div
+        //   className='flex items-center justify-between rounded-md p-4 cursor-pointer bg-blue-100'
+        // >
+        //   <div className='flex flex-col items-center mr-4 bg-gray-100 px-2 py-3 rounded'>
+        //     <div className='text-lg font-bold mb-2'>{item.id}</div>
+        //     <button className='text-xs font-medium border border-gray-300 px-2 py-0.5 rounded'>
+        //       메모
+        //     </button>
+        //   </div>
 
-        <div className='flex items-center gap-3 ml-4 h-24'>
-          <button className='bg-teal-400 text-white text-sm font-semibold px-4 py-2 rounded-md w-30 h-full'>
-            호출 (1/2)
-            <br />
-            <span className='text-xs'>02:59</span>
-          </button>
-          <button className='bg-indigo-400 text-white text-sm font-semibold px-4 py-2 rounded-md w-30 h-full'>
-            착석
-          </button>
-          <button className='bg-rose-400 text-white text-sm font-semibold px-4 py-2 rounded-md w-30 h-full'>
-            취소
-          </button>
-        </div>
-      </div>
+        //   <div className='flex flex-col items-center mr-6'>
+        //     <div className='text-lg font-bold'>{item.tableNo}</div>
+        //     <div className='text-sm font-medium text-gray-700'>현장</div>
+        //   </div>
+
+        //   <div className='flex-1 text-sm text-gray-700'>
+        //     <div className='font-medium mb-1'>
+        //       총 4명 <span className='mx-2'>•</span> 성인 3 <span className='mx-2'>•</span> 유아 1 -
+        //       유아용 의자 1
+        //     </div>
+        //     <div className='mb-1'>
+        //       강주영 <span className='mx-2'>•</span> 010-1234-5678 <span className='mx-2'>•</span>{' '}
+        //       5회 방문
+        //     </div>
+        //     <div>4분 대기</div>
+        //   </div>
+
+        //   <div className='flex items-center gap-3 ml-4 h-24'>
+        //     <button className='bg-teal-400 text-white text-sm font-semibold px-4 py-2 rounded-md w-30 h-full'>
+        //       호출 (1/2)
+        //       <br />
+        //       <span className='text-xs'>02:59</span>
+        //     </button>
+        //     <button className='bg-indigo-400 text-white text-sm font-semibold px-4 py-2 rounded-md w-30 h-full'>
+        //       착석
+        //     </button>
+        //     <button className='bg-rose-400 text-white text-sm font-semibold px-4 py-2 rounded-md w-30 h-full'>
+        //       취소
+        //     </button>
+        //   </div>
+        // </div>
+      ))}
     </div>
   );
 };
