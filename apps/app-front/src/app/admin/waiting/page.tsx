@@ -147,47 +147,6 @@ const List = ({ activeTab }: { activeTab: string }) => {
             </div>
           </div>
         </Link>
-        // <div
-        //   className='flex items-center justify-between rounded-md p-4 cursor-pointer bg-blue-100'
-        // >
-        //   <div className='flex flex-col items-center mr-4 bg-gray-100 px-2 py-3 rounded'>
-        //     <div className='text-lg font-bold mb-2'>{item.id}</div>
-        //     <button className='text-xs font-medium border border-gray-300 px-2 py-0.5 rounded'>
-        //       메모
-        //     </button>
-        //   </div>
-
-        //   <div className='flex flex-col items-center mr-6'>
-        //     <div className='text-lg font-bold'>{item.tableNo}</div>
-        //     <div className='text-sm font-medium text-gray-700'>현장</div>
-        //   </div>
-
-        //   <div className='flex-1 text-sm text-gray-700'>
-        //     <div className='font-medium mb-1'>
-        //       총 4명 <span className='mx-2'>•</span> 성인 3 <span className='mx-2'>•</span> 유아 1 -
-        //       유아용 의자 1
-        //     </div>
-        //     <div className='mb-1'>
-        //       강주영 <span className='mx-2'>•</span> 010-1234-5678 <span className='mx-2'>•</span>{' '}
-        //       5회 방문
-        //     </div>
-        //     <div>4분 대기</div>
-        //   </div>
-
-        //   <div className='flex items-center gap-3 ml-4 h-24'>
-        //     <button className='bg-teal-400 text-white text-sm font-semibold px-4 py-2 rounded-md w-30 h-full'>
-        //       호출 (1/2)
-        //       <br />
-        //       <span className='text-xs'>02:59</span>
-        //     </button>
-        //     <button className='bg-indigo-400 text-white text-sm font-semibold px-4 py-2 rounded-md w-30 h-full'>
-        //       착석
-        //     </button>
-        //     <button className='bg-rose-400 text-white text-sm font-semibold px-4 py-2 rounded-md w-30 h-full'>
-        //       취소
-        //     </button>
-        //   </div>
-        // </div>
       ))}
     </div>
   );
