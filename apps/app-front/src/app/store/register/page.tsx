@@ -47,7 +47,7 @@ export default function RegisterPage() {
     }));
   };
 
-  const nextStep = () => {
+  const handleNextStep = () => {
     const currentIndex = STEPS.indexOf(step);
     const nextStep = STEPS[currentIndex + 1];
     if (nextStep) {
@@ -55,7 +55,7 @@ export default function RegisterPage() {
     }
   };
 
-  const prevStep = () => {
+  const handlePrevStep = () => {
     const currentIndex = STEPS.indexOf(step);
     const prevStep = STEPS[currentIndex - 1];
     if (prevStep) {
@@ -63,7 +63,7 @@ export default function RegisterPage() {
     }
   };
 
-  const handleCancel = () => router.push('/store/waiting');
+  const handleCancel = () => router.back();
 
   const COUNTDOWN = 3;
   const [countdownTime, setCountdownTime] = useState(COUNTDOWN);
@@ -80,21 +80,21 @@ export default function RegisterPage() {
 
   useEffect(() => {
     if (countdownTime === 0) {
-      router.push('/store/waiting');
+      router.replace('/store/waiting');
     }
   }, [countdownTime, router]);
 
   const renderStep = () => {
     switch (step) {
       case 'TERMS':
-        return <TermsStep formData={formData} updateFormData={updateFormData} onNext={nextStep} />;
+        return <TermsStep formData={formData} updateFormData={updateFormData} onNext={handleNextStep} />;
       case 'MEMBER_COUNT':
         return (
           <MemberCountStep
             formData={formData}
             updateFormData={updateFormData}
-            onNext={nextStep}
-            onPrev={prevStep}
+            onNext={handleNextStep}
+            onPrev={handlePrevStep}
           />
         );
       case 'NAME':
@@ -102,8 +102,8 @@ export default function RegisterPage() {
           <NameStep
             formData={formData}
             updateFormData={updateFormData}
-            onNext={nextStep}
-            onPrev={prevStep}
+            onNext={handleNextStep}
+            onPrev={handlePrevStep}
           />
         );
       case 'WAITING':
