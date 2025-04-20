@@ -6,6 +6,7 @@ import { ReactNode, Suspense } from 'react';
 import Footer from '@/components/Footer';
 import Analytics from '@/components/GA/Analytics';
 import Header from '@/components/Header';
+import Menubar from '@/components/Layout/Menubar';
 import { GA_TRACKING_ID } from '@/libs/ga/gtag';
 
 export default function RootLayout({ children }: { children: ReactNode }) {
@@ -33,10 +34,11 @@ export default function RootLayout({ children }: { children: ReactNode }) {
           />
         </>
       )}
-      <body>
+      <body className='min-h-screen'>
         <Suspense>
           <Header />
-          {children}
+          <Menubar />
+          <main className='flex flex-col h-[calc(100vh-120px)]'>{children}</main>
           <Footer />
           <Analytics />
         </Suspense>
