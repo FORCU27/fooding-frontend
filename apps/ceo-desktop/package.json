@@ -2,7 +2,7 @@
   "name": "ceo-desktop",
   "version": "1.0.0",
   "scripts": {
-    "build": "tsc src/main.ts --outDir build",
+    "build": "tsc",
     "start": "yarn build && electron ./build/main.js"
   },
   "keywords": [],

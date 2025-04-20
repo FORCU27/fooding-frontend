@@ -1,6 +1,7 @@
-import { app, BrowserWindow } from "electron";
+import { app, BrowserWindow, ipcMain } from 'electron';
+import * as path from 'path';
 
-const WEB_APP_URL = "https://ceo.fooding.im";
+const WEB_APP_URL = 'http://localhost:3000/';
 
 app.whenReady().then(() => {
   const browserWindow = new BrowserWindow({
@@ -11,6 +12,8 @@ app.whenReady().then(() => {
     trafficLightPosition: { x: 10, y: 10 },
     webPreferences: {
       contextIsolation: true,
+      nodeIntegration: false,
+      preload: path.join(__dirname, 'preload.js'),
     },
   });
 
@@ -20,4 +23,11 @@ app.whenReady().then(() => {
   }
 
   browserWindow.loadURL(WEB_APP_URL);
+
+  //개발자도구 열기
+  browserWindow.webContents.openDevTools();
+});
+
+ipcMain.handle('set-badge-count', (event, count: number) => {
+  app.setBadgeCount(count);
 });
