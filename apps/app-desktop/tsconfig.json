@@ -1,18 +1,20 @@
 {
   "compilerOptions": {
     "target": "ES2017",
+    "module": "CommonJS",
+    "outDir": "build",
     "lib": ["esnext"],
     "allowJs": true,
     "skipLibCheck": true,
     "strict": true,
-    "noEmit": true,
+    "noEmit": false,
     "esModuleInterop": true,
-    "module": "esnext",
-    "moduleResolution": "bundler",
+    "moduleResolution": "node",
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noUncheckedIndexedAccess": true,
-    "incremental": true
+    "incremental": true,
+    "types": ["electron"]
   },
   "include": ["src/**/*"],
   "exclude": ["node_modules"]
