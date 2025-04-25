@@ -1,7 +1,7 @@
 import { app, BrowserWindow, ipcMain } from "electron";
 import * as path from 'path';
 
-const WEB_APP_URL = "http://localhost:3000/";
+const WEB_APP_URL = "https://app.fooding.im";
 
 app.whenReady().then(() => {
   const browserWindow = new BrowserWindow({
