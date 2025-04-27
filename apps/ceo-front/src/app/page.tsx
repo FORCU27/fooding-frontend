@@ -11,7 +11,7 @@ const DashboardPage = () => {
     }
   };
   return (
-    <main className='h-dvh flex flex-col justify-center items-center bg-gray-100'>
+    <div className='flex flex-col h-full w-full justify-center items-center bg-white'>
       <h1 className='text-3xl font-bold text-gray-800 mb-4'>ceo-front</h1>
       <button
         type='button'
@@ -20,7 +20,7 @@ const DashboardPage = () => {
       >
         HELLO WORLD
       </button>
-    </main>
+    </div>
   );
 };
 
