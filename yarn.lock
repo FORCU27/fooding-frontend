@@ -4448,7 +4448,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@repo/api@workspace:packages/api":
+"@repo/api@workspace:*, @repo/api@workspace:packages/api":
   version: 0.0.0-use.local
   resolution: "@repo/api@workspace:packages/api"
   dependencies:
@@ -6435,6 +6435,7 @@ __metadata:
   resolution: "app-front@workspace:apps/app-front"
   dependencies:
     "@hookform/resolvers": "npm:^5.0.1"
+    "@repo/api": "workspace:*"
     "@repo/eslint-config": "workspace:*"
     "@repo/prettier-config": "workspace:*"
     "@repo/typescript-config": "workspace:*"
