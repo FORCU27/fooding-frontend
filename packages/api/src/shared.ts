@@ -1,4 +1,4 @@
-import axios, { AxiosInstance } from 'axios';
+import axios, { AxiosInstance, AxiosRequestConfig } from 'axios';
 
 const BASE_URL = '<백엔드 API URL>';
 
@@ -7,32 +7,52 @@ export const apiClient = axios.create({
 });
 
 export const createApi = (apiClient: AxiosInstance) => ({
-  get: async <TResponse = unknown>(...args: Parameters<AxiosInstance['get']>) => {
-    const response = await apiClient.get<TResponse>(...args);
+  get: async <TResponse = unknown>(url: string, config?: AxiosRequestConfig<unknown>) => {
+    const response = await apiClient.get<TResponse>(url, config);
     return response.data;
   },
-  post: async <TResponse = unknown>(...args: Parameters<AxiosInstance['post']>) => {
-    const response = await apiClient.post<TResponse>(...args);
+  post: async <TResponse = unknown, TData = unknown>(
+    url: string,
+    data?: TData,
+    config?: AxiosRequestConfig<TData>,
+  ) => {
+    const response = await apiClient.post<TResponse>(url, data, config);
     return response.data;
   },
-  put: async <TResponse = unknown>(...args: Parameters<AxiosInstance['put']>) => {
-    const response = await apiClient.put<TResponse>(...args);
+  put: async <TResponse = unknown, TData = unknown>(
+    url: string,
+    data?: TData,
+    config?: AxiosRequestConfig<TData>,
+  ) => {
+    const response = await apiClient.put<TResponse>(url, data, config);
     return response.data;
   },
-  patch: async <TResponse = unknown>(...args: Parameters<AxiosInstance['patch']>) => {
-    const response = await apiClient.patch<TResponse>(...args);
+  patch: async <TResponse = unknown, TData = unknown>(
+    url: string,
+    data?: TData,
+    config?: AxiosRequestConfig<TData>,
+  ) => {
+    const response = await apiClient.patch<TResponse>(url, data, config);
     return response.data;
   },
-  postForm: async <TResponse = unknown>(...args: Parameters<AxiosInstance['postForm']>) => {
-    const response = await apiClient.postForm<TResponse>(...args);
+  postForm: async <TResponse = unknown, TData = unknown>(
+    url: string,
+    data?: TData,
+    config?: AxiosRequestConfig<TData>,
+  ) => {
+    const response = await apiClient.postForm<TResponse>(url, data, config);
     return response.data;
   },
-  patchForm: async <TResponse = unknown>(...args: Parameters<AxiosInstance['patchForm']>) => {
-    const response = await apiClient.patchForm<TResponse>(...args);
+  patchForm: async <TResponse = unknown, TData = unknown>(
+    url: string,
+    data?: TData,
+    config?: AxiosRequestConfig<TData>,
+  ) => {
+    const response = await apiClient.patchForm<TResponse>(url, data, config);
     return response.data;
   },
-  delete: async <TResponse = unknown>(...args: Parameters<AxiosInstance['delete']>) => {
-    const response = await apiClient.delete<TResponse>(...args);
+  delete: async <TResponse = unknown>(url: string, config?: AxiosRequestConfig<unknown>) => {
+    const response = await apiClient.delete<TResponse>(url, config);
     return response.data;
   },
 });
