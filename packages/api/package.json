@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "exports": {
-    "./*": "./src/*.ts"
+    "./example": "./src/example/index.ts"
   },
   "scripts": {
     "format": "prettier --cache --write .",
