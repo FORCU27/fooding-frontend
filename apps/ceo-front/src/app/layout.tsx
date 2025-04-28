@@ -10,7 +10,7 @@ import Layout from '@/components/Home/Layout';
 import { GA_TRACKING_ID } from '@/libs/ga/gtag';
 
 export const metadata: Metadata = {
-  title: 'FOODING-CEO-FRONT',
+  title: '푸딩 사장님 사이트',
   icons: [{ rel: 'icon', url: '/favicon.ico' }],
 };
 
