@@ -1,6 +1,6 @@
 import axios, { AxiosInstance, AxiosRequestConfig } from 'axios';
 
-const BASE_URL = '<백엔드 API URL>';
+const BASE_URL = 'https://api.fooding.im';
 
 export const apiClient = axios.create({
   baseURL: BASE_URL,
