@@ -1,17 +1,21 @@
 import { z } from 'zod';
 
+import { ApiResponse } from '../shared';
+
 export type Example = z.infer<typeof Example>;
 export const Example = z.object({
   id: z.string(),
   name: z.string(),
 });
 
-export const GetExampleListResponse = z.object({
-  data: z.array(Example),
-  total: z.number(),
-});
+export const GetExampleListResponse = ApiResponse(
+  z.object({
+    data: z.array(Example),
+    total: z.number(),
+  }),
+);
 
-export const GetExampleByIdResponse = Example;
+export const GetExampleByIdResponse = ApiResponse(Example);
 
 export type CreateExampleBody = {
   name: string;
