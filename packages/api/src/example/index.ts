@@ -1,29 +1,14 @@
-import z from 'zod';
+export * from './type';
 
-import { api } from './shared';
+import { api } from '../shared';
+import {
+  CreateExampleBody,
+  GetExampleByIdResponse,
+  GetExampleListResponse,
+  UpdateExampleBody,
+} from './type';
 
-const ENDPOINT = '/example';
-
-type Example = z.infer<typeof Example>;
-const Example = z.object({
-  id: z.string(),
-  name: z.string(),
-});
-
-const GetExampleListResponse = z.object({
-  data: z.array(Example),
-  total: z.number(),
-});
-
-const GetExampleByIdResponse = Example;
-
-type CreateExampleBody = {
-  name: string;
-};
-
-type UpdateExampleBody = {
-  name: string;
-};
+const ENDPOINT = 'https://api.fooding.im';
 
 export const exampleApi = {
   getExampleList: async () => {

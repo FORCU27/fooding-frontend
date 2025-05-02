@@ -9,10 +9,10 @@ const nextConfig = {
   eslint: {
     ignoreDuringBuilds: true,
   },
-  env: {
-    NEXT_PUBLIC_CONSOLE_URL: isDev
-      ? process.env.NEXT_PUBLIC_LOCAL_CONSOLE_URL
-      : process.env.NEXT_PUBLIC_CONSOLE_URL,
+  experimental: {
+    serverActions: {
+      allowedOrigins: ['appleid.apple.com', 'localhost.com', 'localhost:3000'],
+    },
   },
 };
 

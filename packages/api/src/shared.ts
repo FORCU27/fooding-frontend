@@ -1,6 +1,7 @@
 import axios, { AxiosInstance, AxiosRequestConfig } from 'axios';
+import z, { ZodType } from 'zod';
 
-const BASE_URL = '<백엔드 API URL>';
+const BASE_URL = 'https://api.fooding.im';
 
 export const apiClient = axios.create({
   baseURL: BASE_URL,
@@ -58,3 +59,9 @@ export const createApi = (apiClient: AxiosInstance) => ({
 });
 
 export const api = createApi(apiClient);
+
+export const ApiResponse = <TData extends ZodType>(data: TData) =>
+  z.object({
+    status: z.string(),
+    data: data,
+  });
