@@ -1,25 +1,14 @@
 'use client';
 
 import Link from 'next/link';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { posWaitingApi, WaitingListResponse } from '@repo/api/pos-waiting';
 
 // 탭 구성
 const tabs = [
   { key: 'waiting', label: '웨이팅 중', info: '1팀 • 4명' },
   { key: 'seated', label: '착석' },
   { key: 'canceled', label: '취소' },
-];
-
-// 웨이팅 목록 임시 데이터
-const waitingList = [
-  {
-    id: 1,
-    tableNo: 2,
-  },
-  {
-    id: 2,
-    tableNo: 5,
-  },
 ];
 
 const Header = () => {
@@ -86,33 +75,62 @@ const Tab = ({
 
 // 리스트
 const List = ({ activeTab }: { activeTab: string }) => {
+  const [waitingList, setWaitingList] = useState<WaitingListResponse['data']['list']>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchWaitingList = async () => {
+      try {
+        const response = await posWaitingApi.getWaitingList(1, {
+          search: {
+            searchString: '',
+            pageNum: 1,
+            pageSize: 10,
+          },
+          status: 'WAITING_OPEN',
+        });
+        setWaitingList(response.data.list);
+      } catch (error) {
+        console.error('웨이팅 목록을 가져오는데 실패했습니다:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (activeTab === 'waiting') {
+      fetchWaitingList();
+    }
+  }, [activeTab]);
+
   if (activeTab !== 'waiting') return null;
+  if (loading) return <div className='p-4 text-center'>로딩 중...</div>;
 
   return (
     <div className='p-4 bg-white'>
-      {waitingList.map((item) => (
+      {waitingList.map((item: WaitingListResponse['data']['list'][0]) => (
         <Link key={item.id} href={`/admin/waiting/${item.id}`}>
           <div className='flex items-center justify-between rounded-md p-4 cursor-pointer'>
             <div className='flex flex-col items-center mr-4 bg-gray-100 px-2 py-3 rounded'>
-              <div className='text-lg font-bold mb-2'>{item.id}</div>
+              <div className='text-lg font-bold mb-2'>{item.callNumber}</div>
               <button className='text-xs font-medium border border-gray-300 px-2 py-0.5 rounded'>
                 메모
               </button>
             </div>
 
             <div className='flex flex-col items-center mr-6'>
-              <div className='text-lg font-bold'>{item.tableNo}</div>
+              <div className='text-lg font-bold'>{item.channel}</div>
               <div className='text-sm font-medium text-gray-700'>현장</div>
             </div>
 
             <div className='flex-1 text-sm text-gray-700'>
               <div className='font-medium mb-1'>
-                총 4명 <span className='mx-2'>•</span> 성인 3 <span className='mx-2'>•</span> 유아 1
-                - 유아용 의자 1
+                총 {item.adultCount + item.infantCount}명 <span className='mx-2'>•</span> 성인{' '}
+                {item.adultCount} <span className='mx-2'>•</span> 유아 {item.infantCount}
+                {item.infantChairCount > 0 && ` - 유아용 의자 ${item.infantChairCount}`}
               </div>
               <div className='mb-1'>
-                강주영 <span className='mx-2'>•</span> 010-1234-5678 <span className='mx-2'>•</span>{' '}
-                5회 방문
+                {item.user.name} <span className='mx-2'>•</span> {item.user.phoneNumber}{' '}
+                <span className='mx-2'>•</span> {item.user.count}회 방문
               </div>
               <div>4분 대기</div>
             </div>
