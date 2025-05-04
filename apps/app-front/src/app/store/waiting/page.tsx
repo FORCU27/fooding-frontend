@@ -4,8 +4,7 @@ import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import React, { useState, useEffect } from 'react';
 
-
-import { appWaitingApi } from '@repo/api/app-waiting/index';
+import { appWaitingApi } from '@repo/api/app-waiting';
 
 // 로고 컴포넌트
 const Logo = () => (
