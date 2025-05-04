@@ -49,5 +49,24 @@ export const WaitingListResponse = z.object({
   }),
 });
 
+export const CreateWaitingRequest = z.object({
+  name: z.string(),
+  phoneNumber: z.string(),
+  termsAgreed: z.boolean(),
+  privacyPolicyAgreed: z.boolean(),
+  thirdPartyAgreed: z.boolean(),
+  infantChairCount: z.number(),
+  infantCount: z.number(),
+  adultCount: z.number(),
+});
+
+export const CreateWaitingResponse = z.object({
+  status: z.string(),
+  data: z.any(), // 추후 수정
+});
+
 export type WaitingListRequest = z.infer<typeof WaitingListRequest>;
 export type WaitingListResponse = z.infer<typeof WaitingListResponse>;
+
+export type CreateWaitingRequest = z.infer<typeof CreateWaitingRequest>;
+export type CreateWaitingResponse = z.infer<typeof CreateWaitingResponse>;

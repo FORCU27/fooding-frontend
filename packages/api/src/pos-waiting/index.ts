@@ -1,5 +1,10 @@
 import { api } from '../shared';
-import { WaitingListRequest, WaitingListResponse } from './types';
+import {
+  WaitingListRequest,
+  WaitingListResponse,
+  CreateWaitingRequest,
+  CreateWaitingResponse,
+} from './types';
 export type { WaitingListResponse };
 
 const BASE_URL = '/pos/waitings';
@@ -42,10 +47,35 @@ export const posWaitingApi = {
         },
       },
     };
-    return WaitingListResponse.parse(mockResponse); // Zod 파싱으로 타입 보장
+    return WaitingListResponse.parse(mockResponse);
   },
   // 웨이팅 상세 조회
   getWaitingById: async (requestId: string) => {
     return WaitingListResponse.parse(api.get(`${BASE_URL}/requests/${requestId}`));
+  },
+  // 웨이팅 등록
+  createWaiting: async (id: number, request: CreateWaitingRequest) => {
+    const response = await api.post(`${BASE_URL}/${id}/requests`, request);
+    return CreateWaitingResponse.parse(response);
+  },
+  // 웨이팅 착석
+  createWaitingSeat: async (requestId: string) => {
+    const response = await api.post(`${BASE_URL}/requests/${requestId}/seat`);
+    return response;
+  },
+  // 웨이팅 되돌리기
+  createWaitingRevert: async (requestId: string) => {
+    const response = await api.post(`${BASE_URL}/requests/${requestId}/revert`);
+    return response;
+  },
+  // 웨이팅 취소
+  createWaitingCancel: async (requestId: string) => {
+    const response = await api.post(`${BASE_URL}/requests/${requestId}/cancel`);
+    return response;
+  },
+  // 웨이팅 호출
+  createWaitingCall: async (requestId: string) => {
+    const response = await api.post(`${BASE_URL}/requests/${requestId}/call`);
+    return response;
   },
 };
