@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
-import { posWaitingApi, WaitingListResponse } from '@repo/api/pos-waiting';
+import { posWaitingApi, WaitingListResponse } from '@repo/api';
 
 // 탭 구성
 const tabs = [

@@ -49,21 +49,3 @@ export const posWaitingApi = {
     return WaitingListResponse.parse(api.get(`${BASE_URL}/requests/${requestId}`));
   },
 };
-
-//   getExampleById: async (requestId: string) => {
-//     // 필요 시 이 부분도 목업으로 대체 가능
-//     const mockItem = {
-//       status: 'OK',
-//       data: {
-//         list: [],
-//         pageInfo: {
-//           pageNum: 1,
-//           pageSize: 10,
-//           totalCount: 0,
-//           totalPages: 0,
-//         },
-//       },
-//     };
-//     return WaitingListResponse.parse(mockItem);
-//   },
-// };
