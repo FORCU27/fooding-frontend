@@ -3,9 +3,20 @@ import './globals.css';
 import Script from 'next/script';
 import { ReactNode, Suspense } from 'react';
 
+import localFont from 'next/font/local';
+
 import Analytics from '@/components/GA/Analytics';
 import IntlProvider from '@/components/Provider/IntlProvider';
 import { GA_TRACKING_ID } from '@/libs/ga/gtag';
+
+export const pretendard = localFont({
+  src: '../../public/fonts/PretendardVariable.woff2',
+  display: 'swap',
+  weight: '45 920',
+  variable: '--font-pretendard',
+})
+
+
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
@@ -35,7 +46,9 @@ export default function RootLayout({ children }: { children: ReactNode }) {
       <body>
         <Suspense>
           <IntlProvider>
-            {children}
+            <div className={pretendard.className}>
+              {children}
+            </div>
             <Analytics />
           </IntlProvider>
         </Suspense>

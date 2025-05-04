@@ -27,3 +27,7 @@
     --color-white: oklch(1 0 0);
     --color-black: oklch(0 0 0);
   }
+
+  @theme inline {
+    --font-pretendard: var(--font-pretendard);
+  }
