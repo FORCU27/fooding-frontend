@@ -2,7 +2,10 @@
 
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+
+
+import { appWaitingApi } from '@repo/api/app-waiting/index';
 
 // 로고 컴포넌트
 const Logo = () => (
@@ -210,6 +213,18 @@ const usePhoneNumber = (initialValue = '010-') => {
 export default function WaitingPage() {
   const { phoneNumber, handleNumberClick, handleBackspace, handleReset, isPhoneNumberComplete } =
     usePhoneNumber();
+
+  useEffect(() => {
+    const fetchWaitingList = async () => {
+      const response = await appWaitingApi.getWaitingList(1, {
+        search: { searchString: '', pageNum: 1, pageSize: 10 },
+        status: 'WAITING',
+      });
+      console.log(response);
+    };
+    
+    fetchWaitingList();
+  }, []);
 
   return (
     <div className='flex h-screen'>

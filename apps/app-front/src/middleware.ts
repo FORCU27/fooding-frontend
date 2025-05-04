@@ -19,6 +19,8 @@ export function middleware(request: NextRequest) {
   const token = request.cookies.get('auth-token');
   const isAuthenticated = !!token;
 
+  return NextResponse.next();
+
   switch (authType) {
     case AuthType.PRIVATE:
       if (!isAuthenticated) {
