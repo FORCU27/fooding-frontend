@@ -11,6 +11,6 @@
       }
     ]
   },
-  "include": ["next-env.d.ts", ".next/types/**/*.ts", "**/*.ts", "**/*.tsx", "src/global.d.ts"],
+  "include": ["next-env.d.ts", ".next/types/**/*.ts", "**/*.ts", "**/*.tsx", "src/global.d.ts", "tailwind.config.js", "src/middleware.js"],
   "exclude": ["node_modules"]
 }

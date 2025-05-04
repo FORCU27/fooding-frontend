@@ -14,7 +14,7 @@ const Home: NextPage = () => {
   };
 
   return (
-    <main className='h-dvh flex flex-col justify-center items-center bg-gray-100'>
+    <main className='h-dvh flex flex-col justify-center items-center bg-gray-100 '>
       <h1 className='text-3xl font-bold text-gray-800 mb-4'>app-front</h1>
       <button
         type='button'
