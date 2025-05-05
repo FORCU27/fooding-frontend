@@ -2,7 +2,7 @@
 
 @theme {
     /* Primary */
-    --color-primary-pink: oklch(0.64 0.22 20);
+    --color-primary-pink: oklch(0.65 0.2407 23.93);
   
     /* Fooding */
     --color-fooding-yellow: oklch(0.88 0.2 100);
@@ -20,14 +20,90 @@
     --color-gray-2: oklch(0.92 0 0);
     --color-gray-3: oklch(0.88 0 0);
     --color-gray-4: oklch(0.7 0 0);
-    --color-gray-5: oklch(0.5 0 0);
+    --color-gray-5: oklch(0.57 0 0);
     --color-gray-6: oklch(0.2 0 0);
   
     /* Base */
     --color-white: oklch(1 0 0);
     --color-black: oklch(0 0 0);
+
+    --font-family-sans: var(--font-pretendard), sans-serif;
+
+    /* font size (pt to px, 1pt ≈ 1.333px) */
+    --fs-headline-1: 64px;
+    --fs-headline-2: 48px;
+    --fs-headline-3: 36px;
+    --fs-subtitle-1: 32px;
+    --fs-subtitle-2: 30px;
+    --fs-subtitle-3: 28px;
+    --fs-body-1: 24px;
+    --fs-body-2: 20px;
+    --fs-body-3: 18px;
+
+    /* font weights */
+    --fw-regular: 400;
+    --fw-medium: 500;
+    --fw-bold: 700;
+
+    /* line heights */
+    --lh-tight: 1.25;
+    --lh-normal: 1.35;
+    --lh-loose: 1.4;
   }
 
-  @theme inline {
-    --font-pretendard: var(--font-pretendard);
+  @layer utilities {
+    .headline-1 {
+      font-size: var(--fs-headline-1);
+      font-weight: var(--fw-bold);
+      line-height: var(--lh-tight);
+    }
+  
+    .headline-2 {
+      font-size: var(--fs-headline-2);
+      font-weight: var(--fw-medium);
+      line-height: var(--lh-tight);
+    }
+  
+    .headline-3 {
+      font-size: var(--fs-headline-3);
+      font-weight: var(--fw-medium);
+      line-height: var(--lh-tight);
+    }
+  
+    .subtitle-1 {
+      font-size: var(--fs-subtitle-1);
+      font-weight: var(--fw-medium);
+      line-height: var(--lh-normal);
+    }
+  
+    .subtitle-2 {
+      font-family: var(--font-family-sans);
+      font-size: var(--fs-subtitle-2);
+      font-weight: var(--fw-medium);
+      line-height: var(--lh-normal);
+    }
+  
+    .subtitle-3 {
+      font-size: var(--fs-subtitle-3);
+      font-weight: var(--fw-medium);
+      line-height: var(--lh-normal);
+    }
+  
+    .body-1 {
+      font-size: var(--fs-body-1);
+      font-weight: var(--fw-medium);
+      line-height: var(--lh-loose);
+    }
+  
+    .body-2 {
+      font-size: var(--fs-body-2);
+      font-weight: var(--fw-medium);
+      line-height: var(--lh-loose);
+    }
+  
+    .body-3 {
+      font-size: var(--fs-body-3);
+      font-weight: var(--fw-medium);
+      line-height: var(--lh-loose);
+    }
   }
