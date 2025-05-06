@@ -1,0 +1,28 @@
+on:
+  pull_request:
+    types:
+      - opened
+      - ready_for_review
+      - synchronize
+  workflow_dispatch: {}
+
+jobs:
+  run-bot-action:
+    if: ${{ github.event.pull_request.draft == false }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Generate GitHub App Token
+        id: app-token
+        uses: actions/create-github-app-token@v1
+        with:
+          app-id: ${{ secrets.JIAN_APP_ID }}
+          private-key: ${{ secrets.JIAN_PRIVATE_KEY }}
+
+      - name: Run code review bot
+        uses: ZeroCloudCorp/jianbot@main
+        with:
+          GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
+          ANTHROPIC_API_KEY: ${{ secrets.JIAN_ANTHROPIC_API_KEY }}
