@@ -22,7 +22,7 @@ jobs:
           private-key: ${{ secrets.JIAN_PRIVATE_KEY }}
 
       - name: Run code review bot
-        uses: ZeroCloudCorp/jianbot@main
+        uses: ZeroCloudCorp/iu@main
         with:
           GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
           ANTHROPIC_API_KEY: ${{ secrets.JIAN_ANTHROPIC_API_KEY }}
