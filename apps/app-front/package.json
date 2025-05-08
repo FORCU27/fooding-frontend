@@ -12,8 +12,8 @@
     "test": "vitest"
   },
   "dependencies": {
-    "@repo/api": "workspace:*",
     "@hookform/resolvers": "^5.0.1",
+    "@repo/api": "workspace:*",
     "@tanstack/react-query": "^5.74.3",
     "axios": "^1.8.4",
     "clsx": "^2.1.1",
