@@ -55,9 +55,6 @@ const WaitingStats = () => (
       <h3 className='subtitle-1 font-bold mb-4 mt-4'>현재 웨이팅</h3>
       <p className='text-[125px] font-bold text-primary-pink'>3<span className='text-3xl ml-2'>팀</span></p>
     </div>
-    {/* <div>
-      <h3 className='border-l border-dark h-full'></h3>
-    </div> */}
     <div className='w-[250px] border-l border-dark flex flex-col items-center'>
       <h3 className='subtitle-1 font-bold mb-4 mt-4'>예상시간</h3>
       <p className='text-[125px] font-bold text-primary-pink'>7<span className='text-3xl ml-2'>분</span></p>

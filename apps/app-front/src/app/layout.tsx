@@ -5,18 +5,9 @@ import { ReactNode, Suspense } from 'react';
 
 import { pretendard } from "@repo/font";
 
-// import localFont from 'next/font/local';
-
 import Analytics from '@/components/GA/Analytics';
 import IntlProvider from '@/components/Provider/IntlProvider';
 import { GA_TRACKING_ID } from '@/libs/ga/gtag';
-
-// export const pretendard = localFont({
-//   src: '@repo/assets/PretendardVariable.woff2',
-//   display: 'swap',
-//   weight: '45 920',
-//   variable: '--font-pretendard',
-// })
 
 
 
