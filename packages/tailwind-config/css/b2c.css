@@ -47,7 +47,6 @@
     }
   
     .subtitle-2 {
-      font-family: var(--font-family-sans);
       font-size: var(--fs-subtitle-2);
       font-weight: var(--fw-medium);
       line-height: var(--lh-normal);
