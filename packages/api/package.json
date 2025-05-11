@@ -5,6 +5,7 @@
   "exports": {
     "./example": "./src/example/index.ts",
     "./stores": "./src/stores/index.ts"
+    "./user-login": "./src/user-login/index.ts"
   },
   "scripts": {
     "format": "prettier --cache --write .",
