@@ -1,8 +1,10 @@
 import { useState } from 'react';
 
+import { WaitingRegisterData, UpdateWaitingRegisterData, StepProps } from '../types';
 import Button from '@/components/Button';
 
-export function PhoneStep() {
+export function PhoneStep({ formData, updateFormData, onNext, onPrev }: StepProps) {
+  const { phoneNumber } = formData;
   // 전화번호 표시 컴포넌트
   const PhoneNumberDisplay = ({ phoneNumber }: { phoneNumber: string }) => (
     <div className='flex justify-center'>
@@ -36,25 +38,23 @@ export function PhoneStep() {
 
   // usePhoneNumber.ts 파일로 분리하거나 같은 파일 내에 선언
   const usePhoneNumber = (initialValue = '010-') => {
-    const [phoneNumber, setPhoneNumber] = useState(initialValue);
-
     const handleNumberClick = (num: string) => {
       if (num === 'C') {
-        setPhoneNumber(initialValue);
+        updateFormData('phoneNumber', initialValue);
       } else if (num === '←') {
         if (phoneNumber.length > 4) {
           // 하이픈 바로 뒤의 문자를 삭제할 때 하이픈도 함께 삭제
           if (phoneNumber.charAt(phoneNumber.length - 2) === '-' && phoneNumber.length > 5) {
-            setPhoneNumber((prev) => prev.slice(0, -2));
+            updateFormData('phoneNumber', phoneNumber.slice(0, -2));
           } else {
-            setPhoneNumber((prev) => prev.slice(0, -1));
+            updateFormData('phoneNumber', phoneNumber.slice(0, -1));
           }
         }
       } else if (phoneNumber.length < 13) {
         if (phoneNumber.length === 8) {
-          setPhoneNumber((prev) => prev + '-' + num);
+          updateFormData('phoneNumber', phoneNumber + '-' + num);
         } else {
-          setPhoneNumber((prev) => prev + num);
+          updateFormData('phoneNumber', phoneNumber + num);
         }
       }
     };
@@ -62,13 +62,12 @@ export function PhoneStep() {
     const isPhoneNumberComplete = phoneNumber.length >= 13;
 
     return {
-      phoneNumber,
       handleNumberClick,
       isPhoneNumberComplete,
     };
   };
 
-  const { phoneNumber, handleNumberClick, isPhoneNumberComplete } = usePhoneNumber();
+  const { handleNumberClick, isPhoneNumberComplete } = usePhoneNumber();
 
   return (
     <div className=' bg-white p-8 flex flex-col items-center'>

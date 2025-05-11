@@ -7,7 +7,6 @@ import React, { useState, useEffect } from 'react';
 import { MemberCountStep } from './components/MemberCountStep';
 import { NameStep } from './components/NameStep';
 import { PhoneStep } from './components/PhoneStep';
-import { TermsStep } from './components/TermsStep';
 import { WaitingRegisterData } from './types';
 import Button from '@/components/Button';
 import Modal from '@/components/Modal';
@@ -179,29 +178,23 @@ const FoodImage = () => (
 );
 
 export default function WaitingPage() {
-  useEffect(() => {
-    const fontSize = getComputedStyle(document.documentElement).getPropertyValue(
-      '--font-pretendard',
-    );
-    console.log('fontSize', fontSize);
-  }, []);
-
   const [isModalOpen, setIsModalOpen] = useState(true);
 
   const [formData, setFormData] = useState<WaitingRegisterData>({
-    terms: {
-      service: false,
-      privacy: false,
-      privacy2: false,
-      marketing: false,
-    },
-    members: {
-      adult: 0,
-      child: 0,
-      childChair: 0,
-    },
     name: '',
+    phoneNumber: '010-',
+    termsAgreed: false,
+    privacyPolicyAgreed: false,
+    thirdPartyAgreed: false,
+    marketingConsent: false,
+    infantChairCount: 0,
+    infantCount: 0,
+    adultCount: 0,
   });
+
+  useEffect(() => {
+    console.log('formData', formData);
+  }, [formData]);
 
   const updateFormData = <K extends keyof WaitingRegisterData>(
     key: K,
@@ -241,19 +234,24 @@ export default function WaitingPage() {
         <FoodImage />
       </div>
       <Modal open={isModalOpen} onClose={() => setIsModalOpen(false)}>
-        {/* <PhoneStep /> */}
-        {/* <MemberCountStep
-          formData={formData}
-          updateFormData={updateFormData}
-          onNext={handleNextStep}
-          onPrev={handlePrevStep}
-        /> */}
-        <NameStep
+        <PhoneStep
           formData={formData}
           updateFormData={updateFormData}
           onNext={handleNextStep}
           onPrev={handlePrevStep}
         />
+        {/* <MemberCountStep
+          formData={formData}
+          updateFormData={updateFormData}
+          onNext={handleNextStep}
+          onPrev={handlePrevStep}
+        />
+        <NameStep
+          formData={formData}
+          updateFormData={updateFormData}
+          onNext={handleNextStep}
+          onPrev={handlePrevStep}
+        /> */}
       </Modal>
     </div>
   );
