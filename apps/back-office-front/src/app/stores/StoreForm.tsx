@@ -19,8 +19,8 @@ interface StoreFormProps {
 }
 
 export function StoreForm({ initialData, onSubmit, isLoading }: StoreFormProps) {
-  const form = useForm({
-    resolver: zodResolver(AdminCreateStoreRequestSchema),
+  const form = useForm<AdminCreateStoreRequest>({
+    resolver: zodResolver(AdminCreateStoreRequestSchema as any),
     defaultValues: initialData || {
       name: '',
       city: '',
