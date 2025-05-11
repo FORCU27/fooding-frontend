@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from 'next/server';
-
 // 공통 HTML 생성 함수
 function createPopupResponse(code: string, state?: string) {
   const html = `

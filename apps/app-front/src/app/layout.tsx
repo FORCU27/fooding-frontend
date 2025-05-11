@@ -4,6 +4,7 @@ import Script from 'next/script';
 import { ReactNode, Suspense } from 'react';
 
 import Analytics from '@/components/GA/Analytics';
+import { AuthProvider } from '@/components/Provider/AuthProvider';
 import IntlProvider from '@/components/Provider/IntlProvider';
 import { GA_TRACKING_ID } from '@/libs/ga/gtag';
 
@@ -34,10 +35,12 @@ export default function RootLayout({ children }: { children: ReactNode }) {
       )}
       <body>
         <Suspense>
-          <IntlProvider>
-            {children}
-            <Analytics />
-          </IntlProvider>
+          <AuthProvider>
+            <IntlProvider>
+              {children}
+              <Analytics />
+            </IntlProvider>
+          </AuthProvider>
         </Suspense>
       </body>
     </html>

@@ -1,10 +1,8 @@
 import axios, { AxiosInstance, AxiosRequestConfig } from 'axios';
 import z, { ZodType } from 'zod';
 
-const BASE_URL = 'https://api.fooding.im';
-
 export const apiClient = axios.create({
-  baseURL: BASE_URL,
+  baseURL: process.env.NEXT_PUBLIC_API_URL,
 });
 
 export const createApi = (apiClient: AxiosInstance) => ({
