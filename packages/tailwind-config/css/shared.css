@@ -24,6 +24,4 @@
     /* Base */
     --color-white: oklch(1 0 0);
     --color-black: oklch(0 0 0);
-
-    --font-family-sans: var(--font-pretendard), sans-serif;
   }
