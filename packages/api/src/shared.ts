@@ -1,9 +1,34 @@
 import axios, { AxiosInstance, AxiosRequestConfig } from 'axios';
+import Cookies from 'js-cookie';
 import z, { ZodType } from 'zod';
+
+import { STORAGE_KEYS } from './configs/storageKeys';
 
 export const apiClient = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_URL,
 });
+
+// 요청 인터셉터 설정
+apiClient.interceptors.request.use(
+  async (response) => {
+    const accessToken = Cookies.get(STORAGE_KEYS.ACCESS_TOKEN);
+    if (accessToken) {
+      response.headers['Authorization'] = `Bearer ${accessToken}`;
+    }
+    return response;
+  },
+  (error) => {
+    return Promise.reject(error);
+  },
+);
+
+// 응답 인터셉터 설정
+apiClient.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    return Promise.reject(error);
+  },
+);
 
 export const createApi = (apiClient: AxiosInstance) => ({
   get: async <TResponse = unknown>(url: string, config?: AxiosRequestConfig<unknown>) => {

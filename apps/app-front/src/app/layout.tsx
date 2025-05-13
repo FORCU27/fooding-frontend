@@ -35,12 +35,12 @@ export default function RootLayout({ children }: { children: ReactNode }) {
       )}
       <body>
         <Suspense>
-          <AuthProvider>
-            <IntlProvider>
+          <IntlProvider>
+            <AuthProvider>
               {children}
               <Analytics />
-            </IntlProvider>
-          </AuthProvider>
+            </AuthProvider>
+          </IntlProvider>
         </Suspense>
       </body>
     </html>

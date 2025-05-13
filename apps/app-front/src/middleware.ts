@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
-import { getCookie } from './utils/cookie';
+import { STORAGE_KEYS } from '@repo/api/configs/storage-keys';
 
 export enum AuthType {
   PUBLIC = 'PUBLIC',
@@ -18,8 +18,8 @@ export const pathConfig: Record<string, AuthType> = {
 export async function middleware(request: NextRequest) {
   const path = request.nextUrl.pathname;
   const authType = pathConfig[path] || AuthType.PRIVATE;
-  const token = await getCookie('accessToken');
-  const isAuthenticated = token && token !== 'null' && token !== 'undefined';
+  const token = request.cookies.get(STORAGE_KEYS.ACCESS_TOKEN);
+  const isAuthenticated = !!token;
 
   if (authType === AuthType.PRIVATE && !isAuthenticated) {
     const url = new URL('/login', request.url);
