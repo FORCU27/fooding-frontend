@@ -4,7 +4,8 @@
   "private": true,
   "exports": {
     "./example": "./src/example/index.ts",
-    "./user-login": "./src/user-login/index.ts"
+    "./user-login": "./src/user-login/index.ts",
+    "./configs/storage-keys": "./src/configs/storageKeys.ts"
   },
   "scripts": {
     "format": "prettier --cache --write .",
@@ -14,12 +15,14 @@
   },
   "dependencies": {
     "axios": "^1.9.0",
+    "js-cookie": "^3.0.5",
     "zod": "^3.24.3"
   },
   "devDependencies": {
     "@repo/eslint-config": "workspace:*",
     "@repo/prettier-config": "workspace:*",
     "@repo/typescript-config": "workspace:*",
+    "@types/js-cookie": "^3",
     "eslint": "^9.24.0",
     "prettier": "^3.5.3",
     "typescript": "5.8.2"
