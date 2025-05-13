@@ -1,6 +1,8 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
+import { STORAGE_KEYS } from '@repo/api/configs/storage-keys';
+
 export enum AuthType {
   PUBLIC = 'PUBLIC',
   PRIVATE = 'PRIVATE',
@@ -13,44 +15,31 @@ export const pathConfig: Record<string, AuthType> = {
   '/login': AuthType.GUEST,
 };
 
-export function middleware(request: NextRequest) {
+export async function middleware(request: NextRequest) {
   const path = request.nextUrl.pathname;
-  const authType = pathConfig[path] || AuthType.PUBLIC;
-  const token = request.cookies.get('auth-token');
+  const authType = pathConfig[path] || AuthType.PRIVATE;
+  const token = request.cookies.get(STORAGE_KEYS.ACCESS_TOKEN);
   const isAuthenticated = !!token;
 
-  // return NextResponse.next();
+  if (authType === AuthType.PRIVATE && !isAuthenticated) {
+    const url = new URL('/login', request.url);
+    url.searchParams.set('returnTo', path);
+    return NextResponse.redirect(url);
+  }
 
-  console.log('middleware', path, authType, isAuthenticated);
+  if (authType === AuthType.GUEST && isAuthenticated) {
+    return NextResponse.redirect(new URL('/', request.url));
+  }
 
-  switch (authType) {
-    case AuthType.PRIVATE:
-      if (!isAuthenticated) {
-        const url = new URL('/login', request.url);
-        url.searchParams.set('returnTo', request.nextUrl.pathname);
-        return NextResponse.redirect(url);
-      }
-      break;
-
-    case AuthType.GUEST:
-      if (isAuthenticated) {
-        return NextResponse.redirect(new URL('/', request.url));
-      }
-      break;
-
-    case AuthType.PUBLIC:
-      if (path === '/' && !isAuthenticated) {
-        return NextResponse.redirect(new URL('/login', request.url));
-      }
-      if (path === '/' && isAuthenticated) {
-        return NextResponse.redirect(new URL('/', request.url));
-      }
-      break;
+  if (authType === AuthType.PUBLIC && path === '/' && !isAuthenticated) {
+    const url = new URL('/login', request.url);
+    url.searchParams.set('returnTo', path);
+    return NextResponse.redirect(url);
   }
 
   return NextResponse.next();
 }
 
 export const config = {
-  matcher: ['/((?!api|_next/static|_next/image|.*\\.png$).*)'],
+  matcher: ['/((?!api|_next/static|_next/image|favicon.ico|.*\\.(?:png|jpg|jpeg|gif|svg|ico)$).*)'],
 };
