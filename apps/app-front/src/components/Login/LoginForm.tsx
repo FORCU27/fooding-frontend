@@ -1,11 +1,9 @@
 import { PropsWithoutRef, useState } from 'react';
 
-import { zodResolver } from '@hookform/resolvers/zod';
-import { UserLoginType } from '@repo/api/user-login';
 import { useForm } from 'react-hook-form';
 
 export interface FormProps {
-  handleSubmit: (data: UserLoginType) => Promise<void>;
+  handleSubmit: (data: { email: string; password: string }) => Promise<void>;
   errorMessage: string;
   isLoading: boolean;
 }
@@ -24,8 +22,7 @@ const LoginForm = (props: PropsWithoutRef<FormProps>) => {
     setValue,
     handleSubmit: onSubmit,
     formState: { errors },
-  } = useForm<UserLoginType>({
-    resolver: zodResolver(UserLoginType),
+  } = useForm<{ email: string; password: string }>({
     defaultValues: {
       email: '',
       password: '',

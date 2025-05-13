@@ -3,7 +3,7 @@ import Image from 'next/image';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useCallback, useState } from 'react';
 
-import { UserLoginType, UserSocialLoginType } from '@repo/api/user-login';
+import { UserSocialLogin } from '@repo/api/user-login';
 import axios from 'axios';
 
 import LoginForm from '@/components/Login/LoginForm';
@@ -66,7 +66,7 @@ export default function LoginPage() {
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { login, socialLogin } = useAuth();
+  const { socialLogin } = useAuth();
   const [errorMessage, setErrorMessage] = useState<string>('');
 
   // 소셜 로그인 처리
@@ -91,7 +91,7 @@ export default function LoginPage() {
         try {
           setIsLoading(true);
           const credentials = {
-            provider: platform as UserSocialLoginType['provider'],
+            provider: platform as UserSocialLogin['provider'],
             token: code,
           };
           await socialLogin(credentials);
@@ -116,30 +116,8 @@ export default function LoginPage() {
     [router, searchParams, socialLogin],
   );
 
-  // // 이메일 로그인 처리
-  // const handleSubmit = async (data: UserLoginType) => {
-  //   try {
-  //     if (!data.email) return setErrorMessage('올바른 이메일을 입력해주세요.');
-
-  //     setIsLoading(true);
-  //     await login(data);
-  //     alert('로그인 완료');
-  //     const returnTo = searchParams.get('returnTo') || '/';
-  //     router.push(returnTo);
-  //   } catch (error) {
-  //     console.error('Email login failed:', error);
-
-  //     setErrorMessage(
-  //       axios.isAxiosError(error) && error.response?.data?.message
-  //         ? error.response.data.message
-  //         : '이메일 로그인에 실패했습니다.',
-  //     );
-  //   } finally {
-  //     setIsLoading(false);
-  //   }
-  // };
-
-  const handleSubmit = async (data: UserLoginType) => {
+  //FIXME: 추후 일반 로그인 수정
+  const handleSubmit = async (data: { email: string; password: string }) => {
     console.log(data);
   };
 

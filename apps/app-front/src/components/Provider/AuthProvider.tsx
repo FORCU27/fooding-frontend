@@ -2,14 +2,14 @@
 
 import { createContext, useContext, useState, ReactNode, useEffect } from 'react';
 
-import { auth, UserInfoType, UserLoginType, UserSocialLoginType } from '@repo/api/user-login';
-
-import { setCookie } from '@/utils/cookie';
+import { STORAGE_KEYS } from '@repo/api/configs/storage-keys';
+import { auth, UserInfoType, UserSocialLogin } from '@repo/api/user-login';
+import Cookies from 'js-cookie';
 
 interface AuthContextType {
   user: UserInfoType | null;
-  login: (credentials: UserLoginType) => Promise<void>;
-  socialLogin: (credentials: UserSocialLoginType) => Promise<void>;
+  login: (credentials: { email: string; password: string }) => Promise<void>;
+  socialLogin: (credentials: UserSocialLogin) => Promise<void>;
   isLoading: boolean;
 }
 
@@ -23,15 +23,23 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     const initializeAuth = async () => {
       try {
-        const token = localStorage.getItem('accessToken');
-        if (token) {
-          const userResponse = await auth.getSelf();
-          setUser(userResponse.data);
-        } else {
+        const accessToken =
+          Cookies.get(STORAGE_KEYS.ACCESS_TOKEN) || localStorage.getItem(STORAGE_KEYS.ACCESS_TOKEN);
+
+        if (!accessToken) {
           setUser(null);
+          return;
         }
+
+        const response = await auth.getSelf();
+        if (response.status !== 'OK') {
+          throw new Error(`Get user failed: ${response.status}`);
+        }
+        setUser(response.data);
       } catch (error) {
-        console.error('Failed to initialize auth:', error);
+        setUser(null);
+        Cookies.remove(STORAGE_KEYS.ACCESS_TOKEN);
+        Cookies.remove(STORAGE_KEYS.REFRESH_TOKEN);
       } finally {
         setIsLoading(false);
       }
@@ -40,11 +48,25 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     initializeAuth();
   }, []);
 
-  const login = async (credentials: UserLoginType) => {
+  //FIXME: 추후 일반로그인 수정
+  const login = async (credentials: { email: string; password: string }) => {
     try {
       setIsLoading(true);
       const response = await auth.login(credentials);
-      localStorage.setItem('accessToken', response.data.accessToken);
+      const { accessToken, refreshToken, expiredIn, refreshExpiredIn } = response.data;
+
+      Cookies.set(STORAGE_KEYS.ACCESS_TOKEN, accessToken, {
+        path: '/',
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'lax',
+        expires: new Date(Date.now() + expiredIn),
+      });
+      Cookies.set(STORAGE_KEYS.REFRESH_TOKEN, refreshToken, {
+        path: '/',
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'lax',
+        expires: new Date(Date.now() + refreshExpiredIn),
+      });
 
       const userResponse = await auth.getSelf();
       setUser(userResponse.data);
@@ -56,15 +78,31 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   // 소셜 로그인
-  const socialLogin = async (credentials: UserSocialLoginType) => {
+  const socialLogin = async (credentials: UserSocialLogin) => {
     try {
       setIsLoading(true);
       const response = await auth.login(credentials);
-      const accessToken = response.data.accessToken;
+      if (response.status !== 'OK') {
+        throw new Error(`Social login failed: ${response.status}`);
+      }
 
-      localStorage.setItem('accessToken', accessToken);
-      setCookie('accessToken', accessToken);
+      const { accessToken, refreshToken, expiredIn, refreshExpiredIn } = response.data;
+      if (!accessToken || !refreshToken) {
+        throw new Error('Tokens are missing in response');
+      }
 
+      Cookies.set(STORAGE_KEYS.ACCESS_TOKEN, accessToken, {
+        path: '/',
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'lax',
+        expires: new Date(Date.now() + expiredIn),
+      });
+      Cookies.set(STORAGE_KEYS.REFRESH_TOKEN, refreshToken, {
+        path: '/',
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'lax',
+        expires: new Date(Date.now() + refreshExpiredIn),
+      });
       const userResponse = await auth.getSelf();
       setUser(userResponse.data);
     } catch (error) {

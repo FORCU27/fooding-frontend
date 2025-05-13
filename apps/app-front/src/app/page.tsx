@@ -24,7 +24,6 @@ const Home: NextPage = () => {
       });
 
       if (response.ok) {
-        console.log('로그아웃 성공');
         window.location.href = '/login';
       } else {
         console.error('로그아웃 실패');
