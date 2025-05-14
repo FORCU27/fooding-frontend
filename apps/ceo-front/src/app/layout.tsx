@@ -3,7 +3,6 @@ import './globals.css';
 import Script from 'next/script';
 import { ReactNode, Suspense } from 'react';
 
-import { QueryClient } from '@tanstack/react-query';
 import { Metadata } from 'next';
 
 import { Providers } from './providers';
@@ -15,8 +14,6 @@ export const metadata: Metadata = {
   title: '푸딩 사장님 사이트',
   icons: [{ rel: 'icon', url: '/favicon.ico' }],
 };
-
-export const queryClient = new QueryClient();
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
