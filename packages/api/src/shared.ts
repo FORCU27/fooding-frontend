@@ -60,8 +60,30 @@ export const createApi = (apiClient: AxiosInstance) => ({
 
 export const api = createApi(apiClient);
 
-export const ApiResponse = <TData extends ZodType>(data: TData) =>
+export const ApiResponse = <TData extends ZodType>(data: TData) => {
   z.object({
     status: z.string(),
     data: data,
   });
+};
+
+export const PageInfoSchema = z.object({
+  pageNum: z.number(),
+  pageSize: z.number(),
+  totalCount: z.number(),
+  totalPages: z.number(),
+});
+
+export const createPageResponseSchema = <T extends z.ZodTypeAny>(itemSchema: T) =>
+  z.object({
+    status: z.string(),
+    data: z.object({
+      list: z.array(itemSchema),
+      pageInfo: PageInfoSchema,
+    }),
+  });
+
+export type PageResponse<T extends z.ZodTypeAny> = z.infer<
+  ReturnType<typeof createPageResponseSchema<T>>
+>;
+export type PageInfo = z.infer<typeof PageInfoSchema>;

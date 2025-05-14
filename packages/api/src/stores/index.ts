@@ -3,13 +3,11 @@ export * from './type';
 import { api } from '../shared';
 import {
   AdminCreateStoreRequest,
-  AdminStoreResponse,
   AdminUpdateStoreRequest,
-  PageResponse,
   SortDirection,
   StoreSortType,
-  PageResponseSchema,
   AdminStoreResponseSchema,
+  PageResponseSchema,
 } from './type';
 
 const ENDPOINT = '/admin/stores';
@@ -19,7 +17,7 @@ export const storeApi = {
     page: number = 0,
     size: number = 10,
     sortType: StoreSortType = 'RECENT',
-    sortDirection: SortDirection = 'DESCENDING'
+    sortDirection: SortDirection = 'DESCENDING',
   ) => {
     const params = new URLSearchParams({
       pageNum: (page + 1).toString(),
@@ -50,4 +48,4 @@ export const storeApi = {
   deleteStore: async (id: number) => {
     return api.delete(`${ENDPOINT}/${id}`);
   },
-}; 
+};
