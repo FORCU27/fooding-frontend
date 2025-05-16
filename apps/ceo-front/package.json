@@ -26,6 +26,7 @@
     "zod": "^3.24.2"
   },
   "devDependencies": {
+    "@repo/api": "workspace:*",
     "@repo/eslint-config": "workspace:*",
     "@repo/prettier-config": "workspace:*",
     "@repo/typescript-config": "workspace:*",
