@@ -3,13 +3,12 @@ import './globals.css';
 import Script from 'next/script';
 import { ReactNode, Suspense } from 'react';
 
-import { pretendard } from "@repo/font";
+import { pretendard } from '@repo/font';
 
 import Analytics from '@/components/GA/Analytics';
 import IntlProvider from '@/components/Provider/IntlProvider';
+import QueryProvider from '@/components/Provider/QueryProvider';
 import { GA_TRACKING_ID } from '@/libs/ga/gtag';
-
-
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
@@ -37,14 +36,14 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         </>
       )}
       <body>
-        <Suspense>
-          <IntlProvider>
-            <div className={pretendard.className}>
-              {children}
-            </div>
-            <Analytics />
-          </IntlProvider>
-        </Suspense>
+        <QueryProvider>
+          <Suspense>
+            <IntlProvider>
+              <div className={pretendard.className}>{children}</div>
+              <Analytics />
+            </IntlProvider>
+          </Suspense>
+        </QueryProvider>
       </body>
     </html>
   );
