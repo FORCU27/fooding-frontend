@@ -1,10 +1,16 @@
 'use client';
+
 import { useState } from 'react';
+
+import { appApi } from '@repo/api/app';
+import { useQuery } from '@tanstack/react-query';
 
 import StoreList from './components/StoreList';
 import StoreOwnerProfile from './components/StoreOwnerProfile';
 
 export default function StoreSelectPage() {
+  const { data: user } = useQuery({ queryKey: ['user'], queryFn: appApi.getUser });
+
   const stores = [
     '민서네 김밥 홍대점',
     '민서네 김밥 구월아시아드점',
@@ -16,10 +22,12 @@ export default function StoreSelectPage() {
     '민서네 김밥 강남사거리점',
   ];
   const [selectedStore, setSelectedStore] = useState('민서네 김밥 구월아시아드점');
-
   return (
     <div className='flex h-screen font-sans'>
-      <StoreOwnerProfile ownerName='김홍길' profileImageSrc='' />
+      <StoreOwnerProfile
+        ownerName={user?.data.nickname}
+        profileImageSrc={user?.data.profileImage}
+      />
       <StoreList stores={stores} selectedStore={selectedStore} onSelectStore={setSelectedStore} />
     </div>
   );

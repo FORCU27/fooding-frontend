@@ -8,7 +8,7 @@ import {
   UpdateExampleBody,
 } from './type';
 
-const ENDPOINT = 'https://api.fooding.im';
+export const ENDPOINT = 'https://api-stage.fooding.im'; // TODO 임시로 stage로 변경한 url 수정 필요
 
 export const exampleApi = {
   getExampleList: async () => {
