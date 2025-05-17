@@ -3,6 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "exports": {
+    "./app": "./src/app/index.ts",
     "./example": "./src/example/index.ts",
     "./stores": "./src/stores/index.ts",
     "./devices": "./src/devices/index.ts",
