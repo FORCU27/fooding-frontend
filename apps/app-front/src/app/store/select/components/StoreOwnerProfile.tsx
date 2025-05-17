@@ -30,9 +30,8 @@ export default function StoreOwnerProfile({ ownerName, profileImageSrc }: StoreO
       <div className='flex flex-col items-center pt-[160px]'>
         <p className='subtitle-1'>안녕하세요</p>
         <div className='flex gap-2'>
-          {/* TODO headline-3-1/2 분리 필요 */}
-          <div className='headline-3'>{ownerName}</div>
-          <div className='headline-3'>사장님</div>
+          <div className='headline-3-2'>{ownerName}</div>
+          <div className='headline-3-1'>사장님</div>
         </div>
 
         <div className='mt-[32px] w-[400px] h-[400px] rounded-full bg-neutral-600 overflow-hidden'></div>
