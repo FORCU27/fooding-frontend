@@ -3,9 +3,8 @@ import { z } from 'zod';
 import { createPageResponseSchema } from '../shared';
 
 export const UserNotificationType = {
-  STORE: 'STORE',
-  SYSTEM: 'SYSTEM',
-  MARKETING: 'MARKETING',
+  NOTIFICATION: 'NOTIFICATION',
+  EVENT: 'EVENT',
 } as const;
 
 export type UserNotificationType = (typeof UserNotificationType)[keyof typeof UserNotificationType];
@@ -15,6 +14,7 @@ export const UserNotificationResponseSchema = z.object({
   userId: z.number(),
   title: z.string(),
   content: z.string(),
+  category: z.string().nullable(),
   sentAt: z.string(),
   read: z.boolean(),
 });
@@ -23,6 +23,7 @@ export const CreateUserNotificationRequestSchema = z.object({
   userId: z.number(),
   title: z.string(),
   content: z.string(),
+  category: z.string(),
 });
 
 export const PageResponseSchema = createPageResponseSchema(UserNotificationResponseSchema);

@@ -13,7 +13,7 @@ import {
   Select,
   MenuItem,
 } from '@mui/material';
-import { CreateUserNotificationRequest } from '@repo/api/user-notifications';
+import { CreateUserNotificationRequest, UserNotificationType } from '@repo/api/user-notifications';
 import { userApi } from '@repo/api/users';
 import { useQuery } from '@tanstack/react-query';
 
@@ -34,6 +34,7 @@ export function CreateNotificationDialog({
     userId: 0,
     title: '',
     content: '',
+    category: UserNotificationType.NOTIFICATION,
   });
 
   const { data: usersResponse } = useQuery({
@@ -70,6 +71,20 @@ export function CreateNotificationDialog({
                     {user.nickname} ({user.email})
                   </MenuItem>
                 ))}
+              </Select>
+            </FormControl>
+            <FormControl required>
+              <InputLabel id="category-select-label">카테고리</InputLabel>
+              <Select
+                labelId="category-select-label"
+                value={formData.category}
+                label="카테고리"
+                onChange={(e) =>
+                  setFormData({ ...formData, category: e.target.value })
+                }
+              >
+                <MenuItem value={UserNotificationType.NOTIFICATION}>알림</MenuItem>
+                <MenuItem value={UserNotificationType.EVENT}>이벤트</MenuItem>
               </Select>
             </FormControl>
             <TextField
