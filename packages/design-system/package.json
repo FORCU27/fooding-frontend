@@ -10,7 +10,8 @@
   },
   "exports": {
     "./components": "./src/components/index.ts",
-    "./font": "./src/font/index.ts"
+    "./font": "./src/font/index.ts",
+    "./utils": "./src/utils/index.ts"
   },
   "dependencies": {
     "clsx": "^2.1.1",
