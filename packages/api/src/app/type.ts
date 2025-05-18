@@ -24,3 +24,39 @@ export const User = z.object({
 });
 
 export const GetUserResponse = ApiResponse(User);
+
+/** 개별 Store */
+export const Store = z.object({
+  id: z.number(),
+  name: z.string(),
+  city: z.string(),
+  address: z.string(),
+  category: z.string(),
+  description: z.string(),
+  priceCategory: z.string(),
+  eventDescription: z.string(),
+  contactNumber: z.string(),
+  direction: z.string(),
+  information: z.string(),
+  isParkingAvailable: z.boolean(),
+  isNewOpen: z.boolean(),
+  isTakeOut: z.boolean(),
+});
+
+export type Store = z.infer<typeof Store>;
+
+/** 페이지 정보 */
+export const PageInfo = z.object({
+  pageNum: z.number(),
+  pageSize: z.number(),
+  totalCount: z.number(),
+  totalPages: z.number(),
+});
+
+/** 최종 응답 스키마 */
+export const GetStoresResponse = z.object({
+  list: z.array(Store),
+  pageInfo: PageInfo,
+});
+
+export type GetStoresResponse = z.infer<typeof GetStoresResponse>;

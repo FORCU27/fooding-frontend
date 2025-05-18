@@ -1,10 +1,13 @@
+import { Store } from '@repo/api/app';
+
 interface StoreListProps {
-  stores: string[];
-  selectedStore: string;
-  onSelectStore: (store: string) => void;
+  stores?: Store[];
+  selectedStore: Store | null;
+  onSelectStore: (store: Store | null) => void;
 }
 
 export default function StoreList({ stores, selectedStore, onSelectStore }: StoreListProps) {
+  console.log('stores', stores);
   return (
     <div className='w-1/2 h-screen text-center pt-[79px] px-[70px] relative overflow-hidden flex flex-col'>
       {/* 타이틀 고정 영역 */}
@@ -16,9 +19,9 @@ export default function StoreList({ stores, selectedStore, onSelectStore }: Stor
       {/* 스크롤 가능한 리스트 영역 (남는 영역 자동 계산) */}
       <div className='flex-1 overflow-y-auto scrollbar-hide'>
         <ul className='space-y-4'>
-          {stores.map((store) => (
+          {stores?.map((store) => (
             <li
-              key={store}
+              key={store.id}
               className={`py-[30px] text-center rounded-full border-2 cursor-pointer headline-4 ${
                 selectedStore === store
                   ? 'border-green-500 font-bold shadow-md'
@@ -26,7 +29,7 @@ export default function StoreList({ stores, selectedStore, onSelectStore }: Stor
               }`}
               onClick={() => onSelectStore(store)}
             >
-              {store}
+              {store.name}
             </li>
           ))}
         </ul>
