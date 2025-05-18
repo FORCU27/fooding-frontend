@@ -105,6 +105,7 @@ export default function UserNotificationsPage() {
               <TableCell>사용자 ID</TableCell>
               <TableCell>제목</TableCell>
               <TableCell>내용</TableCell>
+              <TableCell>카테고리</TableCell>
               <TableCell>읽음 여부</TableCell>
               <TableCell>발송일시</TableCell>
               <TableCell>작업</TableCell>
@@ -117,6 +118,13 @@ export default function UserNotificationsPage() {
                 <TableCell>{notification.userId}</TableCell>
                 <TableCell>{notification.title}</TableCell>
                 <TableCell>{notification.content}</TableCell>
+                <TableCell>
+                  <Chip 
+                    label={notification.category === 'NOTIFICATION' ? '알림' : '이벤트'} 
+                    size="small" 
+                    color={notification.category === 'NOTIFICATION' ? 'primary' : 'success'}
+                  />
+                </TableCell>
                 <TableCell>
                   <Chip 
                     label={notification.read ? '읽음' : '안읽음'} 
