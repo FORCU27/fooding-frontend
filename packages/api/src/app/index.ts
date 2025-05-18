@@ -10,6 +10,7 @@ export const appApi = {
   },
 
   getAppStoreServiceList: async (id: number) => {
-    return GetAppStoreServiceResponse.parse(api.get(`${ENDPOINT}/app/store-service/${id}`));
+    const response = await api.get(`${ENDPOINT}/app/store-service/${id}`);
+    return GetAppStoreServiceResponse.parse(response);
   },
 };

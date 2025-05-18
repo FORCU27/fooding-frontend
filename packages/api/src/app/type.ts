@@ -25,10 +25,12 @@ export const User = z.object({
 
 export const GetUserResponse = ApiResponse(User);
 
-export const GetAppStoreServiceResponse = z.object({
+export const AppStoreService = z.object({
   id: z.number(),
   storeId: z.number(),
   storeName: z.string(),
   type: z.string(),
   activation: z.boolean(),
 });
+
+export const GetAppStoreServiceResponse = ApiResponse(z.array(AppStoreService));

@@ -9,10 +9,28 @@ import { useQuery } from '@tanstack/react-query';
 export default function StoreSelectPage() {
   const router = useRouter();
   const { data: user } = useQuery({ queryKey: ['user'], queryFn: appApi.getUser });
-  const { data: storeServiceList } = useQuery({
+  const {
+    data: storeServiceList,
+    isLoading,
+    error,
+  } = useQuery({
     queryKey: ['storeServiceList'],
     queryFn: () => appApi.getAppStoreServiceList(1),
   });
+
+  useEffect(() => {
+    console.log('storeServiceList:', storeServiceList);
+  }, [storeServiceList]);
+
+  useEffect(() => {
+    if (isLoading) {
+      console.log('로딩 중...');
+    } else if (error) {
+      console.error('에러 발생:', error);
+    } else if (storeServiceList) {
+      console.log('storeServiceList:', storeServiceList);
+    }
+  }, [isLoading, error, storeServiceList]);
 
   const [selectedService, setSelectedService] = useState<string>('');
   const [lastTouchTime, setLastTouchTime] = useState<number>(0);
@@ -73,29 +91,21 @@ export default function StoreSelectPage() {
         <div className='body-1 text-gray-5'>원하시는 서비스를 선택해주세요</div>
       </div>
       <div className='flex-[4] flex flex-col items-center justify-center'>
-        <div className='flex gap-[36px]'>
-          <div
-            className='relative shadow bg-gray-1 rounded-[40px] p-[36px] flex flex-col items-center justify-center gap-[25px] touch-none select-none'
-            onDoubleClick={() => handleSelectService('waiting')}
-            onTouchStart={() => handleTouch('waiting')}
-          >
-            {selectedService === 'waiting' && (
-              <div className='absolute w-full h-full bg-black rounded-[40px] opacity-50 z-50'></div>
-            )}
-            <div className='w-[325px] h-[275px] bg-blue-400'></div>
-            <div className='headline-5 text-gray-5'>웨이팅 관리</div>
-          </div>
-          <div
-            className='relative bg-gray-1 shadow rounded-[40px] p-[36px] flex flex-col items-center justify-center gap-[25px] touch-none select-none'
-            onDoubleClick={() => handleSelectService('reward')}
-            onTouchStart={() => handleTouch('reward')}
-          >
-            {selectedService === 'reward' && (
-              <div className='absolute w-full h-full bg-black rounded-[40px] opacity-50 z-50'></div>
-            )}
-            <div className='w-[325px] h-[275px] bg-red-400'></div>
-            <div className='headline-5 text-gray-5'>리워드 관리</div>
-          </div>
+        <div className='flex gap-[34px]'>
+          {storeServiceList?.data?.map((service) => (
+            <div
+              key={service.id}
+              className='relative shadow bg-gray-1 rounded-[40px] px-[44px] pt-[56px] pb-[80px] flex flex-col items-center justify-center gap-[25px] touch-none select-none'
+              onDoubleClick={() => handleSelectService(service.type)}
+              onTouchStart={() => handleTouch(service.type)}
+            >
+              {selectedService === service.type && (
+                <div className='absolute inset-0 w-full h-full bg-black rounded-[40px] opacity-50 z-50'></div>
+              )}
+              <div className='w-[325px] h-[275px] bg-blue-400'></div>
+              <div className='headline-5 text-gray-5'>{service.type}</div>
+            </div>
+          ))}
         </div>
       </div>
     </div>
