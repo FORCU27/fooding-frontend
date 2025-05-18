@@ -9,7 +9,7 @@
       "types": "./dist/icons/index.d.ts"
     },
     "./components": {
-      "import": "./dist/compoments/index.js"
+      "import": "./dist/components/index.js"
     }
   },
   "scripts": {

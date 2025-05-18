@@ -1,1 +1,2 @@
-export * from './socialLoginBox';
+export * from './SocialButton';
+export * from './TooltipBubble';
