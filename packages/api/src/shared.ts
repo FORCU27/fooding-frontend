@@ -21,7 +21,7 @@ apiClient.interceptors.request.use(
   },
   (error) => {
     return Promise.reject(error);
-  }
+  },
 );
 
 // 응답 인터셉터 설정
@@ -29,7 +29,7 @@ apiClient.interceptors.response.use(
   (response) => response,
   (error) => {
     return Promise.reject(error);
-  }
+  },
 );
 
 export const createApi = (apiClient: AxiosInstance) => ({
@@ -40,7 +40,7 @@ export const createApi = (apiClient: AxiosInstance) => ({
   post: async <TResponse = unknown, TData = unknown>(
     url: string,
     data?: TData,
-    config?: AxiosRequestConfig<TData>
+    config?: AxiosRequestConfig<TData>,
   ) => {
     const response = await apiClient.post<TResponse>(url, data, config);
     return response.data;
@@ -48,7 +48,7 @@ export const createApi = (apiClient: AxiosInstance) => ({
   put: async <TResponse = unknown, TData = unknown>(
     url: string,
     data?: TData,
-    config?: AxiosRequestConfig<TData>
+    config?: AxiosRequestConfig<TData>,
   ) => {
     const response = await apiClient.put<TResponse>(url, data, config);
     return response.data;
@@ -56,7 +56,7 @@ export const createApi = (apiClient: AxiosInstance) => ({
   patch: async <TResponse = unknown, TData = unknown>(
     url: string,
     data?: TData,
-    config?: AxiosRequestConfig<TData>
+    config?: AxiosRequestConfig<TData>,
   ) => {
     const response = await apiClient.patch<TResponse>(url, data, config);
     return response.data;
@@ -64,7 +64,7 @@ export const createApi = (apiClient: AxiosInstance) => ({
   postForm: async <TResponse = unknown, TData = unknown>(
     url: string,
     data?: TData,
-    config?: AxiosRequestConfig<TData>
+    config?: AxiosRequestConfig<TData>,
   ) => {
     const response = await apiClient.postForm<TResponse>(url, data, config);
     return response.data;
@@ -72,7 +72,7 @@ export const createApi = (apiClient: AxiosInstance) => ({
   patchForm: async <TResponse = unknown, TData = unknown>(
     url: string,
     data?: TData,
-    config?: AxiosRequestConfig<TData>
+    config?: AxiosRequestConfig<TData>,
   ) => {
     const response = await apiClient.patchForm<TResponse>(url, data, config);
     return response.data;
@@ -85,12 +85,11 @@ export const createApi = (apiClient: AxiosInstance) => ({
 
 export const api = createApi(apiClient);
 
-export const ApiResponse = <TData extends ZodType>(data: TData) => {
+export const ApiResponse = <TData extends ZodType>(data: TData) =>
   z.object({
     status: z.string(),
     data: data,
   });
-};
 
 export const PageInfoSchema = z.object({
   pageNum: z.number(),
