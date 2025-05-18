@@ -29,8 +29,8 @@
     "zod": "^3.24.2"
   },
   "devDependencies": {
+    "@repo/design-system": "workspace:*",
     "@repo/eslint-config": "workspace:*",
-    "@repo/font": "workspace:*",
     "@repo/prettier-config": "workspace:*",
     "@repo/tailwind-config": "workspace:^",
     "@repo/typescript-config": "workspace:*",
