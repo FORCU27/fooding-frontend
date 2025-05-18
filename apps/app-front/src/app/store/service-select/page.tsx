@@ -1,11 +1,13 @@
 'use client';
 
+import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
 import { appApi } from '@repo/api/app';
 import { useQuery } from '@tanstack/react-query';
 
 export default function StoreSelectPage() {
+  const router = useRouter();
   const { data: user } = useQuery({ queryKey: ['user'], queryFn: appApi.getUser });
   const { data: storeServiceList } = useQuery({
     queryKey: ['storeServiceList'],
@@ -23,8 +25,14 @@ export default function StoreSelectPage() {
   }, []);
 
   const handleSelectService = (service: string) => {
-    setSelectedService(service);
-    localStorage.setItem('selectedService', service);
+    if (selectedService === service) {
+      // 이미 선택된 서비스를 더블클릭한 경우
+      router.push(`/store/${service}`);
+    } else {
+      // 새로운 서비스 선택
+      setSelectedService(service);
+      localStorage.setItem('selectedService', service);
+    }
   };
 
   const handleTouch = (service: string) => {
