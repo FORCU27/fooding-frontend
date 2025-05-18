@@ -1,3 +1,1 @@
-const Button = (text: string): string => `${text}`;
-
-export default Button;
+export * from './components';
