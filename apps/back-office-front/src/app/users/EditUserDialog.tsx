@@ -28,14 +28,12 @@ export function EditUserDialog({
 }: EditUserDialogProps) {
   const [formData, setFormData] = useState<AdminUpdateUserRequest>({
     nickname: '',
-    profileImage: '',
   });
 
   useEffect(() => {
     if (initialData) {
       setFormData({
         nickname: initialData.nickname,
-        profileImage: initialData.profileImage || '',
       });
     }
   }, [initialData]);
@@ -58,13 +56,6 @@ export function EditUserDialog({
                 setFormData({ ...formData, nickname: e.target.value })
               }
               required
-            />
-            <TextField
-              label="프로필 이미지 URL"
-              value={formData.profileImage}
-              onChange={(e) =>
-                setFormData({ ...formData, profileImage: e.target.value })
-              }
             />
           </Box>
         </DialogContent>
