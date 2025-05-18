@@ -28,11 +28,11 @@
   },
   "devDependencies": {
     "@repo/api": "workspace:*",
+    "@repo/design-system": "workspace:*",
     "@repo/eslint-config": "workspace:*",
     "@repo/prettier-config": "workspace:*",
     "@repo/tailwind-config": "workspace:*",
     "@repo/typescript-config": "workspace:*",
-    "@repo/ui": "workspace:*",
     "@tailwindcss/postcss": "^4.1.4",
     "@types/gtag.js": "^0.0.20",
     "@types/js-cookie": "^3",

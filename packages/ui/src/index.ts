@@ -1,2 +1,3 @@
-export * from './components';
-export * from './icons';
+const Button = (text: string): string => `${text}`;
+
+export default Button;
