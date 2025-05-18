@@ -1,11 +1,13 @@
 'use client';
 
-import { ceoDeviceApi } from '@repo/api/devices';
+import { deviceApi } from '@repo/api/ceo';
+import queryKeys from '@repo/api/constants/queryKeys';
 import { useQuery } from '@tanstack/react-query';
+
 const DevicesPage = () => {
   const { data: ceoDeviceResponse, isLoading } = useQuery({
-    queryKey: ['ceoDevice'],
-    queryFn: () => ceoDeviceApi.getCeoDeviceList(0, 10, 1), //FIXME: storeId 추후 수정
+    queryKey: [queryKeys.ceo.devices],
+    queryFn: () => deviceApi.getCeoDeviceList(0, 10, 1), //FIXME: storeId 추후 수정
   });
 
   if (isLoading) {

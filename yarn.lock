@@ -8897,6 +8897,7 @@ __metadata:
   dependencies:
     "@hookform/resolvers": "npm:^5.0.1"
     "@repo/api": "workspace:*"
+    "@repo/design-system": "workspace:*"
     "@repo/eslint-config": "workspace:*"
     "@repo/prettier-config": "workspace:*"
     "@repo/typescript-config": "workspace:*"
