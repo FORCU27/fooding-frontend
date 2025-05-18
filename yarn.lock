@@ -4623,8 +4623,10 @@ __metadata:
     "@repo/eslint-config": "workspace:*"
     "@repo/prettier-config": "workspace:*"
     "@repo/typescript-config": "workspace:*"
+    "@types/js-cookie": "npm:^3"
     axios: "npm:^1.9.0"
     eslint: "npm:^9.24.0"
+    js-cookie: "npm:^3.0.5"
     prettier: "npm:^3.5.3"
     typescript: "npm:5.8.2"
     zod: "npm:^3.24.3"
@@ -5450,6 +5452,13 @@ __metadata:
     expect: "npm:^29.0.0"
     pretty-format: "npm:^29.0.0"
   checksum: 10/59ec7a9c4688aae8ee529316c43853468b6034f453d08a2e1064b281af9c81234cec986be796288f1bbb29efe943bc950e70c8fa8faae1e460d50e3cf9760f9b
+  languageName: node
+  linkType: hard
+
+"@types/js-cookie@npm:^3":
+  version: 3.0.6
+  resolution: "@types/js-cookie@npm:3.0.6"
+  checksum: 10/272d551687547445cb210213c73e72e0e5d58ad73e2e444a65d688b8ff9425529779ee0cd6492aaa1f070161916d4254ef2b1a76d64179100437f60749d094ef
   languageName: node
   linkType: hard
 
@@ -6631,6 +6640,7 @@ __metadata:
     "@repo/typescript-config": "workspace:*"
     "@tanstack/react-query": "npm:^5.74.3"
     "@types/gtag.js": "npm:^0.0.20"
+    "@types/js-cookie": "npm:^3"
     "@types/node": "npm:^22.14.1"
     "@types/react": "npm:^19.1.2"
     "@types/react-dom": "npm:^19.1.2"
@@ -6639,6 +6649,7 @@ __metadata:
     clsx: "npm:^2.1.1"
     dayjs: "npm:^1.11.13"
     eslint: "npm:^9.24.0"
+    js-cookie: "npm:^3.0.5"
     next: "npm:^15.3.0"
     next-intl: "npm:^4.0.2"
     prettier: "npm:3.5.3"
@@ -11958,6 +11969,13 @@ __metadata:
   version: 3.1.1
   resolution: "joycon@npm:3.1.1"
   checksum: 10/4b36e3479144ec196425f46b3618f8a96ce7e1b658f091a309cd4906215f5b7a402d7df331a3e0a09681381a658d0c5f039cb3cf6907e0a1e17ed847f5d37775
+  languageName: node
+  linkType: hard
+
+"js-cookie@npm:^3.0.5":
+  version: 3.0.5
+  resolution: "js-cookie@npm:3.0.5"
+  checksum: 10/366494b1630b9fb8abaef3659748db5dfd52c58c6fc3459b9f0a03b492593bc1b01c6dfcc066b46f6413c28edb3a00cc68fb61ea8cdf6991bedf1f100f8a389d
   languageName: node
   linkType: hard
 
