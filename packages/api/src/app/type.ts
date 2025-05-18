@@ -24,3 +24,11 @@ export const User = z.object({
 });
 
 export const GetUserResponse = ApiResponse(User);
+
+export const GetAppStoreServiceResponse = z.object({
+  id: z.number(),
+  storeId: z.number(),
+  storeName: z.string(),
+  type: z.string(),
+  activation: z.boolean(),
+});
