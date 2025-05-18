@@ -2,11 +2,10 @@ export * from './type';
 
 import { api } from '../shared';
 import { GetUserResponse, GetStoresResponse } from './type';
-import { ENDPOINT } from '../example';
 
 export const appApi = {
   getUser: async () => {
-    return GetUserResponse.parse(api.get(`${ENDPOINT}/app/users`));
+    return GetUserResponse.parse(api.get(`/app/users`));
   },
   getStores: async ({
     searchString,
@@ -17,7 +16,7 @@ export const appApi = {
     pageNum: number;
     pageSize: number;
   }) => {
-    const response = await api.get(`${ENDPOINT}/app/stores`, {
+    const response = await api.get(`/app/stores`, {
       params: {
         searchString,
         pageNum,
