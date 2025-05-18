@@ -72,10 +72,24 @@ export default function LoginPage() {
       const popup = openSocialLoginPopup(loginUrl);
       if (!popup) return;
 
+      //FIXME: 환경변수로 수정
+      const allowedOrigins = [
+        'http://localhost:3000',
+        'https://stage.fooding.im',
+        'https://fooding.im',
+      ];
+
       const handleMessage = async (event: MessageEvent) => {
-        if (event.origin !== window.location.origin) return;
+        if (!allowedOrigins.includes(event.origin)) {
+          console.warn(`Origin mismatch: ${event.origin} !== any of`, allowedOrigins);
+          return;
+        }
+
         const { code } = event.data;
-        if (!code) return;
+        if (!code) {
+          console.warn('No code in event data');
+          return;
+        }
 
         setIsLoading(true);
         try {
@@ -88,8 +102,8 @@ export default function LoginPage() {
                 : env.OAUTH_REDIRECT_URI || '',
             role: 'USER',
           };
-
           await socialLogin(credentials);
+          console.log('LOGIN CREDENTIALS', credentials);
 
           Cookies.set(STORAGE_KEYS.RECENT_PROVIDER, platform, {
             path: '/',
