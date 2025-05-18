@@ -20,7 +20,6 @@ export default function StoreSelectPage() {
       }),
   });
 
-  console.log('>>> stores', stores);
   const [selectedStore, setSelectedStore] = useState<Store | null>(null);
   return (
     // TODO useQuery suspense 키는 거 확인

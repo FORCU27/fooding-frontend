@@ -7,7 +7,6 @@ interface StoreListProps {
 }
 
 export default function StoreList({ stores, selectedStore, onSelectStore }: StoreListProps) {
-  console.log('stores', stores);
   return (
     <div className='w-1/2 h-screen text-center pt-[79px] px-[70px] relative overflow-hidden flex flex-col'>
       {/* 타이틀 고정 영역 */}
@@ -29,7 +28,11 @@ export default function StoreList({ stores, selectedStore, onSelectStore }: Stor
               }`}
               onClick={() => onSelectStore(store)}
             >
-              {store.name}
+              <span className='align-middle'>{store.name}</span>{' '}
+              {/* <span className='align-middle inline-block max-w-[12ch] overflow-hidden text-ellipsis whitespace-nowrap'>
+                TODO '지점' 에 대한 데이터 백엔드 추가/수정 or 정책 수립 이후 지점명 매핑 필요
+                {store.??}점
+              </span> */}
             </li>
           ))}
         </ul>
