@@ -7536,6 +7536,7 @@ __metadata:
   resolution: "ceo-front@workspace:apps/ceo-front"
   dependencies:
     "@hookform/resolvers": "npm:^5.0.1"
+    "@repo/api": "workspace:*"
     "@repo/eslint-config": "workspace:*"
     "@repo/prettier-config": "workspace:*"
     "@repo/typescript-config": "workspace:*"

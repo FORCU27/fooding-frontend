@@ -6,7 +6,8 @@
     "./example": "./src/example/index.ts",
     "./stores": "./src/stores/index.ts",
     "./user-login": "./src/user-login/index.ts",
-    "./configs/storage-keys": "./src/configs/storageKeys.ts"
+    "./configs/storage-keys": "./src/configs/storageKeys.ts",
+    "./devices": "./src/devices/index.ts"
   },
   "scripts": {
     "format": "prettier --cache --write .",
