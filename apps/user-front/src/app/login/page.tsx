@@ -7,8 +7,8 @@ import { useCallback, useEffect, useState } from 'react';
 
 import { AuthSocialLogin } from '@repo/api/auth';
 import { STORAGE_KEYS } from '@repo/api/configs/storage-keys';
-import { TooltipBubble, SocialButton } from '@repo/ui/components';
-import { AppleIcon, GoogleIcon, KakaoIcon, NaverIcon } from '@repo/ui/icons';
+import { TooltipBubble, SocialButton } from '@repo/design-system/components';
+import { AppleIcon, GoogleIcon, KakaoIcon, NaverIcon } from '@repo/design-system/icons';
 import Cookies from 'js-cookie';
 
 import { useAuth } from '@/components/Provider/AuthProvider';
