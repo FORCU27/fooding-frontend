@@ -1,0 +1,193 @@
+'use client';
+
+import Image from 'next/image';
+import Link from 'next/link';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { useCallback, useEffect, useState } from 'react';
+
+import { AuthSocialLogin } from '@repo/api/auth';
+import { STORAGE_KEYS } from '@repo/api/configs/storage-keys';
+import { TooltipBubble, SocialButton } from '@repo/ui/components';
+import { AppleIcon, GoogleIcon, KakaoIcon, NaverIcon } from '@repo/ui/icons';
+import Cookies from 'js-cookie';
+
+import { useAuth } from '@/components/Provider/AuthProvider';
+import { env } from '@/configs/env';
+
+export type PlatformType = 'GOOGLE' | 'KAKAO' | 'NAVER' | 'APPLE';
+
+const getPlatformUrl = (platform: PlatformType): string | null => {
+  const {
+    GOOGLE_CLIENT_ID,
+    OAUTH_REDIRECT_URI,
+    OAUTH_APPLE_REDIRECT_URI,
+    KAKAO_CLIENT_ID,
+    NAVER_CLIENT_ID,
+    APPLE_CLIENT_ID,
+  } = env;
+
+  const platformUrls: Record<PlatformType, string> = {
+    GOOGLE: `https://accounts.google.com/o/oauth2/v2/auth?client_id=${GOOGLE_CLIENT_ID}&redirect_uri=${OAUTH_REDIRECT_URI}&response_type=code&scope=email%20profile`,
+    KAKAO: `https://kauth.kakao.com/oauth/authorize?response_type=code&client_id=${KAKAO_CLIENT_ID}&redirect_uri=${OAUTH_REDIRECT_URI}`,
+    NAVER: `https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=${NAVER_CLIENT_ID}&redirect_uri=${OAUTH_REDIRECT_URI}&state=test1234`,
+    APPLE: `https://appleid.apple.com/auth/authorize?response_type=code&response_mode=form_post&client_id=${APPLE_CLIENT_ID}&redirect_uri=${OAUTH_APPLE_REDIRECT_URI}&scope=name%20email&state=test123`,
+  };
+
+  return platformUrls[platform];
+};
+
+const openSocialLoginPopup = (loginUrl: string) => {
+  const width = 500;
+  const height = 600;
+  const left = window.screenX + (window.outerWidth - width) / 2;
+  const top = window.screenY + (window.outerHeight - height) / 2;
+
+  return window.open(
+    loginUrl,
+    'login-popup',
+    `width=${width},height=${height},left=${left},top=${top}`,
+  );
+};
+
+export default function LoginPage() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const [isLoading, setIsLoading] = useState(false);
+  const [recentProvider, setRecentProvider] = useState<string | null>(null);
+
+  const { socialLogin } = useAuth();
+
+  useEffect(() => {
+    const cookieValue = Cookies.get(STORAGE_KEYS.RECENT_PROVIDER) || null;
+    setRecentProvider(cookieValue);
+  }, []);
+
+  const handleSocialLogin = useCallback(
+    async (platform: PlatformType) => {
+      const loginUrl = getPlatformUrl(platform);
+      if (!loginUrl) {
+        return;
+      }
+
+      const popup = openSocialLoginPopup(loginUrl);
+      if (!popup) return;
+
+      const handleMessage = async (event: MessageEvent) => {
+        if (event.origin !== window.location.origin) return;
+        const { code } = event.data;
+        if (!code) return;
+
+        setIsLoading(true);
+        try {
+          const credentials: AuthSocialLogin = {
+            code,
+            provider: platform,
+            redirectUri:
+              platform === 'APPLE'
+                ? env.OAUTH_APPLE_REDIRECT_URI || ''
+                : env.OAUTH_REDIRECT_URI || '',
+            role: 'USER',
+          };
+
+          await socialLogin(credentials);
+
+          Cookies.set(STORAGE_KEYS.RECENT_PROVIDER, platform, {
+            path: '/',
+            secure: process.env.NODE_ENV === 'production',
+            sameSite: 'lax',
+          });
+
+          const returnTo = searchParams.get('returnTo') || '/';
+          router.push(returnTo);
+        } catch (error) {
+          console.error('Social login failed:', error);
+        } finally {
+          setIsLoading(false);
+          window.removeEventListener('message', handleMessage);
+        }
+      };
+
+      window.addEventListener('message', handleMessage);
+    },
+    [router, searchParams, socialLogin],
+  );
+
+  const handleRecentProvider = (platform: string) => {
+    return recentProvider === platform ? (
+      <TooltipBubble
+        className='flex bg-[#292929] rounded-[8px] h-[39px] mt-3 '
+        bubbleClassName='flex text-center text-white body-5 w-[96px] justify-center items-center'
+        tailColor='#292929'
+        tailPosition='bottom'
+      >
+        최근 로그인
+      </TooltipBubble>
+    ) : null;
+  };
+
+  return (
+    <main className='flex flex-col items-center justify-center min-h-screen relative'>
+      <div className='absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 flex flex-col items-center'>
+        <Image
+          src='/images/fooding_icon.png'
+          width={120}
+          height={120}
+          alt='fooding_로고'
+          className='mb-4'
+        />
+        <p className='text-center headline-3'>
+          당신의 한 끼가
+          <br />
+          특별해지는 순간
+        </p>
+      </div>
+
+      <div className='absolute top-4/5 left-1/2 -translate-x-1/2 -translate-y-1/2 flex flex-col items-center w-[304px]'>
+        <h1 className='text-center text-gray-5 mb-6 body-5'>SNS 계정으로 빠르게 시작하기</h1>
+        <div className='flex h-[110px]'>
+          <div className='flex flex-col justify-between items-center w-[96px]'>
+            <SocialButton
+              platform='KAKAO'
+              icon={<KakaoIcon size={30} />}
+              onClick={() => handleSocialLogin('KAKAO')}
+              styles='bg-[#FEE500] rounded-[50%] h-[64px] w-[64px]'
+            />
+            {handleRecentProvider('KAKAO')}
+          </div>
+          <div className='flex flex-col justify-between items-center w-[96px]'>
+            <SocialButton
+              platform='NAVER'
+              icon={<NaverIcon size={30} />}
+              onClick={() => handleSocialLogin('NAVER')}
+              styles='bg-[#03C75A] rounded-[50%] h-[64px] w-[64px]'
+            />
+            {handleRecentProvider('NAVER')}
+          </div>
+          <div className='flex flex-col justify-between items-center w-[96px]'>
+            <SocialButton
+              platform='APPLE'
+              icon={<AppleIcon size={30} fill='white' />}
+              onClick={() => handleSocialLogin('APPLE')}
+              styles='bg-black rounded-[50%] h-[64px] w-[64px]'
+            />
+            {handleRecentProvider('APPLE')}
+          </div>
+          <div className='flex flex-col justify-between items-center w-[96px]'>
+            <SocialButton
+              platform='GOOGLE'
+              icon={<GoogleIcon size={30} />}
+              onClick={() => handleSocialLogin('GOOGLE')}
+              styles='bg-[#F2F2F2] rounded-[50%] h-[64px] w-[64px]'
+            />
+            {handleRecentProvider('GOOGLE')}
+          </div>
+        </div>
+        <div className='text-center mt-[17px]'>
+          <Link href={'/'} className='text-gray-5 underline decoration-1 body-5'>
+            고객센터
+          </Link>
+        </div>
+      </div>
+    </main>
+  );
+}
