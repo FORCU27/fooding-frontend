@@ -4,7 +4,8 @@
   "private": true,
   "exports": {
     "./example": "./src/example/index.ts",
-    "./stores": "./src/stores/index.ts"
+    "./stores": "./src/stores/index.ts",
+    "./user/notifications": "./src/user/notifications/index.ts"
   },
   "scripts": {
     "format": "prettier --cache --write .",
