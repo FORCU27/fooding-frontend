@@ -7,11 +7,34 @@ import { useQuery } from '@tanstack/react-query';
 
 export default function StoreSelectPage() {
   const { data: user } = useQuery({ queryKey: ['user'], queryFn: appApi.getUser });
+  const { data: storeServiceList } = useQuery({
+    queryKey: ['storeServiceList'],
+    queryFn: () => appApi.getAppStoreServiceList(1),
+  });
 
   const [selectedService, setSelectedService] = useState<string>('');
+  const [lastTouchTime, setLastTouchTime] = useState<number>(0);
+
+  useEffect(() => {
+    const savedService = localStorage.getItem('selectedService');
+    if (savedService) {
+      setSelectedService(savedService);
+    }
+  }, []);
 
   const handleSelectService = (service: string) => {
     setSelectedService(service);
+    localStorage.setItem('selectedService', service);
+  };
+
+  const handleTouch = (service: string) => {
+    const currentTime = new Date().getTime();
+    const touchDiff = currentTime - lastTouchTime;
+
+    if (touchDiff < 300 && touchDiff > 0) {
+      handleSelectService(service);
+    }
+    setLastTouchTime(currentTime);
   };
 
   useEffect(() => {
@@ -44,8 +67,9 @@ export default function StoreSelectPage() {
       <div className='flex-[4] flex flex-col items-center justify-center'>
         <div className='flex gap-[36px]'>
           <div
-            className=' relative shadow bg-gray-1 rounded-[40px] p-[36px] flex flex-col items-center justify-center gap-[25px]'
-            onClick={() => handleSelectService('waiting')}
+            className='relative shadow bg-gray-1 rounded-[40px] p-[36px] flex flex-col items-center justify-center gap-[25px] touch-none select-none'
+            onDoubleClick={() => handleSelectService('waiting')}
+            onTouchStart={() => handleTouch('waiting')}
           >
             {selectedService === 'waiting' && (
               <div className='absolute w-full h-full bg-black rounded-[40px] opacity-50 z-50'></div>
@@ -54,8 +78,9 @@ export default function StoreSelectPage() {
             <div className='headline-5 text-gray-5'>웨이팅 관리</div>
           </div>
           <div
-            className=' relative bg-gray-1  shadow rounded-[40px] p-[36px] flex flex-col items-center justify-center gap-[25px]'
-            onClick={() => handleSelectService('reward')}
+            className='relative bg-gray-1 shadow rounded-[40px] p-[36px] flex flex-col items-center justify-center gap-[25px] touch-none select-none'
+            onDoubleClick={() => handleSelectService('reward')}
+            onTouchStart={() => handleTouch('reward')}
           >
             {selectedService === 'reward' && (
               <div className='absolute w-full h-full bg-black rounded-[40px] opacity-50 z-50'></div>
