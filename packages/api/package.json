@@ -3,9 +3,9 @@
   "version": "0.0.0",
   "private": true,
   "exports": {
+    "./auth": "./src/auth/index.ts",
     "./example": "./src/example/index.ts",
     "./stores": "./src/stores/index.ts",
-    "./devices": "./src/devices/index.ts",
     "./user-login": "./src/user-login/index.ts",
     "./app": "./src/app/index.ts",
     "./configs/storage-keys": "./src/configs/storageKeys.ts",
