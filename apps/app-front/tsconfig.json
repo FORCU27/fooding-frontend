@@ -12,6 +12,13 @@
       }
     ]
   },
-  "include": ["next-env.d.ts", ".next/types/**/*.ts", "**/*.ts", "**/*.tsx", "src/global.d.ts"],
+  "include": [
+    "next-env.d.ts",
+    ".next/types/**/*.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    "src/global.d.ts",
+    "../../packages/api/src/configs/storageKeys.ts"
+  ],
   "exclude": ["node_modules"]
 }
