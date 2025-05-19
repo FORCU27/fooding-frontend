@@ -83,12 +83,26 @@ export default function LoginPage() {
       if (!popup) return;
 
       const handleMessage = async (event: MessageEvent) => {
-        if (event.origin !== window.location.origin) return;
+        //	COOP 정책 보안 제한 오류 방지 코드
+        const allowedOrigins = [
+          'http://localhost:3000',
+          'https://stage.fooding.im',
+          'https://fooding.im',
+        ];
+
+        if (!allowedOrigins.includes(event.origin)) {
+          console.warn(`Origin mismatch: ${event.origin} !== any of`, allowedOrigins);
+          return;
+        }
+
+        if (event.data?.action === 'closePopup') {
+          popup.close?.();
+          return;
+        }
 
         const { code } = event.data;
         if (!code) return;
         window.removeEventListener('message', handleMessage);
-        popup.close();
 
         setIsLoading(true);
         try {
