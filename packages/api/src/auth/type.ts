@@ -22,7 +22,7 @@ export const AuthLoginUserSchema = z.object({
   termsAgreed: z.boolean(),
   privacyPolicyAgreed: z.boolean(),
   marketingConsent: z.boolean(),
-  lastLoggedInAt: z.string(),
+  lastLoggedInAt: z.string().nullable(),
   createdAt: z.string(),
   updatedAt: z.string(),
 });
