@@ -2,18 +2,18 @@
 
 import { Suspense, useState } from 'react';
 
-import { appApi, Store } from '@repo/api/app';
+import { userApi, storeApi, Store } from '@repo/api/app';
 import { useQuery } from '@tanstack/react-query';
 
 import StoreList from './components/StoreList';
 import StoreOwnerProfile from './components/StoreOwnerProfile';
 
 export default function StoreSelectPage() {
-  const { data: user } = useQuery({ queryKey: ['user'], queryFn: appApi.getUser });
+  const { data: user } = useQuery({ queryKey: ['user'], queryFn: userApi.getUser });
   const { data: stores } = useQuery({
     queryKey: ['stores', '홍길동', 1, 10],
     queryFn: () =>
-      appApi.getStores({
+      storeApi.getStores({
         searchString: '홍길동',
         pageNum: 1,
         pageSize: 10,
