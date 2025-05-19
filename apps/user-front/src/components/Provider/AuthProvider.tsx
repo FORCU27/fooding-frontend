@@ -2,14 +2,14 @@
 
 import { createContext, useContext, useState, ReactNode, useEffect } from 'react';
 
-import { authApi, AuthLogin, AuthLoginUser, AuthSocialLogin } from '@repo/api/auth';
+import { authApi, AuthLoginBody, AuthLoginUser, AuthSocialLoginBody } from '@repo/api/auth';
 import { STORAGE_KEYS } from '@repo/api/configs/storage-keys';
 import Cookies from 'js-cookie';
 
 interface AuthContextType {
   user: AuthLoginUser | null;
-  login: (credentials: AuthLogin) => Promise<void>;
-  socialLogin: (credentials: AuthSocialLogin) => Promise<void>;
+  login: (credentials: AuthLoginBody) => Promise<void>;
+  socialLogin: (credentials: AuthSocialLoginBody) => Promise<void>;
   isLoading: boolean;
 }
 
@@ -35,7 +35,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           throw new Error(`Get user failed: ${response.status}`);
         }
         setUser(response.data);
-        console.log('before set:', Cookies.get('access_token'));
       } catch (error) {
         setUser(null);
         Cookies.remove(STORAGE_KEYS.ACCESS_TOKEN);
@@ -48,7 +47,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     initializeAuth();
   }, []);
 
-  const login = async (credentials: AuthLogin) => {
+  const login = async (credentials: AuthLoginBody) => {
     try {
       setIsLoading(true);
       const response = await authApi.login(credentials);
@@ -77,7 +76,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   // 소셜 로그인
-  const socialLogin = async (credentials: AuthSocialLogin) => {
+  const socialLogin = async (credentials: AuthSocialLoginBody) => {
     try {
       setIsLoading(true);
       const response = await authApi.socialLogin(credentials);
