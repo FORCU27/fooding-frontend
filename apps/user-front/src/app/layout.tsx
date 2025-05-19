@@ -7,7 +7,7 @@ import { Metadata } from 'next';
 
 import Analytics from '@/components/GA/Analytics';
 import { AuthProvider } from '@/components/Provider/AuthProvider';
-import { Providers } from '@/components/Provider/QueryClientProvider';
+import { ReactQueryProvider } from '@/components/Provider/ReactQueryProvider';
 import { GA_TRACKING_ID } from '@/libs/ga/gtag';
 
 export const metadata: Metadata = {
@@ -42,14 +42,14 @@ export default function RootLayout({ children }: { children: ReactNode }) {
             />
           </>
         )}
-        <Providers>
+        <ReactQueryProvider>
           <Suspense fallback={<div>페이지를 불러오는 중입니다...</div>}>
             <AuthProvider>
               <main className='flex flex-col h-[calc(100vh-120px)]'>{children}</main>
               <Analytics />
             </AuthProvider>
           </Suspense>
-        </Providers>
+        </ReactQueryProvider>
       </body>
     </html>
   );
