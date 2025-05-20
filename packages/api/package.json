@@ -10,7 +10,8 @@
     "./user-notifications": "./src/user-notifications/index.ts",
     "./user-login": "./src/user-login/index.ts",
     "./configs/storage-keys": "./src/configs/storageKeys.ts",
-    "./devices": "./src/devices/index.ts"
+    "./devices": "./src/devices/index.ts",
+    "./app": "./src/app/index.ts"
   },
   "scripts": {
     "format": "prettier --cache --write .",

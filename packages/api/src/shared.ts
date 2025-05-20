@@ -85,12 +85,16 @@ export const createApi = (apiClient: AxiosInstance) => ({
 
 export const api = createApi(apiClient);
 
-export const ApiResponse = <TData extends ZodType>(data: TData) => {
+export const ApiResponse = <TData extends ZodType>(
+  data: TData,
+): z.ZodObject<{
+  status: z.ZodString;
+  data: TData;
+}> =>
   z.object({
     status: z.string(),
     data: data,
   });
-};
 
 export const PageInfoSchema = z.object({
   pageNum: z.number(),
