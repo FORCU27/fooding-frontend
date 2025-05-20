@@ -11,6 +11,7 @@
   "exports": {
     "./components": "./src/components/index.ts",
     "./font": "./src/font/index.ts",
+    "./icons": "./src/icons/index.ts",
     "./utils": "./src/utils/index.ts"
   },
   "dependencies": {
