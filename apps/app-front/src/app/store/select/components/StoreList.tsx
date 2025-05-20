@@ -15,26 +15,27 @@ export default function StoreList({ stores, selectedStore, onSelectStore }: Stor
         <p className='text-gray-5'>관리할 매장을 선택해주세요</p>
       </div>
 
-      {/* 스크롤 가능한 리스트 영역 (남는 영역 자동 계산) */}
+      {/* 스크롤 가능한 리스트 영역 */}
       <div className='flex-1 overflow-y-auto scrollbar-hide'>
-        <ul className='space-y-4'>
-          {stores?.map((store) => (
-            <li
-              key={store.id}
-              className={`py-[30px] text-center rounded-full border-2 cursor-pointer headline-4 ${
-                selectedStore === store
-                  ? 'border-green-500 font-bold shadow-md'
-                  : 'border-gray-300 text-gray-5'
-              }`}
-              onClick={() => onSelectStore(store)}
-            >
-              <span className='align-middle'>{store.name}</span>{' '}
-              {/* <span className='align-middle inline-block max-w-[12ch] overflow-hidden text-ellipsis whitespace-nowrap'>
-                TODO '지점' 에 대한 데이터 백엔드 추가/수정 or 정책 수립 이후 지점명 매핑 필요
-                {store.??}점
-              </span> */}
-            </li>
-          ))}
+        <ul className='space-y-4 pb-[89px]'>
+          {stores?.map((store) => {
+            const isSelected = selectedStore === store;
+            return (
+              <li key={store.id} onClick={() => onSelectStore(store)}>
+                {isSelected ? (
+                  <div className='p-[5px] rounded-full bg-gradient-to-r from-[#E8D400] to-[#00D218]'>
+                    <div className='py-[30px] text-center rounded-full bg-white headline-4 font-bold shadow-md cursor-pointer'>
+                      <span className='align-middle'>{store.name}</span>
+                    </div>
+                  </div>
+                ) : (
+                  <div className='py-[30px] text-center rounded-full border-3 border-gray-300 text-gray-500 headline-4 cursor-pointer'>
+                    <span className='align-middle'>{store.name}</span>
+                  </div>
+                )}
+              </li>
+            );
+          })}
         </ul>
       </div>
 
