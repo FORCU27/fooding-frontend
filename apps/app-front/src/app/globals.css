@@ -1,4 +1,10 @@
 @import "tailwindcss"; 
 
 @import "@repo/tailwind-config/css/shared.css";
-@import "@repo/tailwind-config/css/b2c.css";
+@import "@repo/tailwind-config/css/b2b.css";
+
+.scrollbar-hide {
+    -ms-overflow-style: none; /* IE & Edge */
+    scrollbar-width: none; /* Firefox */
+  }
+  
