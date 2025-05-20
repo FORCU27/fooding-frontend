@@ -1,6 +1,6 @@
 import z from 'zod';
 
-import { createPageResponseSchema } from '../shared';
+import { createPageResponseSchema } from '../../shared';
 
 export const CeoDeviceResponseSchema = z.object({
   id: z.number(),

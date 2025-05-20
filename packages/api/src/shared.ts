@@ -1,6 +1,6 @@
 import axios, { AxiosInstance, AxiosRequestConfig } from 'axios';
 import Cookies from 'js-cookie';
-import z, { ZodType } from 'zod';
+import z from 'zod';
 
 import { STORAGE_KEYS } from './configs/storageKeys';
 
@@ -85,15 +85,10 @@ export const createApi = (apiClient: AxiosInstance) => ({
 
 export const api = createApi(apiClient);
 
-export const ApiResponse = <TData extends ZodType>(
-  data: TData,
-): z.ZodObject<{
-  status: z.ZodString;
-  data: TData;
-}> =>
+export const ApiResponse = <TData extends z.ZodTypeAny>(data: TData) =>
   z.object({
     status: z.string(),
-    data: data,
+    data,
   });
 
 export const PageInfoSchema = z.object({
