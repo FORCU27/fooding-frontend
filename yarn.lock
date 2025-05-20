@@ -8900,6 +8900,7 @@ __metadata:
     "@repo/design-system": "workspace:*"
     "@repo/eslint-config": "workspace:*"
     "@repo/prettier-config": "workspace:*"
+    "@repo/tailwind-config": "workspace:*"
     "@repo/typescript-config": "workspace:*"
     "@tailwindcss/postcss": "npm:^4.1.4"
     "@tanstack/react-query": "npm:^5.74.3"
