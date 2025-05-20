@@ -8,7 +8,7 @@ import {
   UpdateExampleBody,
 } from './type';
 
-const ENDPOINT = 'https://api.fooding.im';
+export const ENDPOINT = 'https://api.fooding.im';
 
 export const exampleApi = {
   getExampleList: async () => {

@@ -12,6 +12,7 @@
     "./user-login": "./src/user-login/index.ts",
     "./configs/storage-keys": "./src/configs/storageKeys.ts",
     "./ceo": "./src/ceo/index.ts",
+    "./app": "./src/app/index.ts",
     "./constants/query-keys": "./src/constants/queryKeys.ts"
   },
   "scripts": {
