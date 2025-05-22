@@ -17,6 +17,7 @@ export const AdminCreateUserRequestSchema = z.object({
   password: z.string(),
   nickname: z.string(),
   phoneNumber: z.string().optional(),
+  gender: z.string(),
   role: z.string(),
 });
 
