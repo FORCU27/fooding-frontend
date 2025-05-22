@@ -3,19 +3,19 @@
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
-import { appApi } from '@repo/api/app';
+import { storeApi, userApi } from '@repo/api/app';
 import { useQuery } from '@tanstack/react-query';
 
 export default function StoreSelectPage() {
   const router = useRouter();
-  const { data: user } = useQuery({ queryKey: ['user'], queryFn: appApi.getUser });
+  const { data: user } = useQuery({ queryKey: ['user'], queryFn: userApi.getUser });
   const {
     data: storeServiceList,
     isLoading,
     error,
   } = useQuery({
     queryKey: ['storeServiceList'],
-    queryFn: () => appApi.getAppStoreServiceList(1),
+    queryFn: () => storeApi.getStoreServiceList({ id: 1 }),
   });
 
   useEffect(() => {
