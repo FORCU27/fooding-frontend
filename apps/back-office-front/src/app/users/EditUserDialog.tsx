@@ -65,12 +65,12 @@ export function EditUserDialog({
               label='전화번호'
               value={formData.phoneNumber}
               onChange={(e) => setFormData({ ...formData, phoneNumber: e.target.value })}
-              required
             />
             <Select
               label='성별'
               value={formData.gender ?? 'NONE'}
               onChange={(e) => setFormData({ ...formData, gender: e.target.value })}
+              required
             >
               <MenuItem value={'NONE'}>NONE</MenuItem>
               <MenuItem value={'MALE'}>MALE</MenuItem>
