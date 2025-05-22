@@ -76,8 +76,8 @@ export default function LoginPage() {
       const handleMessage = async (event: MessageEvent) => {
         const allowedOrigins = [
           'http://localhost:3000',
-          'https://stage.fooding.im',
-          'https://fooding.im',
+          'https://ceo-stage.fooding.im',
+          'https://ceo.fooding.im',
         ];
 
         if (!allowedOrigins.includes(event.origin)) {
