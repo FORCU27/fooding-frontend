@@ -1,7 +1,9 @@
+import { Store } from '@repo/api/app';
+
 interface StoreListProps {
-  stores: string[];
-  selectedStore: string;
-  onSelectStore: (store: string) => void;
+  stores?: Store[];
+  selectedStore: Store | null;
+  onSelectStore: (store: Store | null) => void;
 }
 
 export default function StoreList({ stores, selectedStore, onSelectStore }: StoreListProps) {
@@ -10,23 +12,27 @@ export default function StoreList({ stores, selectedStore, onSelectStore }: Stor
       {/* 타이틀 고정 영역 */}
       <div className='shrink-0 pb-[47px]'>
         <h2 className='headline-4'>매장 선택</h2>
-        <p className='text-[var(--color-gray-5)]'>관리할 매장을 선택해주세요</p>
+        <p className='text-gray-5'>관리할 매장을 선택해주세요</p>
       </div>
 
       {/* 스크롤 가능한 리스트 영역 (남는 영역 자동 계산) */}
       <div className='flex-1 overflow-y-auto scrollbar-hide'>
         <ul className='space-y-4'>
-          {stores.map((store) => (
+          {stores?.map((store) => (
             <li
-              key={store}
+              key={store.id}
               className={`py-[30px] text-center rounded-full border-2 cursor-pointer headline-4 ${
                 selectedStore === store
                   ? 'border-green-500 font-bold shadow-md'
-                  : 'border-gray-300 text-[var(--color-gray-5)]'
+                  : 'border-gray-300 text-gray-5'
               }`}
               onClick={() => onSelectStore(store)}
             >
-              {store}
+              <span className='align-middle'>{store.name}</span>{' '}
+              {/* <span className='align-middle inline-block max-w-[12ch] overflow-hidden text-ellipsis whitespace-nowrap'>
+                TODO '지점' 에 대한 데이터 백엔드 추가/수정 or 정책 수립 이후 지점명 매핑 필요
+                {store.??}점
+              </span> */}
             </li>
           ))}
         </ul>

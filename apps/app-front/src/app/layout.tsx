@@ -3,7 +3,7 @@ import './globals.css';
 import Script from 'next/script';
 import { ReactNode, Suspense } from 'react';
 
-import { pretendard } from '@repo/font';
+import { pretendard } from '@repo/design-system/font';
 
 import Analytics from '@/components/GA/Analytics';
 import { AuthProvider } from '@/components/Provider/AuthProvider';

@@ -3,12 +3,17 @@
   "version": "0.0.0",
   "private": true,
   "exports": {
-    "./app": "./src/app/index.ts",
+    "./auth": "./src/auth/index.ts",
     "./example": "./src/example/index.ts",
     "./stores": "./src/stores/index.ts",
-    "./devices": "./src/devices/index.ts",
+    "./users": "./src/users/index.ts",
+    "./notifications": "./src/notifications/index.ts",
+    "./user-notifications": "./src/user-notifications/index.ts",
     "./user-login": "./src/user-login/index.ts",
-    "./configs/storage-keys": "./src/configs/storageKeys.ts"
+    "./configs/storage-keys": "./src/configs/storageKeys.ts",
+    "./ceo": "./src/ceo/index.ts",
+    "./app": "./src/app/index.ts",
+    "./constants/queryKeys": "./src/constants/queryKeys.ts"
   },
   "scripts": {
     "format": "prettier --cache --write .",

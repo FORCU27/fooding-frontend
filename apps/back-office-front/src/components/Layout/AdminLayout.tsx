@@ -20,9 +20,17 @@ import {
 
 const menu = [
   {
-    label: '매장 관리',
+    label: '고객 관리',
     sub: [
+      { label: '유저 관리', path: '/users' },
       { label: '가게 관리', path: '/stores' },
+    ],
+  },
+  {
+    label: '기타',
+    sub: [
+      { label: '고객 알림 관리', path: '/user-notifications' },
+      { label: '알림 관리', path: '/notifications' },
     ],
   },
 ];

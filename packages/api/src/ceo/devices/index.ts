@@ -1,7 +1,9 @@
-import { api } from '../shared';
 import { PageResponseSchema } from './type';
+import { api } from '../../shared';
 
-export const ceoDeviceApi = {
+export * from './type';
+
+export const deviceApi = {
   getCeoDeviceList: async (
     page: number = 0,
     size: number = 10,
