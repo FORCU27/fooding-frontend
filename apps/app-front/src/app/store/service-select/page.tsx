@@ -45,7 +45,21 @@ export default function StoreSelectPage() {
   const handleSelectService = (service: string) => {
     if (selectedService === service) {
       // 이미 선택된 서비스를 더블클릭한 경우
-      router.push(`/store/${service}`);
+
+      switch (service) {
+        case 'WAITING':
+          router.push(`/store/waiting`);
+          break;
+        case 'REWARD':
+          router.push(`/store/reward`);
+          break;
+        case 'PAYMENT':
+          router.push(`/store/payment`);
+          break;
+        default:
+          router.push(`/store/${service}`);
+          break;
+      }
     } else {
       // 새로운 서비스 선택
       setSelectedService(service);
