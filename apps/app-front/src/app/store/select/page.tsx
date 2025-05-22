@@ -11,12 +11,12 @@ import StoreOwnerProfile from './components/StoreOwnerProfile';
 export default function StoreSelectPage() {
   const { data: user } = useQuery({ queryKey: ['user'], queryFn: userApi.getUser });
   const { data: stores } = useQuery({
-    queryKey: ['stores', '홍길동', 1, 10],
+    queryKey: ['stores', '홍길동', 1, 20],
     queryFn: () =>
       storeApi.getStores({
         searchString: '홍길동',
         pageNum: 1,
-        pageSize: 10,
+        pageSize: 20,
       }),
   });
 
