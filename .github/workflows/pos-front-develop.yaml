@@ -38,6 +38,11 @@ jobs:
           build-args: |
             API_SERVER_URL=${{ secrets.STAGE_API_SERVER_URL }}
             COMMIT_HASH=${{ github.sha }}
+            NEXT_PUBLIC_OAUTH_REDIRECT_URI=${{ secrets.STAGE_POS_NEXT_PUBLIC_OAUTH_REDIRECT_URI }}
+            NEXT_PUBLIC_GOOGLE_CLIENT_ID=${{ secrets.STAGE_POS_NEXT_PUBLIC_GOOGLE_CLIENT_ID }}
+            NEXT_PUBLIC_KAKAO_CLIENT_ID=${{ secrets.STAGE_POS_NEXT_PUBLIC_KAKAO_CLIENT_ID }}
+            NEXT_PUBLIC_NAVER_CLIENT_ID=${{ secrets.STAGE_POS_NEXT_PUBLIC_NAVER_CLIENT_ID }}
+            NEXT_PUBLIC_APPLE_CLIENT_ID=${{ secrets.STAGE_POS_NEXT_PUBLIC_APPLE_CLIENT_ID }}
       - name: Deployment
         uses: appleboy/ssh-action@master
         with:
