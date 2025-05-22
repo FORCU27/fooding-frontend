@@ -3,9 +3,18 @@
   "version": "0.0.0",
   "private": true,
   "exports": {
+    "./auth": "./src/auth/index.ts",
     "./example": "./src/example/index.ts",
     "./stores": "./src/stores/index.ts",
-    "./user/notifications": "./src/user/notifications/index.ts"
+    "./user/notifications": "./src/user/notifications/index.ts",
+    "./users": "./src/users/index.ts",
+    "./notifications": "./src/notifications/index.ts",
+    "./user-notifications": "./src/user-notifications/index.ts",
+    "./user-login": "./src/user-login/index.ts",
+    "./configs/storage-keys": "./src/configs/storageKeys.ts",
+    "./ceo": "./src/ceo/index.ts",
+    "./app": "./src/app/index.ts",
+    "./constants/queryKeys": "./src/constants/queryKeys.ts"
   },
   "scripts": {
     "format": "prettier --cache --write .",
@@ -15,12 +24,14 @@
   },
   "dependencies": {
     "axios": "^1.9.0",
+    "js-cookie": "^3.0.5",
     "zod": "^3.24.3"
   },
   "devDependencies": {
     "@repo/eslint-config": "workspace:*",
     "@repo/prettier-config": "workspace:*",
     "@repo/typescript-config": "workspace:*",
+    "@types/js-cookie": "^3",
     "eslint": "^9.24.0",
     "prettier": "^3.5.3",
     "typescript": "5.8.2"
