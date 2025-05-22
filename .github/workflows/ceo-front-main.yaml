@@ -37,11 +37,11 @@ jobs:
           platforms: linux/amd64, linux/arm64/v8
           build-args: |
             API_SERVER_URL=${{ secrets.API_SERVER_URL }}
-            NEXT_PUBLIC_OAUTH_REDIRECT_URI=${{ secrets.NEXT_PUBLIC_OAUTH_REDIRECT_URI }}
-            NEXT_PUBLIC_GOOGLE_CLIENT_ID=${{ secrets.NEXT_PUBLIC_GOOGLE_CLIENT_ID }}
-            NEXT_PUBLIC_KAKAO_CLIENT_ID=${{ secrets.NEXT_PUBLIC_KAKAO_CLIENT_ID }}
-            NEXT_PUBLIC_NAVER_CLIENT_ID=${{ secrets.NEXT_PUBLIC_NAVER_CLIENT_ID }}
-            NEXT_PUBLIC_APPLE_CLIENT_ID=${{ secrets.NEXT_PUBLIC_APPLE_CLIENT_ID }}
+            NEXT_PUBLIC_OAUTH_REDIRECT_URI=${{ secrets.CEO_NEXT_PUBLIC_OAUTH_REDIRECT_URI }}
+            NEXT_PUBLIC_GOOGLE_CLIENT_ID=${{ secrets.CEO_NEXT_PUBLIC_GOOGLE_CLIENT_ID }}
+            NEXT_PUBLIC_KAKAO_CLIENT_ID=${{ secrets.CEO_NEXT_PUBLIC_KAKAO_CLIENT_ID }}
+            NEXT_PUBLIC_NAVER_CLIENT_ID=${{ secrets.CEO_NEXT_PUBLIC_NAVER_CLIENT_ID }}
+            NEXT_PUBLIC_APPLE_CLIENT_ID=${{ secrets.CEO_NEXT_PUBLIC_APPLE_CLIENT_ID }}
       - name: Deployment
         uses: appleboy/ssh-action@master
         with:
