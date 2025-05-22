@@ -24,6 +24,8 @@ const menu = [
     sub: [
       { label: '유저 관리', path: '/users' },
       { label: '가게 관리', path: '/stores' },
+      { label: '점주 관리', path: '/ceos' },
+      { label: '관리자 관리', path: '/managers' },
     ],
   },
   {
@@ -62,22 +64,21 @@ function Sidebar() {
       }}
     >
       <Box sx={{ px: 2, pt: 3, pb: 1, display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
-        <Link href="/" passHref legacyBehavior>
-          <Typography
-            variant="h6"
-            component="a"
-            sx={{
-              color: '#fff',
-              fontWeight: 700,
-              textDecoration: 'none',
-              mb: 1,
-              cursor: 'pointer',
-              '&:hover': { color: '#1976d2' },
-            }}
-          >
-            Fooding 관리자
-          </Typography>
-        </Link>
+        <Typography
+          variant="h6"
+          component="a"
+          sx={{
+            color: '#fff',
+            fontWeight: 700,
+            textDecoration: 'none',
+            mb: 1,
+            cursor: 'pointer',
+            '&:hover': { color: '#1976d2' },
+          }}
+          href='/'
+        >
+          Fooding 관리자
+        </Typography>
         <Typography variant="body2" sx={{ color: '#b0b3b8', mb: 0.5 }}>
           {user.name}
         </Typography>
@@ -114,7 +115,7 @@ function Sidebar() {
                 <Collapse in={open[item.label]} timeout="auto" unmountOnExit>
                   <List component="div" disablePadding>
                     {item.sub.map((sub) => (
-                      <Link href={sub.path} key={sub.label} passHref legacyBehavior>
+                      <Link href={sub.path} key={sub.label} passHref>
                         <ListItemButton
                           component="a"
                           sx={{

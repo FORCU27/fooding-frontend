@@ -4,17 +4,18 @@ import { PageResponseSchema, AdminCreateUserRequest, AdminUpdateUserRequest } fr
 export * from './type';
 
 export const userApi = {
-  getUserList: async (page: number = 0, size: number = 10) => {
+  getUserList: async (page: number = 0, size: number = 10, role: string) => {
     const params = new URLSearchParams({
       pageNum: (page + 1).toString(),
       pageSize: size.toString(),
+      role,
     });
-
     const response = await api.get(`/admin/users?${params.toString()}`);
     console.log('response', response);
     const result = PageResponseSchema.parse(response);
     console.log('result', result);
     return result;
+    
   },
 
   createUser: async (data: AdminCreateUserRequest) =>

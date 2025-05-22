@@ -16,6 +16,7 @@ interface CreateUserDialogProps {
   onClose: () => void;
   onSubmit: (data: AdminCreateUserRequest) => void;
   loading: boolean;
+  role: string;
 }
 
 export function CreateUserDialog({
@@ -23,12 +24,14 @@ export function CreateUserDialog({
   onClose,
   onSubmit,
   loading,
+  role,
 }: CreateUserDialogProps) {
   const [formData, setFormData] = useState<AdminCreateUserRequest>({
     email: '',
     password: '',
     nickname: '',
     phoneNumber: '',
+    role
   });
 
   const handleSubmit = (e: React.FormEvent) => {
