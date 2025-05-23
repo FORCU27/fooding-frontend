@@ -130,7 +130,7 @@ export default function LoginPage() {
           });
 
           const returnTo = searchParams.get('returnTo') || '/';
-          router.push(returnTo);
+          router.replace(returnTo);
         } catch (error) {
           console.error('Social login failed:', error);
           setErrorMessage(
@@ -161,7 +161,7 @@ export default function LoginPage() {
       await authApi.login(credentials);
 
       const returnTo = searchParams.get('returnTo') || '/';
-      router.push(returnTo);
+      router.replace(returnTo);
     } catch (error) {
       console.error('로그인 실패:', error);
 
