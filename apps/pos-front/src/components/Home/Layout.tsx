@@ -2,9 +2,6 @@
 
 import React, { useState } from 'react';
 
-import DevicesIcon from '@mui/icons-material/Devices';
-import HomeIcon from '@mui/icons-material/Home';
-
 import AppBarSection from './AppBarSection';
 import DrawerSection from './DrawerSection';
 import { usePathname } from 'next/navigation';
@@ -22,7 +19,7 @@ export interface MenuItem {
   id: string;
   text: string;
   path?: string;
-  icon: React.JSX.Element;
+  icon?: React.JSX.Element;
   subMenus?: SubMenu[];
 }
 
@@ -30,7 +27,6 @@ const menuItems: MenuItem[] = [
   {
     id: 'users',
     text: '매장 정보 관리',
-    icon: <HomeIcon />,
     subMenus: [
       { text: '홈', path: '/users' },
       { text: '소식', path: '/users' },
@@ -43,7 +39,6 @@ const menuItems: MenuItem[] = [
     id: 'clients',
     text: '기기 관리',
     path: '/clients',
-    icon: <DevicesIcon />,
   },
 ];
 
