@@ -9,10 +9,14 @@
     "type-check:watch": "tsc --noEmit --watch"
   },
   "exports": {
+    "./components/b2c": "./src/components/b2c/index.ts",
     "./components": "./src/components/index.ts",
     "./font": "./src/font/index.ts",
     "./icons": "./src/icons/index.ts",
-    "./utils": "./src/utils/index.ts"
+    "./utils": "./src/utils/index.ts",
+    "./styles/shared.css": "./src/styles/shared.css",
+    "./styles/b2c.css": "./src/styles/b2c.css",
+    "./styles/b2b.css": "./src/styles/b2b.css"
   },
   "dependencies": {
     "clsx": "^2.1.1",
@@ -20,7 +24,8 @@
     "radix-ui": "^1.1.3",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
-    "tailwind-merge": "^3.2.0"
+    "tailwind-merge": "^3.2.0",
+    "tailwind-variants": "^1.0.0"
   },
   "devDependencies": {
     "@repo/eslint-config": "*",
