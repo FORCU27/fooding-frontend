@@ -84,10 +84,13 @@ export default function LoginPage() {
       if (!popup) return;
 
       const handleMessage = async (event: MessageEvent) => {
+        // FIXME: 추후 수정
         const allowedOrigins = [
           'http://localhost:3000',
-          'https://pos-stage.fooding.im',
           'https://pos.fooding.im',
+          'https://pos-stage.fooding.im',
+          'https://fooding.im',
+          'https://stage.fooding.im',
         ];
 
         if (!allowedOrigins.includes(event.origin)) {
