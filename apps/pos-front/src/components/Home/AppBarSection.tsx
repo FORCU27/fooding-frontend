@@ -1,116 +1,99 @@
-import React from 'react';
+'use client';
 
-import AddIcon from '@mui/icons-material/Add';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import React from 'react';
 import MenuIcon from '@mui/icons-material/Menu';
-import {
-  AppBar,
-  Toolbar,
-  IconButton,
-  Typography,
-  Menu,
-  MenuItem,
-  Box,
-  Button,
-} from '@mui/material';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import AddIcon from '@mui/icons-material/Add';
 
 interface Props {
   handleDrawerToggle: () => void;
 }
 
-const drawerWidth = 240;
-
 const AppBarSection = ({ handleDrawerToggle }: Props) => {
-  const [anchor, setAnchor] = React.useState<null | HTMLElement>(null);
+  const [anchor, setAnchor] = React.useState(false);
   const [selectedStore, setSelectedStore] = React.useState('강고기 홍대점');
 
-  const handleOpen = (event: React.MouseEvent<HTMLElement>) => {
-    setAnchor(event.currentTarget);
-  };
+  const handleToggleMenu = () => setAnchor((prev) => !prev);
 
   const handleClose = (store?: string) => {
     if (store) setSelectedStore(store);
-    setAnchor(null);
+    setAnchor(false);
   };
 
   const stores = ['강고기 홍대점', '강고기 제주도점', '강고기 사당점'];
 
+  const handleLogoutClick = async () => {
+    try {
+      // 로그아웃 요청 보내기
+      const response = await fetch('/api/auth/logout', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (response.ok) {
+        window.location.href = '/login';
+      } else {
+        console.error('로그아웃 실패');
+      }
+    } catch (error) {
+      console.error('로그아웃 중 오류 발생:', error);
+    }
+  };
+
   return (
-    <AppBar
-      position='fixed'
-      elevation={0}
-      sx={{
-        width: { sm: '100%' },
-        ml: { sm: `${drawerWidth}px` },
-        borderBottom: '1px solid',
-        borderColor: 'divider',
-        bgcolor: 'background.paper',
-        color: 'text.primary',
-      }}
-    >
-      <Toolbar sx={{ minHeight: 64 }}>
-        <IconButton
-          color='primary'
-          aria-label='open drawer'
-          edge='start'
-          onClick={handleDrawerToggle}
-          sx={{
-            display: { xs: 'flex', sm: 'none' },
-            '&:hover': {
-              bgcolor: 'rgba(0, 0, 0, 0.04)',
-            },
-          }}
-        >
-          <MenuIcon />
-        </IconButton>
-        <Box display='flex' alignItems='center'>
-          <Typography
-            variant='h6'
-            noWrap
-            component='div'
-            sx={{
-              color: 'text.primary',
-              fontWeight: 500,
-              ml: 2,
-            }}
+    <header className='fixed top-0 left-0 w-full border-b border-gray-200 bg-white text-black z-50 sm:ml-[240px]'>
+      <div className='h-16 px-4 flex items-center justify-between'>
+        <div className='flex items-center'>
+          <button
+            onClick={handleDrawerToggle}
+            className='sm:hidden p-2 rounded hover:bg-gray-100'
+            aria-label='Open drawer'
           >
-            {selectedStore}
-          </Typography>
+            <MenuIcon />
+          </button>
 
-          <IconButton onClick={handleOpen} size='small' sx={{ ml: 0.5 }}>
+          <span className='ml-4 text-lg font-medium'>{selectedStore}</span>
+
+          <button onClick={handleToggleMenu} className='ml-1 p-1'>
             <ExpandMoreIcon />
-          </IconButton>
+          </button>
 
-          <Menu
-            anchorEl={anchor}
-            open={Boolean(anchor)}
-            onClose={() => handleClose()}
-            elevation={1}
-            PaperProps={{
-              sx: {
-                p: 1,
-                backgroundColor: '#D9D9D9',
-              },
-            }}
+          {anchor && (
+            <div className='absolute mt-14 bg-gray-300 rounded shadow-md p-2 w-52'>
+              {stores.map((store) => (
+                <button
+                  key={store}
+                  onClick={() => handleClose(store)}
+                  className='w-full text-left px-4 py-2 hover:bg-gray-200 rounded mb-1'
+                >
+                  {store}
+                </button>
+              ))}
+
+              <button
+                onClick={() => {
+                  alert('매장 생성하기');
+                }}
+                className='mt-2 w-full flex items-center justify-center gap-2 font-semibold bg-white text-black py-2 px-4 rounded hover:bg-gray-100'
+              >
+                <AddIcon fontSize='small' />
+                매장 생성하기
+              </button>
+            </div>
+          )}
+          {/*FIXME: 테스트용 로그아웃 버튼입니다 */}
+          <button
+            type='button'
+            onClick={handleLogoutClick}
+            className='cursor-pointer border border-gray-3 w-[80px] h-[45px] rounded-[11px]'
           >
-            {stores.map((store) => (
-              <MenuItem key={store} onClick={() => handleClose(store)} sx={{ m: 1 }}>
-                {store}
-              </MenuItem>
-            ))}
-            <Button
-              variant='outlined'
-              size='large'
-              fullWidth
-              startIcon={<AddIcon />}
-              sx={{ backgroundColor: '#FFFFFF', border: 'none', color: '#111111', fontWeight: 600 }}
-            >
-              매장 생성하기
-            </Button>
-          </Menu>
-        </Box>
-      </Toolbar>
-    </AppBar>
+            로그아웃
+          </button>
+        </div>
+      </div>
+    </header>
   );
 };
 

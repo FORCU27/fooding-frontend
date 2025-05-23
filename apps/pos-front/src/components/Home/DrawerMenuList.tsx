@@ -3,12 +3,6 @@
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import React from 'react';
-
-import { Box, ListItem, ListItemIcon } from '@mui/material';
-import List from '@mui/material/List';
-import ListItemButton from '@mui/material/ListItemButton';
-import ListItemText from '@mui/material/ListItemText';
-
 import { MenuItem } from './Layout';
 
 interface DrawerMenuListProps {
@@ -19,19 +13,15 @@ const DrawerMenuList = ({ menuList }: DrawerMenuListProps) => {
   const router = useRouter();
 
   return (
-    <Box component='div' sx={{ p: 2 }}>
-      <List>
+    <div className='p-4'>
+      <ul>
         {menuList.map((item) => (
           <React.Fragment key={item.text}>
-            <ListItem disablePadding>
-              <ListItemButton
-                sx={{
-                  textAlign: 'center',
-                  '&:hover': {
-                    backgroundColor: item.path ? undefined : 'transparent',
-                    cursor: item.path ? 'pointer' : 'default',
-                  },
-                }}
+            <li>
+              <div
+                className={`flex items-center justify-center py-2 px-4 rounded transition-colors ${
+                  item.path ? 'hover:bg-gray-100 cursor-pointer' : 'cursor-default'
+                }`}
                 onClick={(e: React.MouseEvent<HTMLDivElement>) => {
                   if (!item.path) {
                     e.preventDefault();
@@ -40,29 +30,28 @@ const DrawerMenuList = ({ menuList }: DrawerMenuListProps) => {
                   router.push(item.path);
                 }}
               >
-                <ListItemIcon sx={{ minWidth: 5 }}>{item.icon}</ListItemIcon>
-                <ListItemText primary={item.text} />
-              </ListItemButton>
-            </ListItem>
+                <div className='mr-2'>{item.icon}</div>
+                <span>{item.text}</span>
+              </div>
+            </li>
             {item.subMenus && (
-              <List component='div'>
+              <ul className='ml-4'>
                 {item.subMenus.map((subItem) => (
-                  <Link
-                    key={subItem.text}
-                    href={subItem.path}
-                    style={{ textDecoration: 'none', color: 'inherit' }}
-                  >
-                    <ListItemButton sx={{ textAlign: 'center' }}>
-                      <ListItemText primary={subItem.text} />
-                    </ListItemButton>
-                  </Link>
+                  <li key={subItem.text}>
+                    <Link
+                      href={subItem.path}
+                      className='block py-2 px-4 text-center hover:bg-gray-100 rounded text-inherit no-underline'
+                    >
+                      {subItem.text}
+                    </Link>
+                  </li>
                 ))}
-              </List>
+              </ul>
             )}
           </React.Fragment>
         ))}
-      </List>
-    </Box>
+      </ul>
+    </div>
   );
 };
 

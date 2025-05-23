@@ -4,10 +4,10 @@ import React, { useState } from 'react';
 
 import DevicesIcon from '@mui/icons-material/Devices';
 import HomeIcon from '@mui/icons-material/Home';
-import { Box } from '@mui/material';
 
 import AppBarSection from './AppBarSection';
 import DrawerSection from './DrawerSection';
+import { usePathname } from 'next/navigation';
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -49,11 +49,17 @@ const menuItems: MenuItem[] = [
 
 const Layout = ({ children }: LayoutProps) => {
   const [mobileOpen, setMobileOpen] = useState(false);
+  const pathname = usePathname();
+  const isLoginPage = pathname === '/login';
 
   const handleDrawerToggle = () => setMobileOpen(!mobileOpen);
 
+  if (isLoginPage) {
+    return <div className='min-h-screen'>{children}</div>;
+  }
+
   return (
-    <Box sx={{ display: 'flex' }}>
+    <div className='flex'>
       <AppBarSection handleDrawerToggle={handleDrawerToggle} />
       <DrawerSection
         mobileOpen={mobileOpen}
@@ -62,7 +68,7 @@ const Layout = ({ children }: LayoutProps) => {
       >
         {children}
       </DrawerSection>
-    </Box>
+    </div>
   );
 };
 
