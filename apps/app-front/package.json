@@ -33,6 +33,7 @@
     "@repo/eslint-config": "workspace:*",
     "@repo/prettier-config": "workspace:*",
     "@repo/typescript-config": "workspace:*",
+    "@tailwindcss/postcss": "^4.1.4",
     "@types/gtag.js": "^0.0.20",
     "@types/js-cookie": "^3",
     "@types/node": "^22.14.1",
