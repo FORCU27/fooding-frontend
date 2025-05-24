@@ -6,7 +6,7 @@ import Menubar from '@/components/Layout/Menubar';
 
 const Home: NextPage = () => {
   return (
-    <>
+    <main className='flex flex-col h-[calc(100vh-120px)]'>
       <Header />
       <Menubar />
       <main className='flex flex-col h-[calc(100vh-120px)]'>
@@ -41,7 +41,7 @@ const Home: NextPage = () => {
         </div>
       </main>
       <Footer />
-    </>
+    </main>
   );
 };
 

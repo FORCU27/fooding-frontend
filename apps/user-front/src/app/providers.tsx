@@ -1,20 +1,12 @@
 'use client';
 
-import { useState } from 'react';
-
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { AuthProvider } from '@/components/Provider/AuthProvider';
+import { ReactQueryProvider } from '@/components/Provider/ReactQueryProvider';
 
 export const Providers = ({ children }: { children: React.ReactNode }) => {
-  const [queryClient] = useState(
-    () =>
-      new QueryClient({
-        defaultOptions: {
-          queries: {
-            retry: false,
-          },
-        },
-      }),
+  return (
+    <ReactQueryProvider>
+      <AuthProvider>{children}</AuthProvider>
+    </ReactQueryProvider>
   );
-
-  return <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>;
 };

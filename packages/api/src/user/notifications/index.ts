@@ -1,4 +1,5 @@
 export * from './type';
+export * from './mock';
 
 import { GetNotificationListParams, GetNotificationListResponse } from './type';
 import { api } from '../../shared';
