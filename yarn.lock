@@ -5373,6 +5373,7 @@ __metadata:
     react: "npm:^19.1.0"
     react-dom: "npm:^19.1.0"
     tailwind-merge: "npm:^3.2.0"
+    tailwind-variants: "npm:^1.0.0"
     typescript: "npm:^5.8.2"
   languageName: unknown
   linkType: soft
@@ -5412,11 +5413,31 @@ __metadata:
 
 "@repo/typescript-config@npm:*, @repo/typescript-config@workspace:*, @repo/typescript-config@workspace:packages/typescript-config":
   version: 0.0.0-use.local
-  resolution: "@repo/tailwind-config@workspace:packages/tailwind-config"
+  resolution: "@repo/typescript-config@workspace:packages/typescript-config"
+  languageName: unknown
+  linkType: soft
+
+"@repo/ui@workspace:packages/ui":
+  version: 0.0.0-use.local
+  resolution: "@repo/ui@workspace:packages/ui"
   dependencies:
-    "@tailwindcss/postcss": "npm:^4.1.4"
-    postcss: "npm:^8.5.3"
-    tailwindcss: "npm:^4.1.4"
+    "@repo/eslint-config": "workspace:*"
+    "@repo/prettier-config": "npm:*"
+    "@repo/typescript-config": "npm:*"
+    "@turbo/gen": "npm:^2.4.0"
+    "@types/jest": "npm:^27.0.0"
+    "@types/node": "npm:^22.13.0"
+    "@types/react": "npm:^18.2.0"
+    "@types/react-dom": "npm:^18.2.0"
+    eslint: "npm:^9.19.0"
+    jest: "npm:^29.7.0"
+    prettier: "npm:^3.4.2"
+    ts-jest: "npm:^29.2.5"
+    typescript: "npm:^5.7.3"
+    vitest: "npm:^2.1.6"
+  peerDependencies:
+    react: ^18.2.0
+    react-dom: ^18.2.0
   languageName: unknown
   linkType: soft
 
@@ -7087,7 +7108,6 @@ __metadata:
     "@repo/design-system": "workspace:*"
     "@repo/eslint-config": "workspace:*"
     "@repo/prettier-config": "workspace:*"
-    "@repo/tailwind-config": "workspace:^"
     "@repo/typescript-config": "workspace:*"
     "@tanstack/react-query": "npm:^5.74.3"
     "@types/gtag.js": "npm:^0.0.20"
@@ -7916,7 +7936,6 @@ __metadata:
     "@repo/design-system": "workspace:*"
     "@repo/eslint-config": "workspace:*"
     "@repo/prettier-config": "workspace:*"
-    "@repo/tailwind-config": "workspace:*"
     "@repo/typescript-config": "workspace:*"
     "@tailwindcss/postcss": "npm:^4.1.4"
     "@tanstack/react-query": "npm:^5.74.3"
@@ -15570,10 +15589,63 @@ __metadata:
   languageName: node
   linkType: hard
 
+"swr@npm:^2.2.5":
+  version: 2.3.3
+  resolution: "swr@npm:2.3.3"
+  dependencies:
+    dequal: "npm:^2.0.3"
+    use-sync-external-store: "npm:^1.4.0"
+  peerDependencies:
+    react: ^16.11.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
+  checksum: 10/11cd5d1acbc62cf0e092e0d19f1d67b2e6ecb542602250f3277eb235750cd3285291bae9a8264c1f5b3973890f75234c104a0baf1ac6059aadc700ecba100fcc
+  languageName: node
+  linkType: hard
+
+"symbol-observable@npm:^4.0.0":
+  version: 4.0.0
+  resolution: "symbol-observable@npm:4.0.0"
+  checksum: 10/983aef3912ad080fc834b9ad115d44bc2994074c57cea4fb008e9f7ab9bb4118b908c63d9edc861f51257bc0595025510bdf7263bb09d8953a6929f240165c24
+  languageName: node
+  linkType: hard
+
+"symbol-tree@npm:^3.2.4":
+  version: 3.2.4
+  resolution: "symbol-tree@npm:3.2.4"
+  checksum: 10/c09a00aadf279d47d0c5c46ca3b6b2fbaeb45f0a184976d599637d412d3a70bbdc043ff33effe1206dea0e36e0ad226cb957112e7ce9a4bf2daedf7fa4f85c53
+  languageName: node
+  linkType: hard
+
+"tailwind-merge@npm:3.0.2":
+  version: 3.0.2
+  resolution: "tailwind-merge@npm:3.0.2"
+  checksum: 10/f5142ddd670018f4816b8510b0464e703be369018544c35eeb8bbba48b9dc320b5f86561ed9c84602b66d367213ee1508cd28b7c9c572420cfa5ecfc848f28c7
+  languageName: node
+  linkType: hard
+
 "tailwind-merge@npm:^3.2.0":
   version: 3.2.0
   resolution: "tailwind-merge@npm:3.2.0"
   checksum: 10/ece231b18bf27cb70847e236d987e254c152e0440dbeb59c08ddf157de79fe89d6b7d1127c75d753e868f31dd77ded38ce8d23a1e405ff735a6642407c671fb9
+  languageName: node
+  linkType: hard
+
+"tailwind-variants@npm:^1.0.0":
+  version: 1.0.0
+  resolution: "tailwind-variants@npm:1.0.0"
+  dependencies:
+    tailwind-merge: "npm:3.0.2"
+  peerDependencies:
+    tailwindcss: "*"
+  checksum: 10/67c70ef005a421d3acd5556fcdf78e9cde28f247c3b9a142affec2d739a4f42b33a4ac95b568639bbe747b6f31def5e83765909666e7907f480c891d68b37aed
+  languageName: node
+  linkType: hard
+
+"tailwindcss-animate@npm:^1.0.7":
+  version: 1.0.7
+  resolution: "tailwindcss-animate@npm:1.0.7"
+  peerDependencies:
+    tailwindcss: "*"
+  checksum: 10/ef176fbb0bf9dca84178b35b6a9615cd756358ea80be9c575456d12ecd7f3c431e9e571915c7df72959dc798a730959e9a4739d59eab55d8cc6db390870ff0d2
   languageName: node
   linkType: hard
 
@@ -16299,7 +16371,6 @@ __metadata:
     "@repo/design-system": "workspace:*"
     "@repo/eslint-config": "workspace:*"
     "@repo/prettier-config": "workspace:*"
-    "@repo/tailwind-config": "workspace:*"
     "@repo/typescript-config": "workspace:*"
     "@tailwindcss/postcss": "npm:^4.1.4"
     "@tanstack/react-query": "npm:^5.74.3"

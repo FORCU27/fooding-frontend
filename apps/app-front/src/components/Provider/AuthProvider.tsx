@@ -2,21 +2,21 @@
 
 import { createContext, useContext, useState, ReactNode, useEffect } from 'react';
 
+import { authApi, AuthLoginBody, AuthLoginUser, AuthSocialLoginBody } from '@repo/api/auth';
 import { STORAGE_KEYS } from '@repo/api/configs/storage-keys';
-import { auth, UserInfoType, UserSocialLogin } from '@repo/api/user-login';
 import Cookies from 'js-cookie';
 
 interface AuthContextType {
-  user: UserInfoType | null;
-  login: (credentials: { email: string; password: string }) => Promise<void>;
-  socialLogin: (credentials: UserSocialLogin) => Promise<void>;
+  user: AuthLoginUser | null;
+  login: (credentials: AuthLoginBody) => Promise<void>;
+  socialLogin: (credentials: AuthSocialLoginBody) => Promise<void>;
   isLoading: boolean;
 }
 
 const AuthContext = createContext<AuthContextType | null>(null);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const [user, setUser] = useState<UserInfoType | null>(null);
+  const [user, setUser] = useState<AuthLoginUser | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
   // 초기 인증 상태 확인
@@ -31,7 +31,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           return;
         }
 
-        const response = await auth.getSelf();
+        const response = await authApi.getSelf();
         if (response.status !== 'OK') {
           throw new Error(`Get user failed: ${response.status}`);
         }
@@ -48,11 +48,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     initializeAuth();
   }, []);
 
-  //FIXME: 추후 일반로그인 수정
-  const login = async (credentials: { email: string; password: string }) => {
+  const login = async (credentials: AuthLoginBody) => {
     try {
       setIsLoading(true);
-      const response = await auth.login(credentials);
+      const response = await authApi.login(credentials);
       const { accessToken, refreshToken, expiredIn, refreshExpiredIn } = response.data;
 
       Cookies.set(STORAGE_KEYS.ACCESS_TOKEN, accessToken, {
@@ -68,7 +67,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         expires: new Date(Date.now() + refreshExpiredIn),
       });
 
-      const userResponse = await auth.getSelf();
+      const userResponse = await authApi.getSelf();
       setUser(userResponse.data);
     } catch (error) {
       console.error('Email login failed:', error);
@@ -78,10 +77,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   // 소셜 로그인
-  const socialLogin = async (credentials: UserSocialLogin) => {
+  const socialLogin = async (credentials: AuthSocialLoginBody) => {
     try {
       setIsLoading(true);
-      const response = await auth.login(credentials);
+      const response = await authApi.socialLogin(credentials);
       if (response.status !== 'OK') {
         throw new Error(`Social login failed: ${response.status}`);
       }
@@ -103,7 +102,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         sameSite: 'lax',
         expires: new Date(Date.now() + refreshExpiredIn),
       });
-      const userResponse = await auth.getSelf();
+      const userResponse = await authApi.getSelf();
       setUser(userResponse.data);
     } catch (error) {
       console.error('Social login failed:', error);
