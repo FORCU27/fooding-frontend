@@ -2,12 +2,9 @@
 
 import React, { useState } from 'react';
 
-import DevicesIcon from '@mui/icons-material/Devices';
-import HomeIcon from '@mui/icons-material/Home';
-import { Box } from '@mui/material';
-
 import AppBarSection from './AppBarSection';
 import DrawerSection from './DrawerSection';
+import { usePathname } from 'next/navigation';
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -22,7 +19,7 @@ export interface MenuItem {
   id: string;
   text: string;
   path?: string;
-  icon: React.JSX.Element;
+  icon?: React.JSX.Element;
   subMenus?: SubMenu[];
 }
 
@@ -30,7 +27,6 @@ const menuItems: MenuItem[] = [
   {
     id: 'users',
     text: '매장 정보 관리',
-    icon: <HomeIcon />,
     subMenus: [
       { text: '홈', path: '/users' },
       { text: '소식', path: '/users' },
@@ -43,17 +39,22 @@ const menuItems: MenuItem[] = [
     id: 'clients',
     text: '기기 관리',
     path: '/clients',
-    icon: <DevicesIcon />,
   },
 ];
 
 const Layout = ({ children }: LayoutProps) => {
   const [mobileOpen, setMobileOpen] = useState(false);
+  const pathname = usePathname();
+  const isLoginPage = pathname === '/login';
 
   const handleDrawerToggle = () => setMobileOpen(!mobileOpen);
 
+  if (isLoginPage) {
+    return <div className='min-h-screen'>{children}</div>;
+  }
+
   return (
-    <Box sx={{ display: 'flex' }}>
+    <div className='flex'>
       <AppBarSection handleDrawerToggle={handleDrawerToggle} />
       <DrawerSection
         mobileOpen={mobileOpen}
@@ -62,7 +63,7 @@ const Layout = ({ children }: LayoutProps) => {
       >
         {children}
       </DrawerSection>
-    </Box>
+    </div>
   );
 };
 

@@ -2,7 +2,7 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import { JSX, useCallback, useEffect, useState } from 'react';
 
 import { AuthSocialLoginBody, SocialPlatform, socialPlatforms } from '@repo/api/auth';
@@ -63,7 +63,6 @@ const openSocialLoginPopup = (loginUrl: string) => {
 
 export default function LoginPage() {
   const router = useRouter();
-  const searchParams = useSearchParams();
   const [, setIsLoading] = useState(false);
   const [recentProvider, setRecentProvider] = useState<string | null>(null);
 
@@ -104,8 +103,8 @@ export default function LoginPage() {
         if (!code) return;
         window.removeEventListener('message', handleMessage);
 
-        setIsLoading(true);
         try {
+          setIsLoading(true);
           const credentials: AuthSocialLoginBody = {
             code,
             provider: platform,
@@ -123,8 +122,7 @@ export default function LoginPage() {
             sameSite: 'lax',
           });
 
-          const returnTo = searchParams.get('returnTo') || '/';
-          router.push(returnTo);
+          router.refresh();
         } catch (error) {
           console.error('Social login failed:', error);
         } finally {
@@ -134,8 +132,11 @@ export default function LoginPage() {
       };
 
       window.addEventListener('message', handleMessage);
+      return () => {
+        window.removeEventListener('message', handleMessage);
+      };
     },
-    [router, searchParams, socialLogin],
+    [router, socialLogin],
   );
 
   const handleRecentProvider = (platform: string) => {

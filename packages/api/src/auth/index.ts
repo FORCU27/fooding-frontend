@@ -1,10 +1,10 @@
 export * from './type';
 
 import { api } from '../shared';
-import { GetLoginResponse } from '../user-login';
 import {
   AuthLoginBody,
   AuthSocialLoginBody,
+  GetLoginResponse,
   GetLoginResponseSchema,
   GetUserResponse,
   GetUserResponseSchema,

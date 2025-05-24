@@ -13,7 +13,8 @@
     "dev:admin": "turbo dev --filter=back-office-front",
     "dev:ceo": "turbo dev --filter=ceo-front",
     "dev:user": "turbo dev --filter=user-front",
-    "dev:store": "turbo dev --filter=store-front"
+    "dev:store": "turbo dev --filter=store-front",
+    "dev:pos": "turbo dev --filter=pos-front"
   },
   "devDependencies": {
     "prettier": "3.5.3",

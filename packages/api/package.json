@@ -9,11 +9,10 @@
     "./users": "./src/users/index.ts",
     "./notifications": "./src/notifications/index.ts",
     "./user-notifications": "./src/user-notifications/index.ts",
-    "./user-login": "./src/user-login/index.ts",
     "./configs/storage-keys": "./src/configs/storageKeys.ts",
     "./ceo": "./src/ceo/index.ts",
     "./app": "./src/app/index.ts",
-    "./constants/queryKeys": "./src/constants/queryKeys.ts"
+    "./constants/query-keys": "./src/constants/queryKeys.ts"
   },
   "scripts": {
     "format": "prettier --cache --write .",
