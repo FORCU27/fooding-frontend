@@ -19,7 +19,8 @@ export const Notification = z.object({
 export type GetNotificationListParams = {
   page: number;
   size: number;
-  sort: string[];
+  sortType: string;
+  sortDirection: string;
 };
 
 export type GetNotificationListResponse = z.infer<typeof GetNotificationListResponse>;
