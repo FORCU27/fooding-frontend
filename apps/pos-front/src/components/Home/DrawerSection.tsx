@@ -1,10 +1,6 @@
 'use client';
 
 import { ReactNode } from 'react';
-
-import Box from '@mui/material/Box';
-import Drawer from '@mui/material/Drawer';
-
 import DrawerMenuList from './DrawerMenuList';
 import { MenuItem } from './Layout';
 import MainContent from './MainContent';
@@ -25,46 +21,30 @@ const DrawerSection = ({
   handleDrawerToggle,
 }: DrawerSectionProps) => {
   return (
-    <>
-      <Box sx={{ width: 0 }}>
-        <Drawer
-          component='nav'
-          variant='temporary'
-          open={mobileOpen}
-          onClose={handleDrawerToggle}
-          ModalProps={{
-            keepMounted: true,
-          }}
-          sx={{
-            display: { xs: 'block', sm: 'none' },
-            '& .MuiDrawer-paper': {
-              boxSizing: 'border-box',
-              width: drawerWidth,
-            },
-          }}
-        >
-          <DrawerMenuList menuList={menuList} />
-        </Drawer>
+    <div className='flex'>
+      {mobileOpen && (
+        <div className='fixed inset-0 z-40 flex sm:hidden' role='dialog' aria-modal='true'>
+          <div className='fixed inset-0 bg-black bg-opacity-25' onClick={handleDrawerToggle}></div>
+          <div
+            className='relative w-[240px] bg-white shadow-md z-50'
+            style={{ boxSizing: 'border-box' }}
+          >
+            <DrawerMenuList menuList={menuList} />
+          </div>
+        </div>
+      )}
 
-        <Drawer
-          component='nav'
-          variant='persistent'
-          sx={{
-            display: { xs: 'none', sm: 'block' },
-            '& .MuiDrawer-paper': {
-              boxSizing: 'border-box',
-              width: drawerWidth,
-              mt: '65px',
-              backgroundColor: '#F3F4F6',
-            },
-          }}
-          open={true}
-        >
-          <DrawerMenuList menuList={menuList} />
-        </Drawer>
-      </Box>
-      <MainContent>{children}</MainContent>
-    </>
+      <div
+        className='hidden sm:fixed sm:inset-y-0 sm:flex sm:w-[240px] bg-gray-100 pt-[65px]'
+        style={{ boxSizing: 'border-box' }}
+      >
+        <DrawerMenuList menuList={menuList} />
+      </div>
+
+      <div className='flex justify-items-center'>
+        <MainContent>{children}</MainContent>
+      </div>
+    </div>
   );
 };
 
