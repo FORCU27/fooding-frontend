@@ -8,8 +8,18 @@ import {
   Box,
   FormControlLabel,
   Switch,
+  MenuItem,
+  Select,
+  FormControl,
+  InputLabel,
 } from '@mui/material';
-import { AdminStoreResponse, AdminCreateStoreRequest, AdminCreateStoreRequestSchema } from '@repo/api/stores';
+import {
+  AdminStoreResponse,
+  AdminCreateStoreRequest,
+  AdminCreateStoreRequestSchema,
+} from '@repo/api/stores';
+import { userApi } from '@repo/api/users';
+import { useQuery } from '@tanstack/react-query';
 import { useForm } from 'react-hook-form';
 
 interface StoreFormProps {
@@ -19,9 +29,16 @@ interface StoreFormProps {
 }
 
 export function StoreForm({ initialData, onSubmit, isLoading }: StoreFormProps) {
+  const { data: usersResponse } = useQuery({
+    queryKey: ['users'],
+    queryFn: () => userApi.getUserList(0, 100, 'CEO'),
+  });
+  const users = usersResponse?.data.list || [];
+
   const form = useForm<AdminCreateStoreRequest>({
     resolver: zodResolver(AdminCreateStoreRequestSchema as any),
     defaultValues: initialData || {
+      ownerId: 0,
       name: '',
       city: '',
       address: '',
@@ -39,11 +56,27 @@ export function StoreForm({ initialData, onSubmit, isLoading }: StoreFormProps) 
   });
 
   return (
-    <Box component="form" onSubmit={form.handleSubmit(onSubmit)} sx={{ mt: 2 }}>
+    <Box component='form' onSubmit={form.handleSubmit(onSubmit)} sx={{ mt: 2 }}>
       <Stack spacing={3}>
+        <FormControl required>
+          <InputLabel id='user-select-label'>점주</InputLabel>
+          <Select
+            labelId='user-select-label'
+            label='점주'
+            value={initialData?.ownerId}
+            onChange={(e) => form.register('ownerId')}
+            disabled={initialData && true}
+          >
+            {users.map((user) => (
+              <MenuItem key={user.id} value={user.id}>
+                {user.nickname} ({user.email})
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
         <TextField
           fullWidth
-          label="가게명"
+          label='가게명'
           error={!!form.formState.errors.name}
           helperText={form.formState.errors.name?.message}
           {...form.register('name')}
@@ -51,7 +84,7 @@ export function StoreForm({ initialData, onSubmit, isLoading }: StoreFormProps) 
 
         <TextField
           fullWidth
-          label="도시"
+          label='도시'
           error={!!form.formState.errors.city}
           helperText={form.formState.errors.city?.message}
           {...form.register('city')}
@@ -59,7 +92,7 @@ export function StoreForm({ initialData, onSubmit, isLoading }: StoreFormProps) 
 
         <TextField
           fullWidth
-          label="주소"
+          label='주소'
           error={!!form.formState.errors.address}
           helperText={form.formState.errors.address?.message}
           {...form.register('address')}
@@ -67,7 +100,7 @@ export function StoreForm({ initialData, onSubmit, isLoading }: StoreFormProps) 
 
         <TextField
           fullWidth
-          label="카테고리"
+          label='카테고리'
           error={!!form.formState.errors.category}
           helperText={form.formState.errors.category?.message}
           {...form.register('category')}
@@ -75,7 +108,7 @@ export function StoreForm({ initialData, onSubmit, isLoading }: StoreFormProps) 
 
         <TextField
           fullWidth
-          label="가격대"
+          label='가격대'
           error={!!form.formState.errors.priceCategory}
           helperText={form.formState.errors.priceCategory?.message}
           {...form.register('priceCategory')}
@@ -83,7 +116,7 @@ export function StoreForm({ initialData, onSubmit, isLoading }: StoreFormProps) 
 
         <TextField
           fullWidth
-          label="연락처"
+          label='연락처'
           error={!!form.formState.errors.contactNumber}
           helperText={form.formState.errors.contactNumber?.message}
           {...form.register('contactNumber')}
@@ -91,7 +124,7 @@ export function StoreForm({ initialData, onSubmit, isLoading }: StoreFormProps) 
 
         <TextField
           fullWidth
-          label="영업 정보"
+          label='영업 정보'
           error={!!form.formState.errors.information}
           helperText={form.formState.errors.information?.message}
           {...form.register('information')}
@@ -99,7 +132,7 @@ export function StoreForm({ initialData, onSubmit, isLoading }: StoreFormProps) 
 
         <TextField
           fullWidth
-          label="설명"
+          label='설명'
           error={!!form.formState.errors.description}
           helperText={form.formState.errors.description?.message}
           {...form.register('description')}
@@ -107,7 +140,7 @@ export function StoreForm({ initialData, onSubmit, isLoading }: StoreFormProps) 
 
         <TextField
           fullWidth
-          label="이벤트 설명"
+          label='이벤트 설명'
           error={!!form.formState.errors.eventDescription}
           helperText={form.formState.errors.eventDescription?.message}
           {...form.register('eventDescription')}
@@ -115,7 +148,7 @@ export function StoreForm({ initialData, onSubmit, isLoading }: StoreFormProps) 
 
         <TextField
           fullWidth
-          label="찾아오는 길"
+          label='찾아오는 길'
           error={!!form.formState.errors.direction}
           helperText={form.formState.errors.direction?.message}
           {...form.register('direction')}
@@ -128,38 +161,23 @@ export function StoreForm({ initialData, onSubmit, isLoading }: StoreFormProps) 
               checked={form.watch('isParkingAvailable')}
             />
           }
-          label="주차 가능"
+          label='주차 가능'
         />
 
         <FormControlLabel
-          control={
-            <Switch
-              {...form.register('isNewOpen')}
-              checked={form.watch('isNewOpen')}
-            />
-          }
-          label="신규 오픈"
+          control={<Switch {...form.register('isNewOpen')} checked={form.watch('isNewOpen')} />}
+          label='신규 오픈'
         />
 
         <FormControlLabel
-          control={
-            <Switch
-              {...form.register('isTakeOut')}
-              checked={form.watch('isTakeOut')}
-            />
-          }
-          label="포장 가능"
+          control={<Switch {...form.register('isTakeOut')} checked={form.watch('isTakeOut')} />}
+          label='포장 가능'
         />
 
-        <Button
-          type="submit"
-          variant="contained"
-          disabled={isLoading}
-          fullWidth
-        >
+        <Button type='submit' variant='contained' disabled={isLoading} fullWidth>
           {isLoading ? '저장 중...' : '저장'}
         </Button>
       </Stack>
     </Box>
   );
-} 
+}

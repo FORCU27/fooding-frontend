@@ -112,6 +112,7 @@ export default function UserList({ role }: { role: string }) {
               <TableCell>닉네임</TableCell>
               <TableCell>전화번호</TableCell>
               <TableCell>성별</TableCell>
+              <TableCell>가입방식</TableCell>
               <TableCell>가입일</TableCell>
               <TableCell>마지막 로그인</TableCell>
               <TableCell>작업</TableCell>
@@ -125,6 +126,7 @@ export default function UserList({ role }: { role: string }) {
                 <TableCell>{user.nickname}</TableCell>
                 <TableCell>{user.phoneNumber || '-'}</TableCell>
                 <TableCell>{user.gender}</TableCell>
+                <TableCell>{user.provider}</TableCell>
                 <TableCell>{new Date(user.createdAt).toLocaleString()}</TableCell>
                 <TableCell>
                   {user.lastLoggedInAt ? new Date(user.lastLoggedInAt).toLocaleString() : '-'}
