@@ -4,18 +4,21 @@ import React from 'react';
 
 import { Metadata } from 'next';
 
+import { Providers } from './providers';
 import AdminLayout from '@/components/Layout/AdminLayout';
 
 export const metadata: Metadata = {
-  title: 'FOODING-BACK-OFFICE',
-  icons: [{ rel: 'icon', url: '/favicon.ico' }],
+  title: 'Fooding Admin',
+  description: 'Fooding Admin Dashboard',
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang='en'>
       <body>
-        <AdminLayout>{children}</AdminLayout>
+        <Providers>
+          <AdminLayout>{children}</AdminLayout>
+        </Providers>
       </body>
     </html>
   );

@@ -1,9 +1,7 @@
-const UserListPage = () => {
-  return (
-    <main>
-      <h1>users</h1>
-    </main>
-  );
-};
+'use client';
 
-export default UserListPage;
+import UserList from '@/components/UserList';
+
+export default function UsersPage() {
+  return <UserList role='USER' />;
+}

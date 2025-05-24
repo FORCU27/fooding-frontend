@@ -1,4 +1,4 @@
-@import "tailwindcss"; 
+@import 'tailwindcss';
 
-@import "@repo/tailwind-config/css/shared.css";
-@import "@repo/tailwind-config/css/b2c.css";
+@import '@repo/design-system/styles/shared.css';
+@import '@repo/design-system/styles/b2b.css';
