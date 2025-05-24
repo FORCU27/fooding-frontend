@@ -4,6 +4,7 @@ import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
 import { storeApi, userApi } from '@repo/api/app';
+import { LeftArrowIcon } from '@repo/design-system/icons';
 import { useQuery } from '@tanstack/react-query';
 
 import { StoreServiceType, STORE_SERVICE_PATHS } from './types';
@@ -53,21 +54,7 @@ export default function StoreSelectPage() {
     <div className='flex h-screen flex-col'>
       <div className='flex-1  flex flex-col items-center justify-center'>
         <button className='absolute top-[50px] left-[80px] w-[60px] h-[60px]'>
-          <svg
-            width='60'
-            height='60'
-            viewBox='0 0 60 60'
-            fill='none'
-            xmlns='http://www.w3.org/2000/svg'
-          >
-            <path
-              d='M47.5 30H12.5M12.5 30L30 47.5M12.5 30L30 12.5'
-              stroke='var(--color-gray-5)'
-              strokeWidth='5'
-              strokeLinecap='round'
-              strokeLinejoin='round'
-            />
-          </svg>
+          <LeftArrowIcon />
         </button>
         <div className='headline-3-2'>서비스 선택</div>
         <div className='body-1 text-gray-5'>원하시는 서비스를 선택해주세요</div>
