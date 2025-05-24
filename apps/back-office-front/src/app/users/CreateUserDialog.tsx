@@ -7,6 +7,8 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
+  FormControl,
+  InputLabel,
   MenuItem,
   Select,
   TextField,
@@ -74,17 +76,21 @@ export function CreateUserDialog({
               onChange={(e) => setFormData({ ...formData, phoneNumber: e.target.value })}
               placeholder='010-1234-5678'
             />
-            <Select
-              label='성별'
-              value={formData.gender ?? 'NONE'}
-              onChange={(e) => setFormData({ ...formData, gender: e.target.value })}
-              required
-            >
-              <MenuItem value={'NONE'}>NONE</MenuItem>
-              <MenuItem value={'MALE'}>MALE</MenuItem>
-              <MenuItem value={'FEMALE'}>FEMALE</MenuItem>
-              <MenuItem value={'OTHER'}>OTHER</MenuItem>
-            </Select>
+            <FormControl required>
+              <InputLabel id='gender-select-label'>성별</InputLabel>
+              <Select
+                labelId='gender-select-label'
+                label='성별'
+                value={formData.gender ?? 'NONE'}
+                onChange={(e) => setFormData({ ...formData, gender: e.target.value })}
+                required
+              >
+                <MenuItem value={'NONE'}>NONE</MenuItem>
+                <MenuItem value={'MALE'}>MALE</MenuItem>
+                <MenuItem value={'FEMALE'}>FEMALE</MenuItem>
+                <MenuItem value={'OTHER'}>OTHER</MenuItem>
+              </Select>
+            </FormControl>
           </Box>
         </DialogContent>
         <DialogActions>

@@ -8,6 +8,7 @@ export const AdminUserResponseSchema = z.object({
   nickname: z.string().nullable(),
   phoneNumber: z.string().nullable(),
   gender: z.string(),
+  provider: z.string(),
   createdAt: z.string(),
   lastLoggedInAt: z.string().nullable(),
 });

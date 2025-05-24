@@ -10,6 +10,8 @@ import {
   Box,
   Select,
   MenuItem,
+  FormControl,
+  InputLabel,
 } from '@mui/material';
 import { AdminUserResponse, AdminUpdateUserRequest } from '@repo/api/users';
 
@@ -66,17 +68,20 @@ export function EditUserDialog({
               value={formData.phoneNumber}
               onChange={(e) => setFormData({ ...formData, phoneNumber: e.target.value })}
             />
-            <Select
-              label='성별'
-              value={formData.gender ?? 'NONE'}
-              onChange={(e) => setFormData({ ...formData, gender: e.target.value })}
-              required
-            >
-              <MenuItem value={'NONE'}>NONE</MenuItem>
-              <MenuItem value={'MALE'}>MALE</MenuItem>
-              <MenuItem value={'FEMALE'}>FEMALE</MenuItem>
-              <MenuItem value={'OTHER'}>OTHER</MenuItem>
-            </Select>
+            <FormControl required>
+              <InputLabel id='gender-select-label'>성별</InputLabel>
+              <Select
+                labelId='gender-select-label'
+                value={formData.gender ?? 'NONE'}
+                onChange={(e) => setFormData({ ...formData, gender: e.target.value })}
+                required
+              >
+                <MenuItem value={'NONE'}>NONE</MenuItem>
+                <MenuItem value={'MALE'}>MALE</MenuItem>
+                <MenuItem value={'FEMALE'}>FEMALE</MenuItem>
+                <MenuItem value={'OTHER'}>OTHER</MenuItem>
+              </Select>
+            </FormControl>
           </Box>
         </DialogContent>
         <DialogActions>
