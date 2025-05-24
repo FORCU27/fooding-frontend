@@ -34,3 +34,13 @@ export const User = z.object({
 export type User = z.infer<typeof User>;
 
 export const GetUserResponse = ApiResponse(User);
+
+export const AppStoreService = z.object({
+  id: z.number(),
+  storeId: z.number(),
+  storeName: z.string(),
+  type: z.string(),
+  activation: z.boolean(),
+});
+
+export const GetAppStoreServiceResponse = ApiResponse(z.array(AppStoreService));

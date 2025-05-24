@@ -4,11 +4,15 @@ import { PageResponseSchema, AdminCreateUserRequest, AdminUpdateUserRequest } fr
 export * from './type';
 
 export const userApi = {
-  getUserList: async (page: number = 0, size: number = 10) => {
+  getUserList: async (page: number = 0, size: number = 10, role?: string) => {
     const params = new URLSearchParams({
       pageNum: (page + 1).toString(),
       pageSize: size.toString(),
     });
+    
+    if (role) {
+      params.append('role', role);
+    }
 
     const response = await api.get(`/admin/users?${params.toString()}`);
     console.log('response', response);
@@ -17,12 +21,10 @@ export const userApi = {
     return result;
   },
 
-  createUser: async (data: AdminCreateUserRequest) =>
-    api.post<number>('/admin/users', data),
+  createUser: async (data: AdminCreateUserRequest) => api.post<number>('/admin/users', data),
 
   updateUser: async ({ id, body }: { id: number; body: AdminUpdateUserRequest }) =>
     api.put(`/admin/users/${id}`, body),
 
-  deleteUser: async (id: number) =>
-    api.delete(`/admin/users/${id}`),
-}; 
+  deleteUser: async (id: number) => api.delete(`/admin/users/${id}`),
+};

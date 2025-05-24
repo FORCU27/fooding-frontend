@@ -1,0 +1,84 @@
+@source "../**/*.{ts,tsx}";
+
+@theme inline {
+  /* Primary */
+  --color-primary-pink: oklch(0.65 0.2407 23.93);
+  --color-pink-putton-press: #cc202f;
+
+  /* Fooding */
+  --color-fooding-yellow: oklch(0.88 0.2 100);
+  --color-fooding-green: oklch(0.74 0.19 145);
+  --color-fooding-blue: oklch(0.92 0.23 200);
+  --color-fooding-purple: oklch(0.6 0.14 300);
+
+  /* Interaction */
+  --color-error-red: oklch(0.61 0.21 25);
+  --color-attention-yellow: oklch(0.85 0.18 95);
+  --color-success-green: oklch(0.6 0.22 135);
+
+  /* Grays */
+  --color-gray-1: oklch(0.95 0 0);
+  --color-gray-2: oklch(0.92 0 0);
+  --color-gray-3: oklch(0.88 0 0);
+  --color-gray-4: oklch(0.7 0 0);
+  --color-gray-5: oklch(0.57 0 0);
+  --color-gray-6: #292929;
+
+  /* Base */
+  --color-white: oklch(1 0 0);
+  --color-black: #111111;
+
+  /* Animation Timings */
+  --ease-out-quad: cubic-bezier(0.5, 1, 0.89, 1);
+  --ease-out-cubic: cubic-bezier(0.33, 1, 0.68, 1);
+  --ease-out-quart: cubic-bezier(0.25, 1, 0.5, 1);
+  --ease-out-quint: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+
+  /* Animation Utilities */
+  --animate-in: enter var(--tw-duration, 150ms) var(--tw-ease, ease);
+  --animate-out: exit var(--tw-duration, 150ms) var(--tw-ease, ease);
+
+  @keyframes enter {
+    from {
+      opacity: var(--tw-enter-opacity, 1);
+      transform: translate3d(var(--tw-enter-translate-x, 0), var(--tw-enter-translate-y, 0), 0)
+        scale3d(var(--tw-enter-scale, 1), var(--tw-enter-scale, 1), var(--tw-enter-scale, 1))
+        rotate(var(--tw-enter-rotate, 0));
+    }
+  }
+
+  @keyframes exit {
+    to {
+      opacity: var(--tw-exit-opacity, 1);
+      transform: translate3d(var(--tw-exit-translate-x, 0), var(--tw-exit-translate-y, 0), 0)
+        scale3d(var(--tw-exit-scale, 1), var(--tw-exit-scale, 1), var(--tw-exit-scale, 1))
+        rotate(var(--tw-exit-rotate, 0));
+    }
+  }
+
+  --font-family-sans: var(--font-pretendard), sans-serif;
+}
+
+@utility fade-in {
+  --tw-enter-opacity: 0;
+}
+
+@utility fade-out {
+  --tw-exit-opacity: 0;
+}
+
+@utility slide-in-from-bottom {
+  --tw-enter-translate-y: 100%;
+}
+
+@utility slide-out-to-bottom {
+  --tw-exit-translate-y: 100%;
+}
+
+@utility scrollbar-hide {
+  scrollbar-width: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}

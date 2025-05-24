@@ -1,6 +1,7 @@
 {
   "name": "pos-desktop",
   "version": "1.0.0",
+  "private": true,
   "scripts": {
     "build": "tsc src/main.ts --outDir build",
     "start": "yarn build && electron ./build/main.js"
