@@ -9,7 +9,8 @@ export const useInfiniteNotificationList = () => {
       return notificationApi.getNotificationList({
         page: pageParam,
         size: 20,
-        sort: ['sentAt,desc'],
+        sortType: 'RECENT',
+        sortDirection: 'DESCENDING',
       });
     },
     getNextPageParam: (lastPage) => {
