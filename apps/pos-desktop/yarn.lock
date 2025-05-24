@@ -95,15 +95,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"app-desktop@workspace:.":
-  version: 0.0.0-use.local
-  resolution: "app-desktop@workspace:."
-  dependencies:
-    electron: "npm:^35.1.4"
-    typescript: "npm:^5.8.3"
-  languageName: unknown
-  linkType: soft
-
 "boolean@npm:^3.0.1":
   version: 3.2.0
   resolution: "boolean@npm:3.2.0"
@@ -500,6 +491,15 @@ __metadata:
   checksum: 10/6c72f5243303d9c60bd98e6446ba7d30ae29e3d56fdb6fae8767e8ba6386f33ee284c97efe3230a0d0217e2b1723b8ab490b1bbf34fcbb2180dbc8a9de47850d
   languageName: node
   linkType: hard
+
+"pos-desktop@workspace:.":
+  version: 0.0.0-use.local
+  resolution: "pos-desktop@workspace:."
+  dependencies:
+    electron: "npm:^35.1.4"
+    typescript: "npm:^5.8.3"
+  languageName: unknown
+  linkType: soft
 
 "progress@npm:^2.0.3":
   version: 2.0.3
