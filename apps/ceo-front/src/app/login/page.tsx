@@ -114,7 +114,7 @@ export default function LoginPage() {
           });
 
           const returnTo = searchParams.get('returnTo') || '/';
-          router.push(returnTo);
+          router.replace(returnTo);
         } catch (error) {
           console.error('Social login failed:', error);
         } finally {
