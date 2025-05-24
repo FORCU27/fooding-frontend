@@ -1,30 +1,21 @@
-import React from 'react';
+'use client';
 
-import { Box } from '@mui/material';
+import React from 'react';
 
 interface Props {
   children: React.ReactNode;
 }
 
-const drawerWidth = 240;
-const appBarHeight = 64;
-
 const MainContent = ({ children }: Props) => (
-  <Box
-    component='main'
-    sx={{
-      display: 'flex',
-      alignContent: 'center',
-      flexDirection: 'column',
-      overflow: 'hidden',
-      width: { sm: `calc(100vw - ${drawerWidth}px)`, xs: '100%' },
-      ml: { sm: `${drawerWidth}px` },
-      height: `calc(100vh - ${appBarHeight}px)`,
-      mt: `${appBarHeight}px`,
-    }}
+  <main
+    className={`
+      flex flex-col overflow-hidden
+      h-[calc(100vh-64px)] mt-[64px]
+      w-full sm:ml-[240px] sm:w-[calc(100vw-240px)]
+    `}
   >
     {children}
-  </Box>
+  </main>
 );
 
 export default MainContent;

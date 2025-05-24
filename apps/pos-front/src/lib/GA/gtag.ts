@@ -1,6 +1,6 @@
-import { config } from '@/config';
+import { env } from '@/configs/env';
 
-export const GA_TRACKING_ID = config.GA_MEASUREMENT_ID || '';
+export const GA_TRACKING_ID = env.GA_MEASUREMENT_ID || '';
 
 export const pageview = (url: string) => {
   if (!GA_TRACKING_ID || typeof window === 'undefined' || typeof window.gtag !== 'function') {

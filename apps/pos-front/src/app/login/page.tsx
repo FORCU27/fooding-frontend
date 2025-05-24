@@ -3,14 +3,22 @@ import Image from 'next/image';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { JSX, useCallback, useState } from 'react';
 
-import { AuthSocialLoginBody, SocialPlatform, socialPlatforms } from '@repo/api/auth';
+import {
+  authApi,
+  AuthLoginBody,
+  AuthSocialLoginBody,
+  SocialPlatform,
+  socialPlatforms,
+} from '@repo/api/auth';
 import { STORAGE_KEYS } from '@repo/api/configs/storage-keys';
 import { SocialButton } from '@repo/design-system/components';
 import { AppleIcon, GoogleIcon, KakaoIcon, NaverIcon } from '@repo/design-system/icons';
+import axios from 'axios';
 import Cookies from 'js-cookie';
 
 import { useAuth } from '@/components/Provider/AuthProvider';
 import { env } from '@/configs/env';
+import LoginForm from '@/components/Login/LoginForm';
 
 const platformIcons: Record<SocialPlatform, JSX.Element> = {
   KAKAO: <KakaoIcon size={30} />,
@@ -25,7 +33,8 @@ const platformStyles: Record<SocialPlatform, string> = {
   APPLE: 'bg-black rounded-[50%] h-[64px] w-[64px]',
   GOOGLE: 'bg-[#F2F2F2] rounded-[50%] h-[64px] w-[64px]',
 };
-const getPlatformUrl = (platform: SocialPlatform): string | null => {
+
+const getPlatformUrl = (platform: SocialPlatform): string => {
   const {
     GOOGLE_CLIENT_ID,
     OAUTH_REDIRECT_URI,
@@ -36,10 +45,10 @@ const getPlatformUrl = (platform: SocialPlatform): string | null => {
   } = env;
 
   const platformUrls: Record<SocialPlatform, string> = {
-    GOOGLE: `https://accounts.google.com/o/oauth2/v2/auth?client_id=${GOOGLE_CLIENT_ID}&redirect_uri=${OAUTH_REDIRECT_URI}&response_type=code&scope=email%20profile`,
     KAKAO: `https://kauth.kakao.com/oauth/authorize?response_type=code&client_id=${KAKAO_CLIENT_ID}&redirect_uri=${OAUTH_REDIRECT_URI}`,
     NAVER: `https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=${NAVER_CLIENT_ID}&redirect_uri=${OAUTH_REDIRECT_URI}&state=test1234`,
     APPLE: `https://appleid.apple.com/auth/authorize?response_type=code&response_mode=form_post&client_id=${APPLE_CLIENT_ID}&redirect_uri=${OAUTH_APPLE_REDIRECT_URI}&scope=name%20email&state=test123`,
+    GOOGLE: `https://accounts.google.com/o/oauth2/v2/auth?client_id=${GOOGLE_CLIENT_ID}&redirect_uri=${OAUTH_REDIRECT_URI}&response_type=code&scope=email%20profile`,
   };
 
   return platformUrls[platform];
@@ -61,7 +70,8 @@ const openSocialLoginPopup = (loginUrl: string) => {
 export default function LoginPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const [, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string>('');
 
   const { socialLogin } = useAuth();
 
@@ -74,10 +84,13 @@ export default function LoginPage() {
       if (!popup) return;
 
       const handleMessage = async (event: MessageEvent) => {
+        // FIXME: 추후 수정
         const allowedOrigins = [
           'http://localhost:3000',
-          'https://ceo-stage.fooding.im',
-          'https://ceo.fooding.im',
+          'https://pos.fooding.im',
+          'https://pos-stage.fooding.im',
+          'https://fooding.im',
+          'https://stage.fooding.im',
         ];
 
         if (!allowedOrigins.includes(event.origin)) {
@@ -103,7 +116,7 @@ export default function LoginPage() {
               platform === 'APPLE'
                 ? env.OAUTH_APPLE_REDIRECT_URI || ''
                 : env.OAUTH_REDIRECT_URI || '',
-            role: 'CEO',
+            role: 'USER',
           };
           await socialLogin(credentials);
 
@@ -117,6 +130,11 @@ export default function LoginPage() {
           router.replace(returnTo);
         } catch (error) {
           console.error('Social login failed:', error);
+          setErrorMessage(
+            axios.isAxiosError(error) && error.response?.data?.message
+              ? error.response.data.message
+              : '소셜 로그인에 실패했습니다.',
+          );
         } finally {
           setIsLoading(false);
           window.removeEventListener('message', handleMessage);
@@ -128,35 +146,62 @@ export default function LoginPage() {
     [router, searchParams, socialLogin],
   );
 
+  const handleSubmit = async (data: AuthLoginBody) => {
+    try {
+      setIsLoading(true);
+
+      const credentials = {
+        ...data,
+        role: 'USER' as const,
+      };
+
+      await authApi.login(credentials);
+
+      const returnTo = searchParams.get('returnTo') || '/';
+      router.replace(returnTo);
+    } catch (error) {
+      console.error('로그인 실패:', error);
+
+      let errorMessageText = '로그인에 실패했습니다.';
+
+      if (axios.isAxiosError(error)) {
+        const message = error.response?.data?.message;
+        if (typeof message === 'string') {
+          errorMessageText = message;
+        }
+      }
+
+      setErrorMessage(errorMessageText);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
-    <div className='flex w-screen h-screen justify-center items-center'>
-      <div className='flex flex-col p-4 justify-around items-center w-[554px] h-[757px] border border-gray-3 rounded-[11px]'>
-        <div className='h-[90px] flex flex-col justify-center items-center'>
-          <Image
-            src='/images/fooding-logo.png'
-            alt='logo'
-            width={253}
-            height={60}
-            className='mb-4'
-          />
-          <p className='text-gray-5 text-medium'>사장님을 위한 전용 공간에 오신 걸 환영합니다</p>
-        </div>
-
-        {/* FIXME: 추후 일반 로그인 추가 */}
-
-        <div className='flex gap-[16]'>
-          {socialPlatforms.map((platform) => (
-            <div key={platform} className='flex flex-col justify-between items-center w-[96px]'>
-              <SocialButton
-                platform={platform}
-                icon={platformIcons[platform]}
-                onClick={() => handleSocialLogin(platform)}
-                styles={platformStyles[platform]}
-              />
-            </div>
-          ))}
-        </div>
+    <main className='flex mt-[50px] maxWidth-[1280px] justify-center'>
+      <div className='flex flex-col items-center'>
+        <Image
+          src='/images/fooding-logo.png'
+          alt='logo'
+          width={253}
+          height={60}
+          className='mb-[100px]'
+        />
+        <LoginForm handleSubmit={handleSubmit} errorMessage={errorMessage} isLoading={isLoading} />
       </div>
-    </div>
+
+      <div className='fixed top-[416px] right-[80px] flex flex-col gap-[16]'>
+        {socialPlatforms.map((platform) => (
+          <div key={platform} className='flex flex-col justify-between items-center w-[96px]'>
+            <SocialButton
+              platform={platform}
+              icon={platformIcons[platform]}
+              onClick={() => handleSocialLogin(platform)}
+              styles={platformStyles[platform]}
+            />
+          </div>
+        ))}
+      </div>
+    </main>
   );
 }
