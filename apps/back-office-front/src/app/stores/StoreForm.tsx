@@ -64,8 +64,8 @@ export function StoreForm({ initialData, onSubmit, isLoading }: StoreFormProps) 
             labelId='user-select-label'
             label='점주'
             value={initialData?.ownerId}
-            onChange={(e) => form.register('ownerId')}
-            disabled={initialData && true}
+            onChange={(e) => form.setValue('ownerId', e.target.value)}
+            disabled={!!initialData}
           >
             {users.map((user) => (
               <MenuItem key={user.id} value={user.id}>
