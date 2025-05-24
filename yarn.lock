@@ -6682,6 +6682,7 @@ __metadata:
     "@repo/eslint-config": "workspace:*"
     "@repo/prettier-config": "workspace:*"
     "@repo/typescript-config": "workspace:*"
+    "@tailwindcss/postcss": "npm:^4.1.4"
     "@tanstack/react-query": "npm:^5.74.3"
     "@types/gtag.js": "npm:^0.0.20"
     "@types/js-cookie": "npm:^3"
