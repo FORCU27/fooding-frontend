@@ -1,8 +1,11 @@
 import React, { useEffect } from 'react';
 
+import { ArrowLeftIcon, CloseIcon } from '@repo/design-system/icons';
+
 type ModalProps = {
   open: boolean;
   onClose: () => void;
+  backBtn?: boolean;
   children: React.ReactNode;
   className?: string;
   overlayClassName?: string;
@@ -13,6 +16,7 @@ type ModalProps = {
 export default function Modal({
   open,
   onClose,
+  backBtn = false,
   children,
   className = '',
   overlayClassName = '',
@@ -35,27 +39,35 @@ export default function Modal({
     <div
       className={`fixed inset-0 z-50 flex items-center justify-center bg-black/40 ${overlayClassName}`}
       onClick={closeOnOverlayClick ? onClose : undefined}
-      aria-modal="true"
-      role="dialog"
+      aria-modal='true'
+      role='dialog'
       tabIndex={-1}
     >
       <div
-        className={`relative bg-white rounded-2xl shadow-xl p-8 ${className}`}
-        onClick={e => e.stopPropagation()} // 모달 내부 클릭 시 닫히지 않게
+        className={`fixed inset-y-[20px] inset-x-[310px] bg-white rounded-[40px] flex items-center justify-center ${className}`}
+        onClick={(e) => e.stopPropagation()} // 모달 내부 클릭 시 닫히지 않게
       >
-        {showCloseButton && (
+        {backBtn && (
           <button
-            className="absolute top-[30px] right-[30px] text-2xl text-gray-400 hover:text-gray-700"
+            className='absolute top-[30px] left-[30px] text-2xl text-gray-400 hover:text-gray-700'
             onClick={onClose}
-            aria-label="닫기"
-            type="button"
+            aria-label='닫기'
+            type='button'
           >
-            <svg width="60" height="60" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M45 15L15 45M15 15L45 45" stroke="#111111" strokeWidth="5" strokeLinecap="round" strokeLinejoin="round"/>
-            </svg>
+            <ArrowLeftIcon />
           </button>
         )}
-        {children}
+        {showCloseButton && (
+          <button
+            className='absolute top-[30px] right-[30px] text-2xl text-gray-400 hover:text-gray-700'
+            onClick={onClose}
+            aria-label='닫기'
+            type='button'
+          >
+            <CloseIcon />
+          </button>
+        )}
+        <div className='w-full h-full flex items-center justify-center'>{children}</div>
       </div>
     </div>
   );

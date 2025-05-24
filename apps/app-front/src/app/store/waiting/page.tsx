@@ -77,17 +77,17 @@ const Logo = () => (
 
 const StoreName = () => (
   <div className='space-y-2'>
-    <div className='headline-2'>어서오세요</div>
+    <div className='headline-3-1'>어서오세요</div>
     <div>
       <p className='headline-1'>
-        민서네 김밥 짱짱 홍대점<span className='headline-2'> 입니다</span>
+        민서네 김밥 짱짱 홍대점<span className='headline-2-1'> 입니다</span>
       </p>
     </div>
   </div>
 );
 
 const WaitingInfo = () => (
-  <div className='subtitle-3 text-gray-5 mt-8'>
+  <div className='subtitle-4-2 text-gray-5 mt-8'>
     <p>휴대폰 번호를 입력하시면</p>
     <p>카카오톡으로 실시간 웨이팅 현황을 알려드려요</p>
   </div>
@@ -96,13 +96,13 @@ const WaitingInfo = () => (
 const WaitingStats = () => (
   <div className='flex flex-row mt-12'>
     <div className='w-[250px] flex flex-col items-center'>
-      <h3 className='subtitle-1 font-bold mb-4 mt-4'>현재 웨이팅</h3>
+      <h3 className='subtitle-2-2 font-bold mb-4 mt-4'>현재 웨이팅</h3>
       <p className='text-[125px] font-bold text-primary-pink'>
         3<span className='text-3xl ml-2'>팀</span>
       </p>
     </div>
     <div className='w-[250px] border-l border-dark flex flex-col items-center'>
-      <h3 className='subtitle-1 font-bold mb-4 mt-4'>예상시간</h3>
+      <h3 className='subtitle-2-2 font-bold mb-4 mt-4'>예상시간</h3>
       <p className='text-[125px] font-bold text-primary-pink'>
         7<span className='text-3xl ml-2'>분</span>
       </p>
@@ -118,7 +118,7 @@ const ActionButtons = () => {
       <Button size='sm' variant='default' onClick={() => router.push('/store/register')}>
         바로 줄서기
       </Button>
-      <button className='px-8 py-4 rounded-full bg-background-primary text-secondary text-lg font-medium border border-gray-200 hover:bg-gray-100'>
+      <button className='px-8 py-4 subtitle-2-2 text-gray-5 rounded-full bg-background-primary  border-3 border-gray-3'>
         웨이팅 목록
       </button>
     </div>
@@ -233,25 +233,25 @@ export default function WaitingPage() {
       <div className='absolute bottom-20 right-20'>
         <FoodImage />
       </div>
-      <Modal open={isModalOpen} onClose={() => setIsModalOpen(false)}>
-        <PhoneStep
-          formData={formData}
-          updateFormData={updateFormData}
-          onNext={handleNextStep}
-          onPrev={handlePrevStep}
-        />
-        {/* <MemberCountStep
-          formData={formData}
-          updateFormData={updateFormData}
-          onNext={handleNextStep}
-          onPrev={handlePrevStep}
-        />
-        <NameStep
+      <Modal open={isModalOpen} backBtn={true} onClose={() => setIsModalOpen(false)}>
+        {/* <PhoneStep
           formData={formData}
           updateFormData={updateFormData}
           onNext={handleNextStep}
           onPrev={handlePrevStep}
         /> */}
+        {/* <MemberCountStep
+          formData={formData}
+          updateFormData={updateFormData}
+          onNext={handleNextStep}
+          onPrev={handlePrevStep}
+        /> */}
+        <NameStep
+          formData={formData}
+          updateFormData={updateFormData}
+          onNext={handleNextStep}
+          onPrev={handlePrevStep}
+        />
       </Modal>
     </div>
   );
