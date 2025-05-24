@@ -1,16 +1,26 @@
 import z from 'zod';
 
-import { ApiResponse } from '../../shared';
+import { createPageResponseSchema } from '../../shared';
+
+export const notificationTypes = ['EVENT', 'NOTICE', 'SERVICE'] as const;
+export const NotificationType = z.enum(notificationTypes);
+export type NotificationType = z.infer<typeof NotificationType>;
 
 export type Notification = z.infer<typeof Notification>;
 export const Notification = z.object({
   id: z.number(),
-  type: z.union([z.literal('event'), z.literal('notice')]),
+  type: NotificationType,
   title: z.string(),
   content: z.string(),
   sentAt: z.string(),
   read: z.boolean(),
 });
 
+export type GetNotificationListParams = {
+  page: number;
+  size: number;
+  sort: string[];
+};
+
 export type GetNotificationListResponse = z.infer<typeof GetNotificationListResponse>;
-export const GetNotificationListResponse = ApiResponse(z.array(Notification));
+export const GetNotificationListResponse = createPageResponseSchema(Notification);

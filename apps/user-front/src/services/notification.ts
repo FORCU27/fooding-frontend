@@ -1,10 +1,32 @@
 import { notificationApi } from '@repo/api/user/notifications';
-import { useSuspenseQuery } from '@tanstack/react-query';
+import { useSuspenseInfiniteQuery } from '@tanstack/react-query';
 
-export const useNotifications = () => {
-  return useSuspenseQuery({
+export const useInfiniteNotificationList = () => {
+  const { data, fetchNextPage } = useSuspenseInfiniteQuery({
+    initialPageParam: 1,
     queryKey: ['notifications'],
-    queryFn: notificationApi.getNotificationList,
-    select: (response) => response.data,
+    queryFn: ({ pageParam }) => {
+      return notificationApi.getNotificationList({
+        page: pageParam,
+        size: 20,
+        sort: ['sentAt,desc'],
+      });
+    },
+    getNextPageParam: (lastPage) => {
+      const { pageInfo } = lastPage.data;
+
+      if (pageInfo.pageNum < pageInfo.totalPages) {
+        return pageInfo.pageNum + 1;
+      }
+
+      return undefined;
+    },
   });
+
+  const notifications = data.pages.flatMap((page) => page.data.list);
+
+  return {
+    notifications,
+    fetchNextPage,
+  };
 };
