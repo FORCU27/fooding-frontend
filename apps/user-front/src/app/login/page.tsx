@@ -104,8 +104,8 @@ export default function LoginPage() {
         if (!code) return;
         window.removeEventListener('message', handleMessage);
 
-        setIsLoading(true);
         try {
+          setIsLoading(true);
           const credentials: AuthSocialLoginBody = {
             code,
             provider: platform,
@@ -134,6 +134,9 @@ export default function LoginPage() {
       };
 
       window.addEventListener('message', handleMessage);
+      return () => {
+        window.removeEventListener('message', handleMessage);
+      };
     },
     [router, searchParams, socialLogin],
   );
