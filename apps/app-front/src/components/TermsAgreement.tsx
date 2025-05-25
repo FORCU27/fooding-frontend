@@ -1,49 +1,6 @@
 import { useState } from 'react';
 
-import { ArrowLeftIcon } from '@repo/design-system/icons';
-
-// TODO icons 폴더로 분리
-const CheckOffIcon = () => (
-  <svg
-    role='img'
-    aria-label='check off'
-    width='34'
-    height='34'
-    viewBox='0 0 34 34'
-    fill='none'
-    xmlns='http://www.w3.org/2000/svg'
-  >
-    <circle cx='17' cy='17' r='17' fill='#E2DFDF' />
-    <path
-      d='M24.5642 12.2891L14.1753 22.678L9.45312 17.9557'
-      stroke='white'
-      strokeWidth='2'
-      strokeLinecap='round'
-      strokeLinejoin='round'
-    />
-  </svg>
-);
-
-const CheckOnIcon = () => (
-  <svg
-    role='img'
-    aria-label='check on'
-    width='34'
-    height='34'
-    viewBox='0 0 34 34'
-    fill='none'
-    xmlns='http://www.w3.org/2000/svg'
-  >
-    <circle cx='17' cy='17' r='17' fill='#FF2B3D' />
-    <path
-      d='M24.5642 12.2891L14.1753 22.678L9.45312 17.9557'
-      stroke='white'
-      strokeWidth='2'
-      strokeLinecap='round'
-      strokeLinejoin='round'
-    />
-  </svg>
-);
+import { ArrowLeftIcon, CheckIcon } from '@repo/design-system/icons';
 
 type CheckedKeys = 'termsAgreed' | 'privacyPolicyAgreed' | 'thirdPartyAgreed' | 'marketingAgreed';
 
@@ -89,7 +46,7 @@ const TermsAgreement = ({ onClose }: TermsAgreementProps) => {
 
   const handleSubmit = () => {
     if (!isAllRequiredAgreed) return;
-    console.log('Agreed data:', checked);
+    onClose(false);
   };
 
   return (
@@ -106,7 +63,7 @@ const TermsAgreement = ({ onClose }: TermsAgreementProps) => {
         <h1 className='headline-5 text-center'>이용약관 동의</h1>
       </header>
 
-      <section className='flex flex-col justify-center w-[640px] pt-[50px]'>
+      <section className='flex flex-col justify-center w-[640px] pt-[50px] relative'>
         <button
           type='button'
           onClick={toggleAll}
@@ -114,10 +71,14 @@ const TermsAgreement = ({ onClose }: TermsAgreementProps) => {
           className='rounded-full border-2 border-gray-2 py-[28px] px-[40px] flex items-center justify-between cursor-pointer w-full'
         >
           <span className='subtitle-2-1'>전체 동의</span>
-          {allAgreed ? <CheckOnIcon /> : <CheckOffIcon />}
+          {allAgreed ? (
+            <CheckIcon sizeMode='large' variant='default' />
+          ) : (
+            <CheckIcon sizeMode='large' variant='disabled' />
+          )}
         </button>
 
-        <ul className='space-y-2 px-[40px] mt-6 pt-[10px]'>
+        <ul className='px-[40px] pt-[10px]'>
           {terms.map((term) => (
             <li key={term.key} className='flex justify-between items-center pt-[30px]'>
               <label className='flex gap-[8px] items-center cursor-pointer'>
@@ -144,7 +105,11 @@ const TermsAgreement = ({ onClose }: TermsAgreementProps) => {
                 aria-checked={checked[term.key as CheckedKeys]}
                 tabIndex={0}
               >
-                {checked[term.key as CheckedKeys] ? <CheckOnIcon /> : <CheckOffIcon />}
+                {checked[term.key as CheckedKeys] ? (
+                  <CheckIcon sizeMode='large' variant='default' />
+                ) : (
+                  <CheckIcon sizeMode='large' variant='disabled' />
+                )}
               </div>
             </li>
           ))}
@@ -153,7 +118,7 @@ const TermsAgreement = ({ onClose }: TermsAgreementProps) => {
         <button
           onClick={handleSubmit}
           disabled={!isAllRequiredAgreed}
-          className={`subtitle-2-2 w-full py-[29px] text-center rounded-full ${isAllRequiredAgreed ? 'bg-red-500 text-white' : 'bg-gray-300 text-gray-500 cursor-not-allowed'}`}
+          className={`mt-[80px] subtitle-2-2 w-full py-[29px] text-center rounded-full ${isAllRequiredAgreed ? 'bg-red-500 text-white' : 'bg-gray-300 text-gray-500 cursor-not-allowed'}`}
           aria-disabled={!isAllRequiredAgreed}
         >
           동의하기
