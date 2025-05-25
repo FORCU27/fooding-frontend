@@ -12,6 +12,7 @@ export default function B2BCounterPlusIcon({
       viewBox='0 0 30 30'
       fill='none'
       xmlns='http://www.w3.org/2000/svg'
+      {...props}
     >
       <path
         d='M15.0018 7.94531V22.0582M7.94531 15.0018H22.0582'
