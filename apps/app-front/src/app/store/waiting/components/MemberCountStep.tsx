@@ -1,3 +1,4 @@
+import { StepProps } from '../types';
 import Button from '@/components/Button';
 
 type CounterButtonProps = {

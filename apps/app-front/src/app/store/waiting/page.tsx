@@ -4,6 +4,7 @@ import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import React, { useState, useEffect } from 'react';
 
+import { CompleteStep } from './components/CompleteStep';
 import ModalContent from './components/registerWating';
 import { Step, WaitingRegisterData } from './types';
 import Button from '@/components/Button';
@@ -254,6 +255,7 @@ export default function WaitingPage() {
           onPrev={handlePrevStep}
         />
       </Modal>
+      <CompleteStep />
     </div>
   );
 }
