@@ -2,10 +2,14 @@
 
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
+import { CompleteStep } from './components/CompleteStep';
+import ModalContent from './components/registerWating';
+import { Step, WaitingRegisterData } from './types';
 import Button from '@/components/Button';
 import FullScreenPanel from '@/components/FullScreenPanel';
+import Modal from '@/components/Modal';
 import TermsAgreement from '@/components/TermsAgreement';
 
 const Logo = () => (
@@ -74,17 +78,17 @@ const Logo = () => (
 
 const StoreName = () => (
   <div className='space-y-2'>
-    <div className='headline-2'>어서오세요</div>
+    <div className='headline-3-1'>어서오세요</div>
     <div>
       <p className='headline-1'>
-        민서네 김밥 짱짱 홍대점<span className='headline-2'> 입니다</span>
+        민서네 김밥 짱 홍대점<span className='headline-2-1'> 입니다</span>
       </p>
     </div>
   </div>
 );
 
 const WaitingInfo = () => (
-  <div className='subtitle-3 text-gray-5 mt-8'>
+  <div className='subtitle-4-2 text-gray-5 mt-8'>
     <p>휴대폰 번호를 입력하시면</p>
     <p>카카오톡으로 실시간 웨이팅 현황을 알려드려요</p>
   </div>
@@ -93,13 +97,13 @@ const WaitingInfo = () => (
 const WaitingStats = () => (
   <div className='flex flex-row mt-12'>
     <div className='w-[250px] flex flex-col items-center'>
-      <h3 className='subtitle-1 font-bold mb-4 mt-4'>현재 웨이팅</h3>
+      <h3 className='subtitle-2-2 font-bold mb-4 mt-4'>현재 웨이팅</h3>
       <p className='text-[125px] font-bold text-primary-pink'>
         3<span className='text-3xl ml-2'>팀</span>
       </p>
     </div>
     <div className='w-[250px] border-l border-dark flex flex-col items-center'>
-      <h3 className='subtitle-1 font-bold mb-4 mt-4'>예상시간</h3>
+      <h3 className='subtitle-2-2 font-bold mb-4 mt-4'>예상시간</h3>
       <p className='text-[125px] font-bold text-primary-pink'>
         7<span className='text-3xl ml-2'>분</span>
       </p>
@@ -107,23 +111,17 @@ const WaitingStats = () => (
   </div>
 );
 
-const ActionButtons = () => {
+const ActionButtons = ({ onClick }: { onClick: () => void }) => {
   const router = useRouter();
+
   const [openTerms, setOpenTerms] = useState(false);
 
   return (
     <div className='flex gap-4 mt-12'>
-      <Button size='sm' variant='default' onClick={() => router.push('/store/register')}>
+      <Button size='sm' variant='default' onClick={onClick}>
         바로 줄서기
       </Button>
-      {/* TODO 임시 추가한 버튼으로, 추가 제거 예정 */}
-      <button
-        className='px-8 py-4 rounded-full bg-background-primary text-secondary text-lg font-medium border border-gray-200 hover:bg-gray-100'
-        onClick={() => setOpenTerms(true)}
-      >
-        개인정보처리방침
-      </button>
-      <button className='px-8 py-4 rounded-full bg-background-primary text-secondary text-lg font-medium border border-gray-200 hover:bg-gray-100'>
+      <button className='px-8 py-4 subtitle-2-2 text-gray-5 rounded-full bg-background-primary  border-3 border-gray-3'>
         웨이팅 목록
       </button>
       {openTerms && (
@@ -135,12 +133,43 @@ const ActionButtons = () => {
   );
 };
 
-const MainContent = () => (
+// 전화번호 표시 컴포넌트
+const PhoneNumberDisplay = ({ phoneNumber }: { phoneNumber: string }) => (
+  <div className='flex justify-center'>
+    <div className='max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg xl:max-w-xl mx-auto text-center p-4 rounded-md'>
+      <p className='text-[60px] font-bold text-gray-800 break-all'>{phoneNumber}</p>
+    </div>
+  </div>
+);
+
+// 숫자 패드 컴포넌트
+const NumberPad = ({ onNumberClick }: { onNumberClick: (num: string) => void }) => (
+  <div className='grid grid-cols-3  border-t-2 border-b-1 border-gray-2'>
+    {[1, 2, 3, 4, 5, 6, 7, 8, 9, 'C', 0, '←'].map((num, index) => {
+      // 오른쪽 끝 열 (3, 6, 9, ←)의 인덱스
+      const isLastCol = (index + 1) % 3 === 0;
+
+      return (
+        <button
+          key={num}
+          className={`w-[184px] h-[91px] border-b ${
+            isLastCol ? '' : 'border-r'
+          } border-gray-2 text-3xl`}
+          onClick={() => onNumberClick(num.toString())}
+        >
+          {num}
+        </button>
+      );
+    })}
+  </div>
+);
+
+const MainContent = ({ onClick }: { onClick: () => void }) => (
   <div className='flex-1 max-w-4xl'>
     <StoreName />
     <WaitingInfo />
     <WaitingStats />
-    <ActionButtons />
+    <ActionButtons onClick={onClick} />
   </div>
 );
 
@@ -157,10 +186,63 @@ const FoodImage = () => (
 );
 
 export default function WaitingPage() {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const [formData, setFormData] = useState<WaitingRegisterData>({
+    name: '',
+    phoneNumber: '010-',
+    termsAgreed: false,
+    privacyPolicyAgreed: false,
+    thirdPartyAgreed: false,
+    marketingConsent: false,
+    infantChairCount: 0,
+    infantCount: 0,
+    adultCount: 0,
+  });
+
+  const [step, setStep] = useState<Step>('phone');
+
+  const STEPS = ['phone', 'member', 'name'] as const;
+
+  const handleNextStep = () => {
+    console.log('step', step);
+
+    const currentIndex = STEPS.indexOf(step);
+    console.log('currentIndex', currentIndex, STEPS[currentIndex]);
+    const nextStep = STEPS[currentIndex + 1];
+    console.log('nextStep', nextStep);
+    if (nextStep) {
+      setStep(nextStep);
+    }
+  };
+
+  const handlePrevStep = () => {
+    const currentIndex = STEPS.indexOf(step);
+    const prevStep = STEPS[currentIndex - 1];
+    console.log('prevStep', prevStep);
+    if (prevStep) {
+      setStep(prevStep);
+    }
+  };
+
+  const updateFormData = <K extends keyof WaitingRegisterData>(
+    key: K,
+    value: WaitingRegisterData[K],
+  ) => {
+    setFormData((prev) => ({
+      ...prev,
+      [key]: value,
+    }));
+  };
+
+  useEffect(() => {
+    console.log('formData', formData);
+  }, [formData]);
+
   return (
     <div className='flex h-screen border-l-20 border-primary-pink bg-primary-pink relative'>
       <div className='flex-[2] bg-white p-16 relative'>
-        <MainContent />
+        <MainContent onClick={() => setIsModalOpen(true)} />
       </div>
       <div className='flex-1 bg-primary-pink relative'>
         <Logo />
@@ -168,6 +250,21 @@ export default function WaitingPage() {
       <div className='absolute bottom-20 right-20'>
         <FoodImage />
       </div>
+      <Modal
+        open={isModalOpen}
+        backBtn={true}
+        backFn={() => handlePrevStep()}
+        onClose={() => setIsModalOpen(false)}
+      >
+        <ModalContent
+          step={step}
+          formData={formData}
+          updateFormData={updateFormData}
+          onNext={handleNextStep}
+          onPrev={handlePrevStep}
+        />
+      </Modal>
+      {/* <CompleteStep /> */}
     </div>
   );
 }

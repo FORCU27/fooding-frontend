@@ -13,7 +13,7 @@ import { GA_TRACKING_ID } from '@/libs/ga/gtag';
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
-    <html lang='en'>
+    <html lang='en' className={pretendard.className}>
       {process.env.NODE_ENV === 'production' && (
         <>
           <Script
