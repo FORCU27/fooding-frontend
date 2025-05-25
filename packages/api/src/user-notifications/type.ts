@@ -3,8 +3,9 @@ import { z } from 'zod';
 import { createPageResponseSchema } from '../shared';
 
 export const UserNotificationType = {
-  NOTIFICATION: 'NOTIFICATION',
+  NOTIFICATION: 'NOTICE',
   EVENT: 'EVENT',
+  SERVICE: 'SERVICE',
 } as const;
 
 export type UserNotificationType = (typeof UserNotificationType)[keyof typeof UserNotificationType];
