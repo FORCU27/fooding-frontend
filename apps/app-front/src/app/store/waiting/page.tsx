@@ -181,6 +181,7 @@ const FoodImage = () => (
 export default function WaitingPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [openTerms, setOpenTerms] = useState(false);
+  const [openComplite, setOpenComplete] = useState(false);
 
   const [formData, setFormData] = useState<WaitingRegisterData>({
     name: '',
@@ -257,6 +258,7 @@ export default function WaitingPage() {
           onNext={handleNextStep}
           onPrev={handlePrevStep}
           onClickTerms={() => setOpenTerms(true)}
+          onClickComplete={() => setOpenComplete(true)}
         />
       </Modal>
       {openTerms && (
@@ -264,7 +266,15 @@ export default function WaitingPage() {
           <TermsAgreement onClose={() => setOpenTerms(false)} />
         </FullScreenPanel>
       )}
-      {/* <CompleteStep /> */}
+      {openComplite && (
+        <CompleteStep
+          onClose={() => {
+            setOpenComplete(false);
+            setIsModalOpen(false);
+            setStep('phone');
+          }}
+        />
+      )}
     </div>
   );
 }

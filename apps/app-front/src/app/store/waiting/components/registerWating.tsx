@@ -14,6 +14,7 @@ type ModalContentProps = {
   onNext: () => void;
   onPrev: () => void;
   onClickTerms: () => void;
+  onClickComplete: () => void;
 };
 
 export default function ModalContent({
@@ -23,6 +24,7 @@ export default function ModalContent({
   onNext,
   onPrev,
   onClickTerms,
+  onClickComplete,
 }: ModalContentProps) {
   if (step === 'name') {
     return (
@@ -31,6 +33,7 @@ export default function ModalContent({
         updateFormData={updateFormData}
         onNext={onNext}
         onPrev={onPrev}
+        onClickComplete={onClickComplete}
       />
     );
   }

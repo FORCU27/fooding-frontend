@@ -1,8 +1,11 @@
 import Image from 'next/image';
 
-export function CompleteStep() {
+export function CompleteStep({ onClose }: { onClose: () => void }) {
   return (
-    <div className='fixed top-0 left-0 w-full h-screen flex flex-col items-center z-50 bg-white'>
+    <div
+      className='fixed top-0 left-0 w-full h-screen flex flex-col items-center z-50 bg-white'
+      onClick={onClose}
+    >
       {/* 상단 5/8 영역 */}
       <div className='w-full h-[62.5vh] bg-primary-pink flex items-center justify-center'>
         <div className='text-center flex flex-col items-center'>

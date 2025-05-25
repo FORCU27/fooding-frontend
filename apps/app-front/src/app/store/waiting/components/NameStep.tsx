@@ -1,7 +1,7 @@
 import { WaitingRegisterData, UpdateWaitingRegisterData, StepProps } from '../types';
 import Button from '@/components/Button';
 
-export function NameStep({ formData, updateFormData, onNext, onPrev }: StepProps) {
+export function NameStep({ formData, updateFormData, onNext, onPrev, onClickComplete }: StepProps) {
   const { name } = formData;
   const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     updateFormData('name', e.target.value);
@@ -27,7 +27,12 @@ export function NameStep({ formData, updateFormData, onNext, onPrev }: StepProps
           />
         </div>
       </div>
-      <Button size='sm' variant={isValid ? 'default' : 'disabled'} className=''>
+      <Button
+        size='sm'
+        variant={isValid ? 'default' : 'disabled'}
+        className=''
+        onClick={onClickComplete}
+      >
         줄서기
       </Button>
     </div>
