@@ -17,6 +17,7 @@ export type SortDirection = (typeof SortDirection)[keyof typeof SortDirection];
 
 export const AdminStoreResponseSchema = z.object({
   id: z.number(),
+  ownerId: z.number(),
   name: z.string(),
   city: z.string(),
   address: z.string(),
@@ -33,6 +34,7 @@ export const AdminStoreResponseSchema = z.object({
 });
 
 export const AdminCreateStoreRequestSchema = z.object({
+  ownerId: z.number(),
   name: z.string(),
   city: z.string(),
   address: z.string(),
@@ -49,6 +51,7 @@ export const AdminCreateStoreRequestSchema = z.object({
 });
 
 export const AdminUpdateStoreRequestSchema = z.object({
+  ownerId: z.number(),
   name: z.string(),
   city: z.string(),
   address: z.string(),
