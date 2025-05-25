@@ -8,7 +8,9 @@ import { CompleteStep } from './components/CompleteStep';
 import ModalContent from './components/registerWating';
 import { Step, WaitingRegisterData } from './types';
 import Button from '@/components/Button';
+import FullScreenPanel from '@/components/FullScreenPanel';
 import Modal from '@/components/Modal';
+import TermsAgreement from '@/components/TermsAgreement';
 
 const Logo = () => (
   <div className='absolute top-10 right-20'>
@@ -112,6 +114,8 @@ const WaitingStats = () => (
 const ActionButtons = ({ onClick }: { onClick: () => void }) => {
   const router = useRouter();
 
+  const [openTerms, setOpenTerms] = useState(false);
+
   return (
     <div className='flex gap-4 mt-12'>
       <Button size='sm' variant='default' onClick={onClick}>
@@ -120,6 +124,11 @@ const ActionButtons = ({ onClick }: { onClick: () => void }) => {
       <button className='px-8 py-4 subtitle-2-2 text-gray-5 rounded-full bg-background-primary  border-3 border-gray-3'>
         웨이팅 목록
       </button>
+      {openTerms && (
+        <FullScreenPanel isOpen={openTerms}>
+          <TermsAgreement onClose={() => setOpenTerms(false)} />
+        </FullScreenPanel>
+      )}
     </div>
   );
 };
