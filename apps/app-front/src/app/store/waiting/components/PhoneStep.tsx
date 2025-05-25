@@ -10,7 +10,7 @@ import {
 import { WaitingRegisterData, UpdateWaitingRegisterData, StepProps } from '../types';
 import Button from '@/components/Button';
 
-export function PhoneStep({ formData, updateFormData, onNext, onPrev }: StepProps) {
+export function PhoneStep({ formData, updateFormData, onNext, onPrev, onClickTerms }: StepProps) {
   const { phoneNumber } = formData;
   // 전화번호 표시 컴포넌트
   const PhoneNumberDisplay = ({ phoneNumber }: { phoneNumber: string }) => (
@@ -93,7 +93,10 @@ export function PhoneStep({ formData, updateFormData, onNext, onPrev }: StepProp
         <B2BCheckBoxIcon
           fill={isPhoneNumberComplete ? 'var(--color-primary-pink)' : 'var(--color-gray-5)'}
         />
-        <div className='text-gray-5 text-body-1  underline-offset-2 underlines'>
+        <div
+          className='text-gray-5 text-body-1  underline-offset-2 underlines'
+          onClick={onClickTerms}
+        >
           이용 약관 모두 동의하기
         </div>
       </div>

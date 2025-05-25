@@ -114,8 +114,6 @@ const WaitingStats = () => (
 const ActionButtons = ({ onClick }: { onClick: () => void }) => {
   const router = useRouter();
 
-  const [openTerms, setOpenTerms] = useState(false);
-
   return (
     <div className='flex gap-4 mt-12'>
       <Button size='sm' variant='default' onClick={onClick}>
@@ -124,11 +122,6 @@ const ActionButtons = ({ onClick }: { onClick: () => void }) => {
       <button className='px-8 py-4 subtitle-2-2 text-gray-5 rounded-full bg-background-primary  border-3 border-gray-3'>
         웨이팅 목록
       </button>
-      {openTerms && (
-        <FullScreenPanel isOpen={openTerms}>
-          <TermsAgreement onClose={() => setOpenTerms(false)} />
-        </FullScreenPanel>
-      )}
     </div>
   );
 };
@@ -187,6 +180,8 @@ const FoodImage = () => (
 
 export default function WaitingPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [openTerms, setOpenTerms] = useState(false);
+  const [openComplite, setOpenComplete] = useState(false);
 
   const [formData, setFormData] = useState<WaitingRegisterData>({
     name: '',
@@ -262,9 +257,24 @@ export default function WaitingPage() {
           updateFormData={updateFormData}
           onNext={handleNextStep}
           onPrev={handlePrevStep}
+          onClickTerms={() => setOpenTerms(true)}
+          onClickComplete={() => setOpenComplete(true)}
         />
       </Modal>
-      {/* <CompleteStep /> */}
+      {openTerms && (
+        <FullScreenPanel isOpen={openTerms}>
+          <TermsAgreement onClose={() => setOpenTerms(false)} />
+        </FullScreenPanel>
+      )}
+      {openComplite && (
+        <CompleteStep
+          onClose={() => {
+            setOpenComplete(false);
+            setIsModalOpen(false);
+            setStep('phone');
+          }}
+        />
+      )}
     </div>
   );
 }
