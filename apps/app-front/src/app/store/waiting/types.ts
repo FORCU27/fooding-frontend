@@ -21,3 +21,5 @@ export type StepProps = {
   onNext: () => void;
   onPrev: () => void;
 };
+
+export type Step = 'phone' | 'member' | 'name';

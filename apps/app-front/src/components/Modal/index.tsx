@@ -6,6 +6,7 @@ type ModalProps = {
   open: boolean;
   onClose: () => void;
   backBtn?: boolean;
+  backFn?: () => void;
   children: React.ReactNode;
   className?: string;
   overlayClassName?: string;
@@ -17,6 +18,7 @@ export default function Modal({
   open,
   onClose,
   backBtn = false,
+  backFn,
   children,
   className = '',
   overlayClassName = '',
@@ -50,7 +52,7 @@ export default function Modal({
         {backBtn && (
           <button
             className='absolute top-[30px] left-[30px] text-2xl text-gray-400 hover:text-gray-700'
-            onClick={onClose}
+            onClick={backFn}
             aria-label='닫기'
             type='button'
           >

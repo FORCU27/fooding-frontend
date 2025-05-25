@@ -4,10 +4,8 @@ import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import React, { useState, useEffect } from 'react';
 
-import { MemberCountStep } from './components/MemberCountStep';
-import { NameStep } from './components/NameStep';
-import { PhoneStep } from './components/PhoneStep';
-import { WaitingRegisterData } from './types';
+import ModalContent from './components/registerWating';
+import { Step, WaitingRegisterData } from './types';
 import Button from '@/components/Button';
 import Modal from '@/components/Modal';
 
@@ -110,12 +108,12 @@ const WaitingStats = () => (
   </div>
 );
 
-const ActionButtons = () => {
+const ActionButtons = ({ onClick }: { onClick: () => void }) => {
   const router = useRouter();
 
   return (
     <div className='flex gap-4 mt-12'>
-      <Button size='sm' variant='default' onClick={() => router.push('/store/register')}>
+      <Button size='sm' variant='default' onClick={onClick}>
         바로 줄서기
       </Button>
       <button className='px-8 py-4 subtitle-2-2 text-gray-5 rounded-full bg-background-primary  border-3 border-gray-3'>
@@ -156,12 +154,12 @@ const NumberPad = ({ onNumberClick }: { onNumberClick: (num: string) => void }) 
   </div>
 );
 
-const MainContent = () => (
+const MainContent = ({ onClick }: { onClick: () => void }) => (
   <div className='flex-1 max-w-4xl'>
     <StoreName />
     <WaitingInfo />
     <WaitingStats />
-    <ActionButtons />
+    <ActionButtons onClick={onClick} />
   </div>
 );
 
@@ -178,7 +176,7 @@ const FoodImage = () => (
 );
 
 export default function WaitingPage() {
-  const [isModalOpen, setIsModalOpen] = useState(true);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const [formData, setFormData] = useState<WaitingRegisterData>({
     name: '',
@@ -192,9 +190,30 @@ export default function WaitingPage() {
     adultCount: 0,
   });
 
-  useEffect(() => {
-    console.log('formData', formData);
-  }, [formData]);
+  const [step, setStep] = useState<Step>('phone');
+
+  const STEPS = ['phone', 'member', 'name'] as const;
+
+  const handleNextStep = () => {
+    console.log('step', step);
+
+    const currentIndex = STEPS.indexOf(step);
+    console.log('currentIndex', currentIndex, STEPS[currentIndex]);
+    const nextStep = STEPS[currentIndex + 1];
+    console.log('nextStep', nextStep);
+    if (nextStep) {
+      setStep(nextStep);
+    }
+  };
+
+  const handlePrevStep = () => {
+    const currentIndex = STEPS.indexOf(step);
+    const prevStep = STEPS[currentIndex - 1];
+    console.log('prevStep', prevStep);
+    if (prevStep) {
+      setStep(prevStep);
+    }
+  };
 
   const updateFormData = <K extends keyof WaitingRegisterData>(
     key: K,
@@ -206,26 +225,14 @@ export default function WaitingPage() {
     }));
   };
 
-  const handleNextStep = () => {
-    // const currentIndex = STEPS.indexOf(step);
-    // const nextStep = STEPS[currentIndex + 1];
-    // if (nextStep) {
-    //   setStep(nextStep);
-    // }
-  };
-
-  const handlePrevStep = () => {
-    // const currentIndex = STEPS.indexOf(step);
-    // const prevStep = STEPS[currentIndex - 1];
-    // if (prevStep) {
-    //   setStep(prevStep);
-    // }
-  };
+  useEffect(() => {
+    console.log('formData', formData);
+  }, [formData]);
 
   return (
     <div className='flex h-screen border-l-20 border-primary-pink bg-primary-pink relative'>
       <div className='flex-[2] bg-white p-16 relative'>
-        <MainContent />
+        <MainContent onClick={() => setIsModalOpen(true)} />
       </div>
       <div className='flex-1 bg-primary-pink relative'>
         <Logo />
@@ -233,20 +240,14 @@ export default function WaitingPage() {
       <div className='absolute bottom-20 right-20'>
         <FoodImage />
       </div>
-      <Modal open={isModalOpen} backBtn={true} onClose={() => setIsModalOpen(false)}>
-        {/* <PhoneStep
-          formData={formData}
-          updateFormData={updateFormData}
-          onNext={handleNextStep}
-          onPrev={handlePrevStep}
-        /> */}
-        {/* <MemberCountStep
-          formData={formData}
-          updateFormData={updateFormData}
-          onNext={handleNextStep}
-          onPrev={handlePrevStep}
-        /> */}
-        <NameStep
+      <Modal
+        open={isModalOpen}
+        backBtn={true}
+        backFn={() => handlePrevStep()}
+        onClose={() => setIsModalOpen(false)}
+      >
+        <ModalContent
+          step={step}
           formData={formData}
           updateFormData={updateFormData}
           onNext={handleNextStep}

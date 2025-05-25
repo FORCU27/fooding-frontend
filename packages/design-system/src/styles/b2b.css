@@ -139,3 +139,7 @@
     line-height: var(--lh-loose);
   }
 }
+
+*:focus {
+  outline: none !important;
+}

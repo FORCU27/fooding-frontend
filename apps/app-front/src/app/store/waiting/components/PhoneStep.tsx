@@ -1,5 +1,12 @@
 import { useState } from 'react';
 
+import {
+  B2BCheckBoxIcon,
+  B2BRefreshIcon,
+  ArrowLeftIcon,
+  B2BDeleteIcon,
+} from '@repo/design-system/icons';
+
 import { WaitingRegisterData, UpdateWaitingRegisterData, StepProps } from '../types';
 import Button from '@/components/Button';
 
@@ -9,7 +16,7 @@ export function PhoneStep({ formData, updateFormData, onNext, onPrev }: StepProp
   const PhoneNumberDisplay = ({ phoneNumber }: { phoneNumber: string }) => (
     <div className='flex justify-center'>
       <div className='max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg xl:max-w-xl mx-auto text-center p-4 rounded-md'>
-        <p className='text-[60px] font-bold text-gray-800 break-all'>{phoneNumber}</p>
+        <p className='headline-2-2  break-all'>{phoneNumber}</p>
       </div>
     </div>
   );
@@ -24,12 +31,18 @@ export function PhoneStep({ formData, updateFormData, onNext, onPrev }: StepProp
         return (
           <button
             key={num}
-            className={`w-[184px] h-[91px] border-b ${
+            className={`w-[184px] h-[91px] headline-3-2 border-b ${
               isLastCol ? '' : 'border-r'
-            } border-gray-2 text-3xl`}
+            } border-gray-2 flex items-center justify-center`}
             onClick={() => onNumberClick(num.toString())}
           >
-            {num}
+            {num === 'C' ? (
+              <B2BRefreshIcon size={46} />
+            ) : num === '←' ? (
+              <B2BDeleteIcon size={46} />
+            ) : (
+              num
+            )}
           </button>
         );
       })}
@@ -70,39 +83,26 @@ export function PhoneStep({ formData, updateFormData, onNext, onPrev }: StepProp
   const { handleNumberClick, isPhoneNumberComplete } = usePhoneNumber();
 
   return (
-    <div className=' bg-white p-8 flex flex-col items-center'>
+    <div className='flex flex-col items-center'>
       <PhoneNumberDisplay phoneNumber={phoneNumber} />
-      <h2 className='fs-body-2 text-gray-5'>
+      <h2 className='body-3 text-gray-5 mb-[30px]'>
         실시간 웨이팅 안내를 받을 수 있는 번호를 발송해주세요
       </h2>
       <NumberPad onNumberClick={handleNumberClick} />
-      <div className='flex items-center gap-2'>
-        <svg
-          width='25'
-          height='25'
-          viewBox='0 0 25 25'
-          fill='none'
-          xmlns='http://www.w3.org/2000/svg'
-        >
-          <circle
-            cx='12.5'
-            cy='12.5'
-            r='12.5'
-            fill={isPhoneNumberComplete ? 'var(--color-primary-pink)' : 'var(--color-gray-5)'}
-          />
-          <path
-            d='M18.1693 9.25L10.3776 17.0417L6.83594 13.5'
-            stroke='white'
-            strokeWidth='2'
-            strokeLinecap='round'
-            strokeLinejoin='round'
-          />
-        </svg>
-        <div className='text-gray-5 text-body-1  underline-offset-2 underline'>
+      <div className='flex items-center gap-2 mt-[15px] mb-[25px]'>
+        <B2BCheckBoxIcon
+          fill={isPhoneNumberComplete ? 'var(--color-primary-pink)' : 'var(--color-gray-5)'}
+        />
+        <div className='text-gray-5 text-body-1  underline-offset-2 underlines'>
           이용 약관 모두 동의하기
         </div>
       </div>
-      <Button size='sm' variant={isPhoneNumberComplete ? 'default' : 'disabled'} className=''>
+      <Button
+        size='md'
+        variant={isPhoneNumberComplete ? 'default' : 'disabled'}
+        className=''
+        onClick={onNext}
+      >
         다음
       </Button>
     </div>
