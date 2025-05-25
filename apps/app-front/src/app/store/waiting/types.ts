@@ -20,6 +20,7 @@ export type StepProps = {
   updateFormData: UpdateWaitingRegisterData;
   onNext: () => void;
   onPrev: () => void;
+  onClickTerms?: () => void;
 };
 
 export type Step = 'phone' | 'member' | 'name';
