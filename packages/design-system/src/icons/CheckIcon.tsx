@@ -1,11 +1,11 @@
 import { IconProps } from './type';
 
 interface CheckIconProps extends IconProps {
-  sizeMode: 'medium' | 'large';
+  sizeMode?: 'medium' | 'large';
   variant: 'default' | 'pressed' | 'disabled';
 }
 
-export function CheckIcon({ sizeMode, variant, ...props }: CheckIconProps) {
+export function CheckIcon({ sizeMode = 'large', variant, ...props }: CheckIconProps) {
   const getSvg = () => {
     if (sizeMode === 'medium') {
       const circleFill =

@@ -16,7 +16,7 @@ const TermsAgreement = ({ onClose }: TermsAgreementProps) => {
     marketingAgreed: false,
   });
 
-  const terms = [
+  const terms: { key: CheckedKeys; label: string; required: boolean }[] = [
     { key: 'termsAgreed', label: '서비스 이용약관 동의', required: true },
     { key: 'privacyPolicyAgreed', label: '개인정보 수집 및 이용 동의', required: true },
     { key: 'thirdPartyAgreed', label: '개인정보 제3자 제공 동의', required: true },
@@ -27,16 +27,17 @@ const TermsAgreement = ({ onClose }: TermsAgreementProps) => {
     setChecked((prev) => ({ ...prev, [key]: !prev[key] }));
   };
 
-  const keys = Object.keys(checked) as CheckedKeys[];
-
-  const allAgreed = keys.every((key) => checked[key]);
+  const allAgreed = terms.every((term) => checked[term.key]);
 
   const toggleAll = () => {
     const newValue = !allAgreed;
-    const updated: Record<CheckedKeys, boolean> = { ...checked };
-    keys.forEach((key) => {
-      updated[key] = newValue;
-    });
+    const updated = terms.reduce(
+      (acc, t) => {
+        acc[t.key] = newValue;
+        return acc;
+      },
+      {} as Record<CheckedKeys, boolean>,
+    );
     setChecked(updated);
   };
 
@@ -71,11 +72,7 @@ const TermsAgreement = ({ onClose }: TermsAgreementProps) => {
           className='rounded-full border-2 border-gray-2 py-[28px] px-[40px] flex items-center justify-between cursor-pointer w-full'
         >
           <span className='subtitle-2-1'>전체 동의</span>
-          {allAgreed ? (
-            <CheckIcon sizeMode='large' variant='default' />
-          ) : (
-            <CheckIcon sizeMode='large' variant='disabled' />
-          )}
+          <CheckIcon variant={allAgreed ? 'default' : 'disabled'} />
         </button>
 
         <ul className='px-[40px] pt-[10px]'>
@@ -105,11 +102,7 @@ const TermsAgreement = ({ onClose }: TermsAgreementProps) => {
                 aria-checked={checked[term.key as CheckedKeys]}
                 tabIndex={0}
               >
-                {checked[term.key as CheckedKeys] ? (
-                  <CheckIcon sizeMode='large' variant='default' />
-                ) : (
-                  <CheckIcon sizeMode='large' variant='disabled' />
-                )}
+                <CheckIcon variant={checked[term.key as CheckedKeys] ? 'default' : 'disabled'} />
               </div>
             </li>
           ))}
