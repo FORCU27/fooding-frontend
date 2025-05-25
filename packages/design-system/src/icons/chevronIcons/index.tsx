@@ -1,12 +1,17 @@
-import { IconProps } from './type';
+import { IconProps } from '../type';
 
-const ChevronDownIcon = ({ size = 24, color = '#111111', ...props }: IconProps) => (
+export const ChevronDownIcon = ({
+  size = 24,
+  color = '#111111',
+  fill = 'none',
+  ...props
+}: IconProps) => (
   <svg
     xmlns='http://www.w3.org/2000/svg'
     width={size}
     height={size}
     viewBox='0 0 24 24'
-    fill='none'
+    fill={fill}
     {...props}
   >
     <path
@@ -18,5 +23,3 @@ const ChevronDownIcon = ({ size = 24, color = '#111111', ...props }: IconProps) 
     />
   </svg>
 );
-
-export default ChevronDownIcon;
