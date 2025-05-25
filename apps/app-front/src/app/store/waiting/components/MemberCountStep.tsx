@@ -1,3 +1,5 @@
+import { B2BCounterMinusIcon, B2BCounterPlusIcon } from '@repo/design-system/icons';
+
 import { StepProps } from '../types';
 import Button from '@/components/Button';
 
@@ -7,28 +9,7 @@ type CounterButtonProps = {
 };
 
 const CounterButton = ({ onClick, isPlus = false }: CounterButtonProps) => (
-  <button onClick={onClick}>
-    <svg width='30' height='30' viewBox='0 0 30 30' fill='none' xmlns='http://www.w3.org/2000/svg'>
-      {isPlus ? (
-        <path
-          d='M15.0018 7.94531V22.0582M7.94531 15.0018H22.0582'
-          stroke='#767676'
-          strokeWidth='2'
-          strokeLinecap='round'
-          strokeLinejoin='round'
-        />
-      ) : (
-        <path
-          d='M7.94531 15H22.0582'
-          stroke='#767676'
-          strokeWidth='2'
-          strokeLinecap='round'
-          strokeLinejoin='round'
-        />
-      )}
-      <circle cx='15' cy='15' r='14' stroke='#767676' strokeWidth='2' />
-    </svg>
-  </button>
+  <button onClick={onClick}>{isPlus ? <B2BCounterPlusIcon /> : <B2BCounterMinusIcon />}</button>
 );
 
 type CounterProps = {
