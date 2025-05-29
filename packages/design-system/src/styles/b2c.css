@@ -28,9 +28,9 @@
   --fw-bold: 700;
 
   /* line heights */
-  --lh-tight: 1.25;
-  --lh-normal: 1.35;
-  --lh-loose: 1.4;
+  --lh-tight: 1.2;
+  --lh-normal: 1.4;
+  --lh-loose: 1.5;
 }
 
 @layer utilities {
@@ -82,7 +82,7 @@
   .subtitle-6 {
     font-size: var(--fs-subtitle-6);
     font-weight: var(--fw-semibold);
-    line-height: var(--lh-normal);
+    line-height: var(--lh-tight);
   }
   .subtitle-7 {
     font-size: var(--fs-subtitle-7);
@@ -93,7 +93,7 @@
   .body-1 {
     font-size: var(--fs-body-1);
     font-weight: var(--fw-regular);
-    line-height: var(--lh-loose);
+    line-height: var(--lh-normal);
   }
 
   .body-2 {
@@ -103,6 +103,11 @@
   }
 
   .body-3 {
+    font-size: var(--fs-body-3);
+    font-weight: var(--fw-regular);
+    line-height: var(--lh-normal);
+  }
+  .body-3-2 {
     font-size: var(--fs-body-3);
     font-weight: var(--fw-regular);
     line-height: var(--lh-loose);
@@ -115,19 +120,24 @@
   .body-5 {
     font-size: var(--fs-body-5);
     font-weight: var(--fw-medium);
-    line-height: var(--lh-loose);
+    line-height: var(--lh-normal);
   }
   .body-6 {
     font-size: var(--fs-body-6);
     font-weight: var(--fw-regular);
-    line-height: var(--lh-loose);
+    line-height: var(--lh-tight);
   }
   .body-7 {
     font-size: var(--fs-body-7);
     font-weight: var(--fw-medium);
-    line-height: var(--lh-loose);
+    line-height: var(--lh-tight);
   }
   .body-8 {
+    font-size: var(--fs-body-8);
+    font-weight: var(--fw-regular);
+    line-height: var(--lh-normal);
+  }
+  .body-8-2 {
     font-size: var(--fs-body-8);
     font-weight: var(--fw-regular);
     line-height: var(--lh-loose);
