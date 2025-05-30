@@ -4,6 +4,7 @@ export * from './chevronIcons';
 export * from './socialIcons';
 export * from './b2b';
 
+export { default as CloseIcon } from './CloseIcon';
 export { default as VisibilityIcon } from './VisibilityIcon';
 export { default as VisibilityOffIcon } from './VisibilityOffIcon';
 export { default as BellIcon } from './BellIcon';
