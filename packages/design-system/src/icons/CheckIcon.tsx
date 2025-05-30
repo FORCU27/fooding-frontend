@@ -5,7 +5,7 @@ interface CheckIconProps extends IconProps {
   variant: 'default' | 'pressed' | 'disabled';
 }
 
-export function CheckIcon({ sizeMode = 'large', variant, ...props }: CheckIconProps) {
+export default function CheckIcon({ sizeMode = 'large', variant, ...props }: CheckIconProps) {
   const getSvg = () => {
     if (sizeMode === 'medium') {
       const circleFill =
