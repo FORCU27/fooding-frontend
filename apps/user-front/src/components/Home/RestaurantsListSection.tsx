@@ -1,6 +1,6 @@
 import Image from 'next/image';
 
-import { BookmarkIcon, StarIcon } from '@repo/design-system/icons';
+import { BookmarkIcon, ChevronRightIcon, StarIcon } from '@repo/design-system/icons';
 
 export interface RestaurantItem {
   id: number;
@@ -24,7 +24,10 @@ const RestaurantsListSection = ({ subtitle, items }: RestaurantsListSectionProps
     <div className='flex flex-col p-5 bg-white/80'>
       <div className='flex justify-between mb-4'>
         <div className='subtitle-3'>{subtitle}</div>
-        <button className='body-5 text-gray-5 hover:text-black'>전체보기 &gt;</button>
+        <button className='flex justify-center items-center body-5 text-gray-5 cursor-pointer hover:text-black'>
+          <span>전체보기</span>
+          <ChevronRightIcon size={14} />
+        </button>
       </div>
 
       <div className='overflow-x-auto scrollbar-hide'>

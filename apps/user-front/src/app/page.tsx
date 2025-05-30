@@ -44,6 +44,41 @@ const menuItems: RestaurantItem[] = [
     bookMarded: false,
     finished: false,
   },
+  {
+    id: 4,
+    image: 'images/home/menuitem2.png',
+    name: '바다풍경 정육식당 흑돼지 용담탑동본점',
+    reviewScore: 4.9,
+    reviewCount: 231,
+    city: '합정',
+    estimatedWaitingTimeMinutes: 20,
+    bookMarded: true,
+    finished: false,
+  },
+
+  {
+    id: 5,
+    image: 'images/home/menuitem1.png',
+    name: '엉터리 생고기 엉생 무한리필 아산테크노 밸리점',
+    reviewScore: 4.9,
+    reviewCount: 231,
+    city: '합정',
+    estimatedWaitingTimeMinutes: 20,
+    bookMarded: true,
+    finished: true,
+  },
+
+  {
+    id: 6,
+    image: 'images/home/menuitem3.png',
+    name: '민서네 김밥 홍대점',
+    reviewScore: 4.9,
+    reviewCount: 231,
+    city: '합정',
+    estimatedWaitingTimeMinutes: 20,
+    bookMarded: false,
+    finished: false,
+  },
 ];
 
 const Home: NextPage = () => {
