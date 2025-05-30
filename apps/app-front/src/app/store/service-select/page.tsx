@@ -54,7 +54,7 @@ export default function StoreSelectPage() {
     <div className='flex h-screen flex-col'>
       <div className='flex-1  flex flex-col items-center justify-center'>
         <button className='absolute top-[50px] left-[80px] w-[60px] h-[60px]'>
-          <ArrowLeftIcon />
+          <ArrowLeftIcon color='var(--color-gray-5)' />
         </button>
         <div className='headline-3-2'>서비스 선택</div>
         <div className='body-1 text-gray-5'>원하시는 서비스를 선택해주세요</div>

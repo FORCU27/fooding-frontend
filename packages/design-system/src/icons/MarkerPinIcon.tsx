@@ -1,6 +1,11 @@
 import { IconProps } from './type';
 
-const MarkPinIcon = ({ size = 24, color = 'currentColor', fill = 'none', ...props }: IconProps) => (
+const MarkerPinIcon = ({
+  size = 24,
+  color = 'currentColor',
+  fill = 'none',
+  ...props
+}: IconProps) => (
   <svg
     xmlns='http://www.w3.org/2000/svg'
     width={size}
@@ -27,4 +32,4 @@ const MarkPinIcon = ({ size = 24, color = 'currentColor', fill = 'none', ...prop
   </svg>
 );
 
-export default MarkPinIcon;
+export default MarkerPinIcon;
