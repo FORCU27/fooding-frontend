@@ -8,6 +8,7 @@ import { ArrowLeftIcon } from '@repo/design-system/icons';
 import { useQuery } from '@tanstack/react-query';
 
 import { StoreServiceType, STORE_SERVICE_PATHS } from './types';
+import { getSelectedService, setSelectedService } from '@/services/locale';
 
 export default function StoreSelectPage() {
   const router = useRouter();
@@ -17,26 +18,30 @@ export default function StoreSelectPage() {
     queryFn: () => storeApi.getStoreServiceList({ id: 1 }),
   });
 
-  const [selectedService, setSelectedService] = useState<StoreServiceType>(
+  const [selectedService, setSelectedServiceState] = useState<StoreServiceType>(
     StoreServiceType.WAITING,
   );
   const [lastTouchTime, setLastTouchTime] = useState<number>(0);
 
   useEffect(() => {
-    const savedService = localStorage.getItem('selectedService');
-    if (savedService) {
-      setSelectedService(savedService as StoreServiceType);
-    }
+    const loadSavedService = async () => {
+      const savedService = await getSelectedService();
+      if (savedService) {
+        setSelectedServiceState(savedService);
+      }
+    };
+    loadSavedService();
   }, []);
 
-  const handleSelectService = (service: StoreServiceType) => {
+  const handleSelectService = async (service: StoreServiceType) => {
     if (selectedService === service) {
       // 이미 선택된 서비스를 더블클릭한 경우
+      await setSelectedService(service);
       router.push(STORE_SERVICE_PATHS[service]);
     } else {
       // 새로운 서비스 선택
-      setSelectedService(service);
-      localStorage.setItem('selectedService', service);
+      setSelectedServiceState(service);
+      await setSelectedService(service);
     }
   };
 

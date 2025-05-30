@@ -4,9 +4,17 @@ interface StoreListProps {
   stores?: Store[];
   selectedStore: Store | null;
   onSelectStore: (store: Store | null) => void;
+  onSelectStoreId: (storeId: string) => void;
+  onConfirm?: () => void;
 }
 
-export default function StoreList({ stores, selectedStore, onSelectStore }: StoreListProps) {
+export default function StoreList({
+  stores,
+  selectedStore,
+  onSelectStore,
+  onSelectStoreId,
+  onConfirm,
+}: StoreListProps) {
   return (
     <div className='w-1/2 h-screen text-center pt-[79px] px-[70px] relative overflow-hidden flex flex-col'>
       {/* 타이틀 고정 영역 */}
@@ -21,7 +29,17 @@ export default function StoreList({ stores, selectedStore, onSelectStore }: Stor
           {stores?.map((store) => {
             const isSelected = selectedStore === store;
             return (
-              <li key={store.id} onClick={() => onSelectStore(store)}>
+              <li
+                key={store.id}
+                onClick={() => {
+                  if (isSelected && onConfirm) {
+                    onConfirm();
+                  } else {
+                    onSelectStore(store);
+                    onSelectStoreId(store.id.toString());
+                  }
+                }}
+              >
                 {isSelected ? (
                   <div className='p-[5px] rounded-full bg-gradient-to-r from-[#E8D400] to-[#00D218]'>
                     <div className='py-[30px] text-center rounded-full bg-white headline-4 font-bold shadow-md cursor-pointer'>
