@@ -91,6 +91,12 @@
     line-height: var(--lh-normal);
   }
 
+  .subtitle-3 {
+    font-size: var(--fs-subtitle-3);
+    font-weight: var(--fw-semibold);
+    line-height: var(--lh-normal);
+  }
+
   .subtitle-4-1 {
     font-size: var(--fs-subtitle-4);
     font-weight: var(--fw-medium);
@@ -132,4 +138,8 @@
     font-weight: var(--fw-bold);
     line-height: var(--lh-loose);
   }
+}
+
+*:focus {
+  outline: none !important;
 }
