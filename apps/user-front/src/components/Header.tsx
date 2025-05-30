@@ -1,25 +1,18 @@
-import BellIcon from '@/assets/icons/BellIcon';
-import BookmarkIcon from '@/assets/icons/BookmarkIcon';
-import SearchIcon from '@/assets/icons/SearchIcon';
+import Image from 'next/image';
 
-/* eslint-disable @next/next/no-img-element */
+import { BellIcon, BookmarkIcon, SearchIcon } from '@repo/design-system/icons';
+
 function Header() {
   return (
-    <div className='h-16 flex justify-center items-center p-3'>
-      <img
-        src={'/images/fooding_icon.png'}
-        width='26px'
-        height='44px'
-        className='mr-4'
-        alt='Fooding Icon'
-      />
-      <div className='flex justify-center items-center pl-3 pr-3 mr-3 bg-[#F1F3F5] rounded-lg'>
+    <div className='flex justify-center items-center pl-2 pr-3 w-full h-[60px] bg-white'>
+      <Image src='/images/fooding_icon.png' width={48} height={48} alt='Fooding Icon' />
+      <div className='flex justify-between items-center w-[288px] pl-3 pr-3 mr-3 bg-gray-1 rounded-lg'>
         <input
           type='text'
-          className='w-[250px] h-[45px] p-2 text-[#767676] placeholder-[#767676] rounded-lg border-none outline-none'
+          className='w-full h-[45px] text-[gray-1] placeholder-[gray-1] rounded-lg border-none outline-none'
           placeholder='지금 뜨는 이탈리안 레스토랑은?'
         />
-        <SearchIcon color='#767676' />
+        <SearchIcon color='var(--color-gray-5)' />
       </div>
       <div className='flex justify-between gap-4'>
         <BookmarkIcon />
