@@ -9,7 +9,7 @@ function Header() {
       <div className='flex justify-between items-center w-[288px] pl-3 pr-3 mr-3 bg-gray-1 rounded-lg'>
         <input
           type='text'
-          className=' w-full h-[45px] text-[gray-1] placeholder-[gray-1] rounded-lg border-none outline-none'
+          className='w-full h-[45px] text-[gray-1] placeholder-[gray-1] rounded-lg border-none outline-none'
           placeholder='지금 뜨는 이탈리안 레스토랑은?'
         />
         <SearchIcon color='var(--color-gray-5)' />
