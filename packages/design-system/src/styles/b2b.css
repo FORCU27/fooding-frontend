@@ -121,6 +121,12 @@
     line-height: var(--lh-loose);
   }
 
+  .body-2-2 {
+    font-size: var(--fs-body-2);
+    font-weight: var(--fw-medium);
+    line-height: var(--lh-loose);
+  }
+
   .body-3 {
     font-size: var(--fs-body-3);
     font-weight: var(--fw-medium);

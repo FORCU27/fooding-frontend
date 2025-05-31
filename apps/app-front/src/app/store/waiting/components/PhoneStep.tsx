@@ -1,17 +1,14 @@
-import { useState } from 'react';
-
-import {
-  B2BCheckBoxIcon,
-  B2BRefreshIcon,
-  ArrowLeftIcon,
-  B2BDeleteIcon,
-} from '@repo/design-system/icons';
+import { B2BCheckBoxIcon, B2BRefreshIcon, B2BDeleteIcon } from '@repo/design-system/icons';
 
 import { WaitingRegisterData, UpdateWaitingRegisterData, StepProps } from '../types';
 import Button from '@/components/Button';
 
 export function PhoneStep({ formData, updateFormData, onNext, onPrev, onClickTerms }: StepProps) {
-  const { phoneNumber } = formData;
+  const { phoneNumber, termsAgreed, privacyPolicyAgreed, thirdPartyAgreed } = formData;
+
+  // 필수 약관 3개가 모두 체크되었는지 확인
+  const isAllRequiredTermsAgreed = termsAgreed && privacyPolicyAgreed && thirdPartyAgreed;
+
   // 전화번호 표시 컴포넌트
   const PhoneNumberDisplay = ({ phoneNumber }: { phoneNumber: string }) => (
     <div className='flex justify-center'>
@@ -91,10 +88,10 @@ export function PhoneStep({ formData, updateFormData, onNext, onPrev, onClickTer
       <NumberPad onNumberClick={handleNumberClick} />
       <div className='flex items-center gap-2 mt-[15px] mb-[25px]'>
         <B2BCheckBoxIcon
-          fill={isPhoneNumberComplete ? 'var(--color-primary-pink)' : 'var(--color-gray-5)'}
+          fill={isAllRequiredTermsAgreed ? 'var(--color-primary-pink)' : 'var(--color-gray-5)'}
         />
         <div
-          className='text-gray-5 text-body-1  underline-offset-2 underlines'
+          className='text-gray-5 body-2-2 underline-offset-2 underline cursor-pointer'
           onClick={onClickTerms}
         >
           이용 약관 모두 동의하기
@@ -102,7 +99,7 @@ export function PhoneStep({ formData, updateFormData, onNext, onPrev, onClickTer
       </div>
       <Button
         size='md'
-        variant={isPhoneNumberComplete ? 'default' : 'disabled'}
+        variant={isPhoneNumberComplete && isAllRequiredTermsAgreed ? 'default' : 'disabled'}
         className=''
         onClick={onNext}
       >

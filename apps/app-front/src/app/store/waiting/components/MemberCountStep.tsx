@@ -72,7 +72,7 @@ export function MemberCountStep({ formData, updateFormData, onNext, onPrev }: St
           </div>
         </div>
       </div>
-      <Button size='sm' variant='default' onClick={onNext} disabled={totalCount === 0}>
+      <Button size='sm' variant={totalCount === 0 ? 'disabled' : 'default'} onClick={onNext}>
         다음
       </Button>
     </div>

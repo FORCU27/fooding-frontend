@@ -4,6 +4,9 @@ import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import React, { useState, useEffect } from 'react';
 
+import { storeApi, userApi } from '@repo/api/app';
+import { useQuery } from '@tanstack/react-query';
+
 import { CompleteStep } from './components/CompleteStep';
 import ModalContent from './components/registerWating';
 import { Step, WaitingRegisterData } from './types';
@@ -112,8 +115,6 @@ const WaitingStats = () => (
 );
 
 const ActionButtons = ({ onClick }: { onClick: () => void }) => {
-  const router = useRouter();
-
   return (
     <div className='flex gap-4 mt-12'>
       <Button size='sm' variant='default' onClick={onClick}>
@@ -125,37 +126,6 @@ const ActionButtons = ({ onClick }: { onClick: () => void }) => {
     </div>
   );
 };
-
-// 전화번호 표시 컴포넌트
-const PhoneNumberDisplay = ({ phoneNumber }: { phoneNumber: string }) => (
-  <div className='flex justify-center'>
-    <div className='max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg xl:max-w-xl mx-auto text-center p-4 rounded-md'>
-      <p className='text-[60px] font-bold text-gray-800 break-all'>{phoneNumber}</p>
-    </div>
-  </div>
-);
-
-// 숫자 패드 컴포넌트
-const NumberPad = ({ onNumberClick }: { onNumberClick: (num: string) => void }) => (
-  <div className='grid grid-cols-3  border-t-2 border-b-1 border-gray-2'>
-    {[1, 2, 3, 4, 5, 6, 7, 8, 9, 'C', 0, '←'].map((num, index) => {
-      // 오른쪽 끝 열 (3, 6, 9, ←)의 인덱스
-      const isLastCol = (index + 1) % 3 === 0;
-
-      return (
-        <button
-          key={num}
-          className={`w-[184px] h-[91px] border-b ${
-            isLastCol ? '' : 'border-r'
-          } border-gray-2 text-3xl`}
-          onClick={() => onNumberClick(num.toString())}
-        >
-          {num}
-        </button>
-      );
-    })}
-  </div>
-);
 
 const MainContent = ({ onClick }: { onClick: () => void }) => (
   <div className='flex-1 max-w-4xl'>
@@ -179,6 +149,17 @@ const FoodImage = () => (
 );
 
 export default function WaitingPage() {
+  const { data: waiting } = useQuery({ queryKey: ['waiting'], queryFn: userApi.getUser });
+  const { data: stores } = useQuery({
+    queryKey: ['waiting', 1, 20],
+    queryFn: () =>
+      storeApi.getStores({
+        searchString: '홍길동',
+        pageNum: 1,
+        pageSize: 20,
+      }),
+  });
+
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [openTerms, setOpenTerms] = useState(false);
   const [openComplite, setOpenComplete] = useState(false);
@@ -234,6 +215,20 @@ export default function WaitingPage() {
     console.log('formData', formData);
   }, [formData]);
 
+  const resetFormData = () => {
+    setFormData({
+      name: '',
+      phoneNumber: '010-',
+      termsAgreed: false,
+      privacyPolicyAgreed: false,
+      thirdPartyAgreed: false,
+      marketingConsent: false,
+      infantChairCount: 0,
+      infantCount: 0,
+      adultCount: 0,
+    });
+  };
+
   return (
     <div className='flex h-screen border-l-20 border-primary-pink bg-primary-pink relative'>
       <div className='flex-[2] bg-white p-16 relative'>
@@ -247,7 +242,7 @@ export default function WaitingPage() {
       </div>
       <Modal
         open={isModalOpen}
-        backBtn={true}
+        backBtn={step !== 'phone'}
         backFn={() => handlePrevStep()}
         onClose={() => setIsModalOpen(false)}
       >
@@ -263,7 +258,16 @@ export default function WaitingPage() {
       </Modal>
       {openTerms && (
         <FullScreenPanel isOpen={openTerms}>
-          <TermsAgreement onClose={() => setOpenTerms(false)} />
+          <TermsAgreement
+            formData={formData}
+            onClose={() => setOpenTerms(false)}
+            updateFormData={(value) => {
+              updateFormData('termsAgreed', value.termsAgreed);
+              updateFormData('privacyPolicyAgreed', value.privacyPolicyAgreed);
+              updateFormData('thirdPartyAgreed', value.thirdPartyAgreed);
+              updateFormData('marketingConsent', value.marketingConsent);
+            }}
+          />
         </FullScreenPanel>
       )}
       {openComplite && (
