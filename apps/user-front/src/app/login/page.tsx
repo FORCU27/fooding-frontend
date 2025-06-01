@@ -153,41 +153,43 @@ export default function LoginPage() {
   };
 
   return (
-    <main className='flex flex-col items-center justify-center min-h-screen relative '>
-      <div className='absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 flex flex-col items-center'>
-        <Image
-          src='/images/fooding_icon.png'
-          width={120}
-          height={120}
-          alt='fooding_로고'
-          className='mb-4'
-        />
-        <p className='text-center headline-3'>
-          당신의 한 끼가
-          <br />
-          특별해지는 순간
-        </p>
-      </div>
-
-      <div className='absolute top-4/5 left-1/2 -translate-x-1/2 -translate-y-1/2 flex flex-col items-center w-[304px]'>
-        <h1 className='text-center text-gray-5 mb-6 body-5'>SNS 계정으로 빠르게 시작하기</h1>
-        <div className='flex h-[110px]'>
-          {socialPlatforms.map((platform) => (
-            <div key={platform} className='flex flex-col justify-between items-center w-[96px]'>
-              <SocialButton
-                platform={platform}
-                icon={platformIcons[platform]}
-                onClick={() => handleSocialLogin(platform)}
-                styles={platformStyles[platform]}
-              />
-              {handleRecentProvider(platform)}
-            </div>
-          ))}
+    <main className='w-full min-h-screen bg-white overflow-hidden'>
+      <div className='flex flex-col max-w-[440px] h-screen mx-auto justify-around items-center'>
+        <div className='flex flex-col items-center mt-10'>
+          <Image
+            src='/images/fooding_icon.png'
+            width={120}
+            height={120}
+            alt='fooding_로고'
+            className='mb-4'
+          />
+          <p className='text-center headline-3'>
+            당신의 한 끼가
+            <br />
+            특별해지는 순간
+          </p>
         </div>
-        <div className='text-center mt-[17px]'>
-          <Link href={'/'} className='text-gray-5 underline decoration-1 body-5'>
-            고객센터
-          </Link>
+
+        <div className='flex flex-col items-center  mb-6'>
+          <h1 className='text-center text-gray-5 mb-6 body-5'>SNS 계정으로 빠르게 시작하기</h1>
+          <div className='flex w-[304px] gap-4'>
+            {socialPlatforms.map((platform) => (
+              <div key={platform} className='flex flex-col justify-between items-center w-[96px]'>
+                <SocialButton
+                  platform={platform}
+                  icon={platformIcons[platform]}
+                  onClick={() => handleSocialLogin(platform)}
+                  styles={platformStyles[platform]}
+                />
+                {handleRecentProvider(platform)}
+              </div>
+            ))}
+          </div>
+          <div className='text-center mt-5'>
+            <Link href={'/'} className='text-gray-5 underline decoration-1 body-5'>
+              고객센터
+            </Link>
+          </div>
         </div>
       </div>
     </main>
