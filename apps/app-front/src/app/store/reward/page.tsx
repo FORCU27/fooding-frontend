@@ -1,17 +1,12 @@
 'use client';
 
 import Image from 'next/image';
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 
-import { storeApi, userApi } from '@repo/api/app';
 import { B2BRefreshIcon, B2BDeleteIcon } from '@repo/design-system/icons';
-import { useQuery } from '@tanstack/react-query';
 
+import { RewardComplete } from './components/RewardComplete';
 import Button from '@/components/Button';
-import FullScreenPanel from '@/components/FullScreenPanel';
-import Modal from '@/components/Modal';
-import { useStore } from '@/components/Provider/StoreProvider';
-import TermsAgreement from '@/components/TermsAgreement';
 
 export default function WaitingPage() {
   const [phoneNumber, setPhoneNumber] = useState('010-');
@@ -89,33 +84,45 @@ export default function WaitingPage() {
 
   const { handleNumberClick, isPhoneNumberComplete } = usePhoneNumber(phoneNumber);
 
-  return (
-    <div className='flex w-full h-screen overflow-hidden border-l-20 border-primary-pink px-[80px] py-[60px] gap-[65px]'>
-      {/* 왼쪽 영역 (5/10) */}
-      <div className='w-[50%] h-full bg-white '>
-        <div className='h-full flex flex-col'>
-          {/* 왼쪽 컨텐츠 */}{' '}
-          <Image src='/images/fooding-logo.png' alt='logo' width={204} height={48} />
-          <div className='body-2 text-gray-5 mt-[112px]'>
-            마일리지 적립 링크를 전달 받으시기 위해
-          </div>
-          <div className='headline-3-2 text-black whitespace-nowrap mt-5 mb-15'>
-            휴대폰 번호를 입력해주세요
-          </div>
-          <Button>휴대폰 번호 입력</Button>
-        </div>
-      </div>
+  const [isRewardComplete, setIsRewardComplete] = useState(false);
 
-      {/* 오른쪽 영역 (5/10) */}
-      <div className='w-[50%] h-full bg-white'>
-        <div className='h-full flex flex-col'>
-          <div className='flex flex-col items-center justify-center h-full'>
-            <PhoneNumberDisplay phoneNumber={phoneNumber} />
-            <NumberPad onNumberClick={handleNumberClick} />
-            <Button>적립하기</Button>
+  return (
+    <>
+      <div className='flex w-full h-screen overflow-hidden border-l-20 border-primary-pink px-[80px] py-[60px] gap-[65px]'>
+        {/* 왼쪽 영역 (5/10) */}
+        <div className='w-[50%] h-full bg-white '>
+          <div className='h-full flex flex-col'>
+            {/* 왼쪽 컨텐츠 */}{' '}
+            <Image src='/images/fooding-logo.png' alt='logo' width={204} height={48} />
+            <div className='body-2 text-gray-5 mt-[112px]'>
+              마일리지 적립 링크를 전달 받으시기 위해
+            </div>
+            <div className='headline-3-2 text-black whitespace-nowrap mt-5 mb-15'>
+              휴대폰 번호를 입력해주세요
+            </div>
+            <Button size='sm' variant='secondary'>
+              리워드 사용하기
+            </Button>
+          </div>
+        </div>
+
+        {/* 오른쪽 영역 (5/10) */}
+        <div className='w-[50%] h-full bg-white'>
+          <div className='h-full flex flex-col'>
+            <div className='flex flex-col items-center justify-center h-full'>
+              <PhoneNumberDisplay phoneNumber={phoneNumber} />
+              <NumberPad onNumberClick={handleNumberClick} />
+              <Button
+                variant={isPhoneNumberComplete ? 'default' : 'disabled'}
+                onClick={() => setIsRewardComplete(true)}
+              >
+                적립하기
+              </Button>
+            </div>
           </div>
         </div>
       </div>
-    </div>
+      {isRewardComplete && <RewardComplete onClose={() => setIsRewardComplete(false)} />}
+    </>
   );
 }
