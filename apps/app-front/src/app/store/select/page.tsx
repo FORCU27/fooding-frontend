@@ -1,5 +1,6 @@
 'use client';
 
+import { useRouter } from 'next/navigation';
 import { Suspense, useState } from 'react';
 
 import { userApi, storeApi, Store } from '@repo/api/app';
@@ -7,8 +8,10 @@ import { useQuery } from '@tanstack/react-query';
 
 import StoreList from './components/StoreList';
 import StoreOwnerProfile from './components/StoreOwnerProfile';
+import { setSelectedStoreId } from '@/services/locale';
 
 export default function StoreSelectPage() {
+  const router = useRouter();
   const { data: user } = useQuery({ queryKey: ['user'], queryFn: userApi.getUser });
   const { data: stores } = useQuery({
     queryKey: ['stores', '홍길동', 1, 20],
@@ -33,6 +36,10 @@ export default function StoreSelectPage() {
           stores={stores?.list}
           selectedStore={selectedStore}
           onSelectStore={setSelectedStore}
+          onSelectStoreId={setSelectedStoreId}
+          onConfirm={() => {
+            router.push(`/store/service-select`);
+          }}
         />
       </div>
     </Suspense>
