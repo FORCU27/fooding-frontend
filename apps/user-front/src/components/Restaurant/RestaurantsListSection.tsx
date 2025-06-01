@@ -19,7 +19,7 @@ interface RestaurantsListSectionProps {
   items: RestaurantItem[];
 }
 
-const RestaurantsListSection = ({ subtitle, items }: RestaurantsListSectionProps) => {
+export const RestaurantsListSection = ({ subtitle, items }: RestaurantsListSectionProps) => {
   return (
     <div className='flex flex-col p-5 bg-white/80'>
       <div className='flex justify-between mb-4'>
@@ -88,5 +88,3 @@ const RestaurantsListSection = ({ subtitle, items }: RestaurantsListSectionProps
     </div>
   );
 };
-
-export default RestaurantsListSection;
