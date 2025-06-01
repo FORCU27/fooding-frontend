@@ -1,0 +1,4 @@
+@import 'tailwindcss';
+
+@import '@repo/design-system/styles/shared.css';
+@import '@repo/design-system/styles/b2c.css';

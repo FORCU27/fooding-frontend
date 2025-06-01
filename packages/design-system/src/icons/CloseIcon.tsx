@@ -1,8 +1,8 @@
 import { IconProps } from './type';
 
-export default function ArrowLeftIcon({
+export default function CloseIcon({
   size = 60,
-  color = '#111111',
+  color = 'currentColor',
   fill = 'none',
   ...props
 }: IconProps) {
@@ -12,12 +12,14 @@ export default function ArrowLeftIcon({
       height={size}
       viewBox='0 0 60 60'
       xmlns='http://www.w3.org/2000/svg'
+      fill={fill}
+      color={color}
       {...props}
     >
       <path
-        d='M47.5 30H12.5M12.5 30L30 47.5M12.5 30L30 12.5'
+        d='M45 15L15 45M15 15L45 45'
         fill={fill}
-        stroke={color}
+        stroke='currentColor'
         strokeWidth='5'
         strokeLinecap='round'
         strokeLinejoin='round'
