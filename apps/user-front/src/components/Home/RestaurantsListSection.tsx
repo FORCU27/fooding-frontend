@@ -42,10 +42,10 @@ const RestaurantsListSection = ({ subtitle, items }: RestaurantsListSectionProps
                       height={140}
                       src={`/${item.image}`}
                       alt={item.name || 'restaurant image'}
-                      className='rounded-xl shrink-0 mb-4 object-center'
+                      className='rounded-xl mb-4 object-center'
                     />
                     {item.finished && (
-                      <div className='absolute inset-0 bg-black/50 flex justify-center items-center z-10 rounded-xl'>
+                      <div className='absolute inset-0 bg-black/50 flex justify-center items-center rounded-xl'>
                         <p className='subtitle-3 text-white'>영업 종료</p>
                       </div>
                     )}
@@ -55,14 +55,14 @@ const RestaurantsListSection = ({ subtitle, items }: RestaurantsListSectionProps
                         color='var(--color-primary-pink)'
                         fill='var(--color-primary-pink)'
                         size={24}
-                        style={{ cursor: 'pointer' }}
+                        cursor='pointer'
                       />
                     ) : (
                       <BookmarkIcon
                         className='absolute top-2 right-2'
                         color='white'
                         size={24}
-                        style={{ cursor: 'pointer' }}
+                        cursor='pointer'
                       />
                     )}
                   </div>

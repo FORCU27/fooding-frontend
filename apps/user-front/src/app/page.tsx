@@ -85,13 +85,8 @@ const Home: NextPage = () => {
   return (
     <div className='flex flex-col w-full'>
       <div className='bg-white mb-3'>
-        <div className='relative w-[440px] h-[200px]'>
-          <Image
-            src='/images/home/banneritem1.png'
-            alt='banner'
-            fill
-            style={{ objectFit: 'cover' }}
-          />
+        <div className='relative w-full h-[200px]'>
+          <Image src='/images/home/banneritem1.png' alt='banner' fill className='object-cover' />
           <div className='absolute top-6 left-7'>
             <p className='text-white body-3 mb-1'>흑백요리사 출연 셰프 맛집</p>
             <p className='text-white headline-1'>오늘 메뉴는 뭔가요?</p>
@@ -120,21 +115,20 @@ const Home: NextPage = () => {
             </ChipTabs>
             <div className='flex flex-col bg-white/80'>
               <div className='overflow-x-auto scrollbar-hide'>
-                <div className='flex gap-3 w-max h-[194px]'>
+                <div className='flex gap-3 h-[194px]'>
                   {menuItems.map((item) => (
                     <div key={item.id} className='flex flex-col relative'>
-                      <div className='relative w-[220px] h-[140px] mb-2 rounded-xl overflow-hidden'>
+                      <div className='relative mb-2 rounded-xl overflow-hidden'>
                         <Image
                           width={220}
                           height={140}
                           src={`/${item.image}`}
                           alt={item.name || 'restaurant image'}
-                          style={{ width: '220px', height: '140px', objectFit: 'cover' }}
-                          className='rounded-xl object-cover'
+                          className='rounded-xl object-cover w-[220px] h-[140px]'
                         />
 
                         {item.finished && (
-                          <div className='absolute inset-0 bg-black/50 flex justify-center items-center z-10 rounded-xl'>
+                          <div className='absolute inset-0 bg-black/50 flex justify-center items-center rounded-xl'>
                             <p className='subtitle-3 text-white'>영업 종료</p>
                           </div>
                         )}
@@ -145,14 +139,14 @@ const Home: NextPage = () => {
                           color='var(--color-primary-pink)'
                           fill='var(--color-primary-pink)'
                           size={24}
-                          style={{ cursor: 'pointer' }}
+                          cursor='pointer'
                         />
                       ) : (
                         <BookmarkIcon
                           className='absolute top-2 right-2'
                           color='white'
                           size={24}
-                          style={{ cursor: 'pointer' }}
+                          cursor='pointer'
                         />
                       )}
                       <div className='flex flex-col gap-1'>

@@ -5,8 +5,8 @@ import { HomeIcon, ListIcon, SearchIcon, UserIcon } from '@repo/design-system/ic
 
 function Footer() {
   return (
-    <Tabs defaultValue='home' className='w-full h-16'>
-      <Tabs.List className='flex justify-between px-10'>
+    <Tabs defaultValue='home' className='flex justify-center w-full h-16 overflow-x-hidden'>
+      <Tabs.List className='flex max-w-[440px] justify-between items-center'>
         {[
           { value: 'home', icon: <HomeIcon size={24} />, label: '메인' },
           { value: 'search', icon: <SearchIcon size={24} />, label: '검색' },
