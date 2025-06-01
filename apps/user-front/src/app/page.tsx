@@ -152,7 +152,7 @@ const Home: NextPage = () => {
                       <div className='flex flex-col gap-1'>
                         <div className='subtitle-5 flex items-center gap-1'>
                           <p className='subtitle-5 w-[128px] truncate'>{item.name}</p>
-                          <StarIcon fill='#FFD83D' color='#FFD83D' />
+                          <StarIcon size={18} fill='#FFD83D' color='#FFD83D' />
                           <span className='text-[#FFD83D] subtitle-6'>{item.reviewScore}</span>
                           <span className='body-6 text-gray-5'>({item.reviewCount})</span>
                         </div>
