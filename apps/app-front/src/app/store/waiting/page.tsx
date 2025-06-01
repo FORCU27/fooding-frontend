@@ -1,8 +1,12 @@
 'use client';
 
 import Image from 'next/image';
-import { useRouter } from 'next/navigation';
 import React, { useState, useEffect } from 'react';
+
+import { GetWaitingDetailResponse } from '@repo/api/app';
+import { storeApi, userApi } from '@repo/api/app';
+import queryKeys from '@repo/api/constants/query-keys';
+import { useQuery, useQueryClient, useMutation } from '@tanstack/react-query';
 
 import { CompleteStep } from './components/CompleteStep';
 import ModalContent from './components/registerWating';
@@ -10,6 +14,7 @@ import { Step, WaitingRegisterData } from './types';
 import Button from '@/components/Button';
 import FullScreenPanel from '@/components/FullScreenPanel';
 import Modal from '@/components/Modal';
+import { useStore } from '@/components/Provider/StoreClientProvider';
 import TermsAgreement from '@/components/TermsAgreement';
 
 const Logo = () => (
@@ -94,26 +99,26 @@ const WaitingInfo = () => (
   </div>
 );
 
-const WaitingStats = () => (
+const WaitingStats = ({ list }: { list: GetWaitingDetailResponse[] }) => (
   <div className='flex flex-row mt-12'>
     <div className='w-[250px] flex flex-col items-center'>
       <h3 className='subtitle-2-2 font-bold mb-4 mt-4'>현재 웨이팅</h3>
-      <p className='text-[125px] font-bold text-primary-pink'>
-        3<span className='text-3xl ml-2'>팀</span>
+      <p className='text-[125px] font-bold text-primary-pink whitespace-nowrap'>
+        {list?.length}
+        <span className='text-3xl ml-2'>팀</span>
       </p>
     </div>
     <div className='w-[250px] border-l border-dark flex flex-col items-center'>
       <h3 className='subtitle-2-2 font-bold mb-4 mt-4'>예상시간</h3>
-      <p className='text-[125px] font-bold text-primary-pink'>
-        7<span className='text-3xl ml-2'>분</span>
+      <p className='text-[125px] font-bold text-primary-pink whitespace-nowrap'>
+        {list?.length * 1}
+        <span className='text-3xl ml-2'>분</span>
       </p>
     </div>
   </div>
 );
 
 const ActionButtons = ({ onClick }: { onClick: () => void }) => {
-  const router = useRouter();
-
   return (
     <div className='flex gap-4 mt-12'>
       <Button size='sm' variant='default' onClick={onClick}>
@@ -126,42 +131,17 @@ const ActionButtons = ({ onClick }: { onClick: () => void }) => {
   );
 };
 
-// 전화번호 표시 컴포넌트
-const PhoneNumberDisplay = ({ phoneNumber }: { phoneNumber: string }) => (
-  <div className='flex justify-center'>
-    <div className='max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg xl:max-w-xl mx-auto text-center p-4 rounded-md'>
-      <p className='text-[60px] font-bold text-gray-800 break-all'>{phoneNumber}</p>
-    </div>
-  </div>
-);
-
-// 숫자 패드 컴포넌트
-const NumberPad = ({ onNumberClick }: { onNumberClick: (num: string) => void }) => (
-  <div className='grid grid-cols-3  border-t-2 border-b-1 border-gray-2'>
-    {[1, 2, 3, 4, 5, 6, 7, 8, 9, 'C', 0, '←'].map((num, index) => {
-      // 오른쪽 끝 열 (3, 6, 9, ←)의 인덱스
-      const isLastCol = (index + 1) % 3 === 0;
-
-      return (
-        <button
-          key={num}
-          className={`w-[184px] h-[91px] border-b ${
-            isLastCol ? '' : 'border-r'
-          } border-gray-2 text-3xl`}
-          onClick={() => onNumberClick(num.toString())}
-        >
-          {num}
-        </button>
-      );
-    })}
-  </div>
-);
-
-const MainContent = ({ onClick }: { onClick: () => void }) => (
+const MainContent = ({
+  onClick,
+  list,
+}: {
+  onClick: () => void;
+  list?: GetWaitingDetailResponse[];
+}) => (
   <div className='flex-1 max-w-4xl'>
     <StoreName />
     <WaitingInfo />
-    <WaitingStats />
+    <WaitingStats list={list || []} />
     <ActionButtons onClick={onClick} />
   </div>
 );
@@ -179,6 +159,34 @@ const FoodImage = () => (
 );
 
 export default function WaitingPage() {
+  const { storeId } = useStore();
+  const queryClient = useQueryClient();
+  const [error, setError] = useState<string | null>(null);
+
+  const { mutate: submitWaiting, data: mutationResponse } = useMutation({
+    mutationFn: (formData: WaitingRegisterData) =>
+      storeApi.createStoreWaiting(formData, Number(storeId)),
+    onSuccess: () => {
+      resetFormData();
+      setIsModalOpen(false);
+      setOpenComplete(true);
+      queryClient.invalidateQueries({
+        queryKey: [queryKeys.app.store.waiting, storeId, 'WAITING'],
+      });
+    },
+    onError: (error) => {
+      console.error('웨이팅 등록 실패:', error);
+      setError('웨이팅 등록에 실패했습니다. 다시 시도해주세요.');
+    },
+  });
+
+  const { data: waitingResponse } = useQuery({
+    queryKey: [queryKeys.app.store.waiting, storeId, 'WAITING'],
+    queryFn: () => storeApi.getStoreWaiting({ id: Number(storeId), status: 'WAITING' }),
+  });
+
+  const waitingList = waitingResponse?.data?.list || [];
+
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [openTerms, setOpenTerms] = useState(false);
   const [openComplite, setOpenComplete] = useState(false);
@@ -200,12 +208,8 @@ export default function WaitingPage() {
   const STEPS = ['phone', 'member', 'name'] as const;
 
   const handleNextStep = () => {
-    console.log('step', step);
-
     const currentIndex = STEPS.indexOf(step);
-    console.log('currentIndex', currentIndex, STEPS[currentIndex]);
     const nextStep = STEPS[currentIndex + 1];
-    console.log('nextStep', nextStep);
     if (nextStep) {
       setStep(nextStep);
     }
@@ -214,7 +218,6 @@ export default function WaitingPage() {
   const handlePrevStep = () => {
     const currentIndex = STEPS.indexOf(step);
     const prevStep = STEPS[currentIndex - 1];
-    console.log('prevStep', prevStep);
     if (prevStep) {
       setStep(prevStep);
     }
@@ -230,14 +233,37 @@ export default function WaitingPage() {
     }));
   };
 
-  useEffect(() => {
-    console.log('formData', formData);
-  }, [formData]);
+  const resetFormData = () => {
+    setStep('phone');
+    setFormData({
+      name: '',
+      phoneNumber: '010-',
+      termsAgreed: false,
+      privacyPolicyAgreed: false,
+      thirdPartyAgreed: false,
+      marketingConsent: false,
+      infantChairCount: 0,
+      infantCount: 0,
+      adultCount: 0,
+    });
+  };
+
+  const handleSubmitWaiting = () => {
+    setError(null);
+    submitWaiting(formData);
+  };
+
+  const onClickAllTerms = () => {
+    updateFormData('termsAgreed', !formData.termsAgreed);
+    updateFormData('privacyPolicyAgreed', !formData.privacyPolicyAgreed);
+    updateFormData('thirdPartyAgreed', !formData.thirdPartyAgreed);
+    updateFormData('marketingConsent', !formData.marketingConsent);
+  };
 
   return (
     <div className='flex h-screen border-l-20 border-primary-pink bg-primary-pink relative'>
       <div className='flex-[2] bg-white p-16 relative'>
-        <MainContent onClick={() => setIsModalOpen(true)} />
+        <MainContent onClick={() => setIsModalOpen(true)} list={waitingList} />
       </div>
       <div className='flex-1 bg-primary-pink relative'>
         <Logo />
@@ -247,9 +273,13 @@ export default function WaitingPage() {
       </div>
       <Modal
         open={isModalOpen}
-        backBtn={true}
+        backBtn={step !== 'phone'}
         backFn={() => handlePrevStep()}
-        onClose={() => setIsModalOpen(false)}
+        onClose={() => {
+          setIsModalOpen(false);
+          resetFormData();
+          setError(null);
+        }}
       >
         <ModalContent
           step={step}
@@ -258,12 +288,23 @@ export default function WaitingPage() {
           onNext={handleNextStep}
           onPrev={handlePrevStep}
           onClickTerms={() => setOpenTerms(true)}
-          onClickComplete={() => setOpenComplete(true)}
+          onClickComplete={handleSubmitWaiting}
+          onClickAllTerms={onClickAllTerms}
+          error={error}
         />
       </Modal>
       {openTerms && (
         <FullScreenPanel isOpen={openTerms}>
-          <TermsAgreement onClose={() => setOpenTerms(false)} />
+          <TermsAgreement
+            formData={formData}
+            onClose={() => setOpenTerms(false)}
+            updateFormData={(value) => {
+              updateFormData('termsAgreed', value.termsAgreed);
+              updateFormData('privacyPolicyAgreed', value.privacyPolicyAgreed);
+              updateFormData('thirdPartyAgreed', value.thirdPartyAgreed);
+              updateFormData('marketingConsent', value.marketingConsent);
+            }}
+          />
         </FullScreenPanel>
       )}
       {openComplite && (
@@ -271,8 +312,11 @@ export default function WaitingPage() {
           onClose={() => {
             setOpenComplete(false);
             setIsModalOpen(false);
+            resetFormData();
             setStep('phone');
           }}
+          waitingList={waitingResponse?.data?.list || []}
+          currentWaiting={mutationResponse?.data}
         />
       )}
     </div>
