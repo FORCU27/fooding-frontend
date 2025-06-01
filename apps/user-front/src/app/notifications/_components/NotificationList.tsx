@@ -29,13 +29,13 @@ type NotificationListItemProps = {
 };
 
 const NotificationListItem = ({ notification }: NotificationListItemProps) => {
-  const iconByType: Record<Notification['type'], React.ReactNode> = {
+  const iconByNotificationCategory: Record<Notification['category'], React.ReactNode> = {
     SERVICE: <BellIcon />,
     EVENT: <StarIcon />,
     NOTICE: <MessageAlertSquareIcon />,
   };
 
-  const backgroundColorByType: Record<Notification['type'], string> = {
+  const backgroundColorByNotificationCategory: Record<Notification['category'], string> = {
     SERVICE: 'bg-fooding-purple',
     EVENT: 'bg-fooding-yellow',
     NOTICE: 'bg-primary-pink',
@@ -46,10 +46,10 @@ const NotificationListItem = ({ notification }: NotificationListItemProps) => {
       <div
         className={cn(
           'size-12 flex justify-center items-center rounded-full shrink-0 text-white',
-          backgroundColorByType[notification.type],
+          backgroundColorByNotificationCategory[notification.category],
         )}
       >
-        {iconByType[notification.type]}
+        {iconByNotificationCategory[notification.category]}
       </div>
       <div className='flex flex-col gap-2'>
         <span className='font-semibold'>{notification.title}</span>

@@ -7,7 +7,8 @@ export const handlers = [
       mockNotificationListResponse({
         page: 1,
         size: 20,
-        sort: ['sentAt,desc'],
+        sortType: 'RECENT',
+        sortDirection: 'DESCENDING',
       }),
     );
   }),

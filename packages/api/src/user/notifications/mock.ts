@@ -21,7 +21,7 @@ export const mockNotificationListResponse = (
 
 const mockNotificationList: Notification[] = Array.from({ length: 80 }, (_, index) => ({
   id: index + 1,
-  type: index % 3 === 0 ? 'EVENT' : index % 3 === 1 ? 'NOTICE' : 'SERVICE',
+  category: index % 3 === 0 ? 'EVENT' : index % 3 === 1 ? 'NOTICE' : 'SERVICE',
   title: index % 3 === 0 ? '이벤트' : index % 3 === 1 ? '공지사항' : '알림',
   content:
     index % 3 === 0

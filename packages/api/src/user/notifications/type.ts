@@ -2,14 +2,14 @@ import z from 'zod';
 
 import { createPageResponseSchema } from '../../shared';
 
-export const notificationTypes = ['EVENT', 'NOTICE', 'SERVICE'] as const;
-export const NotificationType = z.enum(notificationTypes);
-export type NotificationType = z.infer<typeof NotificationType>;
+export const notificationCategories = ['EVENT', 'NOTICE', 'SERVICE'] as const;
+export const NotificationCategory = z.enum(notificationCategories);
+export type NotificationCategory = z.infer<typeof NotificationCategory>;
 
 export type Notification = z.infer<typeof Notification>;
 export const Notification = z.object({
   id: z.number(),
-  type: NotificationType,
+  category: NotificationCategory,
   title: z.string(),
   content: z.string(),
   sentAt: z.string(),
