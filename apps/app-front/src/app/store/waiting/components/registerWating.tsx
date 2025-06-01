@@ -14,7 +14,7 @@ type ModalContentProps = {
   onNext: () => void;
   onPrev: () => void;
   onClickTerms: () => void;
-  onClickComplete: () => void;
+  onClickComplete: () => Promise<void>;
 };
 
 export default function ModalContent({

@@ -1,7 +1,6 @@
 'use client';
 
 import Image from 'next/image';
-import { useRouter } from 'next/navigation';
 import React, { useState, useEffect } from 'react';
 
 import { storeApi, userApi } from '@repo/api/app';
@@ -13,6 +12,7 @@ import { Step, WaitingRegisterData } from './types';
 import Button from '@/components/Button';
 import FullScreenPanel from '@/components/FullScreenPanel';
 import Modal from '@/components/Modal';
+import { useStore } from '@/components/Provider/StoreProvider';
 import TermsAgreement from '@/components/TermsAgreement';
 
 const Logo = () => (
@@ -149,7 +149,27 @@ const FoodImage = () => (
 );
 
 export default function WaitingPage() {
-  const { data: waiting } = useQuery({ queryKey: ['waiting'], queryFn: userApi.getUser });
+  const { storeId } = useStore();
+
+  const submitWaiting = async () => {
+    const response = await storeApi.createStoreWaiting(formData, Number(storeId));
+    resetFormData();
+    console.log('response', response);
+    setIsModalOpen(false);
+    setOpenComplete(true);
+  };
+
+  useEffect(() => {
+    console.log('storeId', storeId);
+  }, [storeId]);
+
+  const { data: waiting } = useQuery({
+    queryKey: ['waiting'],
+    queryFn: () => storeApi.getStoreWaiting({ id: 1, status: 'WAITING' }),
+  });
+
+  console.log('waiting', waiting);
+
   const { data: stores } = useQuery({
     queryKey: ['waiting', 1, 20],
     queryFn: () =>
@@ -216,6 +236,7 @@ export default function WaitingPage() {
   }, [formData]);
 
   const resetFormData = () => {
+    setStep('phone');
     setFormData({
       name: '',
       phoneNumber: '010-',
@@ -244,7 +265,10 @@ export default function WaitingPage() {
         open={isModalOpen}
         backBtn={step !== 'phone'}
         backFn={() => handlePrevStep()}
-        onClose={() => setIsModalOpen(false)}
+        onClose={() => {
+          setIsModalOpen(false);
+          resetFormData();
+        }}
       >
         <ModalContent
           step={step}
@@ -253,7 +277,7 @@ export default function WaitingPage() {
           onNext={handleNextStep}
           onPrev={handlePrevStep}
           onClickTerms={() => setOpenTerms(true)}
-          onClickComplete={() => setOpenComplete(true)}
+          onClickComplete={submitWaiting}
         />
       </Modal>
       {openTerms && (
@@ -275,6 +299,7 @@ export default function WaitingPage() {
           onClose={() => {
             setOpenComplete(false);
             setIsModalOpen(false);
+            resetFormData();
             setStep('phone');
           }}
         />
