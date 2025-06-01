@@ -1,6 +1,4 @@
-import BellIcon from '@/assets/icons/BellIcon';
-import BookmarkIcon from '@/assets/icons/BookmarkIcon';
-import SearchIcon from '@/assets/icons/SearchIcon';
+import { BellIcon, BookmarkIcon, SearchIcon } from '@repo/design-system/icons';
 
 /* eslint-disable @next/next/no-img-element */
 function Header() {

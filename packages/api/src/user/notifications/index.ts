@@ -11,4 +11,7 @@ export const notificationApi = {
     const response = await api.get(ENDPOINT, { params });
     return GetNotificationListResponse.parse(response);
   },
+  markAsRead: async () => {
+    return await api.post(`${ENDPOINT}/read`);
+  },
 };

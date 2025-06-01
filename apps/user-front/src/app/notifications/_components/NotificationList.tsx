@@ -1,5 +1,6 @@
 import { Notification } from '@repo/api/user/notifications';
 
+import { MarkAsRead } from './MarkAsRead';
 import { IntersectionObserver } from '@/components/IntersectionObserver';
 import { useInfiniteNotificationList } from '@/services/notification';
 import { cn } from '@/utils/cn';
@@ -18,6 +19,7 @@ export const NotificationList = () => {
         <NotificationListItem key={notification.id} notification={notification} />
       ))}
       <IntersectionObserver onIntersect={fetchNextPage} />
+      <MarkAsRead />
     </ul>
   );
 };

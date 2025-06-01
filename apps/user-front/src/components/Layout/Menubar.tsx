@@ -1,12 +1,11 @@
-import ChevronDownIcon from '@/assets/icons/ChevronDownIcon';
-import MarkPinIcon from '@/assets/icons/MarkpinIcon';
+import { ChevronDownIcon, MarkpinIcon } from '@repo/design-system/icons';
 
 function Menubar() {
   return (
     <div className='h-16 flex p-5'>
       <div className='justify-start items-center'>
         <div className='flex items-center justify-start'>
-          <MarkPinIcon />
+          <MarkpinIcon />
           <div className='flex flex-row items-center p-2 gap-2'>
             <div className='font-bold'>홍대/합정/마포</div>
             <button type='button' className='flex justify-center items-center'>
