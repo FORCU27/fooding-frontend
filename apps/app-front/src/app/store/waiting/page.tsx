@@ -208,12 +208,8 @@ export default function WaitingPage() {
   const STEPS = ['phone', 'member', 'name'] as const;
 
   const handleNextStep = () => {
-    console.log('step', step);
-
     const currentIndex = STEPS.indexOf(step);
-    console.log('currentIndex', currentIndex, STEPS[currentIndex]);
     const nextStep = STEPS[currentIndex + 1];
-    console.log('nextStep', nextStep);
     if (nextStep) {
       setStep(nextStep);
     }
@@ -222,7 +218,6 @@ export default function WaitingPage() {
   const handlePrevStep = () => {
     const currentIndex = STEPS.indexOf(step);
     const prevStep = STEPS[currentIndex - 1];
-    console.log('prevStep', prevStep);
     if (prevStep) {
       setStep(prevStep);
     }
@@ -237,10 +232,6 @@ export default function WaitingPage() {
       [key]: value,
     }));
   };
-
-  useEffect(() => {
-    console.log('formData', formData);
-  }, [formData]);
 
   const resetFormData = () => {
     setStep('phone');

@@ -21,7 +21,6 @@ export const storeApi = {
 
   getStoreWaiting: async (params: { id: number; status: string }) => {
     const response = await api.get(`/app/waitings/${params.id}/requests`, { params });
-    console.log('response', response);
     return GetStoresWaitingResponse.parse(response);
   },
 
