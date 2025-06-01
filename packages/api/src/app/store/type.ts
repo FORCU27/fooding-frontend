@@ -77,6 +77,21 @@ export const GetWaitingDetailResponse = z.object({
   memo: z.string(),
 });
 
+export const GetStoresWaitingResponse = z.object({
+  status: z.string(),
+  data: z.object({
+    list: z.array(GetWaitingDetailResponse),
+    pageInfo: PageInfoSchema,
+  }),
+});
+
+export const PostStoreWaitingRequest = z.object({
+  data: z.object({
+    callNumber: z.number(),
+  }),
+  status: z.string(),
+});
+
 export const CreateStoreWaitingRequest = z.object({
   name: z.string(),
   phoneNumber: z.string(),
