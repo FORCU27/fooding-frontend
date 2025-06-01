@@ -5,7 +5,10 @@ import { Button, ChipTabs } from '@repo/design-system/components/b2c';
 import { BookmarkIcon, ChevronRightIcon, StarIcon } from '@repo/design-system/icons';
 import { NextPage } from 'next';
 
-import RestaurantsListSection, { RestaurantItem } from '@/components/Home/RestaurantsListSection';
+import {
+  RestaurantsListSection,
+  RestaurantItem,
+} from '@/components/Restaurant/RestaurantsListSection';
 
 //FIXME: 추후 API 연결
 const menuItems: RestaurantItem[] = [
