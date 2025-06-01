@@ -25,7 +25,7 @@ const Counter = ({ label, count, onDecrease, onIncrease }: CounterProps) => (
       <div className='subtitle-3'>{label}</div>
       <div className='flex items-center space-x-1'>
         <CounterButton onClick={onDecrease} />
-        <span className='w-8 text-center'>{count}</span>
+        <span className='w-8 text-center subtitle-2-1'>{count}</span>
         <CounterButton onClick={onIncrease} isPlus />
       </div>
     </div>
@@ -39,7 +39,7 @@ export function MemberCountStep({ formData, updateFormData, onNext, onPrev }: St
   return (
     <div className='flex items-center flex-col'>
       <div className='headline-5 font-bold mb-2'>입장 인원</div>
-      <p className='text-sm text-gray-5 body-2-1 mb-[70px]'>총 입장 인원을 입력해주세요</p>
+      <p className='subtitle-3 text-gray-5 body-2-1 mb-[70px]'>총 입장 인원을 입력해주세요</p>
 
       <div className='mb-[104px]'>
         <div className='grid grid-rows gap-4 mb-10'>

@@ -14,7 +14,9 @@ type ModalContentProps = {
   onNext: () => void;
   onPrev: () => void;
   onClickTerms: () => void;
-  onClickComplete: () => Promise<void>;
+  onClickComplete: () => void;
+  error?: string | null;
+  onClickAllTerms: () => void;
 };
 
 export default function ModalContent({
@@ -25,6 +27,8 @@ export default function ModalContent({
   onPrev,
   onClickTerms,
   onClickComplete,
+  error,
+  onClickAllTerms,
 }: ModalContentProps) {
   if (step === 'name') {
     return (
@@ -55,8 +59,9 @@ export default function ModalContent({
         onNext={onNext}
         onPrev={onPrev}
         onClickTerms={onClickTerms}
+        onClickAllTerms={onClickAllTerms}
       />
     );
   }
-  return null;
+  return <div>{error && <div className='text-red-500 text-sm mt-2'>{error}</div>}</div>;
 }

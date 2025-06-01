@@ -3,7 +3,14 @@ import { B2BCheckBoxIcon, B2BRefreshIcon, B2BDeleteIcon } from '@repo/design-sys
 import { WaitingRegisterData, UpdateWaitingRegisterData, StepProps } from '../types';
 import Button from '@/components/Button';
 
-export function PhoneStep({ formData, updateFormData, onNext, onPrev, onClickTerms }: StepProps) {
+export function PhoneStep({
+  formData,
+  updateFormData,
+  onNext,
+  onPrev,
+  onClickTerms,
+  onClickAllTerms,
+}: StepProps) {
   const { phoneNumber, termsAgreed, privacyPolicyAgreed, thirdPartyAgreed } = formData;
 
   // 필수 약관 3개가 모두 체크되었는지 확인
@@ -87,9 +94,11 @@ export function PhoneStep({ formData, updateFormData, onNext, onPrev, onClickTer
       </h2>
       <NumberPad onNumberClick={handleNumberClick} />
       <div className='flex items-center gap-2 mt-[15px] mb-[25px]'>
-        <B2BCheckBoxIcon
-          fill={isAllRequiredTermsAgreed ? 'var(--color-primary-pink)' : 'var(--color-gray-5)'}
-        />
+        <div onClick={onClickAllTerms}>
+          <B2BCheckBoxIcon
+            fill={isAllRequiredTermsAgreed ? 'var(--color-primary-pink)' : 'var(--color-gray-5)'}
+          />
+        </div>
         <div
           className='text-gray-5 body-2-2 underline-offset-2 underline cursor-pointer'
           onClick={onClickTerms}
