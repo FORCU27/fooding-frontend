@@ -7,7 +7,7 @@ const queryKey = {
 
 export const useInfiniteNotificationList = () => {
   const { data, fetchNextPage } = useSuspenseInfiniteQuery({
-    initialPageParam: 0,
+    initialPageParam: 1,
     queryKey: queryKey.notifications,
     queryFn: ({ pageParam }) => {
       return notificationApi.getNotificationList({
