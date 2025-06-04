@@ -20,18 +20,17 @@ export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang='en'>
       <head />
-      <body>
-        {process.env.NODE_ENV === 'production' && (
-          <>
-            <Script
-              strategy='afterInteractive'
-              src={`https://www.googletagmanager.com/gtag/js?id=${GA_TRACKING_ID}`}
-            />
-            <Script
-              id='gtag-init'
-              strategy='afterInteractive'
-              dangerouslySetInnerHTML={{
-                __html: `
+      {process.env.NODE_ENV === 'production' && (
+        <>
+          <Script
+            strategy='afterInteractive'
+            src={`https://www.googletagmanager.com/gtag/js?id=${GA_TRACKING_ID}`}
+          />
+          <Script
+            id='gtag-init'
+            strategy='afterInteractive'
+            dangerouslySetInnerHTML={{
+              __html: `
                   window.dataLayer = window.dataLayer || [];
                   function gtag(){dataLayer.push(arguments);}
                   gtag('js', new Date());
@@ -39,10 +38,11 @@ export default function RootLayout({ children }: { children: ReactNode }) {
                     page_path: window.location.pathname,
                   });
                 `,
-              }}
-            />
-          </>
-        )}
+            }}
+          />
+        </>
+      )}
+      <body>
         <ReactQueryProvider>
           <Suspense fallback={<div>페이지를 불러오는 중입니다...</div>}>
             <AuthProvider>

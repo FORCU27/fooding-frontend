@@ -6,6 +6,7 @@
     "./auth": "./src/auth/index.ts",
     "./example": "./src/example/index.ts",
     "./stores": "./src/stores/index.ts",
+    "./user/notifications": "./src/user/notifications/index.ts",
     "./users": "./src/users/index.ts",
     "./notifications": "./src/notifications/index.ts",
     "./user-notifications": "./src/user-notifications/index.ts",

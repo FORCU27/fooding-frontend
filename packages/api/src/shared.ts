@@ -98,16 +98,15 @@ export const PageInfoSchema = z.object({
   totalPages: z.number(),
 });
 
-export const createPageResponseSchema = <T extends z.ZodTypeAny>(itemSchema: T) =>
-  z.object({
-    status: z.string(),
-    data: z.object({
-      list: z.array(itemSchema),
+export const createPageResponseSchema = <TListItem extends z.ZodTypeAny>(listItem: TListItem) =>
+  ApiResponse(
+    z.object({
+      list: z.array(listItem),
       pageInfo: PageInfoSchema,
     }),
-  });
+  );
 
-export type PageResponse<T extends z.ZodTypeAny> = z.infer<
+export type PageResponse<T extends z.ZodType> = z.infer<
   ReturnType<typeof createPageResponseSchema<T>>
 >;
 export type PageInfo = z.infer<typeof PageInfoSchema>;

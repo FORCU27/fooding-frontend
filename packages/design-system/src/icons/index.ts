@@ -16,3 +16,4 @@ export { default as StarIcon } from './StarIcon';
 export { default as HomeIcon } from './HomeIcon';
 export { default as ListIcon } from './ListIcon';
 export { default as UserIcon } from './UserIcon';
+export { default as MessageAlertSquareIcon } from './MessageAlertSquareIcon';
