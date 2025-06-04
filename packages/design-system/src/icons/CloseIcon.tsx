@@ -18,7 +18,6 @@ export default function CloseIcon({
     >
       <path
         d='M45 15L15 45M15 15L45 45'
-        fill={fill}
         stroke='currentColor'
         strokeWidth='5'
         strokeLinecap='round'

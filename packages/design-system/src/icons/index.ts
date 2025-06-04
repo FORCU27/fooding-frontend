@@ -4,10 +4,15 @@ export * from './chevronIcons';
 export * from './socialIcons';
 export * from './b2b';
 
+export { default as CloseIcon } from './CloseIcon';
 export { default as VisibilityIcon } from './VisibilityIcon';
 export { default as VisibilityOffIcon } from './VisibilityOffIcon';
 export { default as BellIcon } from './BellIcon';
 export { default as BookmarkIcon } from './BookmarkIcon';
-export { default as MarkpinIcon } from './MarkpinIcon';
+export { default as MarkPinIcon } from './MarkerPinIcon';
 export { default as SearchIcon } from './SearchIcon';
 export { default as CheckIcon } from './CheckIcon';
+export { default as StarIcon } from './StarIcon';
+export { default as HomeIcon } from './HomeIcon';
+export { default as ListIcon } from './ListIcon';
+export { default as UserIcon } from './UserIcon';

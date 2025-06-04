@@ -1,27 +1,32 @@
-import { api } from './api';
-import { PageResponse } from './types';
+import { z } from 'zod';
 
-export interface AdminUserResponse {
-  id: number;
-  email: string;
-  nickname: string;
-  profileImage: string | null;
-  createdAt: string;
-  updatedAt: string;
-}
+import { api, createPageResponseSchema } from './shared';
+
+const AdminUserResponse = z.object({
+  id: z.number(),
+  email: z.string(),
+  nickname: z.string(),
+  profileImage: z.string().nullable(),
+  createdAt: z.string(),
+  updatedAt: z.string(),
+});
 
 export interface AdminUpdateUserRequest {
   nickname: string;
   profileImage?: string;
 }
 
+type GetUserListParams = {
+  page: number;
+};
+
 export const userApi = {
-  getUserList: (page: number) =>
-    api.get<PageResponse<AdminUserResponse>>(`/admin/users?page=${page}`),
-  
+  getUserList: (params: GetUserListParams) => {
+    const response = api.get('/admin/users', { params });
+    return createPageResponseSchema(AdminUserResponse).parse(response);
+  },
   updateUser: ({ id, body }: { id: number; body: AdminUpdateUserRequest }) =>
     api.put(`/admin/users/${id}`, body),
-  
-  deleteUser: (id: number) =>
-    api.delete(`/admin/users/${id}`),
-}; 
+
+  deleteUser: (id: number) => api.delete(`/admin/users/${id}`),
+};

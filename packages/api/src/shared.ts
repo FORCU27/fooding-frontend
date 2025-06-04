@@ -106,7 +106,7 @@ export const createPageResponseSchema = <TListItem extends z.ZodTypeAny>(listIte
     }),
   );
 
-export type PageResponse<T extends z.ZodTypeAny> = z.infer<
+export type PageResponse<T extends z.ZodType> = z.infer<
   ReturnType<typeof createPageResponseSchema<T>>
 >;
 export type PageInfo = z.infer<typeof PageInfoSchema>;

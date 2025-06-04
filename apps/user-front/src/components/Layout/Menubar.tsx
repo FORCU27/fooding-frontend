@@ -1,16 +1,14 @@
-import { ChevronDownIcon, MarkpinIcon } from '@repo/design-system/icons';
+import { ChevronDownIcon, MarkPinIcon } from '@repo/design-system/icons';
 
 function Menubar() {
   return (
-    <div className='h-16 flex p-5'>
-      <div className='justify-start items-center'>
-        <div className='flex items-center justify-start'>
-          <MarkpinIcon />
-          <div className='flex flex-row items-center p-2 gap-2'>
-            <div className='font-bold'>홍대/합정/마포</div>
-            <button type='button' className='flex justify-center items-center'>
-              <ChevronDownIcon size={20} color='#767676' className='cursor-auto' />
-            </button>
+    <div className='flex pl-5 pt-2 pb-4 bg-white w-full h-[44px]'>
+      <div className='flex items-center gap-1'>
+        <MarkPinIcon />
+        <div className='flex p-1 gap-1 items-center'>
+          <div className='subtitle-4'>홍대/합정/마포</div>
+          <div className='flex items-center justify-center'>
+            <ChevronDownIcon size={20} color='var(--color-gray-5)' />
           </div>
         </div>
       </div>
