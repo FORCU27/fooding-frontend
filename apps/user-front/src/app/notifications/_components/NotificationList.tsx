@@ -43,7 +43,12 @@ const NotificationListItem = ({ notification }: NotificationListItemProps) => {
   };
 
   return (
-    <li className={cn('p-5 flex gap-4', notification.read === false && 'bg-primary-pink/10')}>
+    <li
+      className={cn(
+        'p-grid-margin flex gap-4',
+        notification.read === false && 'bg-primary-pink/10',
+      )}
+    >
       <div
         className={cn(
           'size-12 flex justify-center items-center rounded-full shrink-0 text-white',

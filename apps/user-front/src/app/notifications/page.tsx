@@ -8,7 +8,7 @@ import { NotificationList } from './_components/NotificationList';
 
 export default function NotificationListPage() {
   return (
-    <main>
+    <main className='bg-white'>
       <QueryErrorResetBoundary>
         {({ reset }) => (
           <ErrorBoundary fallback={ErrorFallback} onReset={reset}>
