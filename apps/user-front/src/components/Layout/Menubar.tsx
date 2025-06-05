@@ -2,7 +2,7 @@ import { ChevronDownIcon, MarkPinIcon } from '@repo/design-system/icons';
 
 function Menubar() {
   return (
-    <div className='flex pl-5 pt-2 pb-4 bg-white w-full h-[44px]'>
+    <div className='flex px-grid-margin pt-2 pb-4 bg-white w-full h-[44px]'>
       <div className='flex items-center gap-1'>
         <MarkPinIcon />
         <div className='flex p-1 gap-1 items-center'>

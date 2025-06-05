@@ -31,6 +31,9 @@
   --lh-tight: 1.2;
   --lh-normal: 1.4;
   --lh-loose: 1.5;
+
+  /* spacings */
+  --spacing-grid-margin: 20px;
 }
 
 @layer utilities {
