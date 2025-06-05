@@ -5,9 +5,6 @@ import { useState } from 'react';
 import {
   Box,
   Button,
-  Dialog,
-  DialogTitle,
-  DialogContent,
   Paper,
   Table,
   TableBody,
@@ -17,7 +14,12 @@ import {
   TableRow,
   Typography,
 } from '@mui/material';
-import { storeApi, AdminStoreResponse, AdminCreateStoreRequest, AdminUpdateStoreRequest } from '@repo/api/stores';
+import {
+  storeApi,
+  AdminStoreResponse,
+  AdminCreateStoreRequest,
+  AdminUpdateStoreRequest,
+} from '@repo/api/admin';
 import { useQuery, useMutation } from '@tanstack/react-query';
 
 import { CreateStoreDialog } from './CreateStoreDialog';
@@ -26,7 +28,7 @@ import { EditStoreDialog } from './EditStoreDialog';
 import { queryClient } from '../providers';
 
 export default function StoresPage() {
-  const [page, setPage] = useState(0);
+  const page = 0;
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [selectedStore, setSelectedStore] = useState<AdminStoreResponse | null>(null);
@@ -37,7 +39,6 @@ export default function StoresPage() {
     queryKey: ['stores', page],
     queryFn: () => storeApi.getStoreList(page),
   });
-
 
   const createMutation = useMutation({
     mutationFn: (data: AdminCreateStoreRequest) => storeApi.createStore(data),
@@ -96,13 +97,10 @@ export default function StoresPage() {
   return (
     <Box sx={{ p: 3 }}>
       <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 3 }}>
-        <Typography variant="h4" component="h1">
+        <Typography variant='h4' component='h1'>
           가게 관리
         </Typography>
-        <Button
-          variant="contained"
-          onClick={() => setIsCreateDialogOpen(true)}
-        >
+        <Button variant='contained' onClick={() => setIsCreateDialogOpen(true)}>
           새 가게 추가
         </Button>
       </Box>
@@ -121,7 +119,7 @@ export default function StoresPage() {
             </TableRow>
           </TableHead>
           <TableBody>
-            {stores.map((store: AdminStoreResponse) => (
+            {stores.map((store) => (
               <TableRow key={store.id}>
                 <TableCell>{store.id}</TableCell>
                 <TableCell>{store.name}</TableCell>
@@ -132,8 +130,8 @@ export default function StoresPage() {
                 <TableCell>
                   <Box sx={{ display: 'flex', gap: 1 }}>
                     <Button
-                      variant="outlined"
-                      size="small"
+                      variant='outlined'
+                      size='small'
                       onClick={() => {
                         setSelectedStore(store);
                         setIsEditDialogOpen(true);
@@ -142,9 +140,9 @@ export default function StoresPage() {
                       수정
                     </Button>
                     <Button
-                      variant="outlined"
-                      color="error"
-                      size="small"
+                      variant='outlined'
+                      color='error'
+                      size='small'
                       onClick={() => handleDeleteClick(store)}
                     >
                       삭제
@@ -179,9 +177,9 @@ export default function StoresPage() {
         onClose={() => setDeleteDialogOpen(false)}
         onConfirm={handleDeleteConfirm}
         loading={deleteMutation.isPending}
-        title="가게 삭제 확인"
+        title='가게 삭제 확인'
         description={storeToDelete ? `정말로 '${storeToDelete.name}' 가게를 삭제하시겠습니까?` : ''}
       />
     </Box>
   );
-} 
+}

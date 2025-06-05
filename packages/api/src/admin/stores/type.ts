@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-import { createPageResponseSchema } from '../shared';
+import { PageResponse } from '../../shared';
 
 export const StoreSortType = {
   RECENT: 'RECENT',
@@ -15,6 +15,7 @@ export const SortDirection = {
 
 export type SortDirection = (typeof SortDirection)[keyof typeof SortDirection];
 
+export type AdminStoreResponse = z.infer<typeof AdminStoreResponseSchema>;
 export const AdminStoreResponseSchema = z.object({
   id: z.number(),
   ownerId: z.number(),
@@ -67,8 +68,7 @@ export const AdminUpdateStoreRequestSchema = z.object({
   isTakeOut: z.boolean(),
 });
 
-export const PageResponseSchema = createPageResponseSchema(AdminStoreResponseSchema);
-
-export type AdminStoreResponse = z.infer<typeof AdminStoreResponseSchema>;
+export type GetStoreListResponse = z.infer<typeof GetStoreListResponse>;
+export const GetStoreListResponse = PageResponse(AdminStoreResponseSchema);
 export type AdminCreateStoreRequest = z.infer<typeof AdminCreateStoreRequestSchema>;
 export type AdminUpdateStoreRequest = z.infer<typeof AdminUpdateStoreRequestSchema>;

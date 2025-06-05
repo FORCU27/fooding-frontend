@@ -1,4 +1,4 @@
-import { notificationApi } from '@repo/api/user/notifications';
+import { notificationApi } from '@repo/api/user';
 import { useMutation, useSuspenseInfiniteQuery } from '@tanstack/react-query';
 
 const queryKey = {

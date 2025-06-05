@@ -1,7 +1,5 @@
-import { DeleteConfirmDialog } from '@/app/notifications/DeleteConfirmDialog';
-import { queryClient } from '@/app/providers';
-import { CreateUserDialog } from '@/app/users/CreateUserDialog';
-import { EditUserDialog } from '@/app/users/EditUserDialog';
+import { useState } from 'react';
+
 import {
   Box,
   Button,
@@ -19,32 +17,41 @@ import {
   AdminUpdateUserRequest,
   AdminUserResponse,
   userApi,
-} from '@repo/api/users';
+} from '@repo/api/admin';
 import { useQuery, useMutation } from '@tanstack/react-query';
-import { useState } from 'react';
+
+import { DeleteConfirmDialog } from '@/app/notifications/DeleteConfirmDialog';
+import { queryClient } from '@/app/providers';
+import { CreateUserDialog } from '@/app/users/CreateUserDialog';
+import { EditUserDialog } from '@/app/users/EditUserDialog';
 
 type Role = 'USER' | 'CEO' | 'ADMIN';
 
 const roleMap: Record<Role, { queryKey: string; label: string }> = {
-  USER: { queryKey: 'users', label: '유저'},
+  USER: { queryKey: 'users', label: '유저' },
   CEO: { queryKey: 'ceos', label: '점주' },
   ADMIN: { queryKey: 'managers', label: '관리자' },
 };
 
-export default function UserList({ role }: { role: string }) {
-  const [page, setPage] = useState(0);
-  const [size, setPageSize] = useState(10);
+export default function UserList({ role }: { role: Role }) {
+  const page = 0;
+  const size = 10;
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [selectedUser, setSelectedUser] = useState<AdminUserResponse | null>(null);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [userToDelete, setUserToDelete] = useState<AdminUserResponse | null>(null);
 
-  const queryKey = [roleMap[role as Role]?.queryKey ?? 'unknown', page];
-  const roleName = roleMap[role as Role]?.label;
+  const queryKey = [roleMap[role].queryKey ?? 'unknown', page];
+  const roleName = roleMap[role].label;
   const { data: usersResponse, isLoading } = useQuery({
     queryKey,
-    queryFn: () => userApi.getUserList(page, size, role),
+    queryFn: () =>
+      userApi.getUserList({
+        page,
+        size,
+        role,
+      }),
   });
 
   const createMutation = useMutation({
@@ -183,7 +190,9 @@ export default function UserList({ role }: { role: string }) {
         onConfirm={handleDeleteConfirm}
         loading={deleteMutation.isPending}
         title={`${roleName} 삭제 확인`}
-        description={userToDelete ? `정말로 '${userToDelete.email}' ${roleName}를 삭제하시겠습니까?` : ''}
+        description={
+          userToDelete ? `정말로 '${userToDelete.email}' ${roleName}를 삭제하시겠습니까?` : ''
+        }
       />
     </Box>
   );
