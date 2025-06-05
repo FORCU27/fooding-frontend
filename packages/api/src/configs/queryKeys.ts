@@ -1,4 +1,4 @@
-const queryKeys = {
+export const queryKeys = {
   admin: {},
   app: {},
   ceo: {
@@ -7,5 +7,3 @@ const queryKeys = {
   pos: {},
   user: {},
 };
-
-export default queryKeys;

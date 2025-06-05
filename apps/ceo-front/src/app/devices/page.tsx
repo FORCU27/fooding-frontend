@@ -1,7 +1,7 @@
 'use client';
 
 import { deviceApi } from '@repo/api/ceo';
-import queryKeys from '@repo/api/constants/query-keys';
+import { queryKeys } from '@repo/api/configs/query-keys';
 import { useQuery } from '@tanstack/react-query';
 
 const DevicesPage = () => {

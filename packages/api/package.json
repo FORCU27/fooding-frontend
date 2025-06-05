@@ -10,7 +10,7 @@
     "./ceo": "./src/ceo/index.ts",
     "./users": "./src/users/index.ts",
     "./configs/storage-keys": "./src/configs/storageKeys.ts",
-    "./constants/query-keys": "./src/constants/queryKeys.ts"
+    "./configs/query-keys": "./src/configs/queryKeys.ts"
   },
   "scripts": {
     "format": "prettier --cache --write .",
