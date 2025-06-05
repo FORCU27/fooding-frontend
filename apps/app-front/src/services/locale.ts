@@ -2,6 +2,7 @@
 
 import { cookies } from 'next/headers';
 
+import { COOKIE_KEYS } from './cookies';
 import { StoreServiceType } from '@/app/store/service-select/types';
 import { Locale, defaultLocale } from '@/i18n/config';
 
@@ -18,7 +19,7 @@ export async function setUserLocale(locale: Locale) {
 }
 
 export async function getSelectedStoreId() {
-  return (await cookies()).get('selected_store_id')?.value;
+  return (await cookies()).get(COOKIE_KEYS.STORE_ID)?.value;
 }
 
 export async function setSelectedStoreId(storeId: string) {
@@ -30,5 +31,5 @@ export async function getSelectedService() {
 }
 
 export async function setSelectedService(service: StoreServiceType) {
-  (await cookies()).set('selected_service', service);
+  (await cookies()).set(COOKIE_KEYS.SERVICE, service);
 }

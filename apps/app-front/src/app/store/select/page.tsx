@@ -4,6 +4,7 @@ import { useRouter } from 'next/navigation';
 import { Suspense, useState } from 'react';
 
 import { userApi, storeApi, Store } from '@repo/api/app';
+import queryKeys from '@repo/api/constants/query-keys';
 import { useQuery } from '@tanstack/react-query';
 
 import StoreList from './components/StoreList';
@@ -12,9 +13,12 @@ import { setSelectedStoreId } from '@/services/locale';
 
 export default function StoreSelectPage() {
   const router = useRouter();
-  const { data: user } = useQuery({ queryKey: ['user'], queryFn: userApi.getUser });
+  const { data: user } = useQuery({
+    queryKey: [queryKeys.user.user],
+    queryFn: userApi.getUser,
+  });
   const { data: stores } = useQuery({
-    queryKey: ['stores', '홍길동', 1, 20],
+    queryKey: [queryKeys.app.store.waiting, '홍길동', 1, 20],
     queryFn: () =>
       storeApi.getStores({
         searchString: '홍길동',
