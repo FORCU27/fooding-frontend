@@ -5384,8 +5384,8 @@ __metadata:
   resolution: "@repo/design-system@workspace:packages/design-system"
   dependencies:
     "@chromatic-com/storybook": "npm:^3.2.6"
-    "@repo/eslint-config": "npm:*"
-    "@repo/typescript-config": "npm:*"
+    "@repo/eslint-config": "workspace:*"
+    "@repo/typescript-config": "workspace:*"
     "@storybook/addon-essentials": "npm:^8.6.14"
     "@storybook/blocks": "npm:^8.6.14"
     "@storybook/react": "npm:^8.6.14"
@@ -5412,7 +5412,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@repo/eslint-config@npm:*, @repo/eslint-config@workspace:*, @repo/eslint-config@workspace:^, @repo/eslint-config@workspace:packages/eslint-config":
+"@repo/eslint-config@workspace:*, @repo/eslint-config@workspace:^, @repo/eslint-config@workspace:packages/eslint-config":
   version: 0.0.0-use.local
   resolution: "@repo/eslint-config@workspace:packages/eslint-config"
   dependencies:
@@ -5445,7 +5445,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@repo/typescript-config@npm:*, @repo/typescript-config@workspace:*, @repo/typescript-config@workspace:packages/typescript-config":
+"@repo/typescript-config@workspace:*, @repo/typescript-config@workspace:packages/typescript-config":
   version: 0.0.0-use.local
   resolution: "@repo/typescript-config@workspace:packages/typescript-config"
   languageName: unknown

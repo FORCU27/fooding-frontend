@@ -4,7 +4,7 @@
   "type": "module",
   "scripts": {
     "format": "prettier --cache --write .",
-    "lint": "next lint --max-warnings 0",
+    "lint": "eslint --max-warnings 0",
     "type-check": "tsc --noEmit",
     "type-check:watch": "tsc --noEmit --watch",
     "storybook": "storybook dev -p 6006",
@@ -32,8 +32,8 @@
   },
   "devDependencies": {
     "@chromatic-com/storybook": "^3.2.6",
-    "@repo/eslint-config": "*",
-    "@repo/typescript-config": "*",
+    "@repo/eslint-config": "workspace:*",
+    "@repo/typescript-config": "workspace:*",
     "@storybook/addon-essentials": "^8.6.14",
     "@storybook/blocks": "^8.6.14",
     "@storybook/react": "^8.6.14",
