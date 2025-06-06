@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-import { PageInfoSchema } from '../../shared';
+import { PageInfo } from '../../shared';
 
 export const Store = z.object({
   id: z.number(),
@@ -21,9 +21,15 @@ export const Store = z.object({
 
 export type Store = z.infer<typeof Store>;
 
+export type GetStoresParams = {
+  searchString: string;
+  pageNum: number;
+  pageSize: number;
+};
+
 export const GetStoresResponse = z.object({
   list: z.array(Store),
-  pageInfo: PageInfoSchema,
+  pageInfo: PageInfo,
 });
 
 export type GetStoresResponse = z.infer<typeof GetStoresResponse>;

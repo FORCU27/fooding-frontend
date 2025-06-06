@@ -1,4 +1,4 @@
-import { Notification } from '@repo/api/user/notifications';
+import { Notification } from '@repo/api/user';
 import { BellIcon, MessageAlertSquareIcon, StarIcon } from '@repo/design-system/icons';
 
 import { MarkAsRead } from './MarkAsRead';

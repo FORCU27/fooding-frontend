@@ -1,6 +1,6 @@
 import z from 'zod';
 
-import { createPageResponseSchema } from '../../shared';
+import { PageResponse } from '../../shared';
 
 export const CeoDeviceResponseSchema = z.object({
   id: z.number(),
@@ -23,4 +23,4 @@ export const CeoDeviceConnnectRequestSchema = z.object({
   userId: z.number(),
 });
 
-export const PageResponseSchema = createPageResponseSchema(CeoDeviceResponseSchema);
+export const GetCeoDeviceListResponse = PageResponse(CeoDeviceResponseSchema);

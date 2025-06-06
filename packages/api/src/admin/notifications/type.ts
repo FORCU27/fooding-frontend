@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-import { createPageResponseSchema } from '../shared';
+import { PageResponse } from '../../shared';
 
 export const NotificationChannel = {
   MAIL: 'MAIL',
@@ -18,6 +18,7 @@ export const NotificationStatus = {
 
 export type NotificationStatus = (typeof NotificationStatus)[keyof typeof NotificationStatus];
 
+export type NotificationResponse = z.infer<typeof NotificationResponseSchema>;
 export const NotificationResponseSchema = z.object({
   id: z.number(),
   source: z.string(),
@@ -31,6 +32,4 @@ export const NotificationResponseSchema = z.object({
   scheduledAt: z.string().nullable(),
 });
 
-export const PageResponseSchema = createPageResponseSchema(NotificationResponseSchema);
-
-export type NotificationResponse = z.infer<typeof NotificationResponseSchema>; 
+export const GetNotificationListResponse = PageResponse(NotificationResponseSchema);
