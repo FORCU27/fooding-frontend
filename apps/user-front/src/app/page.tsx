@@ -2,7 +2,7 @@
 import Image from 'next/image';
 
 import { Button, ChipTabs } from '@repo/design-system/components/b2c';
-import { BookmarkIcon, ChevronRightIcon, StarIcon } from '@repo/design-system/icons';
+import { BookmarkIcon, ChevronRightIcon, FoodingIcon, StarIcon } from '@repo/design-system/icons';
 import { NextPage } from 'next';
 
 import Header from '@/components/Layout/Header';
@@ -83,14 +83,9 @@ const Home: NextPage = () => {
                           className='rounded-xl object-cover w-[220px] h-[140px]'
                         />
                       ) : (
-                        //FIXME: 임의의 placeholder이미지 사용중입니다.
-                        <Image
-                          width={220}
-                          height={140}
-                          src='/images/placeholder.png'
-                          alt='restaurant image'
-                          className='rounded-xl object-contain w-[220px] h-[140px]'
-                        />
+                        <div className='flex justify-center items-center bg-gray-1 w-[220px] h-[140px]'>
+                          <FoodingIcon width={58} height={72} color='rgba(17, 17, 17, 0.1)' />
+                        </div>
                       )}
 
                       {store.isFinished && (
@@ -123,7 +118,7 @@ const Home: NextPage = () => {
                         <span className='body-6 text-gray-5'>({store.reviewCount})</span>
                       </div>
                       <p className='body-8 text-gray-5'>
-                        {store.city} •{' '}
+                        {store.city.length >= 3 ? store.city.slice(0, 2) : store.city} •{' '}
                         {store.estimatedWaitingTimeMinutes
                           ? `예상 대기시간 ${store.estimatedWaitingTimeMinutes}분`
                           : '바로 입장가능'}
