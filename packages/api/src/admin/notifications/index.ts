@@ -1,5 +1,5 @@
-import { api } from '../shared';
-import { PageResponseSchema } from './type';
+import { GetNotificationListResponse } from './type';
+import { api } from '../../shared';
 
 export * from './type';
 
@@ -11,9 +11,8 @@ export const notificationApi = {
     });
 
     const response = await api.get(`/admin/notifications?${params.toString()}`);
-    return PageResponseSchema.parse(response);
+    return GetNotificationListResponse.parse(response);
   },
 
-  deleteNotification: async (id: number) =>
-    api.delete(`/admin/notifications/${id}`),
-}; 
+  deleteNotification: async (id: number) => api.delete(`/admin/notifications/${id}`),
+};

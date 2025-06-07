@@ -1,4 +1,4 @@
-import { PageResponseSchema } from './type';
+import { GetCeoDeviceListResponse } from './type';
 import { api } from '../../shared';
 
 export * from './type';
@@ -24,6 +24,6 @@ export const deviceApi = {
     }
 
     const response = await api.get(`/ceo/devices?${params.toString()}`);
-    return PageResponseSchema.parse(response);
+    return GetCeoDeviceListResponse.parse(response);
   },
 };

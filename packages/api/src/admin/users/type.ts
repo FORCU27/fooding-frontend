@@ -1,6 +1,9 @@
 import { z } from 'zod';
 
-import { createPageResponseSchema } from '../shared';
+import { PageResponse } from '../../shared';
+
+export const UserRole = z.enum(['USER', 'CEO', 'ADMIN']);
+export type UserRole = z.infer<typeof UserRole>;
 
 export const AdminUserResponseSchema = z.object({
   id: z.number(),
@@ -28,8 +31,13 @@ export const AdminUpdateUserRequestSchema = z.object({
   gender: z.string(),
 });
 
-export const PageResponseSchema = createPageResponseSchema(AdminUserResponseSchema);
+export type GetUserListParams = {
+  page: number;
+  size: number;
+  role?: UserRole;
+};
 
+export const GetUserListResponse = PageResponse(AdminUserResponseSchema);
 export type AdminUserResponse = z.infer<typeof AdminUserResponseSchema>;
 export type AdminCreateUserRequest = z.infer<typeof AdminCreateUserRequestSchema>;
 export type AdminUpdateUserRequest = z.infer<typeof AdminUpdateUserRequestSchema>;

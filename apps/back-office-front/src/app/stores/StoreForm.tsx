@@ -17,8 +17,8 @@ import {
   AdminStoreResponse,
   AdminCreateStoreRequest,
   AdminCreateStoreRequestSchema,
-} from '@repo/api/stores';
-import { userApi } from '@repo/api/users';
+} from '@repo/api/admin';
+import { userApi } from '@repo/api/admin';
 import { useQuery } from '@tanstack/react-query';
 import { useForm } from 'react-hook-form';
 
@@ -31,12 +31,17 @@ interface StoreFormProps {
 export function StoreForm({ initialData, onSubmit, isLoading }: StoreFormProps) {
   const { data: usersResponse } = useQuery({
     queryKey: ['users'],
-    queryFn: () => userApi.getUserList(0, 100, 'CEO'),
+    queryFn: () =>
+      userApi.getUserList({
+        page: 0,
+        size: 100,
+        role: 'CEO',
+      }),
   });
   const users = usersResponse?.data.list || [];
 
   const form = useForm<AdminCreateStoreRequest>({
-    resolver: zodResolver(AdminCreateStoreRequestSchema as any),
+    resolver: zodResolver(AdminCreateStoreRequestSchema),
     defaultValues: initialData || {
       ownerId: 0,
       name: '',

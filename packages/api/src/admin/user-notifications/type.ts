@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-import { createPageResponseSchema } from '../shared';
+import { PageResponse } from '../../shared';
 
 export const UserNotificationType = {
   NOTIFICATION: 'NOTICE',
@@ -27,7 +27,8 @@ export const CreateUserNotificationRequestSchema = z.object({
   category: z.string(),
 });
 
-export const PageResponseSchema = createPageResponseSchema(UserNotificationResponseSchema);
+export type GetUserNotificationListResponse = z.infer<typeof GetUserNotificationListResponse>;
+export const GetUserNotificationListResponse = PageResponse(UserNotificationResponseSchema);
 
 export type UserNotificationResponse = z.infer<typeof UserNotificationResponseSchema>;
-export type CreateUserNotificationRequest = z.infer<typeof CreateUserNotificationRequestSchema>; 
+export type CreateUserNotificationRequest = z.infer<typeof CreateUserNotificationRequestSchema>;

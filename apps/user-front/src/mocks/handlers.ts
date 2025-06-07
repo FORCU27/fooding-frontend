@@ -1,4 +1,4 @@
-import { mockNotificationListResponse } from '@repo/api/user/notifications';
+import { mockNotificationListResponse } from '@repo/api/user';
 import { http, HttpResponse } from 'msw';
 
 export const handlers = [

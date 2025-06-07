@@ -1,14 +1,14 @@
 export * from './type';
 
-import { api } from '../shared';
 import {
   AdminCreateStoreRequest,
   AdminUpdateStoreRequest,
   SortDirection,
   StoreSortType,
   AdminStoreResponseSchema,
-  PageResponseSchema,
+  GetStoreListResponse,
 } from './type';
+import { api } from '../../shared';
 
 const ENDPOINT = '/admin/stores';
 
@@ -26,10 +26,7 @@ export const storeApi = {
       sortDirection,
     });
     const response = await api.get(`${ENDPOINT}?${params.toString()}`);
-    console.log('response', response);
-    const result = PageResponseSchema.parse(response);
-    console.log('result', result);
-    return result;
+    return GetStoreListResponse.parse(response);
   },
 
   getStoreById: async (id: number) => {
