@@ -20,9 +20,9 @@ export default function RootLayout({ children }: { children: ReactNode }) {
       <body>
         <Providers>
           <Layout>{children}</Layout>
+          <Analytics />
         </Providers>
       </body>
-      <Analytics />
     </html>
   );
 }
