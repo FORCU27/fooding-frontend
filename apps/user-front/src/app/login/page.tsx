@@ -63,7 +63,7 @@ const openSocialLoginPopup = (loginUrl: string) => {
 
 export default function LoginPage() {
   const router = useRouter();
-  const [, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [recentProvider, setRecentProvider] = useState<string | null>(null);
 
   const { socialLogin } = useAuth();
@@ -180,6 +180,7 @@ export default function LoginPage() {
                   icon={platformIcons[platform]}
                   onClick={() => handleSocialLogin(platform)}
                   styles={platformStyles[platform]}
+                  disabled={isLoading}
                 />
                 {handleRecentProvider(platform)}
               </div>
