@@ -5,5 +5,8 @@ export const queryKeys = {
     devices: 'ceoDevices',
   },
   pos: {},
-  user: {},
+  user: {
+    stores: 'userStores',
+    storeInfo: 'userStoreInfo',
+  },
 };
