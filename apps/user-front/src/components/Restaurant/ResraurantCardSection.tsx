@@ -61,7 +61,7 @@ export const RestaurantCardSection = ({ items }: RestaurantCardSectionProps) => 
                 <span className='body-6 text-gray-5'>({item.reviewCount})</span>
               </div>
               <p className='body-8 text-gray-5'>
-                {item.city} •{' '}
+                {item.city.length >= 3 ? item.city.slice(0, 2) : item.city} •{' '}
                 {item.estimatedWaitingTimeMinutes
                   ? `예상 대기시간 ${item.estimatedWaitingTimeMinutes}분`
                   : '바로 입장가능'}
