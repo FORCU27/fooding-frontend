@@ -2,98 +2,47 @@
 import Image from 'next/image';
 
 import { Button, ChipTabs } from '@repo/design-system/components/b2c';
-import { BookmarkIcon, ChevronRightIcon, StarIcon } from '@repo/design-system/icons';
+import { BookmarkIcon, ChevronRightIcon, FoodingIcon, StarIcon } from '@repo/design-system/icons';
 import { NextPage } from 'next';
 
 import Header from '@/components/Layout/Header';
 import Menubar from '@/components/Layout/Menubar';
-import {
-  RestaurantsListSection,
-  RestaurantItem,
-} from '@/components/Restaurant/RestaurantsListSection';
-
-//FIXME: 추후 API 연결
-const menuItems: RestaurantItem[] = [
-  {
-    id: 1,
-    image: 'images/home/menuitem2.png',
-    name: '바다풍경 정육식당 흑돼지 용담탑동본점',
-    reviewScore: 4.9,
-    reviewCount: 231,
-    city: '합정',
-    estimatedWaitingTimeMinutes: 20,
-    bookMarded: true,
-    finished: false,
-  },
-
-  {
-    id: 2,
-    image: 'images/home/menuitem1.png',
-    name: '엉터리 생고기 엉생 무한리필 아산테크노 밸리점',
-    reviewScore: 4.9,
-    reviewCount: 231,
-    city: '합정',
-    estimatedWaitingTimeMinutes: 20,
-    bookMarded: false,
-    finished: true,
-  },
-
-  {
-    id: 3,
-    image: 'images/home/menuitem3.png',
-    name: '민서네 김밥 홍대점',
-    reviewScore: 4.9,
-    reviewCount: 231,
-    city: '합정',
-    estimatedWaitingTimeMinutes: 20,
-    bookMarded: false,
-    finished: false,
-  },
-  {
-    id: 4,
-    image: 'images/home/menuitem2.png',
-    name: '바다풍경 정육식당 흑돼지 용담탑동본점',
-    reviewScore: 4.9,
-    reviewCount: 231,
-    city: '합정',
-    estimatedWaitingTimeMinutes: 20,
-    bookMarded: true,
-    finished: false,
-  },
-
-  {
-    id: 5,
-    image: 'images/home/menuitem1.png',
-    name: '엉터리 생고기 엉생 무한리필 아산테크노 밸리점',
-    reviewScore: 4.9,
-    reviewCount: 231,
-    city: '합정',
-    estimatedWaitingTimeMinutes: 20,
-    bookMarded: true,
-    finished: true,
-  },
-
-  {
-    id: 6,
-    image: 'images/home/menuitem3.png',
-    name: '민서네 김밥 홍대점',
-    reviewScore: 4.9,
-    reviewCount: 231,
-    city: '합정',
-    estimatedWaitingTimeMinutes: 20,
-    bookMarded: false,
-    finished: false,
-  },
-];
+import { RestaurantsListSection } from '@/components/Restaurant/RestaurantsListSection';
+import { useGetStoreList } from '@/hooks/store/useGetStoreList';
 
 const Home: NextPage = () => {
+  const {
+    data: stores,
+    isPending,
+    isError,
+  } = useGetStoreList({
+    pageNum: 1,
+    pageSize: 10,
+    sortType: 'RECENT',
+    sortDirection: 'DESCENDING',
+  });
+
+  if (isPending) {
+    return <div>로딩중</div>;
+  }
+
+  if (isError) {
+    return <div>에러발생</div>;
+  }
+
   return (
     <div className='flex flex-col w-full'>
       <Header />
       <Menubar />
       <div className='bg-white mb-3'>
         <div className='relative w-full h-[200px]'>
-          <Image src='/images/home/banneritem1.png' alt='banner' fill className='object-cover' />
+          <Image
+            src='/images/home/banneritem1.png'
+            alt='banner'
+            fill
+            className='object-cover'
+            priority
+          />
           <div className='absolute top-6 left-7'>
             <p className='text-white body-3 mb-1'>흑백요리사 출연 셰프 맛집</p>
             <p className='text-white headline-1'>오늘 메뉴는 뭔가요?</p>
@@ -122,24 +71,30 @@ const Home: NextPage = () => {
             </ChipTabs>
             <div className='flex flex-col bg-white/80'>
               <ul className='flex gap-3 overflow-x-auto scrollbar-hide -mx-grid-margin px-grid-margin'>
-                {menuItems.map((item) => (
-                  <li key={item.id} className='flex flex-col relative'>
-                    <div className='relative mb-2 rounded-xl overflow-hidden'>
-                      <Image
-                        width={220}
-                        height={140}
-                        src={`/${item.image}`}
-                        alt={item.name || 'restaurant image'}
-                        className='rounded-xl object-cover w-[220px] h-[140px]'
-                      />
+                {stores.data.list.map((store) => (
+                  <li key={store.id} className='flex flex-col cursor-pointer relative'>
+                    <div className='relative mb-2 rounded-xl overflow-hidden w-[220px] h-[140px]'>
+                      {store.mainImage ? (
+                        <Image
+                          width={220}
+                          height={140}
+                          src={`/${store.mainImage}`}
+                          alt={store.name || 'restaurant image'}
+                          className='rounded-xl object-cover w-[220px] h-[140px]'
+                        />
+                      ) : (
+                        <div className='flex justify-center items-center bg-gray-1 w-[220px] h-[140px]'>
+                          <FoodingIcon width={58} height={72} color='rgba(17, 17, 17, 0.1)' />
+                        </div>
+                      )}
 
-                      {item.finished && (
+                      {store.isFinished && (
                         <div className='absolute inset-0 bg-black/50 flex justify-center items-center rounded-xl'>
                           <p className='subtitle-3 text-white'>영업 종료</p>
                         </div>
                       )}
                     </div>
-                    {item.bookMarded ? (
+                    {store.isBookMarded ? (
                       <BookmarkIcon
                         className='absolute top-2 right-2'
                         color='var(--color-primary-pink)'
@@ -157,13 +112,16 @@ const Home: NextPage = () => {
                     )}
                     <div className='flex flex-col gap-1'>
                       <div className='subtitle-5 flex items-center gap-1'>
-                        <p className='subtitle-5 w-[128px] truncate'>{item.name}</p>
+                        <p className='subtitle-5 w-[128px] truncate'>{store.name}</p>
                         <StarIcon size={18} fill='#FFD83D' color='#FFD83D' />
-                        <span className='text-[#FFD83D] subtitle-6'>{item.reviewScore}</span>
-                        <span className='body-6 text-gray-5'>({item.reviewCount})</span>
+                        <span className='text-[#FFD83D] subtitle-6'>{store.averageRating}</span>
+                        <span className='body-6 text-gray-5'>({store.reviewCount})</span>
                       </div>
                       <p className='body-8 text-gray-5'>
-                        {item.city} • 예상 대기시간 {item.estimatedWaitingTimeMinutes}분
+                        {store.city.length >= 3 ? store.city.slice(0, 2) : store.city} •{' '}
+                        {store.estimatedWaitingTimeMinutes
+                          ? `예상 대기시간 ${store.estimatedWaitingTimeMinutes}분`
+                          : '바로 입장가능'}
                       </p>
                     </div>
                   </li>
@@ -173,9 +131,9 @@ const Home: NextPage = () => {
           </div>
         </div>
       </div>
-      <RestaurantsListSection subtitle='푸딩에서 인기 많은 식당이에요' items={menuItems} />
-      <RestaurantsListSection subtitle='새로 오픈했어요!' items={menuItems} />
-      <RestaurantsListSection subtitle='지금 바로 입장하실 수 있어요!' items={menuItems} />
+      <RestaurantsListSection subtitle='푸딩에서 인기 많은 식당이에요' items={stores.data.list} />
+      <RestaurantsListSection subtitle='새로 오픈했어요!' items={stores.data.list} />
+      <RestaurantsListSection subtitle='지금 바로 입장하실 수 있어요!' items={stores.data.list} />
     </div>
   );
 };

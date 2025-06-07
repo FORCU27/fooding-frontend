@@ -1,3 +1,6 @@
+'use client';
+
+import { useRouter } from 'next/navigation';
 import { cloneElement } from 'react';
 
 import { Tabs } from '@repo/design-system/components/b2c';
@@ -11,6 +14,11 @@ const bottomTabs = [
 ] as const;
 
 function Footer() {
+  const router = useRouter();
+  const handleFooterTabClick = (val: string) => {
+    if (val === 'home') return router.push('/');
+    return router.push(`/${val}`);
+  };
   return (
     <Tabs defaultValue='home' className='flex w-full h-16'>
       <Tabs.List className='flex justify-around items-center w-full'>
@@ -24,6 +32,7 @@ function Footer() {
           data-[state=active]:text-primary-pink
           after:hidden
         `}
+            onClick={() => handleFooterTabClick(value)}
           >
             <div className='text-inherit'>{cloneElement(icon, { color: 'currentColor' })}</div>
             <p className='subtitle-7'>{label}</p>

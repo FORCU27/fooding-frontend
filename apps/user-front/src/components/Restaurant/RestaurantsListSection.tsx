@@ -1,22 +1,11 @@
-import Image from 'next/image';
+import { Store } from '@repo/api/user';
+import { ChevronRightIcon } from '@repo/design-system/icons';
 
-import { BookmarkIcon, ChevronRightIcon, StarIcon } from '@repo/design-system/icons';
-
-export interface RestaurantItem {
-  id: number;
-  name: string;
-  image: string;
-  city: string;
-  reviewScore: number;
-  reviewCount: number;
-  estimatedWaitingTimeMinutes: number;
-  bookMarded: boolean;
-  finished: boolean;
-}
+import { RestaurantCardSection } from './ResraurantCardSection';
 
 interface RestaurantsListSectionProps {
   subtitle: string;
-  items: RestaurantItem[];
+  items: Store[];
 }
 
 export const RestaurantsListSection = ({ subtitle, items }: RestaurantsListSectionProps) => {
@@ -29,58 +18,7 @@ export const RestaurantsListSection = ({ subtitle, items }: RestaurantsListSecti
           <ChevronRightIcon size={14} />
         </button>
       </div>
-
-      <ul className='overflow-x-auto scrollbar-hide px-grid-margin flex gap-3'>
-        {items.map((item) => (
-          <li key={item.id} className='flex flex-col min-h-[240px] relative'>
-            <div className='h-full w-[140px]'>
-              <div className='relative h-[140px] mb-2 rounded-xl overflow-hidden'>
-                <Image
-                  width={140}
-                  height={140}
-                  src={`/${item.image}`}
-                  alt={item.name || 'restaurant image'}
-                  className='rounded-xl mb-4 object-center'
-                />
-                {item.finished && (
-                  <div className='absolute inset-0 bg-black/50 flex justify-center items-center rounded-xl'>
-                    <p className='subtitle-3 text-white'>영업 종료</p>
-                  </div>
-                )}
-                {item.bookMarded ? (
-                  <BookmarkIcon
-                    className='absolute top-2 right-2'
-                    color='var(--color-primary-pink)'
-                    fill='var(--color-primary-pink)'
-                    size={24}
-                    cursor='pointer'
-                  />
-                ) : (
-                  <BookmarkIcon
-                    className='absolute top-2 right-2'
-                    color='white'
-                    size={24}
-                    cursor='pointer'
-                  />
-                )}
-              </div>
-              <div className='break-words line-clamp-2 subtitle-5 h-[45px] w-[144px]'>
-                {item.name}
-              </div>
-            </div>
-            <div className='flex flex-col gap-1'>
-              <div className='subtitle-5 flex items-center gap-1 h-[17px]'>
-                <StarIcon size={18} fill='#FFD83D' color='#FFD83D' />
-                <span className='text-[#FFD83D] subtitle-6'>{item.reviewScore}</span>
-                <span className='body-6 text-gray-5'>({item.reviewCount})</span>
-              </div>
-              <p className='body-8 text-gray-5'>
-                {item.city} • 예상 대기시간 {item.estimatedWaitingTimeMinutes}분
-              </p>
-            </div>
-          </li>
-        ))}
-      </ul>
+      <RestaurantCardSection items={items} />
     </div>
   );
 };

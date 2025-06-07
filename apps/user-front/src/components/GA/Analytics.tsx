@@ -2,17 +2,21 @@
 
 import { usePathname, useSearchParams } from 'next/navigation';
 import Script from 'next/script';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 import { GA_TRACKING_ID, pageview } from '@/libs/ga/gtag';
 
 export default function Analytics() {
   const pathname = usePathname();
   const searchParams = useSearchParams();
+  const [gtagReady, setGtagReady] = useState(false);
+
+  const handleGtagLoad = () => {
+    setGtagReady(true);
+  };
 
   useEffect(() => {
-    if (typeof window.gtag === 'undefined') {
-      console.warn('Google Analytics gtag.js is not loaded yet.');
+    if (!gtagReady) {
       return;
     }
 
@@ -20,7 +24,7 @@ export default function Analytics() {
       const url = `${pathname}${searchParams ? '?' + searchParams : ''}`;
       pageview(url);
     }
-  }, [pathname, searchParams]);
+  }, [gtagReady, pathname, searchParams]);
 
   return (
     <>
@@ -29,6 +33,7 @@ export default function Analytics() {
           <Script
             strategy='afterInteractive'
             src={`https://www.googletagmanager.com/gtag/js?id=${GA_TRACKING_ID}`}
+            onLoad={handleGtagLoad}
           />
           <Script
             id='gtag-init'

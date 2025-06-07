@@ -17,3 +17,8 @@ export { default as HomeIcon } from './HomeIcon';
 export { default as ListIcon } from './ListIcon';
 export { default as UserIcon } from './UserIcon';
 export { default as MessageAlertSquareIcon } from './MessageAlertSquareIcon';
+export { default as MessageDotsSquareIcon } from './MessageDotsSquareIcon';
+export { default as SettingIcon } from './SettingIcon';
+export { default as FoodingIcon } from './FoodingIcon';
+export { default as TicketIcon } from './TicketIcon';
+export { default as GiftIcon } from './GiftIcon';
