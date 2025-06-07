@@ -13,7 +13,7 @@ import {
   FormControl,
   InputLabel,
 } from '@mui/material';
-import { AdminUserResponse, AdminUpdateUserRequest } from '@repo/api/users';
+import { AdminUserResponse, AdminUpdateUserRequest } from '@repo/api/admin';
 
 interface EditUserDialogProps {
   open: boolean;

@@ -4,24 +4,22 @@ import { api } from '../shared';
 import {
   AuthLoginBody,
   AuthSocialLoginBody,
-  GetLoginResponse,
   GetLoginResponseSchema,
-  GetUserResponse,
   GetUserResponseSchema,
 } from './type';
 
 export const authApi = {
-  login: async (credentials: AuthLoginBody): Promise<GetLoginResponse> => {
-    const response = await api.post('/auth/login', credentials);
+  login: async (body: AuthLoginBody) => {
+    const response = await api.post('/auth/login', body);
     return GetLoginResponseSchema.parse(response);
   },
 
-  socialLogin: async (credentials: AuthSocialLoginBody): Promise<GetLoginResponse> => {
-    const response = await api.post('/auth/social-login', credentials);
+  socialLogin: async (body: AuthSocialLoginBody) => {
+    const response = await api.post('/auth/social-login', body);
     return GetLoginResponseSchema.parse(response);
   },
 
-  getSelf: async (): Promise<GetUserResponse> => {
+  getSelf: async () => {
     const response = await api.get('/auth/me');
     return GetUserResponseSchema.parse(response);
   },
