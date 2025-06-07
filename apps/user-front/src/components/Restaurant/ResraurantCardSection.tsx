@@ -1,7 +1,7 @@
 import Image from 'next/image';
 
 import { Store } from '@repo/api/user';
-import { BookmarkIcon, StarIcon } from '@repo/design-system/icons';
+import { BookmarkIcon, FoodingIcon, StarIcon } from '@repo/design-system/icons';
 
 interface RestaurantCardSectionProps {
   items: Store[];
@@ -24,14 +24,9 @@ export const RestaurantCardSection = ({ items }: RestaurantCardSectionProps) => 
                     className='rounded-xl mb-4 object-center'
                   />
                 ) : (
-                  //FIXME: 임의의 placeholder이미지 사용중입니다.
-                  <Image
-                    width={140}
-                    height={140}
-                    src='/images/placeholder.png'
-                    alt='restaurant image'
-                    className='rounded-xl mb-4 object-contain w-[220px] h-[140px]'
-                  />
+                  <div className='flex justify-center items-center bg-gray-1 w-[140px] h-[140px]'>
+                    <FoodingIcon width={58} height={72} color='rgba(17, 17, 17, 0.1)' />
+                  </div>
                 )}
                 {item.isFinished && (
                   <div className='absolute inset-0 bg-black/50 flex justify-center items-center rounded-xl'>
