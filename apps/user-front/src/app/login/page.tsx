@@ -179,6 +179,7 @@ export default function LoginPage() {
                   icon={platformIcons[platform]}
                   onClick={() => handleSocialLogin(platform)}
                   styles={platformStyles[platform]}
+                  disabled={isLoading}
                 />
                 {handleRecentProvider(platform)}
               </div>

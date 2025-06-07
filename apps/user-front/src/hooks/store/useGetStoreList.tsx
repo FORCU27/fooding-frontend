@@ -1,19 +1,14 @@
 import { queryKeys } from '@repo/api/configs/query-keys';
-import { GetStoreListParams, GetStoreListReponse, storeApi } from '@repo/api/user';
+import { GetStoreListParams, GetStoreListResponse, storeApi } from '@repo/api/user';
 import { useQuery } from '@tanstack/react-query';
 
-export const useGetStoreList = (param: GetStoreListParams) => {
-  const { data, isLoading, error, refetch } = useQuery<GetStoreListReponse, Error>({
-    queryKey: [queryKeys.user.stores, { param }],
-    queryFn: () => storeApi.getStoreList({ ...param }),
+export const useGetStoreList = (params: GetStoreListParams) => {
+  return useQuery<GetStoreListResponse, Error>({
+    queryKey: [queryKeys.user.stores, params],
+    queryFn: async () => {
+      const response = await storeApi.getStoreList(params);
+      return response;
+    },
     staleTime: 1000 * 60,
   });
-
-  return {
-    stores: data?.data.list ?? [],
-    totalCount: data?.data.pageInfo.totalCount ?? 0,
-    loading: isLoading,
-    error,
-    refetch,
-  };
 };
