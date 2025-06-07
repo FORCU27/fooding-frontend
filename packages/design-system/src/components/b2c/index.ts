@@ -4,3 +4,6 @@ export * from './ChipTabs';
 export * from './Dialog';
 export * from './BottomSheet';
 export * from './Tabs';
+export * from './Input';
+export * from './NavButton';
+export * from './SearchInput';
