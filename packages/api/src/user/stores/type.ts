@@ -39,5 +39,5 @@ export type GetStoreListParams = {
   sortDirection?: string;
 };
 
-export type GetStoreListReponse = z.infer<typeof GetStoreListReponse>;
-export const GetStoreListReponse = PageResponse(Store);
+export type GetStoreListResponse = z.infer<typeof GetStoreListResponse>;
+export const GetStoreListResponse = PageResponse(Store);

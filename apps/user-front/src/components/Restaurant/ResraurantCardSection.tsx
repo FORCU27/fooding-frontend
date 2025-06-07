@@ -10,18 +10,29 @@ interface RestaurantCardSectionProps {
 export const RestaurantCardSection = ({ items }: RestaurantCardSectionProps) => {
   return (
     <div>
-      <ul className='overflow-x-auto scrollbar-hide px-grid-margin flex gap-3'>
+      <ul className='overflow-x-auto scrollbar-hide px-grid-margin flex gap-3 cursor-pointer'>
         {items.map((item) => (
           <li key={item.id} className='flex flex-col min-h-[240px] relative'>
             <div className='h-full w-[140px]'>
               <div className='relative h-[140px] mb-2 rounded-xl overflow-hidden'>
-                <Image
-                  width={140}
-                  height={140}
-                  src={`/${item.mainImage}`}
-                  alt={item.name || 'restaurant image'}
-                  className='rounded-xl mb-4 object-center'
-                />
+                {item.mainImage ? (
+                  <Image
+                    width={140}
+                    height={140}
+                    src={`/${item.mainImage}`}
+                    alt={item.name || 'restaurant image'}
+                    className='rounded-xl mb-4 object-center'
+                  />
+                ) : (
+                  //FIXME: 임의의 placeholder이미지 사용중입니다.
+                  <Image
+                    width={140}
+                    height={140}
+                    src='/images/placeholder.png'
+                    alt='restaurant image'
+                    className='rounded-xl mb-4 object-contain w-[220px] h-[140px]'
+                  />
+                )}
                 {item.isFinished && (
                   <div className='absolute inset-0 bg-black/50 flex justify-center items-center rounded-xl'>
                     <p className='subtitle-3 text-white'>영업 종료</p>
@@ -55,7 +66,10 @@ export const RestaurantCardSection = ({ items }: RestaurantCardSectionProps) => 
                 <span className='body-6 text-gray-5'>({item.reviewCount})</span>
               </div>
               <p className='body-8 text-gray-5'>
-                {item.city} • 예상 대기시간 {item.estimatedWaitingTimeMinutes}분
+                {item.city} •{' '}
+                {item.estimatedWaitingTimeMinutes
+                  ? `예상 대기시간 ${item.estimatedWaitingTimeMinutes}분`
+                  : '바로 입장가능'}
               </p>
             </div>
           </li>

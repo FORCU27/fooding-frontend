@@ -11,19 +11,38 @@ import { RestaurantsListSection } from '@/components/Restaurant/RestaurantsListS
 import { useGetStoreList } from '@/hooks/store/useGetStoreList';
 
 const Home: NextPage = () => {
-  const { stores } = useGetStoreList({
+  const {
+    data: stores,
+    isPending,
+    isError,
+  } = useGetStoreList({
     pageNum: 1,
     pageSize: 10,
     sortType: 'RECENT',
     sortDirection: 'DESCENDING',
   });
+
+  if (isPending) {
+    return <div>로딩중</div>;
+  }
+
+  if (isError) {
+    return <div>에러발생</div>;
+  }
+
   return (
     <div className='flex flex-col w-full'>
       <Header />
       <Menubar />
       <div className='bg-white mb-3'>
         <div className='relative w-full h-[200px]'>
-          <Image src='/images/home/banneritem1.png' alt='banner' fill className='object-cover' />
+          <Image
+            src='/images/home/banneritem1.png'
+            alt='banner'
+            fill
+            className='object-cover'
+            priority
+          />
           <div className='absolute top-6 left-7'>
             <p className='text-white body-3 mb-1'>흑백요리사 출연 셰프 맛집</p>
             <p className='text-white headline-1'>오늘 메뉴는 뭔가요?</p>
@@ -52,16 +71,27 @@ const Home: NextPage = () => {
             </ChipTabs>
             <div className='flex flex-col bg-white/80'>
               <ul className='flex gap-3 overflow-x-auto scrollbar-hide -mx-grid-margin px-grid-margin'>
-                {stores.map((store) => (
-                  <li key={store.id} className='flex flex-col relative'>
-                    <div className='relative mb-2 rounded-xl overflow-hidden'>
-                      <Image
-                        width={220}
-                        height={140}
-                        src={`/${store.mainImage}`}
-                        alt={store.name || 'restaurant image'}
-                        className='rounded-xl object-cover w-[220px] h-[140px]'
-                      />
+                {stores.data.list.map((store) => (
+                  <li key={store.id} className='flex flex-col cursor-pointer relative'>
+                    <div className='relative mb-2 rounded-xl overflow-hidden w-[220px] h-[140px]'>
+                      {store.mainImage ? (
+                        <Image
+                          width={220}
+                          height={140}
+                          src={`/${store.mainImage}`}
+                          alt={store.name || 'restaurant image'}
+                          className='rounded-xl object-cover w-[220px] h-[140px]'
+                        />
+                      ) : (
+                        //FIXME: 임의의 placeholder이미지 사용중입니다.
+                        <Image
+                          width={220}
+                          height={140}
+                          src='/images/placeholder.png'
+                          alt='restaurant image'
+                          className='rounded-xl object-contain w-[220px] h-[140px]'
+                        />
+                      )}
 
                       {store.isFinished && (
                         <div className='absolute inset-0 bg-black/50 flex justify-center items-center rounded-xl'>
@@ -93,7 +123,10 @@ const Home: NextPage = () => {
                         <span className='body-6 text-gray-5'>({store.reviewCount})</span>
                       </div>
                       <p className='body-8 text-gray-5'>
-                        {store.city} • 예상 대기시간 {store.estimatedWaitingTimeMinutes}분
+                        {store.city} •{' '}
+                        {store.estimatedWaitingTimeMinutes
+                          ? `예상 대기시간 ${store.estimatedWaitingTimeMinutes}분`
+                          : '바로 입장가능'}
                       </p>
                     </div>
                   </li>
@@ -103,9 +136,9 @@ const Home: NextPage = () => {
           </div>
         </div>
       </div>
-      <RestaurantsListSection subtitle='푸딩에서 인기 많은 식당이에요' items={stores} />
-      <RestaurantsListSection subtitle='새로 오픈했어요!' items={stores} />
-      <RestaurantsListSection subtitle='지금 바로 입장하실 수 있어요!' items={stores} />
+      <RestaurantsListSection subtitle='푸딩에서 인기 많은 식당이에요' items={stores.data.list} />
+      <RestaurantsListSection subtitle='새로 오픈했어요!' items={stores.data.list} />
+      <RestaurantsListSection subtitle='지금 바로 입장하실 수 있어요!' items={stores.data.list} />
     </div>
   );
 };
