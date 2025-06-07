@@ -2,7 +2,7 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { JSX, useCallback, useEffect, useState } from 'react';
 
 import { AuthSocialLoginBody, SocialPlatform, socialPlatforms } from '@repo/api/auth';
@@ -62,10 +62,12 @@ const openSocialLoginPopup = (loginUrl: string) => {
 };
 
 export default function LoginPage() {
-  const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
+  const router = useRouter();
+  const searchParams = useSearchParams();
   const [recentProvider, setRecentProvider] = useState<string | null>(null);
 
+  const returnTo = searchParams.get('returnTo') || '/';
   const { socialLogin } = useAuth();
 
   useEffect(() => {
@@ -94,12 +96,13 @@ export default function LoginPage() {
           return;
         }
 
-        if (event.data?.action === 'closePopup') {
+        const { action, code } = event.data;
+        if (action === 'closePopup') {
           popup.close?.();
+          window.removeEventListener('message', handleMessage);
           return;
         }
 
-        const { code } = event.data;
         if (!code) return;
         window.removeEventListener('message', handleMessage);
 
@@ -122,21 +125,17 @@ export default function LoginPage() {
             sameSite: 'lax',
           });
 
-          router.refresh();
+          router.push(returnTo);
         } catch (error) {
           console.error('Social login failed:', error);
         } finally {
           setIsLoading(false);
-          window.removeEventListener('message', handleMessage);
         }
       };
 
       window.addEventListener('message', handleMessage);
-      return () => {
-        window.removeEventListener('message', handleMessage);
-      };
     },
-    [router, socialLogin],
+    [returnTo, router, socialLogin],
   );
 
   const handleRecentProvider = (platform: string) => {
