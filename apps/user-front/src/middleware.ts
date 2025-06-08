@@ -11,13 +11,14 @@ export enum AuthType {
 
 // 각 경로별 접근 권한 설정
 export const pathConfig: Record<string, AuthType> = {
-  '/': AuthType.PUBLIC,
+  '/mypage': AuthType.PRIVATE,
   '/login': AuthType.GUEST,
+  '/': AuthType.PUBLIC,
 };
 
 export async function middleware(request: NextRequest) {
   const path = request.nextUrl.pathname;
-  const authType = pathConfig[path] || AuthType.PRIVATE;
+  const authType = pathConfig[path] || AuthType.PUBLIC;
   const token = request.cookies.get(STORAGE_KEYS.ACCESS_TOKEN);
   const isAuthenticated = !!token;
 
@@ -29,12 +30,6 @@ export async function middleware(request: NextRequest) {
 
   if (authType === AuthType.GUEST && isAuthenticated) {
     return NextResponse.redirect(new URL('/', request.url));
-  }
-
-  if (authType === AuthType.PUBLIC && path === '/' && !isAuthenticated) {
-    const url = new URL('/login', request.url);
-    url.searchParams.set('returnTo', path);
-    return NextResponse.redirect(url);
   }
 
   return NextResponse.next();

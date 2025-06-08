@@ -17,7 +17,7 @@
   --color-success-green: oklch(0.6 0.22 135);
 
   /* Grays */
-  --color-gray-1: oklch(0.95 0 0);
+  --color-gray-1: #f1f3f5;
   --color-gray-2: #ededed;
   --color-gray-3: oklch(0.88 0 0);
   --color-gray-4: oklch(0.7 0 0);

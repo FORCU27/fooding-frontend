@@ -22,6 +22,7 @@ export type StepProps = {
   onPrev: () => void;
   onClickTerms?: () => void;
   onClickComplete?: () => void;
+  onClickAllTerms?: () => void;
 };
 
 export type Step = 'phone' | 'member' | 'name';

@@ -41,7 +41,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
           <Suspense>
             <IntlProvider>
               <AuthProvider>
-                <div className={pretendard.className}>{children}</div>
+                <div className={`${pretendard.className} app-front`}>{children}</div>
                 <Analytics />
               </AuthProvider>
             </IntlProvider>

@@ -5,5 +5,17 @@ export const queryKeys = {
     devices: 'ceoDevices',
   },
   pos: {},
-  user: {},
+  user: {
+    me: 'me',
+    stores: 'userStores',
+    storeInfo: 'userStoreInfo',
+  },
+  me: {
+    user: 'meUser',
+  },
+  store: {
+    waiting: 'waiting',
+    storeInfo: 'storeStoreInfo',
+    stores: 'storeStores',
+  },
 };
