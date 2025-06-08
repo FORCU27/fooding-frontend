@@ -1,6 +1,7 @@
 'use client';
 
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 import React, { useState } from 'react';
 
 import { B2BRefreshIcon, B2BDeleteIcon } from '@repo/design-system/icons';
@@ -9,6 +10,7 @@ import { RewardComplete } from './components/RewardComplete';
 import Button from '@/components/Button';
 
 export default function WaitingPage() {
+  const router = useRouter();
   const [phoneNumber, setPhoneNumber] = useState('010-');
 
   const updateFormData = (key: string, value: string) => {
@@ -100,7 +102,7 @@ export default function WaitingPage() {
             <div className='headline-3-2 text-black whitespace-nowrap mt-5 mb-15'>
               휴대폰 번호를 입력해주세요
             </div>
-            <Button size='sm' variant='secondary'>
+            <Button size='sm' variant='secondary' onClick={() => router.push('/store/reward/use')}>
               리워드 사용하기
             </Button>
           </div>
