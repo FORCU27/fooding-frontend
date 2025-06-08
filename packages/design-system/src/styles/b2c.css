@@ -2,17 +2,24 @@
 
 @theme inline {
   /* font size */
-  --fs-headline-1: 64px;
-  --fs-headline-2: 48px;
+  --fs-headline-1: 32px;
+  --fs-headline-2: 32px;
   --fs-headline-3: 24px;
-  --fs-subtitle-1: 32px;
-  --fs-subtitle-2: 30px;
-  --fs-subtitle-3: 28px;
-  --fs-body-1: 24px;
-  --fs-body-2: 20px;
-  --fs-body-3: 18px;
-  --fs-body-4: 16px;
+  --fs-subtitle-1: 20px;
+  --fs-subtitle-2: 20px;
+  --fs-subtitle-3: 18px;
+  --fs-subtitle-4: 16px;
+  --fs-subtitle-5: 16px;
+  --fs-subtitle-6: 14px;
+  --fs-subtitle-7: 12px;
+  --fs-body-1: 20px;
+  --fs-body-2: 16px;
+  --fs-body-3: 16px;
+  --fs-body-4: 14px;
   --fs-body-5: 14px;
+  --fs-body-6: 14px;
+  --fs-body-7: 12px;
+  --fs-body-8: 12px;
 
   /* font weights */
   --fw-regular: 400;
@@ -21,9 +28,12 @@
   --fw-bold: 700;
 
   /* line heights */
-  --lh-tight: 1.25;
-  --lh-normal: 1.35;
-  --lh-loose: 1.4;
+  --lh-tight: 1.2;
+  --lh-normal: 1.4;
+  --lh-loose: 1.5;
+
+  /* spacings */
+  --spacing-grid-margin: 20px;
 }
 
 @layer utilities {
@@ -35,7 +45,7 @@
 
   .headline-2 {
     font-size: var(--fs-headline-2);
-    font-weight: var(--fw-medium);
+    font-weight: var(--fw-semibold);
     line-height: var(--lh-tight);
   }
 
@@ -47,26 +57,46 @@
 
   .subtitle-1 {
     font-size: var(--fs-subtitle-1);
-    font-weight: var(--fw-medium);
+    font-weight: var(--fw-bold);
     line-height: var(--lh-normal);
   }
 
   .subtitle-2 {
     font-size: var(--fs-subtitle-2);
-    font-weight: var(--fw-medium);
+    font-weight: var(--fw-semibold);
     line-height: var(--lh-normal);
   }
 
   .subtitle-3 {
     font-size: var(--fs-subtitle-3);
-    font-weight: var(--fw-medium);
+    font-weight: var(--fw-bold);
+    line-height: var(--lh-normal);
+  }
+  .subtitle-4 {
+    font-size: var(--fs-subtitle-4);
+    font-weight: var(--fw-bold);
+    line-height: var(--lh-normal);
+  }
+  .subtitle-5 {
+    font-size: var(--fs-subtitle-5);
+    font-weight: var(--fw-semibold);
+    line-height: var(--lh-normal);
+  }
+  .subtitle-6 {
+    font-size: var(--fs-subtitle-6);
+    font-weight: var(--fw-semibold);
+    line-height: var(--lh-tight);
+  }
+  .subtitle-7 {
+    font-size: var(--fs-subtitle-7);
+    font-weight: var(--fw-semibold);
     line-height: var(--lh-normal);
   }
 
   .body-1 {
     font-size: var(--fs-body-1);
-    font-weight: var(--fw-medium);
-    line-height: var(--lh-loose);
+    font-weight: var(--fw-regular);
+    line-height: var(--lh-normal);
   }
 
   .body-2 {
@@ -77,17 +107,42 @@
 
   .body-3 {
     font-size: var(--fs-body-3);
-    font-weight: var(--fw-medium);
+    font-weight: var(--fw-regular);
+    line-height: var(--lh-normal);
+  }
+  .body-3-2 {
+    font-size: var(--fs-body-3);
+    font-weight: var(--fw-regular);
     line-height: var(--lh-loose);
   }
   .body-4 {
     font-size: var(--fs-body-4);
-    font-weight: var(--fw-medium);
+    font-weight: var(--fw-bold);
     line-height: var(--lh-loose);
   }
   .body-5 {
     font-size: var(--fs-body-5);
     font-weight: var(--fw-medium);
+    line-height: var(--lh-normal);
+  }
+  .body-6 {
+    font-size: var(--fs-body-6);
+    font-weight: var(--fw-regular);
+    line-height: var(--lh-tight);
+  }
+  .body-7 {
+    font-size: var(--fs-body-7);
+    font-weight: var(--fw-medium);
+    line-height: var(--lh-tight);
+  }
+  .body-8 {
+    font-size: var(--fs-body-8);
+    font-weight: var(--fw-regular);
+    line-height: var(--lh-normal);
+  }
+  .body-8-2 {
+    font-size: var(--fs-body-8);
+    font-weight: var(--fw-regular);
     line-height: var(--lh-loose);
   }
 }

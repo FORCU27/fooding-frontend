@@ -101,6 +101,12 @@
     line-height: var(--lh-normal);
   }
 
+  .subtitle-4 {
+    font-size: var(--fs-subtitle-4);
+    font-weight: var(--fw-medium);
+    line-height: var(--lh-normal);
+  }
+
   .subtitle-4-1 {
     font-size: var(--fs-subtitle-4);
     font-weight: var(--fw-medium);
