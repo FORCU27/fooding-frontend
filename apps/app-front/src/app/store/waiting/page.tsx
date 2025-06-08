@@ -165,7 +165,7 @@ export default function WaitingPage() {
 
   const { mutate: submitWaiting, data: mutationResponse } = useMutation({
     mutationFn: (formData: WaitingRegisterData) =>
-      storeApi.createStoreWaiting(formData, Number(storeId)),
+      storeApi.createStoreWaiting({ body: formData }, Number(storeId)),
     onSuccess: () => {
       resetFormData();
       setIsModalOpen(false);

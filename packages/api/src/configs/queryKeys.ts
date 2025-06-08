@@ -1,6 +1,12 @@
 export const queryKeys = {
   admin: {},
-  app: {},
+  app: {
+    store: {
+      waiting: 'waiting',
+      storeInfo: 'storeStoreInfo',
+      stores: 'storeStores',
+    },
+  },
   ceo: {
     devices: 'ceoDevices',
   },
@@ -12,10 +18,5 @@ export const queryKeys = {
   },
   me: {
     user: 'meUser',
-  },
-  store: {
-    waiting: 'waiting',
-    storeInfo: 'storeStoreInfo',
-    stores: 'storeStores',
   },
 };
