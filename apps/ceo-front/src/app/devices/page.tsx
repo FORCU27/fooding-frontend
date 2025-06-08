@@ -1,7 +1,7 @@
 'use client';
 
 import { deviceApi } from '@repo/api/ceo';
-import queryKeys from '@repo/api/constants/query-keys';
+import { queryKeys } from '@repo/api/configs/query-keys';
 import { useQuery } from '@tanstack/react-query';
 
 const DevicesPage = () => {
@@ -26,11 +26,12 @@ const DevicesPage = () => {
               <div>
                 <p>{device.name}</p>
                 <p>
-                  {device.deviceType} (OS {device.osVersion})
+                  {device.platform} (OS {device.osVersion})
                 </p>
               </div>
               <div className='flex justify-between items-center'>
-                <div>{device.serviceType}</div>
+                {/* TODO: package name을 서비스로 표시 */}
+                <div>{device.packageName}</div>
                 <div className='text-right'>
                   <p>설치 일자 {device.installedAt}</p>
                   <p>마지막 접속 일자 {device.lastConnectedAt}</p>

@@ -13,7 +13,7 @@ import {
   Select,
   TextField,
 } from '@mui/material';
-import { AdminCreateUserRequest } from '@repo/api/users';
+import { AdminCreateUserRequest } from '@repo/api/admin';
 
 interface CreateUserDialogProps {
   open: boolean;

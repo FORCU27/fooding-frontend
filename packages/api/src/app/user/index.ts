@@ -5,6 +5,7 @@ import { api } from '../../shared';
 
 export const userApi = {
   getUser: async () => {
-    return GetUserResponse.parse(api.get(`/app/users`));
+    const response = await api.get(`/app/users`);
+    return GetUserResponse.parse(response);
   },
 };

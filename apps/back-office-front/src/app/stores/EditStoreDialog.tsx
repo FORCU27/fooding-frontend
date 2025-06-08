@@ -1,5 +1,5 @@
 import { Dialog, DialogTitle, DialogContent, DialogActions, Button } from '@mui/material';
-import { AdminStoreResponse, AdminUpdateStoreRequest } from '@repo/api/stores';
+import { AdminStoreResponse, AdminUpdateStoreRequest } from '@repo/api/admin';
 
 import { StoreForm } from './StoreForm';
 
@@ -11,9 +11,15 @@ interface EditStoreDialogProps {
   initialData?: AdminStoreResponse;
 }
 
-export function EditStoreDialog({ open, onClose, onSubmit, loading = false, initialData }: EditStoreDialogProps) {
+export function EditStoreDialog({
+  open,
+  onClose,
+  onSubmit,
+  loading = false,
+  initialData,
+}: EditStoreDialogProps) {
   return (
-    <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
+    <Dialog open={open} onClose={onClose} maxWidth='sm' fullWidth>
       <DialogTitle>가게 수정</DialogTitle>
       <DialogContent>
         {initialData && (
@@ -21,8 +27,10 @@ export function EditStoreDialog({ open, onClose, onSubmit, loading = false, init
         )}
       </DialogContent>
       <DialogActions>
-        <Button onClick={onClose} disabled={loading}>취소</Button>
+        <Button onClick={onClose} disabled={loading}>
+          취소
+        </Button>
       </DialogActions>
     </Dialog>
   );
-} 
+}

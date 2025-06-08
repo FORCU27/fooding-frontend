@@ -30,6 +30,10 @@
   --lh-loose: 1.4;
 }
 
+.app-front {
+  touch-action: manipulation;
+}
+
 @layer utilities {
   .headline-1 {
     font-size: var(--fs-headline-1);
@@ -97,6 +101,12 @@
     line-height: var(--lh-normal);
   }
 
+  .subtitle-4 {
+    font-size: var(--fs-subtitle-4);
+    font-weight: var(--fw-medium);
+    line-height: var(--lh-normal);
+  }
+
   .subtitle-4-1 {
     font-size: var(--fs-subtitle-4);
     font-weight: var(--fw-medium);
@@ -116,6 +126,18 @@
   }
 
   .body-2 {
+    font-size: var(--fs-body-2);
+    font-weight: var(--fw-medium);
+    line-height: var(--lh-loose);
+  }
+
+  .body-2-1 {
+    font-size: var(--fs-body-2);
+    font-weight: var(--fw-medium);
+    line-height: var(--lh-loose);
+  }
+
+  .body-2-2 {
     font-size: var(--fs-body-2);
     font-weight: var(--fw-medium);
     line-height: var(--lh-loose);

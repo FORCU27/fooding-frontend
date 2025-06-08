@@ -1,33 +1,32 @@
-import { useState } from 'react';
-
 import { ArrowLeftIcon, CheckIcon } from '@repo/design-system/icons';
 
-type CheckedKeys = 'termsAgreed' | 'privacyPolicyAgreed' | 'thirdPartyAgreed' | 'marketingAgreed';
+type CheckedKeys = 'termsAgreed' | 'privacyPolicyAgreed' | 'thirdPartyAgreed' | 'marketingConsent';
+
+type Term = {
+  key: CheckedKeys;
+  label: string;
+  required: boolean;
+};
 
 interface TermsAgreementProps {
   onClose: (value: React.SetStateAction<boolean>) => void;
+  formData: Record<CheckedKeys, boolean>;
+  updateFormData: (value: Record<CheckedKeys, boolean>) => void;
 }
 
-const TermsAgreement = ({ onClose }: TermsAgreementProps) => {
-  const [checked, setChecked] = useState<Record<CheckedKeys, boolean>>({
-    termsAgreed: false,
-    privacyPolicyAgreed: false,
-    thirdPartyAgreed: false,
-    marketingAgreed: false,
-  });
-
-  const terms: { key: CheckedKeys; label: string; required: boolean }[] = [
+const TermsAgreement = ({ onClose, formData, updateFormData }: TermsAgreementProps) => {
+  const terms: Term[] = [
     { key: 'termsAgreed', label: '서비스 이용약관 동의', required: true },
     { key: 'privacyPolicyAgreed', label: '개인정보 수집 및 이용 동의', required: true },
     { key: 'thirdPartyAgreed', label: '개인정보 제3자 제공 동의', required: true },
-    { key: 'marketingAgreed', label: '마케팅 정보 수신 동의', required: false },
+    { key: 'marketingConsent', label: '마케팅 정보 수신 동의', required: false },
   ];
 
   const toggleCheck = (key: CheckedKeys) => {
-    setChecked((prev) => ({ ...prev, [key]: !prev[key] }));
+    updateFormData({ ...formData, [key]: !formData[key] });
   };
 
-  const allAgreed = terms.every((term) => checked[term.key]);
+  const allAgreed = terms.every((term) => formData[term.key]);
 
   const toggleAll = () => {
     const newValue = !allAgreed;
@@ -38,12 +37,10 @@ const TermsAgreement = ({ onClose }: TermsAgreementProps) => {
       },
       {} as Record<CheckedKeys, boolean>,
     );
-    setChecked(updated);
+    updateFormData(updated);
   };
 
-  const isAllRequiredAgreed = terms
-    .filter((t) => t.required)
-    .every((t) => checked[t.key as CheckedKeys]);
+  const isAllRequiredAgreed = terms.filter((t) => t.required).every((t) => formData[t.key]);
 
   const handleSubmit = () => {
     if (!isAllRequiredAgreed) return;
@@ -81,8 +78,8 @@ const TermsAgreement = ({ onClose }: TermsAgreementProps) => {
               <label className='flex gap-[8px] items-center cursor-pointer'>
                 <input
                   type='checkbox'
-                  checked={checked[term.key as CheckedKeys]}
-                  onChange={() => toggleCheck(term.key as CheckedKeys)}
+                  checked={formData[term.key]}
+                  onChange={() => toggleCheck(term.key)}
                   className='sr-only'
                   aria-label={`${term.label} ${term.required ? '(필수)' : '(선택)'}`}
                 />
@@ -96,13 +93,13 @@ const TermsAgreement = ({ onClose }: TermsAgreementProps) => {
                 </span>
               </label>
               <div
-                onClick={() => toggleCheck(term.key as CheckedKeys)}
+                onClick={() => toggleCheck(term.key)}
                 className='cursor-pointer'
                 role='checkbox'
-                aria-checked={checked[term.key as CheckedKeys]}
+                aria-checked={formData[term.key]}
                 tabIndex={0}
               >
-                <CheckIcon variant={checked[term.key as CheckedKeys] ? 'default' : 'disabled'} />
+                <CheckIcon variant={formData[term.key] ? 'default' : 'disabled'} />
               </div>
             </li>
           ))}

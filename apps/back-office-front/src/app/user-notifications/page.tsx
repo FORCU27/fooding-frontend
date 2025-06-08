@@ -18,7 +18,11 @@ import {
   IconButton,
   Tooltip,
 } from '@mui/material';
-import { userNotificationApi, UserNotificationResponse, CreateUserNotificationRequest } from '@repo/api/user-notifications';
+import {
+  userNotificationApi,
+  UserNotificationResponse,
+  CreateUserNotificationRequest,
+} from '@repo/api/admin';
 import { useQuery, useMutation } from '@tanstack/react-query';
 
 import { CreateNotificationDialog } from './CreateNotificationDialog';
@@ -26,10 +30,12 @@ import { DeleteConfirmDialog } from './DeleteConfirmDialog';
 import { queryClient } from '../providers';
 
 export default function UserNotificationsPage() {
-  const [page, setPage] = useState(0);
+  const page = 0;
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [createDialogOpen, setCreateDialogOpen] = useState(false);
-  const [notificationToDelete, setNotificationToDelete] = useState<UserNotificationResponse | null>(null);
+  const [notificationToDelete, setNotificationToDelete] = useState<UserNotificationResponse | null>(
+    null,
+  );
 
   const { data: notificationsResponse, isLoading } = useQuery({
     queryKey: ['user-notifications', page],
@@ -37,7 +43,8 @@ export default function UserNotificationsPage() {
   });
 
   const createMutation = useMutation({
-    mutationFn: (data: CreateUserNotificationRequest) => userNotificationApi.createUserNotification(data),
+    mutationFn: (data: CreateUserNotificationRequest) =>
+      userNotificationApi.createUserNotification(data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['user-notifications'] });
       setCreateDialogOpen(false);
@@ -86,13 +93,10 @@ export default function UserNotificationsPage() {
   return (
     <Box sx={{ p: 3 }}>
       <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 3 }}>
-        <Typography variant="h4" component="h1">
+        <Typography variant='h4' component='h1'>
           사용자 알림 관리
         </Typography>
-        <Button
-          variant="contained"
-          onClick={() => setCreateDialogOpen(true)}
-        >
+        <Button variant='contained' onClick={() => setCreateDialogOpen(true)}>
           알림 생성
         </Button>
       </Box>
@@ -119,26 +123,26 @@ export default function UserNotificationsPage() {
                 <TableCell>{notification.title}</TableCell>
                 <TableCell>{notification.content}</TableCell>
                 <TableCell>
-                  <Chip 
-                    label={notification.category === 'NOTIFICATION' ? '알림' : '이벤트'} 
-                    size="small" 
+                  <Chip
+                    label={notification.category === 'NOTIFICATION' ? '알림' : '이벤트'}
+                    size='small'
                     color={notification.category === 'NOTIFICATION' ? 'primary' : 'success'}
                   />
                 </TableCell>
                 <TableCell>
-                  <Chip 
-                    label={notification.read ? '읽음' : '안읽음'} 
+                  <Chip
+                    label={notification.read ? '읽음' : '안읽음'}
                     color={notification.read ? 'success' : 'default'}
-                    size="small" 
+                    size='small'
                   />
                 </TableCell>
                 <TableCell>{new Date(notification.sentAt).toLocaleString()}</TableCell>
                 <TableCell>
                   <Box sx={{ display: 'flex', gap: 1 }}>
                     {!notification.read && (
-                      <Tooltip title="읽음 처리">
+                      <Tooltip title='읽음 처리'>
                         <IconButton
-                          size="small"
+                          size='small'
                           onClick={() => handleMarkAsRead(notification.id)}
                           disabled={markAsReadMutation.isPending}
                         >
@@ -147,9 +151,9 @@ export default function UserNotificationsPage() {
                       </Tooltip>
                     )}
                     <Button
-                      variant="outlined"
-                      color="error"
-                      size="small"
+                      variant='outlined'
+                      color='error'
+                      size='small'
                       onClick={() => handleDeleteClick(notification)}
                     >
                       삭제
@@ -174,9 +178,13 @@ export default function UserNotificationsPage() {
         onClose={() => setDeleteDialogOpen(false)}
         onConfirm={handleDeleteConfirm}
         loading={deleteMutation.isPending}
-        title="알림 삭제 확인"
-        description={notificationToDelete ? `정말로 '${notificationToDelete.title}' 알림을 삭제하시겠습니까?` : ''}
+        title='알림 삭제 확인'
+        description={
+          notificationToDelete
+            ? `정말로 '${notificationToDelete.title}' 알림을 삭제하시겠습니까?`
+            : ''
+        }
       />
     </Box>
   );
-} 
+}
