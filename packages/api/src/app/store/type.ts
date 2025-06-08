@@ -27,10 +27,7 @@ export type GetStoresParams = {
   pageSize: number;
 };
 
-export const GetStoresResponse = z.object({
-  list: z.array(Store),
-  pageInfo: PageInfo,
-});
+export const GetStoresResponse = ApiResponse(z.array(Store));
 
 export type GetStoresResponse = z.infer<typeof GetStoresResponse>;
 

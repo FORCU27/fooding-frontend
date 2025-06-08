@@ -13,14 +13,21 @@ import { setSelectedStoreId } from '@/services/locale';
 
 export default function StoreSelectPage() {
   const router = useRouter();
-  const { data: user } = useQuery({
+  const { data: user, error: userError } = useQuery({
     queryKey: [queryKeys.me.user],
     queryFn: userApi.getUser,
   });
-  const { data: stores } = useQuery({
+
+  console.log('user data:', user); // API 응답 데이터 확인
+  console.log('user error:', userError); // 에러 확인
+
+  const { data: stores, error: storesError } = useQuery({
     queryKey: [queryKeys.store.stores],
     queryFn: () => storeApi.getStores(),
   });
+
+  console.log('stores data:', stores); // API 응답 데이터 확인
+  console.log('stores error:', storesError); // 에러 확인
 
   const [selectedStore, setSelectedStore] = useState<Store | null>(null);
   return (
@@ -29,10 +36,10 @@ export default function StoreSelectPage() {
       <div className='flex h-screen font-sans'>
         <StoreOwnerProfile
           ownerName={user?.data.nickname}
-          profileImageSrc={user?.data.profileImage}
+          profileImageSrc={user?.data.profileImage ?? ''}
         />
         <StoreList
-          stores={stores?.list}
+          stores={stores?.data}
           selectedStore={selectedStore}
           onSelectStore={setSelectedStore}
           onSelectStoreId={setSelectedStoreId}

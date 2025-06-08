@@ -13,13 +13,12 @@ export type Gender = z.infer<typeof Gender>;
 
 export const User = z.object({
   id: z.number(),
-  role: UserRole,
   email: z.string(),
   provider: UserProvider,
   nickname: z.string(),
-  phoneNumber: z.string(),
-  referralCode: z.string(),
-  profileImage: z.string(),
+  phoneNumber: z.string().nullable(),
+  referralCode: z.string().nullable(),
+  profileImage: z.string().nullable(),
   loginCount: z.number(),
   lastLoggedInAt: z.string(),
   termsAgreed: z.boolean(),
@@ -27,7 +26,7 @@ export const User = z.object({
   privacyPolicyAgreed: z.boolean(),
   privacyPolicyAgreedAt: z.string(),
   marketingConsent: z.boolean(),
-  marketingConsentAt: z.string(),
+  marketingConsentAt: z.string().nullable(),
   gender: Gender,
 });
 
