@@ -30,6 +30,10 @@
   --lh-loose: 1.4;
 }
 
+.app-front {
+  touch-action: manipulation;
+}
+
 @layer utilities {
   .headline-1 {
     font-size: var(--fs-headline-1);
