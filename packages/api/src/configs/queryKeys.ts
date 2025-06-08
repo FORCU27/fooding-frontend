@@ -6,7 +6,16 @@ export const queryKeys = {
   },
   pos: {},
   user: {
+    me: 'me',
     stores: 'userStores',
     storeInfo: 'userStoreInfo',
+  },
+  me: {
+    user: 'meUser',
+  },
+  store: {
+    waiting: 'waiting',
+    storeInfo: 'storeStoreInfo',
+    stores: 'storeStores',
   },
 };
