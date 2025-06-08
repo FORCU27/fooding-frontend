@@ -28,8 +28,8 @@ export type GetStoresParams = {
 };
 
 export const GetStoresResponse = z.object({
-  list: z.array(Store),
-  pageInfo: PageInfo,
+  status: z.string(),
+  data: z.array(Store),
 });
 
 export type GetStoresResponse = z.infer<typeof GetStoresResponse>;
