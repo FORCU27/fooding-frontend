@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-import { PageInfoSchema } from '../../shared';
+import { ApiResponse, PageInfoSchema } from '../../shared';
 
 export const Store = z.object({
   id: z.number(),
@@ -77,13 +77,12 @@ export const GetWaitingDetailResponse = z.object({
   memo: z.string(),
 });
 
-export const GetStoresWaitingResponse = z.object({
-  status: z.string(),
-  data: z.object({
-    list: z.array(GetWaitingDetailResponse),
-    pageInfo: PageInfoSchema,
-  }),
+export const GetStoresWaiting = z.object({
+  list: z.array(GetWaitingDetailResponse),
+  pageInfo: PageInfoSchema,
 });
+
+export const GetStoresWaitingResponse = ApiResponse(GetStoresWaiting);
 
 export const PostStoreWaitingRequest = z.object({
   data: z.object({
