@@ -32,7 +32,7 @@ export default function StoreSelectPage() {
           profileImageSrc={user?.data.profileImage}
         />
         <StoreList
-          stores={stores?.list}
+          stores={stores?.data}
           selectedStore={selectedStore}
           onSelectStore={setSelectedStore}
           onSelectStoreId={setSelectedStoreId}
