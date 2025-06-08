@@ -7,11 +7,17 @@ type StoreContextType = {
   storeId: string | null;
 };
 
-const StoreContext = createContext<StoreContextType>({
-  storeId: null,
-});
+const StoreContext = createContext<StoreContextType | null>(null);
 
-export const useStore = () => useContext(StoreContext);
+export const useStore = () => {
+  const context = useContext(StoreContext);
+
+  if (!context) {
+    throw new Error('useStore는 StoreContext 안에서만 사용할 수 있습니다.');
+  }
+
+  return context;
+};
 
 export function StoreClientProvider({
   children,
@@ -20,7 +26,5 @@ export function StoreClientProvider({
   children: React.ReactNode;
   initialStoreId: string | null;
 }) {
-  return (
-    <StoreContext.Provider value={{ storeId: initialStoreId }}>{children}</StoreContext.Provider>
-  );
+  return <StoreContext value={{ storeId: initialStoreId }}>{children}</StoreContext>;
 }
