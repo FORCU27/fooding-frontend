@@ -92,7 +92,7 @@ export const PostStoreWaitingRequest = z.object({
   status: z.string(),
 });
 
-export const CreateStoreWaitingRequest = z.object({
+export const CreateStoreWaitingRequestBody = z.object({
   name: z.string(),
   phoneNumber: z.string(),
   termsAgreed: z.boolean(),
@@ -104,7 +104,9 @@ export const CreateStoreWaitingRequest = z.object({
   adultCount: z.number(),
 });
 
-export type CreateStoreWaitingRequest = z.infer<typeof CreateStoreWaitingRequest>;
+export type CreateStoreWaitingRequest = {
+  body: z.infer<typeof CreateStoreWaitingRequestBody>;
+};
 
 export type WaitingUser = z.infer<typeof WaitingUser>;
 export type GetWaitingDetailResponse = z.infer<typeof GetWaitingDetailResponse>;
