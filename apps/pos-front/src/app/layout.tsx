@@ -1,13 +1,14 @@
 'use client';
+
 import Script from 'next/script';
 import { ReactNode, Suspense } from 'react';
 
 import './globals.css';
 import Analytics from '@/components/GA/Analytics';
-import { GA_TRACKING_ID } from '@/lib/GA/gtag';
+import Layout from '@/components/Home/Layout';
 import { AuthProvider } from '@/components/Provider/AuthProvider';
 import { ReactQueryProvider } from '@/components/Provider/ReactQueryProvider';
-import Layout from '@/components/Home/Layout';
+import { GA_TRACKING_ID } from '@/lib/GA/gtag';
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (

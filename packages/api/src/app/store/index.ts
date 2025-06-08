@@ -3,7 +3,6 @@ export * from './type';
 import {
   GetStoresResponse,
   GetStoreServiceListResponse,
-  GetStoresParams,
   CreateStoreWaitingRequest,
   GetStoresWaitingResponse,
   PostStoreWaitingRequest,

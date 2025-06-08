@@ -3,7 +3,7 @@
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
-import { storeApi, userApi } from '@repo/api/app';
+import { storeApi } from '@repo/api/app';
 import { ArrowLeftIcon } from '@repo/design-system/icons';
 import { useQuery } from '@tanstack/react-query';
 
@@ -12,7 +12,7 @@ import { getSelectedService, setSelectedService } from '@/services/locale';
 
 export default function StoreSelectPage() {
   const router = useRouter();
-  const { data: user } = useQuery({ queryKey: ['user'], queryFn: userApi.getUser });
+
   const { data: storeServiceList } = useQuery({
     queryKey: ['storeServiceList'],
     queryFn: () => storeApi.getStoreServiceList({ id: 1 }),
