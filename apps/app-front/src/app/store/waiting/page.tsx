@@ -189,7 +189,7 @@ export default function WaitingPage() {
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [openTerms, setOpenTerms] = useState(false);
-  const [openComplite, setOpenComplete] = useState(false);
+  const [openComplete, setOpenComplete] = useState(false);
 
   const [formData, setFormData] = useState<WaitingRegisterData>({
     name: '',
@@ -307,7 +307,7 @@ export default function WaitingPage() {
           />
         </FullScreenPanel>
       )}
-      {openComplite && (
+      {openComplete && (
         <CompleteStep
           onClose={() => {
             setOpenComplete(false);
