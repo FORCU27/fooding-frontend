@@ -19,12 +19,7 @@ export default function StoreSelectPage() {
   });
   const { data: stores } = useQuery({
     queryKey: [queryKeys.app.store.waiting, '홍길동', 1, 20],
-    queryFn: () =>
-      storeApi.getStores({
-        searchString: '홍길동',
-        pageNum: 1,
-        pageSize: 20,
-      }),
+    queryFn: () => storeApi.getStores(),
   });
 
   const [selectedStore, setSelectedStore] = useState<Store | null>(null);

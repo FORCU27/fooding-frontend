@@ -10,8 +10,8 @@ import {
 import { api } from '../../shared';
 
 export const storeApi = {
-  getStores: async (params: { searchString: string; pageNum: number; pageSize: number }) => {
-    const response = await api.get(`/app/stores`, { params });
+  getStores: async () => {
+    const response = await api.get(`/app/stores`);
     return GetStoresResponse.parse(response);
   },
   getStoreServiceList: async (params: { id: number }) => {
