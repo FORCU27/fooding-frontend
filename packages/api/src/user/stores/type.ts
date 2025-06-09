@@ -1,6 +1,6 @@
 import z from 'zod';
 
-import { PageResponse } from '../../shared';
+import { ApiResponse, PageResponse } from '../../shared';
 
 export type Store = z.infer<typeof Store>;
 export const Store = z.object({
@@ -41,3 +41,27 @@ export type GetStoreListParams = {
 
 export type GetStoreListResponse = z.infer<typeof GetStoreListResponse>;
 export const GetStoreListResponse = PageResponse(Store);
+
+export type GetStoreByIdResponse = z.infer<typeof GetStoreByIdResponse>;
+export const GetStoreByIdResponse = ApiResponse(
+  z.object({
+    id: z.number(),
+    name: z.string(),
+    mainImage: z.string().nullable(),
+    city: z.string(),
+    address: z.string(),
+    category: z.string(),
+    description: z.string(),
+    priceCategory: z.string(),
+    eventDescription: z.string(),
+    contactNumber: z.string(),
+    direction: z.string(),
+    visitCount: z.number(),
+    reviewCount: z.number(),
+    averageRating: z.number(),
+    isParkingAvailable: z.boolean(),
+    isNewOpen: z.boolean(),
+    isTakeOut: z.boolean(),
+    estimatedWaitingTimeMinutes: z.number().nullable(),
+  }),
+);

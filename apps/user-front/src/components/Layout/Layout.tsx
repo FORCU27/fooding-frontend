@@ -21,7 +21,7 @@ const Layout = ({ children }: LayoutProps) => {
     <div className='flex flex-col min-h-[calc(100dvh_-_64px)] mb-16 bg-gray-1'>
       {children}
       <div className='fixed w-full bottom-0 left-1/2 -translate-x-1/2 z-50 bg-white shadow-[0_-2px_10px_rgba(0,0,0,0.08)]'>
-        <Footer />
+        {/* <Footer /> */}
       </div>
     </div>
   );

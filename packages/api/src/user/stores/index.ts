@@ -1,6 +1,7 @@
 export * from './type';
+export * from './mock';
 
-import { GetStoreListParams, GetStoreListResponse } from './type';
+import { GetStoreByIdResponse, GetStoreListParams, GetStoreListResponse } from './type';
 import { api } from '../../shared';
 
 const ENDPOINT = '/user/stores';
@@ -10,7 +11,8 @@ export const storeApi = {
     const response = await api.get(ENDPOINT, { params });
     return GetStoreListResponse.parse(response);
   },
-  getStoreInfoById: async (id: number) => {
-    return await api.get(`${ENDPOINT}/${id}`);
+  getStoreById: async (id: number) => {
+    const response = await api.get(`${ENDPOINT}/${id}`);
+    return GetStoreByIdResponse.parse(response);
   },
 };
