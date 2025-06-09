@@ -19,7 +19,10 @@
       "cache": false
     },
     "test": {
-      "dependsOn": ["^build"]
+      "dependsOn": ["^test"]
+    },
+    "test:ci": {
+      "dependsOn": ["^test:ci"]
     }
   }
 }

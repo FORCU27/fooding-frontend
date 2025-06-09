@@ -9,6 +9,7 @@
     "lint": "turbo run lint",
     "type-check": "turbo run type-check",
     "test": "turbo run test",
+    "test:ci": "turbo run test:ci",
     "dev:app": "turbo dev --filter=app-front",
     "dev:admin": "turbo dev --filter=back-office-front",
     "dev:ceo": "turbo dev --filter=ceo-front",

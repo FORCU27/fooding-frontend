@@ -9,8 +9,7 @@
     "lint": "eslint . --max-warnings 0",
     "start": "react-native start",
     "type-check": "tsc --noEmit",
-    "type-check:watch": "tsc --noEmit --watch",
-    "test": "jest"
+    "type-check:watch": "tsc --noEmit --watch"
   },
   "dependencies": {
     "react": "19.0.0",
