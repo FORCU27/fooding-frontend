@@ -14,7 +14,7 @@ type BottomTabProps = {
 
 const BottomTab = ({ currentTab }: BottomTabProps) => {
   return (
-    <nav className='fixed bottom-0 left-0 right-0 flex w-full h-16 justify-around items-center'>
+    <nav className='fixed bottom-0 left-0 right-0 flex w-full h-16 justify-around items-center shadow-[0_-2px_10px_rgba(0,0,0,0.08)]'>
       <BottomTabItem isActive={currentTab === 'home'}>
         <Link activityName='HomeTab' activityParams={{}} replace animate={false}>
           <HomeIcon size={24} />
