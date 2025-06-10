@@ -11,13 +11,7 @@ type HeaderProps = {
 
 export const Header = ({ left, title, right }: HeaderProps) => {
   return (
-    <header
-      className={cn(
-        `h-[60px]`,
-        'fixed top-0 left-0 right-0',
-        'bg-white/70 backdrop-blur-sm flex items-end',
-      )}
-    >
+    <header className={cn(`h-[60px]`, 'fixed top-0 left-0 right-0', 'bg-white flex items-end')}>
       <div
         className={cn(
           `px-grid-margin h-[60px] w-full relative`,
