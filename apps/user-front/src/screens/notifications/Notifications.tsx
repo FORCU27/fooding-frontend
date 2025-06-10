@@ -26,7 +26,7 @@ export const NotificationListScreen = () => {
 
 const ErrorFallback = ({ reset }: ErrorBoundaryFallbackProps) => {
   return (
-    <div className='mt-[240px] flex flex-col justify-center items-center'>
+    <div className='flex-1 flex flex-col justify-center items-center'>
       <h1 className='text-gray-5'>알림을 불러오지 못했어요.</h1>
       <Button className='mt-4' size='banner' onClick={reset}>
         다시 시도하기
