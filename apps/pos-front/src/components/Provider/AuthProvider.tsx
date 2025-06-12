@@ -35,7 +35,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           throw new Error(`Get user failed: ${response.status}`);
         }
         setUser(response.data);
-      } catch (error) {
+      } catch {
         setUser(null);
         Cookies.remove(STORAGE_KEYS.ACCESS_TOKEN);
         Cookies.remove(STORAGE_KEYS.REFRESH_TOKEN);

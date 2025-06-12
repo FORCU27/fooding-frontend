@@ -1,6 +1,7 @@
 'use client';
 
 import { ReactNode } from 'react';
+
 import DrawerMenuList from './DrawerMenuList';
 import { MenuItem } from './Layout';
 import MainContent from './MainContent';
@@ -11,8 +12,6 @@ interface DrawerSectionProps {
   mobileOpen: boolean;
   handleDrawerToggle: () => void;
 }
-
-const drawerWidth = 240;
 
 const DrawerSection = ({
   children,
