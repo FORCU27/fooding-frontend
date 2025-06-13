@@ -1,10 +1,6 @@
 'use client';
 
-interface Props {
-  handleDrawerToggle: () => void;
-}
-
-const AppBarSection = ({ handleDrawerToggle }: Props) => {
+const AppBarSection = () => {
   const handleLogoutClick = async () => {
     try {
       // 로그아웃 요청 보내기

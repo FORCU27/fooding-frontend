@@ -32,7 +32,7 @@ const Counter = ({ label, count, onDecrease, onIncrease }: CounterProps) => (
   </div>
 );
 
-export function MemberCountStep({ formData, updateFormData, onNext, onPrev }: StepProps) {
+export function MemberCountStep({ formData, updateFormData, onNext }: StepProps) {
   const { infantCount, adultCount } = formData;
   const totalCount = infantCount + adultCount;
 
@@ -60,7 +60,7 @@ export function MemberCountStep({ formData, updateFormData, onNext, onPrev }: St
 
         <div className='flex items-center justify-between px-[30px]'>
           <div className='subtitle-3'>총인원</div>
-          <div className='subtitle-3 text-gray-3 flex items-center space-x-4 text-primary-pink'>
+          <div className='subtitle-3 flex items-center space-x-4 text-primary-pink'>
             <div className='flex items-center'>
               <span className='w-[40px] whitespace-nowrap'>성인</span>
               <span className='w-[40px] text-right'>{adultCount}</span>
