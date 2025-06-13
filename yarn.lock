@@ -6961,6 +6961,61 @@ __metadata:
   languageName: node
   linkType: hard
 
+"AppMobile@workspace:apps/app-mobile":
+  version: 0.0.0-use.local
+  resolution: "AppMobile@workspace:apps/app-mobile"
+  dependencies:
+    "@babel/core": "npm:^7.25.2"
+    "@babel/preset-env": "npm:^7.25.3"
+    "@babel/runtime": "npm:^7.27.0"
+    "@react-native-community/cli": "npm:15.0.1"
+    "@react-native-community/cli-platform-android": "npm:15.0.1"
+    "@react-native-community/cli-platform-ios": "npm:15.0.1"
+    "@react-native/babel-preset": "npm:0.78.2"
+    "@react-native/metro-config": "npm:0.78.2"
+    "@react-native/typescript-config": "npm:0.78.2"
+    "@repo/eslint-config": "workspace:*"
+    "@types/jest": "npm:^29.5.13"
+    "@types/react": "npm:^19.0.0"
+    "@types/react-test-renderer": "npm:^19.0.0"
+    eslint: "npm:^9.24.0"
+    jest: "npm:^29.6.3"
+    prettier: "npm:3.5.3"
+    react: "npm:19.0.0"
+    react-native: "npm:0.78.2"
+    react-test-renderer: "npm:19.0.0"
+    typescript: "npm:^5.8.3"
+  languageName: unknown
+  linkType: soft
+
+"UserMobile@workspace:apps/user-mobile":
+  version: 0.0.0-use.local
+  resolution: "UserMobile@workspace:apps/user-mobile"
+  dependencies:
+    "@babel/core": "npm:^7.25.2"
+    "@babel/preset-env": "npm:^7.25.3"
+    "@babel/runtime": "npm:^7.25.0"
+    "@react-native-community/cli": "npm:18.0.0"
+    "@react-native-community/cli-platform-android": "npm:18.0.0"
+    "@react-native-community/cli-platform-ios": "npm:18.0.0"
+    "@react-native/babel-preset": "npm:0.79.0"
+    "@react-native/metro-config": "npm:0.79.0"
+    "@react-native/typescript-config": "npm:0.79.0"
+    "@repo/eslint-config": "workspace:^"
+    "@repo/prettier-config": "workspace:^"
+    "@types/jest": "npm:^29.5.13"
+    "@types/react": "npm:^19.0.0"
+    "@types/react-test-renderer": "npm:^19.0.0"
+    eslint: "npm:^9.24.0"
+    jest: "npm:^29.6.3"
+    prettier: "npm:3.5.3"
+    react: "npm:19.0.0"
+    react-native: "npm:0.79.0"
+    react-test-renderer: "npm:19.0.0"
+    typescript: "npm:^5.8.3"
+  languageName: unknown
+  linkType: soft
+
 "abbrev@npm:^3.0.0":
   version: 3.0.1
   resolution: "abbrev@npm:3.0.1"
@@ -7118,6 +7173,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "app-desktop@workspace:apps/app-desktop"
   dependencies:
+    "@repo/prettier-config": "workspace:*"
     electron: "npm:^35.1.4"
     typescript: "npm:^5.8.3"
   languageName: unknown
@@ -7161,30 +7217,33 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"app-mobile@workspace:apps/app-mobile":
+"app@workspace:apps/ceo-mobile":
   version: 0.0.0-use.local
-  resolution: "app-mobile@workspace:apps/app-mobile"
+  resolution: "app@workspace:apps/ceo-mobile"
   dependencies:
     "@babel/core": "npm:^7.25.2"
     "@babel/preset-env": "npm:^7.25.3"
-    "@babel/runtime": "npm:^7.27.0"
-    "@react-native-community/cli": "npm:15.0.1"
-    "@react-native-community/cli-platform-android": "npm:15.0.1"
-    "@react-native-community/cli-platform-ios": "npm:15.0.1"
-    "@react-native/babel-preset": "npm:0.78.2"
-    "@react-native/metro-config": "npm:0.78.2"
-    "@react-native/typescript-config": "npm:0.78.2"
+    "@babel/runtime": "npm:^7.25.0"
+    "@react-native-community/cli": "npm:18.0.0"
+    "@react-native-community/cli-platform-android": "npm:18.0.0"
+    "@react-native-community/cli-platform-ios": "npm:18.0.0"
+    "@react-native/babel-preset": "npm:0.79.0"
+    "@react-native/eslint-config": "npm:0.79.0"
+    "@react-native/metro-config": "npm:0.79.0"
+    "@react-native/typescript-config": "npm:0.79.0"
     "@repo/eslint-config": "workspace:*"
+    "@repo/prettier-config": "workspace:*"
     "@types/jest": "npm:^29.5.13"
     "@types/react": "npm:^19.0.0"
     "@types/react-test-renderer": "npm:^19.0.0"
     eslint: "npm:^9.24.0"
     jest: "npm:^29.6.3"
-    prettier: "npm:3.5.3"
+    prettier: "npm:^3.5.3"
     react: "npm:19.0.0"
-    react-native: "npm:0.78.2"
+    react-native: "npm:0.79.0"
+    react-native-webview: "npm:^13.13.5"
     react-test-renderer: "npm:19.0.0"
-    typescript: "npm:^5.8.3"
+    typescript: "npm:5.0.4"
   languageName: unknown
   linkType: soft
 
@@ -7915,6 +7974,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "ceo-desktop@workspace:apps/ceo-desktop"
   dependencies:
+    "@repo/prettier-config": "workspace:*"
     electron: "npm:^35.1.4"
     typescript: "npm:^5.8.3"
   languageName: unknown
@@ -7956,35 +8016,6 @@ __metadata:
     vite: "npm:^6.2.6"
     vitest: "npm:^3.1.1"
     zod: "npm:^3.24.2"
-  languageName: unknown
-  linkType: soft
-
-"ceo-mobile@workspace:apps/ceo-mobile":
-  version: 0.0.0-use.local
-  resolution: "ceo-mobile@workspace:apps/ceo-mobile"
-  dependencies:
-    "@babel/core": "npm:^7.25.2"
-    "@babel/preset-env": "npm:^7.25.3"
-    "@babel/runtime": "npm:^7.25.0"
-    "@react-native-community/cli": "npm:18.0.0"
-    "@react-native-community/cli-platform-android": "npm:18.0.0"
-    "@react-native-community/cli-platform-ios": "npm:18.0.0"
-    "@react-native/babel-preset": "npm:0.79.0"
-    "@react-native/eslint-config": "npm:0.79.0"
-    "@react-native/metro-config": "npm:0.79.0"
-    "@react-native/typescript-config": "npm:0.79.0"
-    "@repo/eslint-config": "workspace:*"
-    "@types/jest": "npm:^29.5.13"
-    "@types/react": "npm:^19.0.0"
-    "@types/react-test-renderer": "npm:^19.0.0"
-    eslint: "npm:^9.24.0"
-    jest: "npm:^29.6.3"
-    prettier: "npm:2.8.8"
-    react: "npm:19.0.0"
-    react-native: "npm:0.79.0"
-    react-native-webview: "npm:^13.13.5"
-    react-test-renderer: "npm:19.0.0"
-    typescript: "npm:5.0.4"
   languageName: unknown
   linkType: soft
 
@@ -13780,6 +13811,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "pos-desktop@workspace:apps/pos-desktop"
   dependencies:
+    "@repo/prettier-config": "workspace:*"
     electron: "npm:^35.1.4"
     typescript: "npm:^5.8.3"
   languageName: unknown
@@ -13838,12 +13870,13 @@ __metadata:
     "@react-native/metro-config": "npm:0.78.2"
     "@react-native/typescript-config": "npm:0.78.2"
     "@repo/eslint-config": "workspace:*"
+    "@repo/prettier-config": "workspace:*"
     "@types/jest": "npm:^29.5.13"
     "@types/react": "npm:^19.0.0"
     "@types/react-test-renderer": "npm:^19.0.0"
     eslint: "npm:^9.24.0"
     jest: "npm:^29.6.3"
-    prettier: "npm:2.8.8"
+    prettier: "npm:^3.5.3"
     react: "npm:19.0.0"
     react-native: "npm:0.78.2"
     react-test-renderer: "npm:19.0.0"
@@ -13893,15 +13926,6 @@ __metadata:
   bin:
     prettier: bin/prettier.cjs
   checksum: 10/7050c08f674d9e49fbd9a4c008291d0715471f64e94cc5e4b01729affce221dfc6875c8de7e66b728c64abc9352eefb7eaae071b5f79d30081be207b53774b78
-  languageName: node
-  linkType: hard
-
-"prettier@npm:2.8.8":
-  version: 2.8.8
-  resolution: "prettier@npm:2.8.8"
-  bin:
-    prettier: bin-prettier.js
-  checksum: 10/00cdb6ab0281f98306cd1847425c24cbaaa48a5ff03633945ab4c701901b8e96ad558eb0777364ffc312f437af9b5a07d0f45346266e8245beaf6247b9c62b24
   languageName: node
   linkType: hard
 
@@ -16636,34 +16660,6 @@ __metadata:
     vite-tsconfig-paths: "npm:^5.1.4"
     vitest: "npm:^3.1.1"
     zod: "npm:^3.24.2"
-  languageName: unknown
-  linkType: soft
-
-"user-mobile@workspace:apps/user-mobile":
-  version: 0.0.0-use.local
-  resolution: "user-mobile@workspace:apps/user-mobile"
-  dependencies:
-    "@babel/core": "npm:^7.25.2"
-    "@babel/preset-env": "npm:^7.25.3"
-    "@babel/runtime": "npm:^7.25.0"
-    "@react-native-community/cli": "npm:18.0.0"
-    "@react-native-community/cli-platform-android": "npm:18.0.0"
-    "@react-native-community/cli-platform-ios": "npm:18.0.0"
-    "@react-native/babel-preset": "npm:0.79.0"
-    "@react-native/metro-config": "npm:0.79.0"
-    "@react-native/typescript-config": "npm:0.79.0"
-    "@repo/eslint-config": "workspace:^"
-    "@repo/prettier-config": "workspace:^"
-    "@types/jest": "npm:^29.5.13"
-    "@types/react": "npm:^19.0.0"
-    "@types/react-test-renderer": "npm:^19.0.0"
-    eslint: "npm:^9.24.0"
-    jest: "npm:^29.6.3"
-    prettier: "npm:3.5.3"
-    react: "npm:19.0.0"
-    react-native: "npm:0.79.0"
-    react-test-renderer: "npm:19.0.0"
-    typescript: "npm:^5.8.3"
   languageName: unknown
   linkType: soft
 

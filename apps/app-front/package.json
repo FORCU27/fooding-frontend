@@ -8,8 +8,7 @@
     "format": "prettier --cache --write .",
     "lint": "next lint --max-warnings 0",
     "type-check": "tsc --noEmit",
-    "type-check:watch": "tsc --noEmit --watch",
-    "test": "vitest"
+    "type-check:watch": "tsc --noEmit --watch"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.0.1",

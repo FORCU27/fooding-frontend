@@ -9,8 +9,7 @@
     "lint": "next lint --max-warnings 0",
     "lint:fix": "next lint --fix",
     "type-check": "tsc --noEmit",
-    "type-check:watch": "tsc --noEmit --watch",
-    "test": "vitest run"
+    "type-check:watch": "tsc --noEmit --watch"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.0.1",
