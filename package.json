@@ -18,9 +18,11 @@
     "dev:pos": "turbo dev --filter=pos-front"
   },
   "devDependencies": {
+    "@vitejs/plugin-react": "^4.5.2",
     "prettier": "3.5.3",
     "turbo": "^2.4.0",
-    "typescript": "^5.7.3"
+    "typescript": "^5.7.3",
+    "vite": "^6.2.6"
   },
   "engines": {
     "node": ">=18"
