@@ -2,7 +2,7 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import { JSX, useCallback, useEffect, useState } from 'react';
 
 import { AuthSocialLoginBody, SocialPlatform, socialPlatforms } from '@repo/api/auth';
@@ -64,10 +64,9 @@ const openSocialLoginPopup = (loginUrl: string) => {
 export default function LoginPage() {
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
-  const searchParams = useSearchParams();
   const [recentProvider, setRecentProvider] = useState<string | null>(null);
 
-  const returnTo = searchParams.get('returnTo') || '/';
+  const returnTo = '/';
   const { socialLogin } = useAuth();
 
   useEffect(() => {
