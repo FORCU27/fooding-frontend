@@ -1,6 +1,6 @@
 'use client';
 
-import { Button } from '@repo/design-system/components/b2c';
+import { ErrorFallback } from '@repo/design-system/components/b2c';
 import { ErrorBoundary, ErrorBoundaryFallbackProps, Suspense } from '@suspensive/react';
 import { QueryErrorResetBoundary } from '@tanstack/react-query';
 
@@ -11,7 +11,7 @@ export default function NotificationListPage() {
     <main className='bg-white'>
       <QueryErrorResetBoundary>
         {({ reset }) => (
-          <ErrorBoundary fallback={ErrorFallback} onReset={reset}>
+          <ErrorBoundary fallback={NotificationErrorFallback} onReset={reset}>
             <Suspense clientOnly>
               <NotificationList />
             </Suspense>
@@ -22,13 +22,13 @@ export default function NotificationListPage() {
   );
 }
 
-const ErrorFallback = ({ reset }: ErrorBoundaryFallbackProps) => {
+const NotificationErrorFallback = ({ reset }: ErrorBoundaryFallbackProps) => {
   return (
-    <div className='mt-[240px] flex flex-col justify-center items-center'>
-      <h1 className='text-gray-5'>알림을 불러오지 못했어요.</h1>
-      <Button className='mt-4' size='banner' onClick={reset}>
-        다시 시도하기
-      </Button>
-    </div>
+    <ErrorFallback className='mt-[240px]'>
+      <ErrorFallback.Title>알림 목록을 불러오지 못했어요.</ErrorFallback.Title>
+      <ErrorFallback.Actions>
+        <ErrorFallback.Action onClick={reset}>새로고침</ErrorFallback.Action>
+      </ErrorFallback.Actions>
+    </ErrorFallback>
   );
 };

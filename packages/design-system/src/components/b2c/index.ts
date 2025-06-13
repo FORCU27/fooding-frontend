@@ -7,3 +7,4 @@ export * from './Tabs';
 export * from './Input';
 export * from './NavButton';
 export * from './SearchInput';
+export * from './ErrorFallback';
