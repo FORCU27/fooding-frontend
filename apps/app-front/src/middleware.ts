@@ -27,7 +27,6 @@ export async function middleware(request: NextRequest) {
   const token = request.cookies.get(STORAGE_KEYS.ACCESS_TOKEN);
   const isAuthenticated = !!token;
   const storeId = request.cookies.get('selected_store_id');
-  const serviceType = request.cookies.get('selected_service');
 
   // 1. 로그인 체크 (가장 먼저)
   if (!isAuthenticated && path !== '/login') {
