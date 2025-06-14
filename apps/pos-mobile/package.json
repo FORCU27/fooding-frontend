@@ -14,8 +14,6 @@
     "react-native": "0.78.2"
   },
   "devDependencies": {
-    "@repo/eslint-config": "workspace:*",
-    "@repo/prettier-config": "workspace:*",
     "@babel/core": "^7.25.2",
     "@babel/preset-env": "^7.25.3",
     "@babel/runtime": "^7.27.0",
@@ -25,6 +23,8 @@
     "@react-native/babel-preset": "0.78.2",
     "@react-native/metro-config": "0.78.2",
     "@react-native/typescript-config": "0.78.2",
+    "@repo/eslint-config": "workspace:*",
+    "@repo/prettier-config": "workspace:*",
     "@types/jest": "^29.5.13",
     "@types/react": "^19.0.0",
     "@types/react-test-renderer": "^19.0.0",
