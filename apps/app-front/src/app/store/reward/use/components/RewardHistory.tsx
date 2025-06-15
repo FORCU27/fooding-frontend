@@ -25,6 +25,7 @@ const getTypeLabel = (type: RewardLog['type']) => TYPE_LABELS[type] ?? '-';
 const RewardHistory = ({ rewards, isLoading, isError }: RewardHistory) => {
   if (isLoading) return <div>로딩 중...</div>;
   if (isError) return <div>적립 내역을 불러오지 못했습니다.</div>;
+  if (rewards?.length === 0) return <div>적립내역이 존재하지 않습니다.</div>;
   return (
     <div className='pt-[60px] px-[70px]'>
       <table className='w-full'>

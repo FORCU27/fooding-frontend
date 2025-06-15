@@ -2,7 +2,8 @@
 
 import { useSearchParams } from 'next/navigation';
 
-import { rewardApi } from '@repo/api/app';
+import { rewardApi, userApi } from '@repo/api/app';
+import { queryKeys } from '@repo/api/configs/query-keys';
 import { ArrowLeftIcon } from '@repo/design-system/icons';
 import { useQuery } from '@tanstack/react-query';
 
@@ -10,18 +11,26 @@ import CouponList from './components/CouponList';
 import CouponSubTab from './components/CouponSubTab';
 import MainTab from './components/MainTab';
 import RewardHistory from './components/RewardHistory';
+import { useStore } from '@/components/Provider/StoreClientProvider';
 
 export default function RewardUsePage() {
   const searchParams = useSearchParams();
   const mainTab = searchParams.get('tab') ?? 'coupon'; // 'coupon' | 'history'
   const subTab = searchParams.get('sub') ?? 'available'; // 'available' | 'used'
 
+  const { storeId } = useStore();
+
+  const { data: user } = useQuery({
+    queryKey: [queryKeys.me.user],
+    queryFn: userApi.getUser,
+  });
+
   const commonParams = {
     searchString: '',
-    pageNum: 0,
+    pageNum: 1,
     pageSize: 20,
-    storeId: 1,
-    phoneNumber: '01012345678', // TODO 실제 정보 연동
+    storeId: Number(storeId),
+    phoneNumber: String(user?.data.phoneNumber),
   };
 
   const {
@@ -29,13 +38,13 @@ export default function RewardUsePage() {
     isLoading: isCouponLoading,
     isError: isCouponError,
   } = useQuery({
-    queryKey: ['getCoupons', subTab],
+    queryKey: [queryKeys.app.reward.coupons, subTab],
     queryFn: () =>
       rewardApi.getCoupons({
         ...commonParams,
         used: subTab === 'used',
       }),
-    enabled: mainTab === 'coupon',
+    enabled: !!storeId && mainTab === 'coupon',
   });
 
   const {
@@ -43,9 +52,9 @@ export default function RewardUsePage() {
     isLoading: isLogLoading,
     isError: isLogError,
   } = useQuery({
-    queryKey: ['getLog'],
+    queryKey: [queryKeys.app.reward.coupons],
     queryFn: () => rewardApi.getLog(commonParams),
-    enabled: mainTab === 'history',
+    enabled: !!storeId && mainTab === 'history',
   });
 
   return (
@@ -54,8 +63,9 @@ export default function RewardUsePage() {
         <button className='absolute top-[30px] left-[80px]'>
           <ArrowLeftIcon color='white' />
         </button>
-        {/* TODO 실제 유저 이름 출력 */}
-        <h1 className='text-white headline-5 text-center flex-1'>홍길동님의 리워드</h1>
+        <h1 className='text-white headline-5 text-center flex-1'>
+          {user?.data.nickname}님의 리워드
+        </h1>
       </header>
 
       <MainTab activeTab={mainTab} />
