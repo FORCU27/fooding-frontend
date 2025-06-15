@@ -55,7 +55,7 @@ export default function RewardUsePage() {
   } = useQuery({
     queryKey: [queryKeys.app.reward.coupons],
     queryFn: () => rewardApi.getLog(commonParams),
-    enabled: !!storeId && mainTab === 'history',
+    enabled: !!storeId && !!phoneNumber && mainTab === 'history',
   });
 
   return (
