@@ -180,6 +180,11 @@ export default function WaitingPage() {
     },
   });
 
+  const { data: waitingOverview } = useQuery({
+    queryKey: [queryKeys.store.waiting, storeId, 'WAITING_OVERVIEW'],
+    queryFn: () => storeApi.getStoreWaitingOverview({ id: Number(storeId) }),
+  });
+
   const { data: waitingResponse } = useQuery({
     queryKey: [queryKeys.store.waiting, storeId, 'WAITING'],
     queryFn: () => storeApi.getStoreWaiting({ id: Number(storeId), status: 'WAITING' }),

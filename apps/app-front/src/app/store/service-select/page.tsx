@@ -18,7 +18,7 @@ export default function StoreSelectPage() {
   const { data: user } = useQuery({ queryKey: ['user'], queryFn: userApi.getUser });
   const { data: storeServiceList } = useQuery({
     queryKey: ['storeServiceList'],
-    queryFn: () => storeApi.getStoreServiceList({ id: Number(3) }),
+    queryFn: () => storeApi.getStoreServiceList({ id: Number(storeId) }),
   });
 
   const [selectedService, setSelectedServiceState] = useState<StoreServiceType>(
