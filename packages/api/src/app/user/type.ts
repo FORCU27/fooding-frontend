@@ -13,27 +13,27 @@ export type Gender = z.infer<typeof Gender>;
 
 export const User = z.object({
   id: z.number(),
-  role: UserRole,
   email: z.string(),
   provider: UserProvider,
-  nickname: z.string(),
+  nickname: z.string().nullable(),
   phoneNumber: z.string(),
-  referralCode: z.string(),
-  profileImage: z.string(),
+  referralCode: z.string().nullable(),
+  profileImage: z.string().nullable(),
   loginCount: z.number(),
-  lastLoggedInAt: z.string(),
+  lastLoggedInAt: z.string().nullable(),
   termsAgreed: z.boolean(),
   termsAgreedAt: z.string(),
   privacyPolicyAgreed: z.boolean(),
   privacyPolicyAgreedAt: z.string(),
   marketingConsent: z.boolean(),
-  marketingConsentAt: z.string(),
+  marketingConsentAt: z.string().nullable(),
   gender: Gender,
 });
 
 export type User = z.infer<typeof User>;
 
 export const GetUserResponse = ApiResponse(User);
+export type GetUserResponse = z.infer<typeof GetUserResponse>;
 
 export const AppStoreService = z.object({
   id: z.number(),

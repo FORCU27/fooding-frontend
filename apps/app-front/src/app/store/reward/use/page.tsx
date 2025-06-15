@@ -24,13 +24,14 @@ export default function RewardUsePage() {
     queryKey: [queryKeys.me.user],
     queryFn: userApi.getUser,
   });
+  const phoneNumber = user?.data.phoneNumber;
 
   const commonParams = {
     searchString: '',
     pageNum: 1,
     pageSize: 20,
     storeId: Number(storeId),
-    phoneNumber: String(user?.data.phoneNumber),
+    phoneNumber: String(phoneNumber),
   };
 
   const {
@@ -44,7 +45,7 @@ export default function RewardUsePage() {
         ...commonParams,
         used: subTab === 'used',
       }),
-    enabled: !!storeId && mainTab === 'coupon',
+    enabled: !!storeId && !!phoneNumber && mainTab === 'coupon',
   });
 
   const {
