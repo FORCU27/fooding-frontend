@@ -1,10 +1,6 @@
 import { IconProps } from '../type';
 
-export default function B2BRefreshIcon({
-  size = 46,
-  fill = 'var(--color-gray-5)',
-  ...props
-}: IconProps) {
+export default function B2BRefreshIcon({ size = 46, ...props }: IconProps) {
   return (
     <svg
       width={size}

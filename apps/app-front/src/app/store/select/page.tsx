@@ -18,7 +18,7 @@ export default function StoreSelectPage() {
     queryFn: userApi.getUser,
   });
   const { data: stores } = useQuery({
-    queryKey: [queryKeys.store.stores],
+    queryKey: [queryKeys.app.store.stores],
     queryFn: () => storeApi.getStores(),
   });
 
