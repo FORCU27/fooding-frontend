@@ -14,7 +14,7 @@ export const Screen = ({ header, bottomTab, className, children }: ScreenProps) 
       <main
         // TODO: Safe Area 영역 추가
         className={cn(
-          'px-grid-margin flex flex-col overflow-y-auto scrollbar-hide',
+          'flex flex-col overflow-y-auto scrollbar-hide',
           header && `mt-[60px]`, // 헤더 60px + Safe Area Top 40px
           bottomTab && `mb-[64px]`, // 하단탭 64px + 하단 Safe Area Bottom 24px
           header && !bottomTab && 'h-[calc(100dvh-60px)]',

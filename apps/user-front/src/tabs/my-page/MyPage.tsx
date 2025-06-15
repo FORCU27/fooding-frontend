@@ -61,7 +61,7 @@ const Content = () => {
   return (
     <div className='w-full overflow-hidden'>
       <div className='flex-col bg-white/80 pb-5 py-grid-margin'>
-        <div className='flex justify-between'>
+        <div className='flex justify-between px-grid-margin'>
           <div className='flex justify-center items-center'>
             <div className='flex justify-center items-center w-[64px] h-[64px] bg-gray-1 rounded-full'>
               <FoodingIcon fillOpacity={0.1} />
