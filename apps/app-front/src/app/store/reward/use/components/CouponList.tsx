@@ -42,6 +42,7 @@ const Coupon = ({ coupon }: { coupon: UserCoupon }) => {
 const CouponList = ({ list, isLoading, isError }: CouponListProps) => {
   if (isLoading) return <div>로딩 중...</div>;
   if (isError) return <div>쿠폰 데이터를 불러오지 못했습니다.</div>;
+  if (list.length === 0) return <div>보유 쿠폰이 존재하지 않습니다.</div>;
   return (
     <div>
       {list.map((coupon) => (
