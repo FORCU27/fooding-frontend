@@ -114,3 +114,14 @@ export type WaitingUser = z.infer<typeof WaitingUser>;
 export type GetWaitingDetailResponse = z.infer<typeof GetWaitingDetailResponse>;
 
 export type GetStoreServiceListResponse = z.infer<typeof GetStoreServiceListResponse>;
+
+export const GetStoreWaitingOverviewData = ApiResponse(
+  z.object({
+    waitingCount: z.number(),
+    estimatedWaitingTimeMinutes: z.number(),
+  }),
+);
+
+export type GetStoreWaitingOverviewData = z.infer<typeof GetStoreWaitingOverviewData>;
+
+export const GetStoreWaitingOverviewResponse = ApiResponse(GetStoreWaitingOverviewData);

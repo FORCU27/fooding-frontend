@@ -165,13 +165,13 @@ export default function WaitingPage() {
 
   const { mutate: submitWaiting, data: mutationResponse } = useMutation({
     mutationFn: (formData: WaitingRegisterData) =>
-      storeApi.createStoreWaiting(formData, Number(storeId)),
+      storeApi.createStoreWaiting({ body: formData }, Number(storeId)),
     onSuccess: () => {
       resetFormData();
       setIsModalOpen(false);
       setOpenComplete(true);
       queryClient.invalidateQueries({
-        queryKey: [queryKeys.app.store.waiting, storeId, 'WAITING'],
+        queryKey: [queryKeys.store.waiting, storeId, 'WAITING'],
       });
     },
     onError: (error) => {
@@ -181,7 +181,7 @@ export default function WaitingPage() {
   });
 
   const { data: waitingResponse } = useQuery({
-    queryKey: [queryKeys.app.store.waiting, storeId, 'WAITING'],
+    queryKey: [queryKeys.store.waiting, storeId, 'WAITING'],
     queryFn: () => storeApi.getStoreWaiting({ id: Number(storeId), status: 'WAITING' }),
   });
 

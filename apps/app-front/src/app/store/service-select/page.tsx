@@ -8,14 +8,17 @@ import { ArrowLeftIcon } from '@repo/design-system/icons';
 import { useQuery } from '@tanstack/react-query';
 
 import { StoreServiceType, STORE_SERVICE_PATHS } from './types';
+import { useStore } from '@/components/Provider/StoreClientProvider';
 import { getSelectedService, setSelectedService } from '@/services/locale';
 
 export default function StoreSelectPage() {
   const router = useRouter();
+  const { storeId } = useStore();
+
   const { data: user } = useQuery({ queryKey: ['user'], queryFn: userApi.getUser });
   const { data: storeServiceList } = useQuery({
     queryKey: ['storeServiceList'],
-    queryFn: () => storeApi.getStoreServiceList({ id: 1 }),
+    queryFn: () => storeApi.getStoreServiceList({ id: Number(3) }),
   });
 
   const [selectedService, setSelectedServiceState] = useState<StoreServiceType>(
