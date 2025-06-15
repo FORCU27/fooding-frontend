@@ -1,10 +1,10 @@
 'use client';
 
 import Image from 'next/image';
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 
 import { GetWaitingDetailResponse } from '@repo/api/app';
-import { storeApi, userApi } from '@repo/api/app';
+import { storeApi } from '@repo/api/app';
 import { queryKeys } from '@repo/api/configs/query-keys';
 import { useQuery, useQueryClient, useMutation } from '@tanstack/react-query';
 

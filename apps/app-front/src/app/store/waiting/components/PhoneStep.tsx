@@ -1,13 +1,12 @@
 import { B2BCheckBoxIcon, B2BRefreshIcon, B2BDeleteIcon } from '@repo/design-system/icons';
 
-import { WaitingRegisterData, UpdateWaitingRegisterData, StepProps } from '../types';
+import { StepProps } from '../types';
 import Button from '@/components/Button';
 
 export function PhoneStep({
   formData,
   updateFormData,
   onNext,
-  onPrev,
   onClickTerms,
   onClickAllTerms,
 }: StepProps) {
