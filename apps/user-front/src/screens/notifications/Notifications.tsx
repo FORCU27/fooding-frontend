@@ -4,11 +4,13 @@ import { ErrorFallback } from '@repo/design-system/components/b2c';
 import { ErrorBoundary, ErrorBoundaryFallbackProps, Suspense } from '@suspensive/react';
 import { QueryErrorResetBoundary } from '@tanstack/react-query';
 
-import { NotificationList } from './_components/NotificationList';
+import { NotificationList } from './components/NotificationList';
+import { Header } from '@/components/Layout/Header';
+import { Screen } from '@/components/Layout/Screen';
 
-export default function NotificationListPage() {
+export const NotificationListScreen = () => {
   return (
-    <main className='bg-white'>
+    <Screen header={<Header title='알림' left={<Header.Back />} />}>
       <QueryErrorResetBoundary>
         {({ reset }) => (
           <ErrorBoundary fallback={NotificationErrorFallback} onReset={reset}>
@@ -18,9 +20,9 @@ export default function NotificationListPage() {
           </ErrorBoundary>
         )}
       </QueryErrorResetBoundary>
-    </main>
+    </Screen>
   );
-}
+};
 
 const NotificationErrorFallback = ({ reset }: ErrorBoundaryFallbackProps) => {
   return (
