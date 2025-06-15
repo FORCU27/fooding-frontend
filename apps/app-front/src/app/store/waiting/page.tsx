@@ -171,7 +171,7 @@ export default function WaitingPage() {
       setIsModalOpen(false);
       setOpenComplete(true);
       queryClient.invalidateQueries({
-        queryKey: [queryKeys.store.waiting, storeId, 'WAITING'],
+        queryKey: [queryKeys.app.store.waiting, storeId, 'WAITING'],
       });
     },
     onError: (error) => {
@@ -181,7 +181,7 @@ export default function WaitingPage() {
   });
 
   const { data: waitingResponse } = useQuery({
-    queryKey: [queryKeys.store.waiting, storeId, 'WAITING'],
+    queryKey: [queryKeys.app.store.waiting, storeId, 'WAITING'],
     queryFn: () => storeApi.getStoreWaiting({ id: Number(storeId), status: 'WAITING' }),
   });
 
