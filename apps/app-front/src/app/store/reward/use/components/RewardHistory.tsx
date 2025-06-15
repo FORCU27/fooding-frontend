@@ -41,8 +41,7 @@ const RewardHistory = ({ rewards, isLoading, isError }: RewardHistory) => {
         <tbody className='text-gray-800'>
           {rewards?.map((reward) => (
             <tr key={reward.id} className='border-b-1 border-gray-3 body-3'>
-              <td className='py-[28px] pl-[40px]'>{formatDate('')}</td>
-              {/* TODO 날짜 매핑 */}
+              <td className='py-[28px] pl-[40px]'>{formatDate(reward?.createdAt)}</td>
               <td className='py-[28px]'>{getChannelLabel(reward.channel)}</td>
               <td className='py-[28px]'>{getTypeLabel(reward.type)}</td>
               <td className='py-[28px]'>{reward.phoneNumber}</td>

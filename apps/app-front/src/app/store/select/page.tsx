@@ -15,7 +15,7 @@ export default function StoreSelectPage() {
   const router = useRouter();
   const { data: user } = useQuery({
     queryKey: [queryKeys.me.user],
-    queryFn: userApi.getUser,
+    queryFn: () => userApi.getUser(),
   });
   const { data: stores } = useQuery({
     queryKey: [queryKeys.app.store.stores],
@@ -28,8 +28,8 @@ export default function StoreSelectPage() {
     <Suspense fallback={'fallback'}>
       <div className='flex h-screen font-sans'>
         <StoreOwnerProfile
-          ownerName={user?.data.nickname}
-          profileImageSrc={user?.data.profileImage}
+          ownerName={user?.data.nickname as string}
+          profileImageSrc={user?.data.profileImage as string}
         />
         <StoreList
           stores={stores?.data}

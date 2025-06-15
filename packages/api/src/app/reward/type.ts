@@ -40,6 +40,7 @@ export const RewardLog = z.object({
   status: RewardStatus,
   type: RewardType,
   channel: Chanel,
+  createdAt: z.string(),
 });
 export type RewardLog = z.infer<typeof RewardLog>;
 
