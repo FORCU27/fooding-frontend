@@ -72,23 +72,23 @@ export const config = [
         { devDependencies: true, peerDependencies: true },
       ],
 
-      "import/order": [
-        "error",
-        {
-          "newlines-between": "always",
-          groups: [
-            ["builtin", "external"],
-            ["internal", "parent", "sibling", "index"],
-          ],
-          pathGroups: [
-            { pattern: "react", group: "builtin", position: "before" },
-            { pattern: "next/*", group: "external", position: "before" },
-            { pattern: "@/**", group: "internal" },
-          ],
-          alphabetize: { order: "asc", caseInsensitive: true },
-          pathGroupsExcludedImportTypes: ["builtin"],
-        },
-      ],
+      // "import/order": [
+      //   "error",
+      //   {
+      //     "newlines-between": "always",
+      //     groups: [
+      //       ["builtin", "external"],
+      //       ["internal", "parent", "sibling", "index"],
+      //     ],
+      //     pathGroups: [
+      //       { pattern: "react", group: "builtin", position: "before" },
+      //       { pattern: "next/*", group: "external", position: "before" },
+      //       { pattern: "@/**", group: "internal" },
+      //     ],
+      //     alphabetize: { order: "asc", caseInsensitive: true },
+      //     pathGroupsExcludedImportTypes: ["builtin"],
+      //   },
+      // ],
     },
   },
   {
