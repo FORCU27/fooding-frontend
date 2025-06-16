@@ -11,8 +11,8 @@ export type RewardStatus = z.infer<typeof RewardStatus>;
 export const RewardType = z.enum(['EVENT', 'VISIT']);
 export type RewardType = z.infer<typeof RewardType>;
 
-export const Chanel = z.enum(['STORE', 'EVENT_PLATFORM']);
-export type Chanel = z.infer<typeof Chanel>;
+export const Channel = z.enum(['STORE', 'EVENT_PLATFORM']);
+export type Channel = z.infer<typeof Channel>;
 
 export const UserCoupon = z.object({
   id: z.number(),
@@ -39,7 +39,7 @@ export const RewardLog = z.object({
   point: z.number(),
   status: RewardStatus,
   type: RewardType,
-  channel: Chanel,
+  channel: Channel,
   createdAt: z.string(),
 });
 export type RewardLog = z.infer<typeof RewardLog>;
