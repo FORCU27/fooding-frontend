@@ -111,9 +111,7 @@ export default function LoginPage() {
             code,
             provider: platform,
             redirectUri:
-              platform === 'APPLE'
-                ? env.OAUTH_APPLE_REDIRECT_URI || ''
-                : env.OAUTH_REDIRECT_URI || '',
+              platform === 'APPLE' ? env.OAUTH_APPLE_REDIRECT_URI : env.OAUTH_REDIRECT_URI,
             role: 'USER',
           };
           await socialLogin(credentials);

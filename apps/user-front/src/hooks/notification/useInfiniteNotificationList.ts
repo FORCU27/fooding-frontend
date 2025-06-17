@@ -1,14 +1,11 @@
+import { queryKeys } from '@repo/api/configs/query-keys';
 import { notificationApi } from '@repo/api/user';
-import { useMutation, useSuspenseInfiniteQuery } from '@tanstack/react-query';
-
-const queryKey = {
-  notifications: ['notifications'],
-};
+import { useSuspenseInfiniteQuery } from '@tanstack/react-query';
 
 export const useInfiniteNotificationList = () => {
   const { data, fetchNextPage } = useSuspenseInfiniteQuery({
     initialPageParam: 1,
-    queryKey: queryKey.notifications,
+    queryKey: [queryKeys.user.notification.infiniteList],
     queryFn: ({ pageParam }) => {
       return notificationApi.getNotificationList({
         page: pageParam,
@@ -35,10 +32,4 @@ export const useInfiniteNotificationList = () => {
     notifications,
     fetchNextPage,
   };
-};
-
-export const useMarkNotificationsAsRead = () => {
-  return useMutation({
-    mutationFn: notificationApi.markAsRead,
-  });
 };

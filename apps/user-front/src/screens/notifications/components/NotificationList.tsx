@@ -3,7 +3,7 @@ import { BellIcon, MessageAlertSquareIcon, StarIcon } from '@repo/design-system/
 
 import { MarkAsRead } from './MarkAsRead';
 import { IntersectionObserver } from '@/components/IntersectionObserver';
-import { useInfiniteNotificationList } from '@/services/notification';
+import { useInfiniteNotificationList } from '@/hooks/notification/useInfiniteNotificationList';
 import { cn } from '@/utils/cn';
 import { formatDate } from '@/utils/date';
 
