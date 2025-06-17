@@ -15,7 +15,6 @@ export const queryKeys = {
     notification: {
       infiniteList: 'notificationInfiniteList',
     },
-    session: 'session',
     me: 'me',
     stores: 'userStores',
     storeInfo: 'userStoreInfo',
