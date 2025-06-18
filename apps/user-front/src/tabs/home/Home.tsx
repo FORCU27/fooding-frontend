@@ -2,7 +2,7 @@
 
 import Image from 'next/image';
 
-import { Button, ChipTabs } from '@repo/design-system/components/b2c';
+import { Button, ChipTabs, ErrorFallback, Skeleton } from '@repo/design-system/components/b2c';
 import { BookmarkIcon, ChevronRightIcon, FoodingIcon, StarIcon } from '@repo/design-system/icons';
 import { ActivityComponentType } from '@stackflow/react/future';
 
@@ -26,6 +26,7 @@ const Content = () => {
     data: stores,
     isPending,
     isError,
+    refetch,
   } = useGetStoreList({
     pageNum: 1,
     pageSize: 10,
@@ -34,11 +35,19 @@ const Content = () => {
   });
 
   if (isPending) {
-    return <div>로딩중</div>;
+    return <LoadingFallback />;
   }
 
   if (isError) {
-    return <div>에러발생</div>;
+    return (
+      <ErrorFallback className='flex-1'>
+        <ErrorFallback.Title>알 수 없는 에러가 발생했습니다</ErrorFallback.Title>
+        <ErrorFallback.Description>잠시 후 다시 시도해 주세요</ErrorFallback.Description>
+        <ErrorFallback.Actions>
+          <ErrorFallback.Action onClick={() => refetch()}>새로고침</ErrorFallback.Action>
+        </ErrorFallback.Actions>
+      </ErrorFallback>
+    );
   }
 
   return (
@@ -144,6 +153,36 @@ const Content = () => {
       <RestaurantsListSection subtitle='푸딩에서 인기 많은 식당이에요' items={stores.data.list} />
       <RestaurantsListSection subtitle='새로 오픈했어요!' items={stores.data.list} />
       <RestaurantsListSection subtitle='지금 바로 입장하실 수 있어요!' items={stores.data.list} />
+    </div>
+  );
+};
+
+const LoadingFallback = () => {
+  return (
+    <div className='px-grid-margin'>
+      <Skeleton shape='text' className='mt-1' width={160} height={28} />
+      <Skeleton shape='square' className='mt-3 -mx-grid-margin' height={200} />
+      <Skeleton className='mt-4' width={240} height={32} />
+      <Skeleton className='mt-3' width={320} height={36} />
+      <div className='mt-4 flex gap-3 overflow-hidden -mx-grid-margin px-grid-margin'>
+        {Array.from({ length: 8 }).map((_, index) => (
+          <div key={index} className='flex flex-col gap-1'>
+            <Skeleton width={220} height={140} />
+            <Skeleton shape='text' width={160} height={20} />
+            <Skeleton shape='text' width={120} height={16} />
+          </div>
+        ))}
+      </div>
+      <Skeleton shape='text' className='mt-19' width={220} height={24} />
+      <div className='mt-4 flex gap-3 overflow-hidden -mx-grid-margin px-grid-margin'>
+        {Array.from({ length: 8 }).map((_, index) => (
+          <div key={index} className='flex flex-col gap-1'>
+            <Skeleton width={140} height={140} />
+            <Skeleton shape='text' width={120} height={20} />
+            <Skeleton shape='text' width={80} height={16} />
+          </div>
+        ))}
+      </div>
     </div>
   );
 };
