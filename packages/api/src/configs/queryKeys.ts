@@ -16,6 +16,9 @@ export const queryKeys = {
   },
   pos: {},
   user: {
+    notification: {
+      infiniteList: 'notificationInfiniteList',
+    },
     me: 'me',
     stores: 'userStores',
     storeInfo: 'userStoreInfo',

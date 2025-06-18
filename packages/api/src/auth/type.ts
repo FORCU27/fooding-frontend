@@ -8,8 +8,6 @@ export type UserRole = (typeof userRoles)[number];
 export const socialPlatforms = ['KAKAO', 'NAVER', 'APPLE', 'GOOGLE'] as const;
 export type SocialPlatform = (typeof socialPlatforms)[number];
 
-export type Platform = SocialPlatform | '';
-
 export const AuthLoginUserSchema = z.object({
   id: z.number(),
   email: z.string(),

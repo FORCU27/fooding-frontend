@@ -18,24 +18,13 @@ import { RestaurantsListSection } from '@/components/Restaurant/RestaurantsListS
 import { useGetStoreList } from '@/hooks/store/useGetStoreList';
 
 export const MyPageTab: ActivityComponentType<'MyPageTab'> = () => {
-  const handleLogoutClick = async () => {
-    try {
-      const response = await fetch('/api/auth/logout', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
+  const { logout } = useAuth();
 
-      if (response.ok) {
-        const currentPath = window.location.pathname;
-        window.location.href = `/login?returnTo=${encodeURIComponent(currentPath)}`;
-      } else {
-        console.error('로그아웃 실패');
-      }
-    } catch (error) {
-      console.error('로그아웃 중 오류 발생:', error);
-    }
+  const handleLogoutClick = async () => {
+    logout();
+
+    const currentPath = window.location.pathname;
+    window.location.href = `/login?returnTo=${encodeURIComponent(currentPath)}`;
   };
 
   return (
