@@ -1,8 +1,8 @@
 'use client';
 
-import { XIcon } from 'lucide-react';
 import { Dialog as DialogPrimitives } from 'radix-ui';
 
+import { CloseIcon } from '../../icons';
 import { cn } from '../../utils';
 
 type FullscreenBottomSheetProps = Omit<DialogPrimitives.DialogProps, 'open'> & {
@@ -50,7 +50,7 @@ const FullscreenBottomSheetContent = ({ className, children, ...props }: DialogC
       >
         {children}
         <DialogPrimitives.Close className='absolute top-4 right-4 size-10 rounded-full bg-gray-1 flex justify-center items-center active:bg-gray-2'>
-          <XIcon />
+          <CloseIcon size={24} />
         </DialogPrimitives.Close>
       </DialogPrimitives.Content>
     </DialogPrimitives.Portal>
