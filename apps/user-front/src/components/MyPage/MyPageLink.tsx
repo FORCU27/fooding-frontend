@@ -24,7 +24,7 @@ export const MyPageLink = ({ BottomTabItem, BottomTabLabel, isActive }: MyPageLi
   useEffect(() => {
     if (clicked && isLoggedIn) {
       flow.push('MyPageTab', {});
-      loginBottomSheet.onOpenChange(false);
+      loginBottomSheet.close();
       setClicked(false);
     }
   }, [clicked, isLoggedIn, flow, loginBottomSheet]);

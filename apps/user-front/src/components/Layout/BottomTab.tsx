@@ -54,7 +54,7 @@ const BottomTabItem = ({ children, isActive }: BottomTabItemProps) => {
   return (
     <Slot.Root
       className={cn(
-        'flex flex-col items-center gap-1 text-gray-5',
+        'flex flex-col items-center gap-1 text-gray-5 cursor-pointer',
         isActive && 'text-primary-pink',
       )}
     >
