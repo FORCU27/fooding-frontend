@@ -13,7 +13,7 @@ export const Store = z.object({
   averageRating: z.number(),
   estimatedWaitingTimeMinutes: z.number().nullable(),
   //임의
-  isBookMarded: z.boolean().optional(),
+  isBookmarked: z.boolean().optional(),
   isFinished: z.boolean().optional(),
 });
 
