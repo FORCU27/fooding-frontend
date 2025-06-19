@@ -23,8 +23,7 @@ export const MyPageTab: ActivityComponentType<'MyPageTab'> = () => {
   const handleLogoutClick = async () => {
     logout();
 
-    const currentPath = window.location.pathname;
-    window.location.href = `/login?returnTo=${encodeURIComponent(currentPath)}`;
+    location.reload();
   };
 
   return (

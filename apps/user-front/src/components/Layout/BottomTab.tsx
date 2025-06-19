@@ -1,9 +1,10 @@
 'use client';
 
 import { Slot } from '@repo/design-system/components';
-import { HomeIcon, ListIcon, SearchIcon, UserIcon } from '@repo/design-system/icons';
+import { HomeIcon, ListIcon, SearchIcon } from '@repo/design-system/icons';
 import { Link } from '@stackflow/link/future';
 
+import { MyPageLink } from '../MyPage/MyPageLink';
 import { cn } from '@/utils/cn';
 
 type Tab = 'home' | 'search' | 'reservation' | 'mypage';
@@ -33,12 +34,12 @@ const BottomTab = ({ currentTab }: BottomTabProps) => {
           <BottomTabLabel>예약/웨이팅</BottomTabLabel>
         </Link>
       </BottomTabItem>
-      <BottomTabItem isActive={currentTab === 'mypage'}>
-        <Link activityName='MyPageTab' activityParams={{}} replace animate={false}>
-          <UserIcon size={24} />
-          <BottomTabLabel>마이페이지</BottomTabLabel>
-        </Link>
-      </BottomTabItem>
+
+      <MyPageLink
+        BottomTabItem={BottomTabItem}
+        BottomTabLabel={BottomTabLabel}
+        isActive={currentTab === 'mypage'}
+      />
     </nav>
   );
 };
