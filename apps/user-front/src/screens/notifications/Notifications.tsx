@@ -26,7 +26,7 @@ export const NotificationListScreen = () => {
 
 const NotificationErrorFallback = ({ reset }: ErrorBoundaryFallbackProps) => {
   return (
-    <ErrorFallback className='mt-[240px]'>
+    <ErrorFallback className='flex-1'>
       <ErrorFallback.Title>알림 목록을 불러오지 못했어요.</ErrorFallback.Title>
       <ErrorFallback.Actions>
         <ErrorFallback.Action onClick={reset}>새로고침</ErrorFallback.Action>
