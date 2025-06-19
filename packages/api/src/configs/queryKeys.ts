@@ -6,6 +6,10 @@ export const queryKeys = {
       storeInfo: 'storeStoreInfo',
       stores: 'storeStores',
     },
+    reward: {
+      log: 'getLog',
+      coupons: 'getCoupons',
+    },
   },
   ceo: {
     devices: 'ceoDevices',
