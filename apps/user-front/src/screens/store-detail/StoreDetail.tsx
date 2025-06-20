@@ -1,6 +1,6 @@
 'use client';
 
-import { Button, ChipTabs, NavButton } from '@repo/design-system/components/b2c';
+import { Button, ChipTabs, NavButton, Skeleton } from '@repo/design-system/components/b2c';
 import {
   BookmarkIcon,
   ChevronLeftIcon,
@@ -25,6 +25,8 @@ const mock = {
 } as const;
 
 export const StoreDetailScreen: ActivityComponentType<'StoreDetailScreen'> = () => {
+  const flow = useFlow();
+
   const params = {
     storeId: 1,
   };
@@ -32,6 +34,10 @@ export const StoreDetailScreen: ActivityComponentType<'StoreDetailScreen'> = () 
   return (
     <Screen>
       <DefaultErrorBoundary>
+        <NavButton className='z-10 absolute left-grid-margin top-3' onClick={() => flow.pop()}>
+          <ChevronLeftIcon className='size-7' />
+        </NavButton>
+
         <Suspense clientOnly fallback={<StoreDetailLoadingFallback />}>
           <StoreDetail storeId={params.storeId} />
         </Suspense>
@@ -45,21 +51,15 @@ type StoreDetailProps = {
 };
 
 const StoreDetail = ({ storeId }: StoreDetailProps) => {
-  const flow = useFlow();
-
   const { data: store } = useGetStoreDetail(storeId);
 
   return (
     <div className='flex flex-col pb-[120px]'>
-      <div className='h-[280px] bg-gray-300 relative flex flex-col shrink-0'>
-        <NavButton className='absolute left-grid-margin top-3' onClick={() => flow.pop()}>
-          <ChevronLeftIcon className='size-7' />
-        </NavButton>
-        {/* TODO: 공유 기능 추가 */}
-        <NavButton className='absolute right-grid-margin top-3'>
-          <ShareIcon className='size-5' />
-        </NavButton>
-      </div>
+      {/* TODO: 공유 기능 추가 */}
+      <NavButton className='z-10 absolute right-grid-margin top-3'>
+        <ShareIcon className='size-5' />
+      </NavButton>
+      <div className='h-[280px] bg-gray-300 relative flex flex-col shrink-0' />
       <Section className='pt-[30px] pb-[20px]'>
         <span className='flex items-center body-5 text-gray-5'>
           {store.address}
@@ -197,5 +197,27 @@ const ColorClockIcon = (props: IconProps) => {
 };
 
 const StoreDetailLoadingFallback = () => {
-  return <div></div>;
+  return (
+    <div className='flex flex-col'>
+      <Skeleton shape='square' height={280} />
+      <div className='flex flex-col px-grid-margin'>
+        <Skeleton shape='text' className='mt-8' width={160} height={16} />
+        <Skeleton shape='text' className='mt-4' width={240} height={36} />
+        <Skeleton shape='text' className='mt-4' width={100} height={20} />
+        <div className='mt-14 flex justify-around'>
+          {Array.from({ length: 3 }).map((_, index) => (
+            <div key={index} className='flex flex-col items-center'>
+              <Skeleton shape='circle' width={40} height={40} />
+              <Skeleton shape='text' className='mt-2' width={60} height={12} />
+              <Skeleton shape='text' className='mt-1' width={40} height={12} />
+            </div>
+          ))}
+        </div>
+        <Skeleton shape='text' className='mt-11' width={320} height={32} />
+        <Skeleton shape='text' className='mt-8' width={280} height={20} />
+        <Skeleton shape='text' className='mt-2' width={200} height={20} />
+        <Skeleton shape='text' className='mt-2' width={160} height={20} />
+      </div>
+    </div>
+  );
 };
