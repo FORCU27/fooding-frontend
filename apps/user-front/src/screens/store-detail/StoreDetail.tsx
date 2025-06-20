@@ -11,7 +11,7 @@ import {
 import { ActivityComponentType, useFlow } from '@stackflow/react/future';
 import { Suspense } from '@suspensive/react';
 
-import { StoreDetailHomeTab } from './tabs/Home';
+import { StoreDetailHomeTab } from './components/tabs/Home';
 import { DefaultErrorBoundary } from '@/components/Layout/DefaultErrorBoundary';
 import { Screen } from '@/components/Layout/Screen';
 import { Section } from '@/components/Layout/Section';
@@ -32,7 +32,7 @@ export const StoreDetailScreen: ActivityComponentType<'StoreDetailScreen'> = () 
   return (
     <Screen>
       <DefaultErrorBoundary>
-        <Suspense clientOnly>
+        <Suspense clientOnly fallback={<StoreDetailLoadingFallback />}>
           <StoreDetail storeId={params.storeId} />
         </Suspense>
       </DefaultErrorBoundary>
@@ -194,4 +194,8 @@ const ColorClockIcon = (props: IconProps) => {
       />
     </svg>
   );
+};
+
+const StoreDetailLoadingFallback = () => {
+  return <div></div>;
 };
