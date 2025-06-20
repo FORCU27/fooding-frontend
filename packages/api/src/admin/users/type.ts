@@ -1,4 +1,4 @@
-import { z } from 'zod';
+import { z } from 'zod/v4';
 
 import { PageResponse } from '../../shared';
 
@@ -12,7 +12,7 @@ export const AdminUserResponseSchema = z.object({
   phoneNumber: z.string().nullable(),
   gender: z.string(),
   provider: z.string(),
-  createdAt: z.string(),
+  createdAt: z.iso.datetime(),
   lastLoggedInAt: z.string().nullable(),
 });
 
