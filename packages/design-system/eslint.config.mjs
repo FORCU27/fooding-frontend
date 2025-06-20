@@ -1,7 +1,7 @@
-import eslintConfig from '@repo/eslint-config/next';
+import { config } from '@repo/eslint-config/base';
 
 export default [
-  ...eslintConfig,
+  ...config,
   {
     ignores: ['**/*.stories.tsx'],
   },

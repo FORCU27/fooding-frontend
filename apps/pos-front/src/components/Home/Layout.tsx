@@ -1,10 +1,10 @@
 'use client';
 
+import { usePathname } from 'next/navigation';
 import React, { useState } from 'react';
 
 import AppBarSection from './AppBarSection';
 import DrawerSection from './DrawerSection';
-import { usePathname } from 'next/navigation';
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -55,7 +55,7 @@ const Layout = ({ children }: LayoutProps) => {
 
   return (
     <div className='flex'>
-      <AppBarSection handleDrawerToggle={handleDrawerToggle} />
+      <AppBarSection />
       <DrawerSection
         mobileOpen={mobileOpen}
         handleDrawerToggle={handleDrawerToggle}
