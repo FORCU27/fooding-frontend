@@ -12,6 +12,7 @@ import { ActivityComponentType, useFlow } from '@stackflow/react/future';
 import { Suspense } from '@suspensive/react';
 
 import { StoreDetailHomeTab } from './components/tabs/Home';
+import { LoadingToggle } from '@/components/Devtool/LoadingToggle';
 import { DefaultErrorBoundary } from '@/components/Layout/DefaultErrorBoundary';
 import { Screen } from '@/components/Layout/Screen';
 import { Section } from '@/components/Layout/Section';
@@ -37,10 +38,11 @@ export const StoreDetailScreen: ActivityComponentType<'StoreDetailScreen'> = () 
         <NavButton className='z-10 absolute left-grid-margin top-3' onClick={() => flow.pop()}>
           <ChevronLeftIcon className='size-7' />
         </NavButton>
-
-        <Suspense clientOnly fallback={<StoreDetailLoadingFallback />}>
-          <StoreDetail storeId={params.storeId} />
-        </Suspense>
+        <LoadingToggle fallback={<StoreDetailLoadingFallback />}>
+          <Suspense clientOnly fallback={<StoreDetailLoadingFallback />}>
+            <StoreDetail storeId={params.storeId} />
+          </Suspense>
+        </LoadingToggle>
       </DefaultErrorBoundary>
     </Screen>
   );
