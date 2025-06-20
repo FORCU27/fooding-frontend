@@ -21,7 +21,7 @@ export const AuthLoginUserSchema = z.object({
   privacyPolicyAgreed: z.boolean(),
   marketingConsent: z.boolean(),
   lastLoggedInAt: z.string().nullable(),
-  createdAt: z.iso.datetime(),
+  createdAt: z.iso.datetime({ local: true }),
   updatedAt: z.string(),
 });
 export type AuthLoginUser = z.infer<typeof AuthLoginUserSchema>;

@@ -12,7 +12,7 @@ export const AdminUserResponseSchema = z.object({
   phoneNumber: z.string().nullable(),
   gender: z.string(),
   provider: z.string(),
-  createdAt: z.iso.datetime(),
+  createdAt: z.iso.datetime({ local: true }),
   lastLoggedInAt: z.string().nullable(),
 });
 
