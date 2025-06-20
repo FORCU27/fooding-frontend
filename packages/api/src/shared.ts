@@ -1,6 +1,6 @@
 import axios, { AxiosInstance, AxiosRequestConfig } from 'axios';
 import Cookies from 'js-cookie';
-import z from 'zod';
+import { z } from 'zod/v4';
 
 import { STORAGE_KEYS } from './configs/storageKeys';
 
