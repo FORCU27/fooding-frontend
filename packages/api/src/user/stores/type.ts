@@ -115,8 +115,8 @@ export const GetStoreReviewListResponse = PageResponse(
     score: z.number(),
     purpose: z.string(),
     likeCount: z.number(),
-    createdAt: z.iso.datetime(),
-    updatedAt: z.iso.datetime(),
+    createdAt: z.iso.datetime({ local: true }),
+    updatedAt: z.iso.datetime({ local: true }),
   }),
 );
 
