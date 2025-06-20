@@ -17,7 +17,7 @@ export const LoginBottomSheet = ({ isOpen, onOpenChange }: LoginBottomSheetProps
   return (
     <FullscreenBottomSheet isOpen={isOpen} onOpenChange={onOpenChange}>
       <FullscreenBottomSheet.Content>
-        <Login />
+        <Login onSuccess={() => onOpenChange(false)} />
       </FullscreenBottomSheet.Content>
     </FullscreenBottomSheet>
   );

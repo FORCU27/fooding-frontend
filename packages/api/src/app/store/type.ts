@@ -1,4 +1,4 @@
-import { z } from 'zod';
+import { z } from 'zod/v4';
 
 import { ApiResponse, PageInfo } from '../../shared';
 
@@ -46,7 +46,7 @@ export const StoreServiceItem = z.object({
   storeName: z.string(),
   type: z.string(),
   activation: z.boolean(),
-  createdAt: z.string(),
+  createdAt: z.iso.datetime(),
   endedAt: z.string().nullable(),
 });
 
