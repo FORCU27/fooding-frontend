@@ -1,6 +1,29 @@
 import { z } from 'zod/v4';
 
-import { ApiResponse, PageResponse } from '../../shared';
+import { ApiResponse, PageResponse, SortDirection, SortType } from '../../shared';
+
+export const VISIT_PURPOSES = ['MEETING', 'DATE', 'FRIEND', 'FAMILY', 'BUSINESS', 'PARTY'] as const;
+export type VisitPurpose = (typeof VISIT_PURPOSES)[number];
+
+export const PARKING_TYPES = ['PAID', 'FREE'] as const;
+export type ParkingType = (typeof PARKING_TYPES)[number];
+
+export const PARKING_CHARGE_TYPES = ['HOURLY', 'FLAT_RATE'] as const;
+export type ParkingChargeType = (typeof PARKING_CHARGE_TYPES)[number];
+
+export const REGULAR_HOLIDAY_TYPES = ['WEEKLY', 'MONTHLY'] as const;
+export type RegularHolidayType = (typeof REGULAR_HOLIDAY_TYPES)[number];
+
+export const DAY_OF_WEEK = [
+  'MONDAY',
+  'TUESDAY',
+  'WEDNESDAY',
+  'THURSDAY',
+  'FRIDAY',
+  'SATURDAY',
+  'SUNDAY',
+] as const;
+export type DayOfWeek = (typeof DAY_OF_WEEK)[number];
 
 export type Store = z.infer<typeof Store>;
 export const Store = z.object({
@@ -17,6 +40,13 @@ export const Store = z.object({
   isFinished: z.boolean().optional(),
 });
 
+const StoreImage = z.object({
+  id: z.number(),
+  imageUrl: z.string(),
+  sortOrder: z.number(),
+  tags: z.array(z.string()).optional(),
+});
+
 export type StoreInfo = z.infer<typeof StoreInfo>;
 export const StoreInfo = Store.extend({
   address: z.string(),
@@ -31,29 +61,22 @@ export const StoreInfo = Store.extend({
   isTakeOut: z.boolean(),
   latitude: z.number(),
   longitude: z.number(),
-  images: z
-    .object({
-      id: z.number(),
-      imageUrl: z.string(),
-      sortOrder: z.number(),
-      tags: z.string(), // "가,나,다"
-    })
-    .array(),
+  images: z.array(StoreImage).optional(),
 });
 
 export type GetStoreListParams = {
   searchString?: string;
   pageNum?: number;
   pageSize?: number;
-  sortType?: string;
-  sortDirection?: string;
+  sortType?: SortType;
+  sortDirection?: SortDirection;
 };
 
 export type GetStoreReviewListRequest = {
   id: number;
   params: {
-    sortType: 'RECENT';
-    sortDirection: 'DESCENDING';
+    sortType: SortType;
+    sortDirection: SortDirection;
   };
 };
 
@@ -68,14 +91,7 @@ export type GetStoreImageListRequest = {
 };
 
 export type GetStoreImageListResponse = z.infer<typeof GetStoreImageListResponse>;
-export const GetStoreImageListResponse = PageResponse(
-  z.object({
-    id: z.number(),
-    imageUrl: z.string(),
-    sortOrder: z.number(),
-    tags: z.string(), // "가,나,다"
-  }),
-);
+export const GetStoreImageListResponse = PageResponse(StoreImage);
 
 export type GetStoreListResponse = z.infer<typeof GetStoreListResponse>;
 export const GetStoreListResponse = PageResponse(Store);
@@ -110,7 +126,7 @@ export const GetStoreReviewListResponse = PageResponse(
   z.object({
     reviewId: z.number(),
     nickname: z.string(),
-    imageUrls: z.string(),
+    imageUrl: z.string(),
     content: z.string(),
     score: z.number(),
     purpose: z.string(),
@@ -125,15 +141,15 @@ export const GetStoreOperatingHoursResponse = ApiResponse(
   z.object({
     id: z.number(),
     hasHoliday: z.boolean(),
-    regularHolidayType: z.enum(['WEEKLY']),
-    regularHoliday: z.enum(['MONDAY']),
-    closedNationalHolidays: z.string(), // "[가,나,다]"
-    customHolidays: z.string(), // "[YYYY-MM-DD, YYYY-MM-DD, YYYY-MM-DD]"
+    regularHolidayType: z.enum(REGULAR_HOLIDAY_TYPES),
+    regularHoliday: z.enum(DAY_OF_WEEK),
+    closedNationalHolidays: z.array(z.string()),
+    customHolidays: z.array(z.iso.date()),
     operatingNotes: z.string(),
     dailyOperatingTimes: z.array(
       z.object({
         id: z.number(),
-        dayOfWeek: z.enum(['MONDAY']),
+        dayOfWeek: z.enum(DAY_OF_WEEK),
         openTime: z.iso.time(),
         closeTime: z.iso.time(),
         breakStartTime: z.iso.time(),
@@ -146,12 +162,12 @@ export const GetStoreOperatingHoursResponse = ApiResponse(
 export const GetStoreAdditionalInfoResponse = ApiResponse(
   z.object({
     id: z.number(),
-    links: z.string(), // "[가, 나, 다]"
-    facilities: z.string(), // "[가, 나, 다]"
-    paymentMethods: z.string(), // "[가, 나, 다]"
+    links: z.array(z.string()),
+    facilities: z.array(z.string()),
+    paymentMethods: z.array(z.string()),
     parkingAvailable: z.boolean(),
-    parkingType: z.enum(['PAID']),
-    parkingChargeType: z.enum(['HOURLY']),
+    parkingType: z.enum(PARKING_TYPES),
+    parkingChargeType: z.enum(PARKING_CHARGE_TYPES),
     parkingBasicTimeMinutes: z.number(),
     parkingBasicFee: z.number(),
     parkingExtraMinutes: z.number(),
@@ -164,7 +180,7 @@ export type CreateStoreReviewBody = {
   storeId: number;
   userId: number;
   content: string;
-  visitPurpose: 'MEETING';
+  visitPurpose: VisitPurpose;
   total: number;
   taste: number;
   mood: number;
