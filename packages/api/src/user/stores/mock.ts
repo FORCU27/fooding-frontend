@@ -114,7 +114,7 @@ export const mockStoreReviewListResponse: GetStoreReviewListResponse = {
         reviewId: 1,
         content:
           '잘먹었습니다. 감사합니다. 단골인데 항상 챙겨주시고 사장님도 너무 친절해요~^^ 어쩌구 저쩌구 너무 맛잇고 맛좋코 또 오고싶고 어쩌ㅇ구쩌구...',
-        imageUrls: 'https://example.com/image1.jpg',
+        imageUrl: 'https://example.com/image1.jpg',
         likeCount: 10,
         nickname: '민수엄마',
         purpose: '데이트',
