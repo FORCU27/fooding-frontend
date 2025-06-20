@@ -8,7 +8,7 @@ import {
   SettingIcon,
   TicketIcon,
 } from '@repo/design-system/icons';
-import { ActivityComponentType } from '@stackflow/react/future';
+import { ActivityComponentType, useFlow } from '@stackflow/react/future';
 
 import BottomTab from '@/components/Layout/BottomTab';
 import { Header } from '@/components/Layout/Header';
@@ -23,8 +23,7 @@ export const MyPageTab: ActivityComponentType<'MyPageTab'> = () => {
   const handleLogoutClick = async () => {
     logout();
 
-    const currentPath = window.location.pathname;
-    window.location.href = `/login?returnTo=${encodeURIComponent(currentPath)}`;
+    location.reload();
   };
 
   return (
@@ -39,6 +38,7 @@ export const MyPageTab: ActivityComponentType<'MyPageTab'> = () => {
 
 const Content = () => {
   const { user } = useAuth();
+  const flow = useFlow();
 
   const { data: stores } = useGetStoreList({
     pageNum: 1,
@@ -56,7 +56,7 @@ const Content = () => {
               <FoodingIcon fillOpacity={0.1} />
             </div>
             <div className='flex-col mx-5 justify-center items-center w-[100px]'>
-              <p className='subtitle-4 mb-2'>{user?.nickname}</p>
+              <p className='subtitle-4 mb-2'>{user?.nickname ? user?.nickname : user?.email}</p>
               <div className='flex justify-between'>
                 <p className='text-gray-5 body-8'>팔로워 0</p>
                 <hr className='w-[1px] h-[14px] bg-gray-2 text-gray-2' />
@@ -90,10 +90,18 @@ const Content = () => {
           </div>
         </div>
       </div>
-      {stores?.data && (
+      {stores && (
         <div className='mt-3'>
-          <RestaurantsListSection items={stores?.data.list} subtitle='찜해둔 식당' />
-          <RestaurantsListSection items={stores?.data.list} subtitle='최근 본 식당' />
+          <RestaurantsListSection
+            items={stores.data.list}
+            subtitle='찜해둔 식당'
+            onClickTotalBtn={() => flow.push('BookmarkListScreen', {})}
+          />
+          <RestaurantsListSection
+            items={stores.data.list}
+            subtitle='최근 본 식당'
+            onClickTotalBtn={() => flow.push('MyPageTab', {})}
+          />
         </div>
       )}
     </div>

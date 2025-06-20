@@ -25,6 +25,7 @@ export const LoginBottomSheet = ({ isOpen, onOpenChange }: LoginBottomSheetProps
 
 type LoginBottomSheetContextValue = {
   open: () => void;
+  close: () => void;
   onOpenChange: (isOpen: boolean) => void;
   isOpen: boolean;
 };
@@ -45,8 +46,12 @@ export const LoginBottomSheetProvider = ({ children }: { children: React.ReactNo
     setIsOpen(true);
   };
 
+  const close = () => {
+    setIsOpen(false);
+  };
+
   return (
-    <LoginBottomSheetContext value={{ isOpen, onOpenChange, open }}>
+    <LoginBottomSheetContext value={{ isOpen, onOpenChange, open, close }}>
       {children}
       <LoginBottomSheet isOpen={isOpen} onOpenChange={onOpenChange} />
     </LoginBottomSheetContext>

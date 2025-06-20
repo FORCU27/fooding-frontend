@@ -17,10 +17,14 @@ function Header() {
         <SearchInput.Button />
       </SearchInput.Container>
       <div className='flex justify-between gap-4'>
-        <BookmarkIcon />
+        <AuthGuard>
+          <button onClick={() => push('BookmarkListScreen', {})}>
+            <BookmarkIcon className='cursor-pointer' />
+          </button>
+        </AuthGuard>
         <AuthGuard>
           <button onClick={() => push('NotificationListScreen', {})}>
-            <BellIcon />
+            <BellIcon className='cursor-pointer' />
           </button>
         </AuthGuard>
       </div>
