@@ -1,6 +1,6 @@
 import axios, { AxiosInstance, AxiosRequestConfig } from 'axios';
 import Cookies from 'js-cookie';
-import z from 'zod';
+import { z } from 'zod/v4';
 
 import { STORAGE_KEYS } from './configs/storageKeys';
 
@@ -106,3 +106,17 @@ export const PageResponse = <TListItem extends z.ZodType>(listItem: TListItem) =
       pageInfo: PageInfo,
     }),
   );
+
+export const SORT_TYPES = [
+  'RECENT',
+  'AVERAGE_RATING',
+  'VISIT',
+  'REVIEW',
+  'RECENT',
+  'AVERAGE_RATING',
+  'POPULARITY',
+] as const;
+export type SortType = (typeof SORT_TYPES)[number];
+
+export const SORT_DIRECTIONS = ['ASCENDING', 'DESCENDING'] as const;
+export type SortDirection = (typeof SORT_DIRECTIONS)[number];

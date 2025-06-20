@@ -10,3 +10,4 @@ export * from './SearchInput';
 export * from './ErrorFallback';
 export * from './Skeleton';
 export * from './FullscreenBottomSheet';
+export * from './EmptyState';

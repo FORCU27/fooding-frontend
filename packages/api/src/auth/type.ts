@@ -1,4 +1,4 @@
-import z from 'zod';
+import { z } from 'zod/v4';
 
 import { ApiResponse } from '../shared';
 
@@ -21,7 +21,7 @@ export const AuthLoginUserSchema = z.object({
   privacyPolicyAgreed: z.boolean(),
   marketingConsent: z.boolean(),
   lastLoggedInAt: z.string().nullable(),
-  createdAt: z.string(),
+  createdAt: z.iso.datetime({ local: true }),
   updatedAt: z.string(),
 });
 export type AuthLoginUser = z.infer<typeof AuthLoginUserSchema>;

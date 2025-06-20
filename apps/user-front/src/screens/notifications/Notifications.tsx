@@ -1,6 +1,7 @@
 'use client';
 
 import { ErrorFallback } from '@repo/design-system/components/b2c';
+import { ActivityComponentType } from '@stackflow/react/future';
 import { ErrorBoundary, ErrorBoundaryFallbackProps, Suspense } from '@suspensive/react';
 import { QueryErrorResetBoundary } from '@tanstack/react-query';
 
@@ -8,7 +9,7 @@ import { NotificationList } from './components/NotificationList';
 import { Header } from '@/components/Layout/Header';
 import { Screen } from '@/components/Layout/Screen';
 
-export const NotificationListScreen = () => {
+export const NotificationListScreen: ActivityComponentType<'NotificationListScreen'> = () => {
   return (
     <Screen header={<Header title='알림' left={<Header.Back />} />}>
       <QueryErrorResetBoundary>

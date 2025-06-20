@@ -11,7 +11,7 @@
     "type-check:watch": "tsc --noEmit --watch"
   },
   "dependencies": {
-    "@hookform/resolvers": "^5.0.1",
+    "@hookform/resolvers": "^5.1.0",
     "@tanstack/react-query": "^5.74.3",
     "axios": "^1.8.4",
     "clsx": "^2.1.1",

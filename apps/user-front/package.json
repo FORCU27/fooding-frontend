@@ -7,13 +7,14 @@
     "start": "next start",
     "format": "prettier --cache --write .",
     "lint": "next lint --max-warnings 0",
+    "lint:fix": "next lint --fix",
     "type-check": "tsc --noEmit",
     "type-check:watch": "tsc --noEmit --watch",
     "test": "vitest",
     "test:ci": "vitest run"
   },
   "dependencies": {
-    "@hookform/resolvers": "^5.0.1",
+    "@hookform/resolvers": "^5.1.0",
     "@repo/api": "workspace:*",
     "@repo/design-system": "workspace:*",
     "@stackflow/config": "^1.2.1",

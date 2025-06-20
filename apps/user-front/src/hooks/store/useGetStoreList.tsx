@@ -4,7 +4,7 @@ import { useQuery } from '@tanstack/react-query';
 
 export const useGetStoreList = (params: GetStoreListParams) => {
   return useQuery<GetStoreListResponse, Error>({
-    queryKey: [queryKeys.user.stores, params],
+    queryKey: [queryKeys.user.store.list, params],
     queryFn: async () => {
       const response = await storeApi.getStoreList(params);
       return response;

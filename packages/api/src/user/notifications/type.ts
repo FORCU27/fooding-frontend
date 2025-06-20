@@ -1,6 +1,6 @@
-import z from 'zod';
+import { z } from 'zod/v4';
 
-import { PageResponse } from '../../shared';
+import { PageResponse, SortDirection, SortType } from '../../shared';
 
 export const notificationCategories = ['EVENT', 'NOTICE', 'SERVICE'] as const;
 export const NotificationCategory = z.enum(notificationCategories);
@@ -19,8 +19,8 @@ export const Notification = z.object({
 export type GetNotificationListParams = {
   page: number;
   size: number;
-  sortType: 'RECENT';
-  sortDirection: 'DESCENDING';
+  sortType: SortType;
+  sortDirection: SortDirection;
 };
 
 export type GetNotificationListResponse = z.infer<typeof GetNotificationListResponse>;
