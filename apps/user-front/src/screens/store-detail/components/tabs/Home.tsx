@@ -90,16 +90,7 @@ export const StoreDetailHomeTab = ({ store }: StoreDetailHomeTabProps) => {
         {storeReviews.list.length > 0 && (
           <ul className='mt-6 flex gap-3 -mx-grid-margin overflow-x-auto scrollbar-hide px-grid-margin pb-8'>
             {storeReviews.list.map((review) => (
-              <ReviewCard
-                key={review.reviewId}
-                review={{
-                  nickname: review.nickname,
-                  imageUrl: review.imageUrls,
-                  content: review.content,
-                  score: review.score,
-                  createdAt: review.createdAt,
-                }}
-              />
+              <ReviewCard key={review.reviewId} review={review} />
             ))}
           </ul>
         )}
