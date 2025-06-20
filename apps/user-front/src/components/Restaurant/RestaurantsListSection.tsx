@@ -5,7 +5,7 @@ import { RestaurantCardSection } from './ResraurantCardSection';
 
 interface RestaurantsListSectionProps {
   subtitle: string;
-  onClickTotalBtn?: () => void;
+  onClickTotalBtn: () => void;
   items: Store[];
 }
 

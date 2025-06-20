@@ -90,15 +90,15 @@ const Content = () => {
           </div>
         </div>
       </div>
-      {stores?.data && (
+      {stores && (
         <div className='mt-3'>
           <RestaurantsListSection
-            items={stores?.data.list}
+            items={stores.data.list}
             subtitle='찜해둔 식당'
             onClickTotalBtn={() => flow.push('BookmarkListScreen', {})}
           />
           <RestaurantsListSection
-            items={stores?.data.list}
+            items={stores.data.list}
             subtitle='최근 본 식당'
             onClickTotalBtn={() => flow.push('MyPageTab', {})}
           />
