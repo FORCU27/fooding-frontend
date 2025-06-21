@@ -113,7 +113,7 @@ const Content = () => {
                         </div>
                       )}
                     </div>
-                    {store.isBookMarded ? (
+                    {store.isBookmarked ? (
                       <BookmarkIcon
                         className='absolute top-2 right-2'
                         color='var(--color-primary-pink)'

@@ -2,3 +2,7 @@
 
 @import '@repo/design-system/styles/shared.css';
 @import '@repo/design-system/styles/b2c.css';
+
+body {
+  @apply text-black bg-white;
+}
