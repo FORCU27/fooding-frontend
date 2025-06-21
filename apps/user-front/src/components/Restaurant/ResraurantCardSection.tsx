@@ -57,9 +57,6 @@ export const RestaurantCardSection = ({ items }: RestaurantCardSectionProps) => 
                   />
                 )}
               </div>
-              <div className='break-words line-clamp-2 subtitle-5 h-[45px] w-[144px]'>
-                {item.name}
-              </div>
               <div className='break-words line-clamp-2 subtitle-5 w-[144px]'>{item.name}</div>
               <div className='flex flex-col gap-1'>
                 <div className='subtitle-5 flex items-center gap-1 h-[17px]'>
