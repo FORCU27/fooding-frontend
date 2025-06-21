@@ -31,7 +31,7 @@ export const RestaurantCardSection = ({ items }: RestaurantCardSectionProps) => 
                     className='rounded-xl mb-4 object-center'
                   />
                 ) : (
-                  <div className='flex justify-center items-center bg-gray-1 w-[140px] h-[140px]'>
+                  <div className='flex justify-center items-center w-full h-full'>
                     <FoodingIcon width={58} height={72} color='rgba(17, 17, 17, 0.1)' />
                   </div>
                 )}
@@ -60,19 +60,20 @@ export const RestaurantCardSection = ({ items }: RestaurantCardSectionProps) => 
               <div className='break-words line-clamp-2 subtitle-5 h-[45px] w-[144px]'>
                 {item.name}
               </div>
-            </div>
-            <div className='flex flex-col gap-1'>
-              <div className='subtitle-5 flex items-center gap-1 h-[17px]'>
-                <StarIcon size={18} fill='#FFD83D' color='#FFD83D' />
-                <span className='text-[#FFD83D] subtitle-6'>{item.averageRating}</span>
-                <span className='body-6 text-gray-5'>({item.reviewCount})</span>
+              <div className='break-words line-clamp-2 subtitle-5 w-[144px]'>{item.name}</div>
+              <div className='flex flex-col gap-1'>
+                <div className='subtitle-5 flex items-center gap-1 h-[17px]'>
+                  <StarIcon size={18} fill='#FFD83D' color='#FFD83D' />
+                  <span className='text-[#FFD83D] subtitle-6'>{item.averageRating}</span>
+                  <span className='body-6 text-gray-5'>({item.reviewCount})</span>
+                </div>
+                <p className='body-8 text-gray-5'>
+                  {item.city.length >= 3 ? item.city.slice(0, 2) : item.city} •{' '}
+                  {item.estimatedWaitingTimeMinutes
+                    ? `예상 대기시간 ${item.estimatedWaitingTimeMinutes}분`
+                    : '바로 입장가능'}
+                </p>
               </div>
-              <p className='body-8 text-gray-5'>
-                {item.city.length >= 3 ? item.city.slice(0, 2) : item.city} •{' '}
-                {item.estimatedWaitingTimeMinutes
-                  ? `예상 대기시간 ${item.estimatedWaitingTimeMinutes}분`
-                  : '바로 입장가능'}
-              </p>
             </div>
           </li>
         ))}
