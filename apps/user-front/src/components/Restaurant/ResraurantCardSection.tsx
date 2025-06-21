@@ -40,18 +40,22 @@ export const RestaurantCardSection = ({ items }: RestaurantCardSectionProps) => 
                     <p className='subtitle-3 text-white'>영업 종료</p>
                   </div>
                 )}
-                <div className='absolute top-2 right-2 z-10'>
-                  {item.isBookmarked ? (
-                    <BookmarkIcon
-                      color='var(--color-primary-pink)'
-                      fill='var(--color-primary-pink)'
-                      size={24}
-                      cursor='pointer'
-                    />
-                  ) : (
-                    <BookmarkIcon color='white' size={24} cursor='pointer' />
-                  )}
-                </div>
+                {item.isBookmarked ? (
+                  <BookmarkIcon
+                    className='absolute top-2 right-2'
+                    color='var(--color-primary-pink)'
+                    fill='var(--color-primary-pink)'
+                    size={24}
+                    cursor='pointer'
+                  />
+                ) : (
+                  <BookmarkIcon
+                    className='absolute top-2 right-2'
+                    color='white'
+                    size={24}
+                    cursor='pointer'
+                  />
+                )}
               </div>
               <div className='break-words line-clamp-2 subtitle-5 w-[144px]'>{item.name}</div>
               <div className='flex flex-col gap-1'>
