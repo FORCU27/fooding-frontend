@@ -20,8 +20,18 @@ export const queryKeys = {
       infiniteList: 'notificationInfiniteList',
     },
     me: 'me',
-    stores: 'userStores',
-    storeInfo: 'userStoreInfo',
+    store: {
+      list: 'userStoreList',
+      detail: 'userStoreDetail',
+      menuList: 'userStoreMenuList',
+      reviewList: 'userStoreReviewList',
+      operatingHours: 'userStoreOperatingHours',
+      additionalInfo: 'userStoreAdditionalInfo',
+    },
+    storePost: {
+      list: 'userStorePostList',
+      detail: 'userStorePostDetail',
+    },
   },
   me: {
     user: 'meUser',

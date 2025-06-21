@@ -1,6 +1,6 @@
 import axios, { AxiosInstance, AxiosRequestConfig } from 'axios';
 import Cookies from 'js-cookie';
-import z from 'zod';
+import { z } from 'zod/v4';
 
 import { STORAGE_KEYS } from './configs/storageKeys';
 
@@ -107,36 +107,16 @@ export const PageResponse = <TListItem extends z.ZodType>(listItem: TListItem) =
     }),
   );
 
-export const Sort = z.object({
-  empty: z.boolean(),
-  sorted: z.boolean(),
-  unsorted: z.boolean(),
-});
+export const SORT_TYPES = [
+  'RECENT',
+  'AVERAGE_RATING',
+  'VISIT',
+  'REVIEW',
+  'RECENT',
+  'AVERAGE_RATING',
+  'POPULARITY',
+] as const;
+export type SortType = (typeof SORT_TYPES)[number];
 
-export const Pageable = z.object({
-  offset: z.number(),
-  sort: Sort,
-  paged: z.boolean(),
-  pageNumber: z.number(),
-  pageSize: z.number(),
-  unpaged: z.boolean(),
-});
-
-export const PaginatedResponse = <T extends z.ZodTypeAny>(item: T) =>
-  z.object({
-    totalPages: z.number(),
-    totalElements: z.number(),
-    size: z.number(),
-    content: z.array(item),
-    number: z.number(),
-    sort: Sort,
-    numberOfElements: z.number(),
-    pageable: Pageable,
-    first: z.boolean(),
-    last: z.boolean(),
-    empty: z.boolean(),
-  });
-
-export type PaginatedResponseType<T extends z.ZodTypeAny> = z.infer<
-  ReturnType<typeof PaginatedResponse<T>>
->;
+export const SORT_DIRECTIONS = ['ASCENDING', 'DESCENDING'] as const;
+export type SortDirection = (typeof SORT_DIRECTIONS)[number];

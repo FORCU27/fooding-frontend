@@ -11,6 +11,7 @@ export default [
     rules: {
       ...pluginNext.configs.recommended.rules,
       ...pluginNext.configs["core-web-vitals"].rules,
+      "react/prop-types": "off",
     },
   },
 ];

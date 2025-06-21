@@ -22,3 +22,8 @@ export { default as SettingIcon } from './SettingIcon';
 export { default as FoodingIcon } from './FoodingIcon';
 export { default as TicketIcon } from './TicketIcon';
 export { default as GiftIcon } from './GiftIcon';
+export { default as ClockIcon } from './ClockIcon';
+export { default as PhoneIcon } from './PhoneIcon';
+export { default as TrainIcon } from './TrainIcon';
+export { default as CompassIcon } from './CompassIcon';
+export { default as ShareIcon } from './ShareIcon';

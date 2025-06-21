@@ -2,7 +2,6 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
 import { JSX, useCallback, useEffect, useState } from 'react';
 
 import { AuthSocialLoginBody, SocialPlatform, socialPlatforms } from '@repo/api/auth';
@@ -13,6 +12,7 @@ import Cookies from 'js-cookie';
 
 import { useAuth } from '@/components/Provider/AuthProvider';
 import { env } from '@/configs/env';
+import { noop } from '@/utils/noop';
 
 const platformIcons: Record<SocialPlatform, JSX.Element> = {
   KAKAO: <KakaoIcon size={30} />,
@@ -61,12 +61,14 @@ const openSocialLoginPopup = (loginUrl: string) => {
   );
 };
 
-export const Login = () => {
+type LoginProps = {
+  onSuccess: () => void;
+};
+
+export const Login = ({ onSuccess = noop }: LoginProps) => {
   const [isLoading, setIsLoading] = useState(false);
-  const router = useRouter();
   const [recentProvider, setRecentProvider] = useState<string | null>(null);
 
-  const returnTo = '/';
   const { socialLogin } = useAuth();
 
   useEffect(() => {
@@ -122,7 +124,7 @@ export const Login = () => {
             sameSite: 'lax',
           });
 
-          router.push(returnTo);
+          onSuccess();
         } catch (error) {
           console.error('Social login failed:', error);
         } finally {
@@ -132,7 +134,7 @@ export const Login = () => {
 
       window.addEventListener('message', handleMessage);
     },
-    [returnTo, router, socialLogin],
+    [socialLogin, onSuccess],
   );
 
   const handleRecentProvider = (platform: string) => {
