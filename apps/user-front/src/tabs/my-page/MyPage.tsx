@@ -8,12 +8,36 @@ import {
   SettingIcon,
   TicketIcon,
 } from '@repo/design-system/icons';
+import { ActivityComponentType } from '@stackflow/react/future';
 
+import BottomTab from '@/components/Layout/BottomTab';
+import { Header } from '@/components/Layout/Header';
+import { Screen } from '@/components/Layout/Screen';
 import { useAuth } from '@/components/Provider/AuthProvider';
 import { RestaurantsListSection } from '@/components/Restaurant/RestaurantsListSection';
 import { useGetStoreList } from '@/hooks/store/useGetStoreList';
 
-export default function MyPage() {
+export const MyPageTab: ActivityComponentType<'MyPageTab'> = () => {
+  const { logout } = useAuth();
+
+  const handleLogoutClick = async () => {
+    logout();
+
+    const currentPath = window.location.pathname;
+    window.location.href = `/login?returnTo=${encodeURIComponent(currentPath)}`;
+  };
+
+  return (
+    <Screen
+      header={<Header title='마이페이지' right={<SettingIcon onClick={handleLogoutClick} />} />}
+      bottomTab={<BottomTab currentTab='mypage' />}
+    >
+      <Content />
+    </Screen>
+  );
+};
+
+const Content = () => {
   const { user } = useAuth();
 
   const { data: stores } = useGetStoreList({
@@ -23,37 +47,10 @@ export default function MyPage() {
     sortDirection: 'DESCENDING',
   });
 
-  const handleLogoutClick = async () => {
-    try {
-      const response = await fetch('/api/auth/logout', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
-
-      if (response.ok) {
-        const currentPath = window.location.pathname;
-        window.location.href = `/login?returnTo=${encodeURIComponent(currentPath)}`;
-      } else {
-        console.error('로그아웃 실패');
-      }
-    } catch (error) {
-      console.error('로그아웃 중 오류 발생:', error);
-    }
-  };
-
   return (
-    <main className='w-full overflow-hidden'>
-      <div className='flex-col bg-white/80 pb-5 p-grid-margin'>
-        <div className='flex justify-center items-center mb-5 relative'>
-          <p className='subtitle-1'>마이페이지</p>
-          <SettingIcon
-            className='absolute right-[20px] cursor-pointer'
-            onClick={handleLogoutClick}
-          />
-        </div>
-        <div className='flex justify-between'>
+    <div className='w-full overflow-hidden'>
+      <div className='flex-col bg-white/80 pb-5 py-grid-margin'>
+        <div className='flex justify-between px-grid-margin'>
           <div className='flex justify-center items-center'>
             <div className='flex justify-center items-center w-[64px] h-[64px] bg-gray-1 rounded-full'>
               <FoodingIcon fillOpacity={0.1} />
@@ -99,6 +96,6 @@ export default function MyPage() {
           <RestaurantsListSection items={stores?.data.list} subtitle='최근 본 식당' />
         </div>
       )}
-    </main>
+    </div>
   );
-}
+};

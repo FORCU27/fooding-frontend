@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react';
 
-import { useMarkNotificationsAsRead } from '@/services/notification';
+import { useMarkNotificationsAsRead } from '@/hooks/notification/useMarkNotificationAsRead';
 
 export const MarkAsRead = () => {
   const { mutate: markAsRead } = useMarkNotificationsAsRead();

@@ -1,9 +1,10 @@
 import { Notification } from '@repo/api/user';
+import { EmptyState } from '@repo/design-system/components/b2c';
 import { BellIcon, MessageAlertSquareIcon, StarIcon } from '@repo/design-system/icons';
 
 import { MarkAsRead } from './MarkAsRead';
 import { IntersectionObserver } from '@/components/IntersectionObserver';
-import { useInfiniteNotificationList } from '@/services/notification';
+import { useInfiniteNotificationList } from '@/hooks/notification/useInfiniteNotificationList';
 import { cn } from '@/utils/cn';
 import { formatDate } from '@/utils/date';
 
@@ -11,7 +12,7 @@ export const NotificationList = () => {
   const { notifications, fetchNextPage } = useInfiniteNotificationList();
 
   if (notifications.length === 0) {
-    return <NotificationEmptyState />;
+    return <EmptyState className='flex-1' title='알림이 아무것도 없어요.' />;
   }
 
   return (
@@ -63,13 +64,5 @@ const NotificationListItem = ({ notification }: NotificationListItemProps) => {
         <span className='text-gray-5 text-[14px]'>{formatDate(notification.sentAt)}</span>
       </div>
     </li>
-  );
-};
-
-const NotificationEmptyState = () => {
-  return (
-    <div className='flex justify-center items-center h-[560px]'>
-      <p className='text-gray-3'>알림이 아무것도 없어요.</p>
-    </div>
   );
 };

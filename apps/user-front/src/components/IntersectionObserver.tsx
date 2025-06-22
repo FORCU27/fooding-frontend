@@ -2,7 +2,7 @@
 
 import { useRef } from 'react';
 
-import { useIntersectionObserver } from '@/hooks/use-intersection-observer';
+import { useIntersectionObserver } from '@/hooks/useIntersectionObserver';
 
 interface IntersectionObserverProps {
   onIntersect: () => void;
