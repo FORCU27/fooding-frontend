@@ -3,7 +3,12 @@
 import Image from 'next/image';
 import React, { useState, useEffect } from 'react';
 
-import { GetWaitingDetailResponse, GetStoreWaitingOverview } from '@repo/api/app';
+import {
+  GetWaitingDetailResponse,
+  GetStoreWaitingOverviewResponse,
+  GetStoreWaitingOverviewType,
+  GetStoreWaitingOverviewResult,
+} from '@repo/api/app';
 import { storeApi, userApi } from '@repo/api/app';
 import { queryKeys } from '@repo/api/configs/query-keys';
 import { useQuery, useQueryClient, useMutation } from '@tanstack/react-query';
@@ -16,6 +21,7 @@ import FullScreenPanel from '@/components/FullScreenPanel';
 import Modal from '@/components/Modal';
 import { useStore } from '@/components/Provider/StoreClientProvider';
 import TermsAgreement from '@/components/TermsAgreement';
+import { C } from 'vitest/dist/chunks/reporters.d.C-cu31ET.js';
 
 const Logo = () => (
   <div className='absolute top-10 right-20'>
@@ -99,19 +105,19 @@ const WaitingInfo = () => (
   </div>
 );
 
-const WaitingStats = ({ waitingOverview }: { waitingOverview: GetStoreWaitingOverview[] }) => (
+const WaitingStats = ({ waitingOverview }: { waitingOverview?: GetStoreWaitingOverviewResult }) => (
   <div className='flex flex-row mt-12'>
     <div className='w-[250px] flex flex-col items-center'>
       <h3 className='subtitle-2-2 font-bold mb-4 mt-4'>현재 웨이팅</h3>
       <p className='text-[125px] font-bold text-primary-pink whitespace-nowrap'>
-        {waitingOverview?.waitingCount}
+        {waitingOverview?.waitingCount ?? 0}
         <span className='text-3xl ml-2'>팀</span>
       </p>
     </div>
     <div className='w-[250px] border-l border-dark flex flex-col items-center'>
       <h3 className='subtitle-2-2 font-bold mb-4 mt-4'>예상시간</h3>
       <p className='text-[125px] font-bold text-primary-pink whitespace-nowrap'>
-        {waitingOverview?.estimatedWaitingTimeMinutes}
+        {waitingOverview?.estimatedWaitingTimeMinutes ?? 0}
         <span className='text-3xl ml-2'>분</span>
       </p>
     </div>
@@ -136,12 +142,12 @@ const MainContent = ({
   waitingOverview,
 }: {
   onClick: () => void;
-  waitingOverview?: GetWaitingDetailResponse[];
+  waitingOverview?: GetStoreWaitingOverviewResult;
 }) => (
   <div className='flex-1 max-w-4xl'>
     <StoreName />
     <WaitingInfo />
-    <WaitingStats list={waitingOverview || []} />
+    <WaitingStats waitingOverview={waitingOverview} />
     <ActionButtons onClick={onClick} />
   </div>
 );
@@ -165,7 +171,7 @@ export default function WaitingPage() {
 
   const { mutate: submitWaiting, data: mutationResponse } = useMutation({
     mutationFn: (formData: WaitingRegisterData) =>
-      storeApi.createStoreWaiting({ body: formData }, Number(1)),
+      storeApi.createStoreWaiting({ body: formData }, storeId),
     onSuccess: () => {
       resetFormData();
       setIsModalOpen(false);
@@ -182,15 +188,16 @@ export default function WaitingPage() {
 
   const { data: waitingOverview } = useQuery({
     queryKey: [queryKeys.store.waiting, storeId, 'WAITING_OVERVIEW'],
-    queryFn: () => storeApi.getStoreWaitingOverview({ id: Number(storeId) }),
+    queryFn: () => storeApi.getStoreWaitingOverview({ id: storeId }),
+    enabled: !!storeId,
   });
 
-  const { data: waitingResponse } = useQuery({
-    queryKey: [queryKeys.store.waiting, storeId, 'WAITING'],
-    queryFn: () => storeApi.getStoreWaiting({ id: Number(1), status: 'WAITING' }),
-  });
+  // const { data: waitingResponse } = useQuery({
+  //   queryKey: [queryKeys.store.waiting, storeId, 'WAITING'],
+  //   queryFn: () => storeApi.getStoreWaiting({ id: Number(1), status: 'WAITING' }),
+  // });
 
-  const waitingList = waitingResponse?.data?.list || [];
+  // const waitingList = waitingResponse?.data?.list || [];
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [openTerms, setOpenTerms] = useState(false);
@@ -268,7 +275,7 @@ export default function WaitingPage() {
   return (
     <div className='flex h-screen border-l-20 border-primary-pink bg-primary-pink relative'>
       <div className='flex-[2] bg-white p-16 relative'>
-        <MainContent onClick={() => setIsModalOpen(true)} list={waitingOverview} />
+        <MainContent onClick={() => setIsModalOpen(true)} waitingOverview={waitingOverview?.data} />
       </div>
       <div className='flex-1 bg-primary-pink relative'>
         <Logo />
