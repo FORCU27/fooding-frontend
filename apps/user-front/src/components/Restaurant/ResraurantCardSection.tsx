@@ -33,7 +33,7 @@ export const RestaurantCardSection = ({ items }: RestaurantCardSectionProps) => 
                     <p className='subtitle-3 text-white'>영업 종료</p>
                   </div>
                 )}
-                {item.isBookMarded ? (
+                {item.isBookmarked ? (
                   <BookmarkIcon
                     className='absolute top-2 right-2'
                     color='var(--color-primary-pink)'
