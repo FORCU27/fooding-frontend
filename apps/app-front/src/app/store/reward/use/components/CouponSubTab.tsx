@@ -2,8 +2,10 @@ import { useRouter } from 'next/navigation';
 
 import clsx from 'clsx';
 
+import { RewardSubTabType } from '../../types';
+
 interface SubTabProps {
-  activeSubTab: string; // 'available' | 'used';
+  activeSubTab: RewardSubTabType;
 }
 
 const CouponSubTab = ({ activeSubTab }: SubTabProps) => {

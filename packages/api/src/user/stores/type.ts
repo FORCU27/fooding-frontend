@@ -137,42 +137,46 @@ export const GetStoreReviewListResponse = PageResponse(
 
 export type GetStoreOperatingHoursResponse = z.infer<typeof GetStoreOperatingHoursResponse>;
 export const GetStoreOperatingHoursResponse = ApiResponse(
-  z.object({
-    id: z.number(),
-    hasHoliday: z.boolean(),
-    regularHolidayType: z.enum(REGULAR_HOLIDAY_TYPES).optional(),
-    regularHoliday: z.enum(DAY_OF_WEEK).optional(),
-    closedNationalHolidays: z.array(z.string()).optional(),
-    customHolidays: z.array(z.iso.date()).optional(),
-    operatingNotes: z.string().optional(),
-    dailyOperatingTimes: z.array(
-      z.object({
-        id: z.number(),
-        dayOfWeek: z.enum(DAY_OF_WEEK),
-        openTime: z.iso.time().optional(),
-        closeTime: z.iso.time().optional(),
-        breakStartTime: z.iso.time().optional(),
-        breakEndTime: z.iso.time().optional(),
-      }),
-    ),
-  }),
+  z
+    .object({
+      id: z.number(),
+      hasHoliday: z.boolean(),
+      regularHolidayType: z.enum(REGULAR_HOLIDAY_TYPES).optional(),
+      regularHoliday: z.enum(DAY_OF_WEEK).optional(),
+      closedNationalHolidays: z.array(z.string()).optional(),
+      customHolidays: z.array(z.iso.date()).optional(),
+      operatingNotes: z.string().optional(),
+      dailyOperatingTimes: z.array(
+        z.object({
+          id: z.number(),
+          dayOfWeek: z.enum(DAY_OF_WEEK),
+          openTime: z.iso.time().optional(),
+          closeTime: z.iso.time().optional(),
+          breakStartTime: z.iso.time().optional(),
+          breakEndTime: z.iso.time().optional(),
+        }),
+      ),
+    })
+    .nullable(),
 );
 
 export const GetStoreAdditionalInfoResponse = ApiResponse(
-  z.object({
-    id: z.number(),
-    links: z.array(z.string()),
-    facilities: z.array(z.string()),
-    paymentMethods: z.array(z.string()).optional(),
-    parkingAvailable: z.boolean(),
-    parkingType: z.enum(PARKING_TYPES).optional(),
-    parkingChargeType: z.enum(PARKING_CHARGE_TYPES).optional(),
-    parkingBasicTimeMinutes: z.number().optional(),
-    parkingBasicFee: z.number().optional(),
-    parkingExtraMinutes: z.number().optional(),
-    parkingExtraFee: z.number().optional(),
-    parkingMaxDailyFee: z.number().optional(),
-  }),
+  z
+    .object({
+      id: z.number(),
+      links: z.array(z.string()).optional(),
+      facilities: z.array(z.string()),
+      paymentMethods: z.array(z.string()).optional(),
+      parkingAvailable: z.boolean(),
+      parkingType: z.enum(PARKING_TYPES).optional(),
+      parkingChargeType: z.enum(PARKING_CHARGE_TYPES).optional(),
+      parkingBasicTimeMinutes: z.number().optional(),
+      parkingBasicFee: z.number().optional(),
+      parkingExtraMinutes: z.number().optional(),
+      parkingExtraFee: z.number().optional(),
+      parkingMaxDailyFee: z.number().optional(),
+    })
+    .nullable(),
 );
 
 export type CreateStoreReviewBody = {

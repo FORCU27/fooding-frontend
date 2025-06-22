@@ -84,7 +84,7 @@ export const mockStoreByIdResponse: GetStoreByIdResponse = {
   data: {
     id: 1,
     name: '홍길동 식당',
-    mainImage: undefined,
+    mainImage: null,
     city: '합정',
     address: '서울특별시 마포구',
     category: '한식',
