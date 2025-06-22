@@ -3,7 +3,7 @@
 import Image from 'next/image';
 import React, { useState, useEffect } from 'react';
 
-import { GetWaitingDetailResponse } from '@repo/api/app';
+import { GetWaitingDetailResponse, GetStoreWaitingOverview } from '@repo/api/app';
 import { storeApi, userApi } from '@repo/api/app';
 import { queryKeys } from '@repo/api/configs/query-keys';
 import { useQuery, useQueryClient, useMutation } from '@tanstack/react-query';
@@ -99,19 +99,19 @@ const WaitingInfo = () => (
   </div>
 );
 
-const WaitingStats = ({ list }: { list: GetWaitingDetailResponse[] }) => (
+const WaitingStats = ({ waitingOverview }: { waitingOverview: GetStoreWaitingOverview[] }) => (
   <div className='flex flex-row mt-12'>
     <div className='w-[250px] flex flex-col items-center'>
       <h3 className='subtitle-2-2 font-bold mb-4 mt-4'>현재 웨이팅</h3>
       <p className='text-[125px] font-bold text-primary-pink whitespace-nowrap'>
-        {list?.length}
+        {waitingOverview?.waitingCount}
         <span className='text-3xl ml-2'>팀</span>
       </p>
     </div>
     <div className='w-[250px] border-l border-dark flex flex-col items-center'>
       <h3 className='subtitle-2-2 font-bold mb-4 mt-4'>예상시간</h3>
       <p className='text-[125px] font-bold text-primary-pink whitespace-nowrap'>
-        {list?.length * 1}
+        {waitingOverview?.estimatedWaitingTimeMinutes}
         <span className='text-3xl ml-2'>분</span>
       </p>
     </div>
@@ -133,15 +133,15 @@ const ActionButtons = ({ onClick }: { onClick: () => void }) => {
 
 const MainContent = ({
   onClick,
-  list,
+  waitingOverview,
 }: {
   onClick: () => void;
-  list?: GetWaitingDetailResponse[];
+  waitingOverview?: GetWaitingDetailResponse[];
 }) => (
   <div className='flex-1 max-w-4xl'>
     <StoreName />
     <WaitingInfo />
-    <WaitingStats list={list || []} />
+    <WaitingStats list={waitingOverview || []} />
     <ActionButtons onClick={onClick} />
   </div>
 );
@@ -165,7 +165,7 @@ export default function WaitingPage() {
 
   const { mutate: submitWaiting, data: mutationResponse } = useMutation({
     mutationFn: (formData: WaitingRegisterData) =>
-      storeApi.createStoreWaiting({ body: formData }, Number(storeId)),
+      storeApi.createStoreWaiting({ body: formData }, Number(1)),
     onSuccess: () => {
       resetFormData();
       setIsModalOpen(false);
@@ -187,7 +187,7 @@ export default function WaitingPage() {
 
   const { data: waitingResponse } = useQuery({
     queryKey: [queryKeys.store.waiting, storeId, 'WAITING'],
-    queryFn: () => storeApi.getStoreWaiting({ id: Number(storeId), status: 'WAITING' }),
+    queryFn: () => storeApi.getStoreWaiting({ id: Number(1), status: 'WAITING' }),
   });
 
   const waitingList = waitingResponse?.data?.list || [];
@@ -268,7 +268,7 @@ export default function WaitingPage() {
   return (
     <div className='flex h-screen border-l-20 border-primary-pink bg-primary-pink relative'>
       <div className='flex-[2] bg-white p-16 relative'>
-        <MainContent onClick={() => setIsModalOpen(true)} list={waitingList} />
+        <MainContent onClick={() => setIsModalOpen(true)} list={waitingOverview} />
       </div>
       <div className='flex-1 bg-primary-pink relative'>
         <Logo />

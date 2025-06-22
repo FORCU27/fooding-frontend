@@ -27,7 +27,7 @@ export const storeApi = {
   },
 
   getStoreWaitingOverview: async (params: { id: number }) => {
-    const response = await api.get(`/app/waitings/${params.id}/overview`);
+    const response = await api.get(`/app/waitings/stores/${params.id}/requests/overview`);
     return GetStoreWaitingOverviewResponse.parse(response);
   },
 
