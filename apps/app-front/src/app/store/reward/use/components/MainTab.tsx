@@ -4,10 +4,10 @@ import { useRouter } from 'next/navigation';
 
 import clsx from 'clsx';
 
-import { MainTabType } from '../page';
+import { RewardMainTabType } from '../../types';
 
 interface MainTabProps {
-  activeTab: MainTabType;
+  activeTab: RewardMainTabType;
 }
 
 const MainTab = ({ activeTab }: MainTabProps) => {

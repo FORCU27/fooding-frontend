@@ -1,6 +1,6 @@
-import { z } from 'zod';
+import { z } from 'zod/v4';
 
-import { ApiResponse, PageInfo, PaginatedResponse } from '../../shared';
+import { ApiResponse, PaginatedResponse, PageResponse } from '../../shared';
 
 export const BenefitType = z.enum(['DISCOUNT', 'GIFT']);
 export type BenefitType = z.infer<typeof BenefitType>;
@@ -19,14 +19,15 @@ export const UserCoupon = z.object({
   userId: z.number(),
   couponId: z.number(),
   storeId: z.number(),
-  nickname: z.string(),
+  nickname: z.string().nullable(),
   storeName: z.string(),
   name: z.string(),
-  conditions: z.string(),
+  conditions: z.string().nullable(),
   benefitType: BenefitType,
+  discountType: z.string(),
   discountValue: z.number(),
   used: z.boolean(),
-  usedAt: z.string(),
+  usedAt: z.string().nullable(),
   expiredOn: z.string(),
   createdDateAt: z.string(),
 });
@@ -44,13 +45,7 @@ export const RewardLog = z.object({
 });
 export type RewardLog = z.infer<typeof RewardLog>;
 
-export const UserCoupons = z.object({
-  list: z.array(UserCoupon),
-  pageInfo: PageInfo,
-});
-export type UserCoupons = z.infer<typeof UserCoupons>;
-
-export const UserCouponsResponse = ApiResponse(UserCoupons);
+export const UserCouponsResponse = PageResponse(UserCoupon);
 export type UserCouponsResponse = z.infer<typeof UserCouponsResponse>;
 
 export const UserRewardLogsResponse = ApiResponse(PaginatedResponse(RewardLog));
