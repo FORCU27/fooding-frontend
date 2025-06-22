@@ -141,8 +141,6 @@ const buttonVariants = tv({
 type ButtonProps = React.ComponentPropsWithRef<'button'> &
   VariantProps<typeof buttonVariants> & {
     asChild?: boolean;
-    action?: 'none' | 'press' | 'active';
-    area?: 'none' | 'waiting' | 'app' | 'reward';
     disabled?: boolean;
     loading?: boolean;
     icon?: React.ReactNode;
