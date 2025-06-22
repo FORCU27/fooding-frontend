@@ -1,6 +1,7 @@
 'use client';
 
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 
 import { Button, ChipTabs, ErrorFallback, Skeleton } from '@repo/design-system/components/b2c';
 import { BookmarkIcon, ChevronRightIcon, FoodingIcon, StarIcon } from '@repo/design-system/icons';
@@ -33,6 +34,8 @@ const Content = () => {
     sortType: 'RECENT',
     sortDirection: 'DESCENDING',
   });
+
+  const router = useRouter();
 
   if (isPending) {
     return <LoadingFallback />;
@@ -150,9 +153,23 @@ const Content = () => {
           </div>
         </div>
       </div>
-      <RestaurantsListSection subtitle='푸딩에서 인기 많은 식당이에요' items={stores.data.list} />
-      <RestaurantsListSection subtitle='새로 오픈했어요!' items={stores.data.list} />
-      <RestaurantsListSection subtitle='지금 바로 입장하실 수 있어요!' items={stores.data.list} />
+
+      {/* FIXME: 추후 router path 수정 */}
+      <RestaurantsListSection
+        subtitle='푸딩에서 인기 많은 식당이에요'
+        items={stores.data.list}
+        onClickTotalBtn={() => router.push('/')}
+      />
+      <RestaurantsListSection
+        subtitle='새로 오픈했어요!'
+        items={stores.data.list}
+        onClickTotalBtn={() => router.push('/')}
+      />
+      <RestaurantsListSection
+        subtitle='지금 바로 입장하실 수 있어요!'
+        items={stores.data.list}
+        onClickTotalBtn={() => router.push('/')}
+      />
     </div>
   );
 };
