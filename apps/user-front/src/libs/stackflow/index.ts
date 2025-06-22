@@ -5,6 +5,7 @@ import { basicUIPlugin } from '@stackflow/plugin-basic-ui';
 import { basicRendererPlugin } from '@stackflow/plugin-renderer-basic';
 import { stackflow } from '@stackflow/react/future';
 
+import { BookmarkListScreen } from '@/screens/bookmarks/Bookmarks';
 import { NotificationListScreen } from '@/screens/notifications/Notifications';
 import { StoreDetailScreen } from '@/screens/store-detail/StoreDetail';
 import { HomeTab } from '@/tabs/home/Home';
@@ -20,6 +21,7 @@ const config = defineConfig({
     { name: 'MyPageTab' },
     { name: 'NotificationListScreen' },
     { name: 'StoreDetailScreen' },
+    { name: 'BookmarkListScreen' },
   ],
 
   transitionDuration: 350,
@@ -35,6 +37,7 @@ export const { Stack } = stackflow({
     MyPageTab,
     NotificationListScreen,
     StoreDetailScreen,
+    BookmarkListScreen,
   },
   plugins: [
     basicRendererPlugin(),
@@ -52,5 +55,6 @@ declare module '@stackflow/config' {
     MyPageTab: object;
     NotificationListScreen: object;
     StoreDetailScreen: { storeId: number };
+    BookmarkListScreen: object;
   }
 }

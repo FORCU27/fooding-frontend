@@ -29,15 +29,14 @@ export type Store = z.infer<typeof Store>;
 export const Store = z.object({
   id: z.number(),
   name: z.string(),
-  mainImage: z.string().optional(),
+  mainImage: z.string().nullish(),
   city: z.string(),
   visitCount: z.number(),
   reviewCount: z.number(),
   averageRating: z.number(),
-  estimatedWaitingTimeMinutes: z.number().nullable(),
-  //임의
-  isBookmarked: z.boolean().optional(),
-  isFinished: z.boolean().optional(),
+  estimatedWaitingTimeMinutes: z.number().nullish(),
+  isBookmarked: z.boolean().nullable(),
+  isFinished: z.boolean().nullable(),
 });
 
 const StoreImage = z.object({
