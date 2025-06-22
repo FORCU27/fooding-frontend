@@ -4,8 +4,10 @@ import { useRouter } from 'next/navigation';
 
 import clsx from 'clsx';
 
+import { MainTabType } from '../page';
+
 interface MainTabProps {
-  activeTab: string; // 'coupon' | 'history';
+  activeTab: MainTabType;
 }
 
 const MainTab = ({ activeTab }: MainTabProps) => {
