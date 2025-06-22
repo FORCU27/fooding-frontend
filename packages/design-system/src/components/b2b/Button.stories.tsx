@@ -24,6 +24,9 @@ export const AppMedium: Story = {
         <Button area='app' size='medium' variant='active'>
           Botten
         </Button>
+        <Button area='app' size='medium' disabled>
+          Botten
+        </Button>
       </div>
     );
   },
@@ -37,6 +40,9 @@ export const AppLong: Story = {
           Botten
         </Button>
         <Button area='app' size='large' variant='black'>
+          Botten
+        </Button>
+        <Button area='app' size='large' variant='gray' disabled>
           Botten
         </Button>
       </div>
