@@ -19,10 +19,11 @@ import { noop } from '@/utils/noop';
 
 const mock = {
   location: '제주 제주시 서해안로 654 바다풍경 정육식당',
-  status: '영업중',
+  subwayLocation: '제주역에서 847m',
+  subwayNumber: 6,
   operatingHours: '매일 10:40 - 21:50',
   isFinished: false,
-};
+} as const;
 
 type StoreDetailHomeTabProps = {
   store: StoreInfo;
@@ -41,7 +42,6 @@ export const StoreDetailHomeTab = ({ store }: StoreDetailHomeTabProps) => {
         </span>
         <span className='body-6 flex items-center gap-[10px]'>
           <ClockIcon className='size-[18px] stroke-1' />
-          {}
           {!mock.isFinished && (
             <button className='flex items-center h-[26px] subtitle-7 text-white bg-gradient-to-r from-[#35FFBF] to-[#6CB8FF] rounded-full px-[10px]'>
               영엄중
@@ -78,7 +78,6 @@ export const StoreDetailHomeTab = ({ store }: StoreDetailHomeTabProps) => {
           </ul>
         )}
       </Section>
-      {/* TODO: 리뷰 목록 조회 기능 추가 */}
       <Section className='mt-[10px]'>
         <Section.Header>
           <Section.Title className='flex items-center gap-1'>
@@ -107,12 +106,12 @@ export const StoreDetailHomeTab = ({ store }: StoreDetailHomeTabProps) => {
         <div className='mt-3 flex flex-col gap-1'>
           <span className='body-6 flex items-center gap-[10px]'>
             <MarkPinIcon className='size-[18px] stroke-1' />
-            제주 제주시 서해안로 654 바다풍경 정육식당
+            {mock.location}
           </span>
           <span className='body-6 flex items-center'>
             <TrainIcon className='mr-[10px] size-[18px] stroke-1' />
-            <SubwayLineBadge className='mr-1' line={6} />
-            제주역에서 847m
+            <SubwayLineBadge className='mr-1' line={mock.subwayNumber} />
+            {mock.subwayLocation}
           </span>
         </div>
         <Button className='mt-5' variant='gray'>

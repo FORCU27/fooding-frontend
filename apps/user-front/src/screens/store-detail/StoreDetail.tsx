@@ -1,5 +1,6 @@
 'use client';
 
+import Image from 'next/image';
 import { useEffect, useRef, useState } from 'react';
 
 import { Button, ChipTabs, NavButton, Skeleton } from '@repo/design-system/components/b2c';
@@ -78,7 +79,7 @@ const StoreDetail = ({ storeId, showHeader }: StoreDetailProps) => {
       </NavButton>
       {(!store.images || store.images.length === 0) && <StoreImagePlaceholder />}
       {store.images && store.images.length > 0 && (
-        <Carousel images={store.images.map((image) => image.imageUrl)} />
+        <Carousel imageUrls={store.images.map((image) => image.imageUrl)} />
       )}
       <Section className='pt-[30px] pb-[20px]'>
         <span className='flex items-center body-5 text-gray-5'>
@@ -243,7 +244,7 @@ const StoreDetailLoadingFallback = () => {
 };
 
 type CarouselProps = {
-  images: string[];
+  imageUrls: string[];
 };
 
 // TODO: 등록된 가게 이미지가 없는 경우 플레이스홀더 이미지 추가
@@ -251,7 +252,7 @@ const StoreImagePlaceholder = () => {
   return <div className='h-[280px] bg-gray-1' />;
 };
 
-const Carousel = ({ images }: CarouselProps) => {
+const Carousel = ({ imageUrls }: CarouselProps) => {
   const [carouselRef, carousel] = useEmblaCarousel({
     loop: true,
   });
@@ -271,19 +272,21 @@ const Carousel = ({ images }: CarouselProps) => {
     <div className='relative' role='region' aria-roledescription='carousel'>
       <div ref={carouselRef} className='overflow-hidden'>
         <div className='flex'>
-          {Array.from({ length: images.length }).map((_, index) => (
+          {imageUrls.map((imageUrl, index) => (
             <div
               key={index}
               role='group'
               aria-roledescription='slide'
-              className='h-[280px] min-w-0 shrink-0 grow-0 basis-full bg-gray-1'
-            />
+              className='h-[280px] min-w-0 shrink-0 grow-0 basis-full relative'
+            >
+              <Image fill objectFit='cover' src={imageUrl} alt='메뉴 이미지' />
+            </div>
           ))}
         </div>
       </div>
       {currentIndex !== null && (
         <div className='absolute bottom-5 right-5 text-white text-xs p-[10px] flex justify-center items-center bg-black/60 rounded-[8px] h-7'>
-          {currentIndex} / {images.length}
+          {currentIndex} / {imageUrls.length}
         </div>
       )}
     </div>
