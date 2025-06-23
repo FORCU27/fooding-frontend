@@ -18,7 +18,7 @@ export const mockStoreListResponse: GetStoreListResponse = {
       {
         id: 1,
         name: '바다풍경 정육식당 흑돼지 용담탑동본점',
-        mainImage: undefined,
+        mainImage: null,
         averageRating: 4.9,
         city: '합정',
         estimatedWaitingTimeMinutes: 20,
@@ -30,7 +30,7 @@ export const mockStoreListResponse: GetStoreListResponse = {
       {
         id: 2,
         name: '엉터리 생고기 엉생 무한리필 아산테크노본점',
-        mainImage: undefined,
+        mainImage: null,
         averageRating: 4.9,
         city: '합정',
         estimatedWaitingTimeMinutes: 20,
@@ -42,7 +42,7 @@ export const mockStoreListResponse: GetStoreListResponse = {
       {
         id: 3,
         name: '민서네 김밥 홍대점',
-        mainImage: undefined,
+        mainImage: null,
         averageRating: 4.9,
         city: '합정',
         estimatedWaitingTimeMinutes: 20,
@@ -54,7 +54,7 @@ export const mockStoreListResponse: GetStoreListResponse = {
       {
         id: 4,
         name: '민서네 김밥 홍대점',
-        mainImage: undefined,
+        mainImage: null,
         averageRating: 4.9,
         city: '합정',
         estimatedWaitingTimeMinutes: 20,
@@ -66,7 +66,7 @@ export const mockStoreListResponse: GetStoreListResponse = {
       {
         id: 5,
         name: '민서네 김밥 홍대점',
-        mainImage: undefined,
+        mainImage: null,
         averageRating: 4.9,
         city: '합정',
         estimatedWaitingTimeMinutes: 20,
