@@ -1,5 +1,7 @@
 import { FoodingIcon, StarIcon } from '@repo/design-system/icons';
 
+import { formatRelativeTime } from '@/utils/date';
+
 type ReviewCardProps = {
   review: {
     nickname: string;
@@ -10,10 +12,10 @@ type ReviewCardProps = {
   };
 };
 
+// TODO: mock 데이터 제거
 const mock = {
   author: {
     reviewCount: 10,
-    followerCount: 207,
   },
 };
 
@@ -30,8 +32,6 @@ export const ReviewCard = ({ review }: ReviewCardProps) => {
             <span className='subtitle-3 text-black'>{review.nickname}</span>
             <span className='flex items-center mt-1 body-7 text-gray-5'>
               리뷰 {mock.author.reviewCount}
-              <span className='inline-flex mx-[5px] size-[2px] rounded-full bg-gray-5' />
-              팔로워 {mock.author.followerCount}
             </span>
           </div>
           <div className='flex flex-col justify-center items-end'>
@@ -39,8 +39,9 @@ export const ReviewCard = ({ review }: ReviewCardProps) => {
               <StarIcon className='size-[18px] stroke-fooding-yellow fill-fooding-yellow' />
               <span className='subtitle-6 text-fooding-yellow'>{review.score}</span>
             </div>
-            {/* TODO: 날짜 포맷팅 (ISO 8601 -> 1개월전) */}
-            <span className='mt-[10px] body-7 text-gray-5'>{review.createdAt}</span>
+            <span className='mt-[10px] body-7 text-gray-5'>
+              {formatRelativeTime(review.createdAt)}
+            </span>
           </div>
         </div>
         <p className='mt-4 body-3 text-black line-clamp-3'>{review.content}</p>

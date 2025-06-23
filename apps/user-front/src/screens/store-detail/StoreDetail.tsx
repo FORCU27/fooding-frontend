@@ -1,5 +1,7 @@
 'use client';
 
+import { useEffect, useRef, useState } from 'react';
+
 import { Button, ChipTabs, NavButton, Skeleton } from '@repo/design-system/components/b2c';
 import {
   BookmarkIcon,
@@ -10,15 +12,19 @@ import {
 } from '@repo/design-system/icons';
 import { ActivityComponentType, useFlow } from '@stackflow/react/future';
 import { Suspense } from '@suspensive/react';
+import useEmblaCarousel from 'embla-carousel-react';
 
 import { StoreDetailHomeTab } from './components/tabs/Home';
 import { LoadingToggle } from '@/components/Devtool/LoadingToggle';
 import { DefaultErrorBoundary } from '@/components/Layout/DefaultErrorBoundary';
+import { Header } from '@/components/Layout/Header';
 import { Screen } from '@/components/Layout/Screen';
 import { Section } from '@/components/Layout/Section';
 import { useGetStoreDetail } from '@/hooks/store/useGetStoreDetail';
+import { useScrollVisibility } from '@/hooks/useScrollVisibility';
 import { cn } from '@/utils/cn';
 
+// TODO: mock 데이터 제거
 const mock = {
   realtimeViewers: 5,
   waitingCount: 7,
@@ -28,19 +34,26 @@ const mock = {
 export const StoreDetailScreen: ActivityComponentType<'StoreDetailScreen'> = () => {
   const flow = useFlow();
 
+  const screenRef = useRef<HTMLDivElement>(null);
+
+  const { isVisible: showHeader } = useScrollVisibility({
+    threshold: 280,
+    ref: screenRef,
+  });
+
   const params = {
     storeId: 1,
   };
 
   return (
-    <Screen>
+    <Screen ref={screenRef}>
       <DefaultErrorBoundary>
         <NavButton className='z-10 absolute left-grid-margin top-3' onClick={() => flow.pop()}>
           <ChevronLeftIcon className='size-7' />
         </NavButton>
         <LoadingToggle fallback={<StoreDetailLoadingFallback />}>
           <Suspense clientOnly fallback={<StoreDetailLoadingFallback />}>
-            <StoreDetail storeId={params.storeId} />
+            <StoreDetail storeId={params.storeId} showHeader={showHeader} />
           </Suspense>
         </LoadingToggle>
       </DefaultErrorBoundary>
@@ -50,18 +63,23 @@ export const StoreDetailScreen: ActivityComponentType<'StoreDetailScreen'> = () 
 
 type StoreDetailProps = {
   storeId: number;
+  showHeader: boolean;
 };
 
-const StoreDetail = ({ storeId }: StoreDetailProps) => {
+const StoreDetail = ({ storeId, showHeader }: StoreDetailProps) => {
   const { data: store } = useGetStoreDetail(storeId);
 
   return (
     <div className='flex flex-col pb-[120px]'>
+      {showHeader && <Header left={<Header.Back />} title={store.name} />}
       {/* TODO: 공유 기능 추가 */}
       <NavButton className='z-10 absolute right-grid-margin top-3'>
         <ShareIcon className='size-5' />
       </NavButton>
-      <div className='h-[280px] bg-gray-300 relative flex flex-col shrink-0' />
+      {(!store.images || store.images.length === 0) && <StoreImagePlaceholder />}
+      {store.images && store.images.length > 0 && (
+        <Carousel images={store.images.map((image) => image.imageUrl)} />
+      )}
       <Section className='pt-[30px] pb-[20px]'>
         <span className='flex items-center body-5 text-gray-5'>
           {store.address}
@@ -220,6 +238,54 @@ const StoreDetailLoadingFallback = () => {
         <Skeleton shape='text' className='mt-2' width={200} height={20} />
         <Skeleton shape='text' className='mt-2' width={160} height={20} />
       </div>
+    </div>
+  );
+};
+
+type CarouselProps = {
+  images: string[];
+};
+
+// TODO: 등록된 가게 이미지가 없는 경우 플레이스홀더 이미지 추가
+const StoreImagePlaceholder = () => {
+  return <div className='h-[280px] bg-gray-1' />;
+};
+
+const Carousel = ({ images }: CarouselProps) => {
+  const [carouselRef, carousel] = useEmblaCarousel({
+    loop: true,
+  });
+  const [currentIndex, setCurrentIndex] = useState<number | null>(null);
+
+  useEffect(() => {
+    if (!carousel) return;
+
+    setCurrentIndex(carousel.selectedScrollSnap() + 1);
+
+    carousel.on('select', () => {
+      setCurrentIndex(carousel.selectedScrollSnap() + 1);
+    });
+  }, [carousel]);
+
+  return (
+    <div className='relative' role='region' aria-roledescription='carousel'>
+      <div ref={carouselRef} className='overflow-hidden'>
+        <div className='flex'>
+          {Array.from({ length: images.length }).map((_, index) => (
+            <div
+              key={index}
+              role='group'
+              aria-roledescription='slide'
+              className='h-[280px] min-w-0 shrink-0 grow-0 basis-full bg-gray-1'
+            />
+          ))}
+        </div>
+      </div>
+      {currentIndex !== null && (
+        <div className='absolute bottom-5 right-5 text-white text-xs p-[10px] flex justify-center items-center bg-black/60 rounded-[8px] h-7'>
+          {currentIndex} / {images.length}
+        </div>
+      )}
     </div>
   );
 };

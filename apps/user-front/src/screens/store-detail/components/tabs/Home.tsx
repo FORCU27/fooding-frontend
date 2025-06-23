@@ -1,7 +1,6 @@
 import { mockStoreListResponse, StoreInfo } from '@repo/api/user';
 import { Button, EmptyState } from '@repo/design-system/components/b2c';
 import {
-  ChevronRightIcon,
   ClockIcon,
   CompassIcon,
   MarkPinIcon,
@@ -16,11 +15,13 @@ import { ReviewCard } from '@/components/Restaurant/ReviewCard';
 import { SubwayLineBadge } from '@/components/SubwayLineBadge';
 import { useGetStoreMenuList } from '@/hooks/store/useGetStoreMenuList';
 import { useGetStoreReviewList } from '@/hooks/store/useGetStoreReviewList';
+import { noop } from '@/utils/noop';
 
 const mock = {
   location: '제주 제주시 서해안로 654 바다풍경 정육식당',
   status: '영업중',
   operatingHours: '매일 10:40 - 21:50',
+  isFinished: false,
 };
 
 type StoreDetailHomeTabProps = {
@@ -40,9 +41,12 @@ export const StoreDetailHomeTab = ({ store }: StoreDetailHomeTabProps) => {
         </span>
         <span className='body-6 flex items-center gap-[10px]'>
           <ClockIcon className='size-[18px] stroke-1' />
-          <button className='flex items-center h-[26px] subtitle-7 text-white bg-gradient-to-r from-[#35FFBF] to-[#6CB8FF] rounded-full px-[10px]'>
-            {mock.status}
-          </button>
+          {}
+          {!mock.isFinished && (
+            <button className='flex items-center h-[26px] subtitle-7 text-white bg-gradient-to-r from-[#35FFBF] to-[#6CB8FF] rounded-full px-[10px]'>
+              영엄중
+            </button>
+          )}
           {mock.operatingHours}
         </span>
         <span className='body-6 flex items-center gap-[10px]'>
@@ -54,21 +58,23 @@ export const StoreDetailHomeTab = ({ store }: StoreDetailHomeTabProps) => {
       <Section className='mt-[10px] pb-8'>
         <Section.Header>
           <Section.Title>메뉴</Section.Title>
-          <Section.Link>더보기</Section.Link>
+          {storeMenus.length > 0 && <Section.Link>더보기</Section.Link>}
         </Section.Header>
         {storeMenus.length === 0 && (
           <EmptyState className='h-[120px]' title='등록된 메뉴가 없어요.' />
         )}
         {storeMenus.length > 0 && (
           <ul className='mt-6 flex gap-3 -mx-grid-margin overflow-x-auto scrollbar-hide px-grid-margin'>
-            {/* TODO: 왜 배열일까 */}
-            {storeMenus[0]?.menu.map((menu) => (
-              <MenuCard key={menu.id}>
-                <MenuCard.Image src={null} alt={menu.name} />
-                <MenuCard.Title>{menu.name}</MenuCard.Title>
-                <MenuCard.Price>{menu.price.toLocaleString()}</MenuCard.Price>
-              </MenuCard>
-            ))}
+            {/* TODO: 배열 풀어서 표시하는게 맞는지 확인하기 */}
+            {storeMenus
+              .flatMap((menu) => menu.menu)
+              .map((menu) => (
+                <MenuCard key={menu.id}>
+                  <MenuCard.Image src={null} alt={menu.name} />
+                  <MenuCard.Title>{menu.name}</MenuCard.Title>
+                  <MenuCard.Price>{menu.price.toLocaleString()}</MenuCard.Price>
+                </MenuCard>
+              ))}
           </ul>
         )}
       </Section>
@@ -79,10 +85,7 @@ export const StoreDetailHomeTab = ({ store }: StoreDetailHomeTabProps) => {
             리뷰
             <span className='subtitle-6 text-gray-5'>({store.reviewCount})</span>
           </Section.Title>
-          <button className='flex items-center h-fit body-5 text-gray-5'>
-            더보기
-            <ChevronRightIcon className='size-[18px]' />
-          </button>
+          {storeReviews.list.length > 0 && <Section.Link>더보기</Section.Link>}
         </Section.Header>
         {storeReviews.list.length === 0 && (
           <EmptyState className='h-[120px]' title='등록된 리뷰가 없어요.' />
@@ -122,11 +125,13 @@ export const StoreDetailHomeTab = ({ store }: StoreDetailHomeTabProps) => {
         <RestaurantsListSection
           subtitle='다른사람이 함께 본 비슷한 식당'
           items={mockStoreListResponse.data.list}
+          onClickTotalBtn={noop}
         />
         {/* TODO: 지금 바로 입장 가능한 식당 목록 조회 기능 추가 */}
         <RestaurantsListSection
           subtitle='지금 바로 입장하실 수 있어요!'
           items={mockStoreListResponse.data.list}
+          onClickTotalBtn={noop}
         />
       </div>
     </div>

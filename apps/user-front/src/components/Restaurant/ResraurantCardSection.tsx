@@ -31,7 +31,7 @@ export const RestaurantCardSection = ({ items }: RestaurantCardSectionProps) => 
                     className='rounded-xl mb-4 object-center'
                   />
                 ) : (
-                  <div className='flex justify-center items-center w-full h-full'>
+                  <div className='flex justify-center items-center w-full h-full bg-gray-1'>
                     <FoodingIcon width={58} height={72} color='rgba(17, 17, 17, 0.1)' />
                   </div>
                 )}
