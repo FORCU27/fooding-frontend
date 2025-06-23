@@ -18,4 +18,5 @@ export type GetStorePostListParams = {
 export type GetStorePostListResponse = z.infer<typeof GetStorePostListResponse>;
 export const GetStorePostListResponse = ApiResponse(z.array(StorePost));
 
+export type GetStorePostByIdResponse = z.infer<typeof GetStorePostByIdResponse>;
 export const GetStorePostByIdResponse = ApiResponse(StorePost);
