@@ -32,7 +32,7 @@ const mock = {
   bookmarkCount: 103,
 } as const;
 
-export const StoreDetailScreen: ActivityComponentType<'StoreDetailScreen'> = () => {
+export const StoreDetailScreen: ActivityComponentType<'StoreDetailScreen'> = ({ params }) => {
   const flow = useFlow();
 
   const screenRef = useRef<HTMLDivElement>(null);
@@ -41,10 +41,6 @@ export const StoreDetailScreen: ActivityComponentType<'StoreDetailScreen'> = () 
     threshold: 280,
     ref: screenRef,
   });
-
-  const params = {
-    storeId: 1,
-  };
 
   return (
     <Screen ref={screenRef}>
