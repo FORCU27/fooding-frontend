@@ -1,4 +1,5 @@
 export * from './type';
+export * from './mock';
 
 import {
   CreateStoreReviewBody,

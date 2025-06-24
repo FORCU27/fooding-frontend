@@ -5,6 +5,8 @@ import {
   GetStoreReviewListResponse,
 } from './type';
 
+const MENU_IMAGE_URL = '/images/home/menuitem1.png';
+
 export const mockStoreListResponse: GetStoreListResponse = {
   status: 'OK',
   data: {
@@ -102,7 +104,26 @@ export const mockStoreByIdResponse: GetStoreByIdResponse = {
     estimatedWaitingTimeMinutes: 20,
     latitude: 37.5665,
     longitude: 126.978,
-    images: [],
+    images: [
+      {
+        id: 1,
+        imageUrl: MENU_IMAGE_URL,
+        sortOrder: 1,
+        tags: ['태그1', '태그2'],
+      },
+      {
+        id: 2,
+        imageUrl: MENU_IMAGE_URL,
+        sortOrder: 2,
+        tags: ['태그1'],
+      },
+      {
+        id: 3,
+        imageUrl: MENU_IMAGE_URL,
+        sortOrder: 3,
+        tags: ['태그3'],
+      },
+    ],
     isBookmarked: false,
     isFinished: false,
   },
@@ -116,7 +137,8 @@ export const mockStoreReviewListResponse: GetStoreReviewListResponse = {
         reviewId: 1,
         content:
           '잘먹었습니다. 감사합니다. 단골인데 항상 챙겨주시고 사장님도 너무 친절해요~^^ 어쩌구 저쩌구 너무 맛잇고 맛좋코 또 오고싶고 어쩌ㅇ구쩌구...',
-        imageUrl: 'https://example.com/image1.jpg',
+        profileUrl: 'https://example.com/profile.jpg',
+        imageUrl: MENU_IMAGE_URL,
         likeCount: 10,
         nickname: '민수엄마',
         purpose: '데이트',
@@ -129,7 +151,7 @@ export const mockStoreReviewListResponse: GetStoreReviewListResponse = {
       pageNum: 1,
       pageSize: 10,
       totalPages: 1,
-      totalCount: 3,
+      totalCount: 1,
     },
   },
 };
@@ -145,7 +167,7 @@ export const mockStoreMenuListResponse: GetStoreMenuListResponse = {
           id: 1,
           name: '김치찌개',
           description: '매운 김치찌개',
-          imageUrl: 'https://example.com/image.jpg',
+          imageUrl: MENU_IMAGE_URL,
           price: 10000,
           sortOrder: 1,
           signature: true,

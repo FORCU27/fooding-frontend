@@ -1,0 +1,138 @@
+import { mockStoreListResponse, StoreInfo } from '@repo/api/user';
+import { Button, EmptyState } from '@repo/design-system/components/b2c';
+import {
+  ClockIcon,
+  CompassIcon,
+  MarkPinIcon,
+  PhoneIcon,
+  TrainIcon,
+} from '@repo/design-system/icons';
+
+import { Section } from '@/components/Layout/Section';
+import { MenuCard } from '@/components/Restaurant/MenuCard';
+import { RestaurantsListSection } from '@/components/Restaurant/RestaurantsListSection';
+import { ReviewCard } from '@/components/Restaurant/ReviewCard';
+import { SubwayLineBadge } from '@/components/SubwayLineBadge';
+import { useGetStoreMenuList } from '@/hooks/store/useGetStoreMenuList';
+import { useGetStoreReviewList } from '@/hooks/store/useGetStoreReviewList';
+import { noop } from '@/utils/noop';
+
+const mock = {
+  location: '제주 제주시 서해안로 654 바다풍경 정육식당',
+  subwayLocation: '제주역에서 847m',
+  subwayNumber: 6,
+  operatingHours: '매일 10:40 - 21:50',
+  isFinished: false,
+} as const;
+
+type StoreDetailHomeTabProps = {
+  store: StoreInfo;
+};
+
+export const StoreDetailHomeTab = ({ store }: StoreDetailHomeTabProps) => {
+  const { data: storeMenus } = useGetStoreMenuList(store.id);
+  const { data: storeReviews } = useGetStoreReviewList(store.id);
+
+  return (
+    <div className='flex flex-col'>
+      <Section className='mt-[10px] py-[20px] gap-[6px]'>
+        <span className='body-6 flex items-center gap-[10px]'>
+          <MarkPinIcon className='size-[18px] stroke-1' />
+          {mock.location}
+        </span>
+        <span className='body-6 flex items-center gap-[10px]'>
+          <ClockIcon className='size-[18px] stroke-1' />
+          {!mock.isFinished && (
+            <button className='flex items-center h-[26px] subtitle-7 text-white bg-gradient-to-r from-[#35FFBF] to-[#6CB8FF] rounded-full px-[10px]'>
+              영엄중
+            </button>
+          )}
+          {mock.operatingHours}
+        </span>
+        <span className='body-6 flex items-center gap-[10px]'>
+          <PhoneIcon className='size-[18px] stroke-1' />
+          {store.contactNumber}
+        </span>
+      </Section>
+      {/* TODO: 메뉴 목록 조회 기능 추가 */}
+      <Section className='mt-[10px] pb-8'>
+        <Section.Header>
+          <Section.Title>메뉴</Section.Title>
+          {storeMenus.length > 0 && <Section.Link>더보기</Section.Link>}
+        </Section.Header>
+        {storeMenus.length === 0 && (
+          <EmptyState className='h-[120px]' title='등록된 메뉴가 없어요.' />
+        )}
+        {storeMenus.length > 0 && (
+          <ul className='mt-6 flex gap-3 -mx-grid-margin overflow-x-auto scrollbar-hide px-grid-margin'>
+            {/* TODO: 배열 풀어서 표시하는게 맞는지 확인하기 */}
+            {storeMenus
+              .flatMap((menu) => menu.menu)
+              .map((menu) => (
+                <MenuCard key={menu.id}>
+                  <MenuCard.Image src={null} alt={menu.name} />
+                  <MenuCard.Title>{menu.name}</MenuCard.Title>
+                  <MenuCard.Price>{menu.price.toLocaleString()}</MenuCard.Price>
+                </MenuCard>
+              ))}
+          </ul>
+        )}
+      </Section>
+      <Section className='mt-[10px]'>
+        <Section.Header>
+          <Section.Title className='flex items-center gap-1'>
+            리뷰
+            <span className='subtitle-6 text-gray-5'>({store.reviewCount})</span>
+          </Section.Title>
+          {storeReviews.list.length > 0 && <Section.Link>더보기</Section.Link>}
+        </Section.Header>
+        {storeReviews.list.length === 0 && (
+          <EmptyState className='h-[120px]' title='등록된 리뷰가 없어요.' />
+        )}
+        {storeReviews.list.length > 0 && (
+          <ul className='mt-6 flex gap-3 -mx-grid-margin overflow-x-auto scrollbar-hide px-grid-margin pb-8'>
+            {storeReviews.list.map((review) => (
+              <ReviewCard key={review.reviewId} review={review} />
+            ))}
+          </ul>
+        )}
+      </Section>
+      {/* TODO: 매장 위치 조회 기능 추가 */}
+      <Section className='mt-[10px] pb-8'>
+        <Section.Header>
+          <Section.Title>매장 위치</Section.Title>
+        </Section.Header>
+        <div className='mt-[14px] rounded-[12px] bg-gray-1 h-[262px]' />
+        <div className='mt-3 flex flex-col gap-1'>
+          <span className='body-6 flex items-center gap-[10px]'>
+            <MarkPinIcon className='size-[18px] stroke-1' />
+            {mock.location}
+          </span>
+          <span className='body-6 flex items-center'>
+            <TrainIcon className='mr-[10px] size-[18px] stroke-1' />
+            <SubwayLineBadge className='mr-1' line={mock.subwayNumber} />
+            {mock.subwayLocation}
+          </span>
+        </div>
+        <Button className='mt-5' variant='gray'>
+          <CompassIcon className='mr-1 size-[18px]' />
+          길찾기
+        </Button>
+      </Section>
+      <div className='mt-[10px]'>
+        {/* TODO: 다른사람이 함께 본 식당 목록 조회 기능 추가 */}
+        <RestaurantsListSection
+          subtitle='다른사람이 함께 본 비슷한 식당'
+          items={mockStoreListResponse.data.list}
+          onClickTotalBtn={noop}
+        />
+        {/* TODO: 지금 바로 입장 가능한 식당 목록 조회 기능 추가 */}
+        <RestaurantsListSection
+          subtitle='지금 바로 입장하실 수 있어요!'
+          items={mockStoreListResponse.data.list}
+          onClickTotalBtn={noop}
+        />
+      </div>
+    </div>
+  );
+};

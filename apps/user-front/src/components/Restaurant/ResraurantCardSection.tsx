@@ -2,19 +2,26 @@ import Image from 'next/image';
 
 import { Store } from '@repo/api/user';
 import { BookmarkIcon, FoodingIcon, StarIcon } from '@repo/design-system/icons';
+import { useFlow } from '@stackflow/react/future';
 
 interface RestaurantCardSectionProps {
   items: Store[];
 }
 
 export const RestaurantCardSection = ({ items }: RestaurantCardSectionProps) => {
+  const flow = useFlow();
+
   return (
-    <div className='overflow-x-auto scrollbar-hide px-grid-margin'>
-      <ul className='flex'>
+    <div>
+      <ul className='overflow-x-auto scrollbar-hide px-grid-margin flex gap-3'>
         {items.map((item) => (
-          <li key={item.id} className='flex w-full flex-col justify-between items-center relative'>
-            <div className='flex-col cursor-pointer mx-2'>
-              <div className='relative mb-2 rounded-xl overflow-hidden w-[140px] h-[140px] bg-gray-1'>
+          <li
+            key={item.id}
+            className='flex flex-col min-h-[240px] relative cursor-pointer'
+            onClick={() => flow.push('StoreDetailScreen', { storeId: item.id })}
+          >
+            <div className='h-full w-[140px]'>
+              <div className='relative h-[140px] mb-2 rounded-xl overflow-hidden'>
                 {item.mainImage ? (
                   <Image
                     width={140}
@@ -24,7 +31,7 @@ export const RestaurantCardSection = ({ items }: RestaurantCardSectionProps) => 
                     className='rounded-xl mb-4 object-center'
                   />
                 ) : (
-                  <div className='flex justify-center items-center w-full h-full'>
+                  <div className='flex justify-center items-center w-full h-full bg-gray-1'>
                     <FoodingIcon width={58} height={72} color='rgba(17, 17, 17, 0.1)' />
                   </div>
                 )}
