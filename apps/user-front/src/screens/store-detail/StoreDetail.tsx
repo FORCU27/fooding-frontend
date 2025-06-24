@@ -16,12 +16,14 @@ import { Suspense } from '@suspensive/react';
 import useEmblaCarousel from 'embla-carousel-react';
 
 import { StoreDetailHomeTab } from './components/tabs/Home';
+import { StoreDetailReviewTab } from './components/tabs/ReviewDetail';
 import { LoadingToggle } from '@/components/Devtool/LoadingToggle';
 import { DefaultErrorBoundary } from '@/components/Layout/DefaultErrorBoundary';
 import { Header } from '@/components/Layout/Header';
 import { Screen } from '@/components/Layout/Screen';
 import { Section } from '@/components/Layout/Section';
 import { useGetStoreDetail } from '@/hooks/store/useGetStoreDetail';
+import { useGetStoreReviewList } from '@/hooks/store/useGetStoreReviewList';
 import { useScrollVisibility } from '@/hooks/useScrollVisibility';
 import { cn } from '@/utils/cn';
 
@@ -65,6 +67,7 @@ type StoreDetailProps = {
 
 const StoreDetail = ({ storeId, showHeader }: StoreDetailProps) => {
   const { data: store } = useGetStoreDetail(storeId);
+  const { data: review } = useGetStoreReviewList(storeId);
 
   return (
     <div className='flex flex-col pb-[120px]'>
@@ -122,6 +125,9 @@ const StoreDetail = ({ storeId, showHeader }: StoreDetailProps) => {
           <Suspense>
             <ChipTabs.Content value='home'>
               <StoreDetailHomeTab store={store} />
+            </ChipTabs.Content>
+            <ChipTabs.Content value='review'>
+              <StoreDetailReviewTab store={store} />
             </ChipTabs.Content>
           </Suspense>
         </ChipTabs>
