@@ -125,6 +125,7 @@ export const GetStoreReviewListResponse = PageResponse(
   z.object({
     reviewId: z.number(),
     nickname: z.string(),
+    profileUrl: z.string(),
     imageUrl: z.string(),
     content: z.string(),
     score: z.number(),
