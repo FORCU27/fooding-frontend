@@ -142,7 +142,12 @@ export const mockStoreReviewListResponse: GetStoreReviewListResponse = {
         likeCount: 10,
         nickname: '민수엄마',
         purpose: '데이트',
-        score: 4.5,
+        score: {
+          total: 4.3,
+          taste: 4,
+          mood: 4.3,
+          service: 4.6,
+        },
         createdAt: '2025-06-20T03:44:25.499Z',
         updatedAt: '2025-06-20T03:44:25.499Z',
       },

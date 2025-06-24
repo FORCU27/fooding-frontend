@@ -71,6 +71,25 @@ export type GetStoreListParams = {
   sortDirection?: SortDirection;
 };
 
+export type Review = z.infer<typeof Review>;
+export const Review = z.object({
+  reviewId: z.number(),
+  nickname: z.string().nullable(),
+  profileUrl: z.string().nullable(),
+  imageUrl: z.string().nullish(),
+  content: z.string(),
+  score: z.object({
+    total: z.number(),
+    taste: z.number(),
+    mood: z.number(),
+    service: z.number(),
+  }),
+  purpose: z.string(),
+  likeCount: z.number(),
+  createdAt: z.iso.datetime({ local: true }),
+  updatedAt: z.iso.datetime({ local: true }),
+});
+
 export type GetStoreReviewListRequest = {
   id: number;
   params: {
@@ -121,20 +140,7 @@ export const GetStoreMenuListResponse = ApiResponse(
 );
 
 export type GetStoreReviewListResponse = z.infer<typeof GetStoreReviewListResponse>;
-export const GetStoreReviewListResponse = PageResponse(
-  z.object({
-    reviewId: z.number(),
-    nickname: z.string(),
-    profileUrl: z.string(),
-    imageUrl: z.string(),
-    content: z.string(),
-    score: z.number(),
-    purpose: z.string(),
-    likeCount: z.number(),
-    createdAt: z.iso.datetime({ local: true }),
-    updatedAt: z.iso.datetime({ local: true }),
-  }),
-);
+export const GetStoreReviewListResponse = PageResponse(Review);
 
 export type GetStoreOperatingHoursResponse = z.infer<typeof GetStoreOperatingHoursResponse>;
 export const GetStoreOperatingHoursResponse = ApiResponse(

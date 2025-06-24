@@ -10,9 +10,9 @@ import {
 } from '@repo/design-system/icons';
 
 import { Section } from '@/components/Layout/Section';
-import { MenuCard } from '@/components/Restaurant/MenuCard';
-import { RestaurantsListSection } from '@/components/Restaurant/RestaurantsListSection';
-import { ReviewCard } from '@/components/Restaurant/ReviewCard';
+import { MenuCard } from '@/components/Store/MenuCard';
+import { ReviewsList } from '@/components/Store/ReviewsList';
+import { StoresListSection } from '@/components/Store/StoresListSection';
 import { SubwayLineBadge } from '@/components/SubwayLineBadge';
 import { useGetStoreMenuList } from '@/hooks/store/useGetStoreMenuList';
 import { useGetStoreReviewList } from '@/hooks/store/useGetStoreReviewList';
@@ -40,9 +40,11 @@ export const StoreDetailHomeTab = ({ store }: StoreDetailHomeTabProps) => {
         </span>
         <span className='body-6 flex items-center gap-[10px]'>
           <ClockIcon className='size-[18px] stroke-1' />
-          <button className='flex items-center h-[26px] subtitle-7 text-white bg-gradient-to-r from-[#35FFBF] to-[#6CB8FF] rounded-full px-[10px]'>
-            {mock.status}
-          </button>
+          {!mock.isFinished && (
+            <button className='flex items-center h-[26px] subtitle-7 text-white bg-gradient-to-r from-[#35FFBF] to-[#6CB8FF] rounded-full px-[10px]'>
+              영업중
+            </button>
+          )}
           {mock.operatingHours}
         </span>
         <span className='body-6 flex items-center gap-[10px]'>
@@ -77,7 +79,7 @@ export const StoreDetailHomeTab = ({ store }: StoreDetailHomeTabProps) => {
         <Section.Header>
           <Section.Title className='flex items-center gap-1'>
             리뷰
-            <span className='subtitle-6 text-gray-5'>({store.reviewCount})</span>
+            <span className='subtitle-6 text-gray-5'>({storeReviews.list.length})</span>
           </Section.Title>
           <button className='flex items-center h-fit body-5 text-gray-5'>
             더보기
@@ -89,9 +91,7 @@ export const StoreDetailHomeTab = ({ store }: StoreDetailHomeTabProps) => {
         )}
         {storeReviews.list.length > 0 && (
           <ul className='mt-6 flex gap-3 -mx-grid-margin overflow-x-auto scrollbar-hide px-grid-margin pb-8'>
-            {storeReviews.list.map((review) => (
-              <ReviewCard key={review.reviewId} review={review} />
-            ))}
+            <ReviewsList items={storeReviews.list} />
           </ul>
         )}
       </Section>
@@ -119,7 +119,7 @@ export const StoreDetailHomeTab = ({ store }: StoreDetailHomeTabProps) => {
       </Section>
       <div className='mt-[10px]'>
         {/* TODO: 다른사람이 함께 본 식당 목록 조회 기능 추가 */}
-        <RestaurantsListSection
+        <StoresListSection
           subtitle='다른사람이 함께 본 비슷한 식당'
           items={mockStoreListResponse.data.list}
           onClickTotalBtn={() => {
@@ -128,7 +128,7 @@ export const StoreDetailHomeTab = ({ store }: StoreDetailHomeTabProps) => {
           }}
         />
         {/* TODO: 지금 바로 입장 가능한 식당 목록 조회 기능 추가 */}
-        <RestaurantsListSection
+        <StoresListSection
           subtitle='지금 바로 입장하실 수 있어요!'
           items={mockStoreListResponse.data.list}
           onClickTotalBtn={() => {

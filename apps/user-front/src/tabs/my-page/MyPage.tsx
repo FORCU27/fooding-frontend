@@ -14,7 +14,7 @@ import BottomTab from '@/components/Layout/BottomTab';
 import { Header } from '@/components/Layout/Header';
 import { Screen } from '@/components/Layout/Screen';
 import { useAuth } from '@/components/Provider/AuthProvider';
-import { RestaurantsListSection } from '@/components/Restaurant/RestaurantsListSection';
+import { StoresListSection } from '@/components/Store/StoresListSection';
 import { useGetStoreList } from '@/hooks/store/useGetStoreList';
 
 export const MyPageTab: ActivityComponentType<'MyPageTab'> = () => {
@@ -43,8 +43,6 @@ const Content = () => {
   const { data: stores } = useGetStoreList({
     pageNum: 1,
     pageSize: 3,
-    sortType: 'RECENT',
-    sortDirection: 'DESCENDING',
   });
 
   return (
@@ -92,13 +90,13 @@ const Content = () => {
       </div>
       {stores && (
         <div className='mt-3'>
-          <RestaurantsListSection
-            items={stores.data.list}
+          <StoresListSection
+            items={stores.list}
             subtitle='찜해둔 식당'
             onClickTotalBtn={() => flow.push('BookmarkListScreen', {})}
           />
-          <RestaurantsListSection
-            items={stores.data.list}
+          <StoresListSection
+            items={stores.list}
             subtitle='최근 본 식당'
             onClickTotalBtn={() => flow.push('MyPageTab', {})}
           />

@@ -1,19 +1,15 @@
 import { Store } from '@repo/api/user';
 import { ChevronRightIcon } from '@repo/design-system/icons';
 
-import { RestaurantCardSection } from './ResraurantCardSection';
+import { StoreCardSection } from './StoreCardSection';
 
-interface RestaurantsListSectionProps {
+interface StoresListSectionProps {
   subtitle: string;
   onClickTotalBtn: () => void;
   items: Store[];
 }
 
-export const RestaurantsListSection = ({
-  subtitle,
-  items,
-  onClickTotalBtn,
-}: RestaurantsListSectionProps) => {
+export const StoresListSection = ({ subtitle, items, onClickTotalBtn }: StoresListSectionProps) => {
   return (
     <div className='flex flex-col py-grid-margin bg-white/80'>
       <div className='flex justify-between mb-4 px-grid-margin'>
@@ -26,7 +22,7 @@ export const RestaurantsListSection = ({
           <ChevronRightIcon size={14} />
         </button>
       </div>
-      <RestaurantCardSection items={items} />
+      <StoreCardSection items={items} />
     </div>
   );
 };

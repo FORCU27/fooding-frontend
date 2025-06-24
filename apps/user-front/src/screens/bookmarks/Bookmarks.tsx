@@ -25,8 +25,6 @@ const BookmarkContent = () => {
   } = useGetStoreList({
     pageNum: 1,
     pageSize: 10,
-    sortType: 'RECENT',
-    sortDirection: 'DESCENDING',
   });
 
   if (isPending) {
