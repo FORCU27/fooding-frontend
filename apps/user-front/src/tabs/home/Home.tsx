@@ -1,7 +1,6 @@
 'use client';
 
 import Image from 'next/image';
-import { useRouter } from 'next/navigation';
 
 import { Button, ChipTabs, ErrorFallback, Skeleton } from '@repo/design-system/components/b2c';
 import { BookmarkIcon, ChevronRightIcon, FoodingIcon, StarIcon } from '@repo/design-system/icons';
@@ -9,10 +8,11 @@ import { ActivityComponentType } from '@stackflow/react/future';
 
 import BottomTab from '@/components/Layout/BottomTab';
 import { Screen } from '@/components/Layout/Screen';
-import { RestaurantsListSection } from '@/components/Restaurant/RestaurantsListSection';
+import { StoresListSection } from '@/components/Store/StoresListSection';
 import { useGetStoreList } from '@/hooks/store/useGetStoreList';
 import Header from '@/tabs/home/components/Header';
 import Menubar from '@/tabs/home/components/Menubar';
+import { noop } from '@/utils/noop';
 
 export const HomeTab: ActivityComponentType<'HomeTab'> = () => {
   return (
@@ -31,11 +31,7 @@ const Content = () => {
   } = useGetStoreList({
     pageNum: 1,
     pageSize: 10,
-    sortType: 'RECENT',
-    sortDirection: 'DESCENDING',
   });
-
-  const router = useRouter();
 
   if (isPending) {
     return <LoadingFallback />;
@@ -93,7 +89,7 @@ const Content = () => {
             </ChipTabs>
             <div className='flex flex-col bg-white/80'>
               <ul className='flex gap-3 overflow-x-auto scrollbar-hide -mx-grid-margin px-grid-margin'>
-                {stores.data.list.map((store) => (
+                {stores.list.map((store) => (
                   <li key={store.id} className='flex flex-col cursor-pointer relative'>
                     <div className='relative mb-2 rounded-xl overflow-hidden w-[220px] h-[140px]'>
                       {store.mainImage ? (
@@ -101,7 +97,7 @@ const Content = () => {
                           width={220}
                           height={140}
                           src={`/${store.mainImage}`}
-                          alt={store.name || 'restaurant image'}
+                          alt={store.name || 'store image'}
                           className='rounded-xl object-cover w-[220px] h-[140px]'
                         />
                       ) : (
@@ -154,21 +150,17 @@ const Content = () => {
         </div>
       </div>
 
-      {/* FIXME: 추후 router path 수정 */}
-      <RestaurantsListSection
+      {/* FIXME: 추후 수정 */}
+      <StoresListSection
         subtitle='푸딩에서 인기 많은 식당이에요'
-        items={stores.data.list}
-        onClickTotalBtn={() => router.push('/')}
+        items={stores.list}
+        onClickTotalBtn={noop}
       />
-      <RestaurantsListSection
-        subtitle='새로 오픈했어요!'
-        items={stores.data.list}
-        onClickTotalBtn={() => router.push('/')}
-      />
-      <RestaurantsListSection
+      <StoresListSection subtitle='새로 오픈했어요!' items={stores.list} onClickTotalBtn={noop} />
+      <StoresListSection
         subtitle='지금 바로 입장하실 수 있어요!'
-        items={stores.data.list}
-        onClickTotalBtn={() => router.push('/')}
+        items={stores.list}
+        onClickTotalBtn={noop}
       />
     </div>
   );

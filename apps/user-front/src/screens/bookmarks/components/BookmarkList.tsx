@@ -3,11 +3,11 @@ import Image from 'next/image';
 import { Store } from '@repo/api/user';
 import { BookmarkIcon, FoodingIcon, StarIcon } from '@repo/design-system/icons';
 
-interface RestaurantsListSectionProps {
+interface StoresListSectionProps {
   items: Store[];
 }
 
-export const BookmarkList = ({ items }: RestaurantsListSectionProps) => {
+export const BookmarkList = ({ items }: StoresListSectionProps) => {
   return (
     <div className='p-grid-margin flex flex-col gap-5 '>
       {items.map((item) => (
@@ -40,7 +40,7 @@ export const BookmarkList = ({ items }: RestaurantsListSectionProps) => {
                 width={128}
                 height={128}
                 src={`/${item.mainImage}`}
-                alt={item.name || 'restaurant image'}
+                alt={item.name || 'store image'}
                 className='rounded-xl mb-4 object-center'
               />
             ) : (

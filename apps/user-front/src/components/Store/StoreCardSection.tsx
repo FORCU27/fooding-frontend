@@ -4,11 +4,11 @@ import { Store } from '@repo/api/user';
 import { BookmarkIcon, FoodingIcon, StarIcon } from '@repo/design-system/icons';
 import { useFlow } from '@stackflow/react/future';
 
-interface RestaurantCardSectionProps {
+interface StoreCardSectionProps {
   items: Store[];
 }
 
-export const RestaurantCardSection = ({ items }: RestaurantCardSectionProps) => {
+export const StoreCardSection = ({ items }: StoreCardSectionProps) => {
   const flow = useFlow();
 
   return (
@@ -27,7 +27,7 @@ export const RestaurantCardSection = ({ items }: RestaurantCardSectionProps) => 
                     width={140}
                     height={140}
                     src={`/${item.mainImage}`}
-                    alt={item.name || 'restaurant image'}
+                    alt={item.name || 'store image'}
                     className='rounded-xl mb-4 object-center'
                   />
                 ) : (
