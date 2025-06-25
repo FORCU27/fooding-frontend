@@ -1,10 +1,12 @@
 'use client';
 
 import Image from 'next/image';
+import { Suspense } from 'react';
 
 import { Button, ChipTabs, ErrorFallback, Skeleton } from '@repo/design-system/components/b2c';
 import { BookmarkIcon, ChevronRightIcon, FoodingIcon, StarIcon } from '@repo/design-system/icons';
-import { ActivityComponentType } from '@stackflow/react/future';
+import { ActivityComponentType, useFlow } from '@stackflow/react/future';
+import { ErrorBoundary, ErrorBoundaryFallbackProps } from '@suspensive/react';
 
 import BottomTab from '@/components/Layout/BottomTab';
 import { Screen } from '@/components/Layout/Screen';
@@ -23,36 +25,54 @@ export const HomeTab: ActivityComponentType<'HomeTab'> = () => {
 };
 
 const Content = () => {
-  const {
-    data: stores,
-    isPending,
-    isError,
-    refetch,
-  } = useGetStoreList({
+  return (
+    <ErrorBoundary
+      fallback={({ reset }: ErrorBoundaryFallbackProps) => (
+        <ErrorFallback className='flex-1'>
+          <ErrorFallback.Title>알 수 없는 에러가 발생했습니다</ErrorFallback.Title>
+          <ErrorFallback.Description>잠시 후 다시 시도해 주세요</ErrorFallback.Description>
+          <ErrorFallback.Actions>
+            <ErrorFallback.Action onClick={reset}>새로고침</ErrorFallback.Action>
+          </ErrorFallback.Actions>
+        </ErrorFallback>
+      )}
+    >
+      <Suspense fallback={<LoadingFallback />}>
+        <ContentBody />
+      </Suspense>
+    </ErrorBoundary>
+  );
+};
+
+const ContentBody = () => {
+  //FIXME: API sort에 따라 컴포넌트 분리? 확인하기
+  const { data: stores } = useGetStoreList({
     pageNum: 1,
     pageSize: 10,
+    sortType: 'RECENT',
+    sortDirection: 'ASCENDING',
+  });
+  const { data: popularStores } = useGetStoreList({
+    pageNum: 1,
+    pageSize: 10,
+    sortType: 'REVIEW',
+    sortDirection: 'DESCENDING',
+  });
+  const { data: newStores } = useGetStoreList({
+    pageNum: 1,
+    pageSize: 10,
+    sortType: 'RECENT',
+    sortDirection: 'DESCENDING',
   });
 
-  if (isPending) {
-    return <LoadingFallback />;
-  }
-
-  if (isError) {
-    return (
-      <ErrorFallback className='flex-1'>
-        <ErrorFallback.Title>알 수 없는 에러가 발생했습니다</ErrorFallback.Title>
-        <ErrorFallback.Description>잠시 후 다시 시도해 주세요</ErrorFallback.Description>
-        <ErrorFallback.Actions>
-          <ErrorFallback.Action onClick={() => refetch()}>새로고침</ErrorFallback.Action>
-        </ErrorFallback.Actions>
-      </ErrorFallback>
-    );
-  }
+  const flow = useFlow();
 
   return (
     <div className='flex flex-col w-full'>
       <Menubar />
+
       <div className='bg-white mb-3'>
+        {/* 배너 */}
         <div className='relative w-full h-[200px]'>
           <Image
             src='/images/home/banneritem1.png'
@@ -73,24 +93,32 @@ const Content = () => {
             <p className='body-8 text-white opacity-100'>1 / 10</p>
           </div>
         </div>
+
+        {/* 카테고리 및 스토어 리스트 */}
         <div className='flex flex-col mb-3'>
           <div className='flex flex-col justify-between p-grid-margin gap-4'>
             <div className='subtitle-1'>오늘은 어디에서 식사할까요?</div>
+
             <ChipTabs defaultValue='1' className='-mx-grid-margin w-auto'>
               <ChipTabs.List className='overflow-x-auto w-full scrollbar-hide px-grid-margin'>
-                <ChipTabs.Trigger value='1'>고깃집</ChipTabs.Trigger>
-                <ChipTabs.Trigger value='2'>패스트푸드점</ChipTabs.Trigger>
-                <ChipTabs.Trigger value='3'>카페</ChipTabs.Trigger>
-                <ChipTabs.Trigger value='4'>레스토랑</ChipTabs.Trigger>
-                <ChipTabs.Trigger value='5'>일식</ChipTabs.Trigger>
-                <ChipTabs.Trigger value='6'>베이커리</ChipTabs.Trigger>
-                <ChipTabs.Trigger value='7'>기타</ChipTabs.Trigger>
+                {['고깃집', '패스트푸드점', '카페', '레스토랑', '일식', '베이커리', '기타'].map(
+                  (label, i) => (
+                    <ChipTabs.Trigger key={i} value={`${i + 1}`}>
+                      {label}
+                    </ChipTabs.Trigger>
+                  ),
+                )}
               </ChipTabs.List>
             </ChipTabs>
+
             <div className='flex flex-col bg-white/80'>
               <ul className='flex gap-3 overflow-x-auto scrollbar-hide -mx-grid-margin px-grid-margin'>
                 {stores.list.map((store) => (
-                  <li key={store.id} className='flex flex-col cursor-pointer relative'>
+                  <li
+                    key={store.id}
+                    className='flex flex-col cursor-pointer relative'
+                    onClick={() => flow.push('StoreDetailScreen', { storeId: store.id })}
+                  >
                     <div className='relative mb-2 rounded-xl overflow-hidden w-[220px] h-[140px]'>
                       {store.mainImage ? (
                         <Image
@@ -112,22 +140,15 @@ const Content = () => {
                         </div>
                       )}
                     </div>
-                    {store.isBookmarked ? (
-                      <BookmarkIcon
-                        className='absolute top-2 right-2'
-                        color='var(--color-primary-pink)'
-                        fill='var(--color-primary-pink)'
-                        size={24}
-                        cursor='pointer'
-                      />
-                    ) : (
-                      <BookmarkIcon
-                        className='absolute top-2 right-2'
-                        color='white'
-                        size={24}
-                        cursor='pointer'
-                      />
-                    )}
+
+                    <BookmarkIcon
+                      className='absolute top-2 right-2'
+                      size={24}
+                      cursor='pointer'
+                      color={store.isBookmarked ? 'var(--color-primary-pink)' : 'white'}
+                      fill={store.isBookmarked ? 'var(--color-primary-pink)' : 'none'}
+                    />
+
                     <div className='flex flex-col gap-1'>
                       <div className='subtitle-5 flex items-center gap-1'>
                         <p className='subtitle-5 w-[128px] truncate'>{store.name}</p>
@@ -150,13 +171,17 @@ const Content = () => {
         </div>
       </div>
 
-      {/* FIXME: 추후 수정 */}
+      {/* 추천 섹션 */}
       <StoresListSection
         subtitle='푸딩에서 인기 많은 식당이에요'
-        items={stores.list}
+        items={popularStores.list}
         onClickTotalBtn={noop}
       />
-      <StoresListSection subtitle='새로 오픈했어요!' items={stores.list} onClickTotalBtn={noop} />
+      <StoresListSection
+        subtitle='새로 오픈했어요!'
+        items={newStores.list}
+        onClickTotalBtn={noop}
+      />
       <StoresListSection
         subtitle='지금 바로 입장하실 수 있어요!'
         items={stores.list}
@@ -195,3 +220,5 @@ const LoadingFallback = () => {
     </div>
   );
 };
+
+export default Content;
