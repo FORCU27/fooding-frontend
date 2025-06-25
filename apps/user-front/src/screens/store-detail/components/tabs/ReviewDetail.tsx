@@ -9,7 +9,7 @@ type StoreDetailReviewTabProps = {
   store: StoreInfo;
 };
 
-// FIXME: 추후 수정필요
+// FIXME: 가게상세 리뷰탭 API 나오면 수정
 export const StoreDetailReviewTab = ({ store }: StoreDetailReviewTabProps) => {
   const { data: reviews } = useGetStoreReviewList(store.id);
 

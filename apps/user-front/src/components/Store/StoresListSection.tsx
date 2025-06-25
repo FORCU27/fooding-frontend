@@ -22,7 +22,11 @@ export const StoresListSection = ({ subtitle, items, onClickTotalBtn }: StoresLi
           <ChevronRightIcon size={14} />
         </button>
       </div>
-      <StoreCardSection items={items} />
+      <ul className='overflow-x-auto scrollbar-hide px-grid-margin flex gap-3'>
+        {items.map((item) => (
+          <StoreCardSection item={item} key={item.id} />
+        ))}
+      </ul>
     </div>
   );
 };

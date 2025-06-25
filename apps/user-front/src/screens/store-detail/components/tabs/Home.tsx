@@ -1,4 +1,4 @@
-import { mockStoreListResponse, StoreInfo } from '@repo/api/user';
+import { StoreInfo } from '@repo/api/user';
 import { Button, EmptyState } from '@repo/design-system/components/b2c';
 import {
   ClockIcon,
@@ -13,6 +13,7 @@ import { MenuCard } from '@/components/Store/MenuCard';
 import { ReviewsList } from '@/components/Store/ReviewsList';
 import { StoresListSection } from '@/components/Store/StoresListSection';
 import { SubwayLineBadge } from '@/components/SubwayLineBadge';
+import { useGetStoreList } from '@/hooks/store/useGetStoreList';
 import { useGetStoreMenuList } from '@/hooks/store/useGetStoreMenuList';
 import { useGetStoreReviewList } from '@/hooks/store/useGetStoreReviewList';
 import { noop } from '@/utils/noop';
@@ -32,6 +33,7 @@ type StoreDetailHomeTabProps = {
 export const StoreDetailHomeTab = ({ store }: StoreDetailHomeTabProps) => {
   const { data: storeMenus } = useGetStoreMenuList(store.id);
   const { data: storeReviews } = useGetStoreReviewList(store.id);
+  const { data: stores } = useGetStoreList({ sortType: 'RECENT' });
 
   return (
     <div className='flex flex-col'>
@@ -121,13 +123,13 @@ export const StoreDetailHomeTab = ({ store }: StoreDetailHomeTabProps) => {
         {/* TODO: 다른사람이 함께 본 식당 목록 조회 기능 추가 */}
         <StoresListSection
           subtitle='다른사람이 함께 본 비슷한 식당'
-          items={mockStoreListResponse.data.list}
+          items={stores.list}
           onClickTotalBtn={noop}
         />
         {/* TODO: 지금 바로 입장 가능한 식당 목록 조회 기능 추가 */}
         <StoresListSection
           subtitle='지금 바로 입장하실 수 있어요!'
-          items={mockStoreListResponse.data.list}
+          items={stores.list}
           onClickTotalBtn={noop}
         />
       </div>
