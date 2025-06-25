@@ -8,6 +8,7 @@ import { BookmarkIcon, ChevronRightIcon, FoodingIcon, StarIcon } from '@repo/des
 import { ActivityComponentType, useFlow } from '@stackflow/react/future';
 import { ErrorBoundary, ErrorBoundaryFallbackProps } from '@suspensive/react';
 
+import { LoadingToggle } from '@/components/Devtool/LoadingToggle';
 import BottomTab from '@/components/Layout/BottomTab';
 import { Screen } from '@/components/Layout/Screen';
 import { StoresListSection } from '@/components/Store/StoresListSection';
@@ -37,9 +38,11 @@ const Content = () => {
         </ErrorFallback>
       )}
     >
-      <Suspense fallback={<LoadingFallback />}>
-        <ContentBody />
-      </Suspense>
+      <LoadingToggle fallback={<LoadingFallback />}>
+        <Suspense fallback={<LoadingFallback />}>
+          <ContentBody />
+        </Suspense>
+      </LoadingToggle>
     </ErrorBoundary>
   );
 };
