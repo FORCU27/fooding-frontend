@@ -23,7 +23,6 @@ import { Header } from '@/components/Layout/Header';
 import { Screen } from '@/components/Layout/Screen';
 import { Section } from '@/components/Layout/Section';
 import { useGetStoreDetail } from '@/hooks/store/useGetStoreDetail';
-import { useGetStoreReviewList } from '@/hooks/store/useGetStoreReviewList';
 import { useScrollVisibility } from '@/hooks/useScrollVisibility';
 import { cn } from '@/utils/cn';
 
@@ -67,7 +66,6 @@ type StoreDetailProps = {
 
 const StoreDetail = ({ storeId, showHeader }: StoreDetailProps) => {
   const { data: store } = useGetStoreDetail(storeId);
-  const { data: review } = useGetStoreReviewList(storeId);
 
   return (
     <div className='flex flex-col pb-[120px]'>
