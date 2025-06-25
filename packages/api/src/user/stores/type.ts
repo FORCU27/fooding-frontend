@@ -124,12 +124,17 @@ export type GetStoreReviewListResponse = z.infer<typeof GetStoreReviewListRespon
 export const GetStoreReviewListResponse = PageResponse(
   z.object({
     reviewId: z.number(),
-    nickname: z.string(),
-    profileUrl: z.string(),
-    imageUrl: z.string(),
+    nickname: z.string().nullable(),
+    profileUrl: z.string().nullable(),
+    imageUrls: z.array(z.string()),
     content: z.string(),
-    score: z.number(),
-    purpose: z.string(),
+    score: z.object({
+      total: z.number(),
+      taste: z.number(),
+      mood: z.number(),
+      service: z.number(),
+    }),
+    purpose: z.enum(VISIT_PURPOSES),
     likeCount: z.number(),
     createdAt: z.iso.datetime({ local: true }),
     updatedAt: z.iso.datetime({ local: true }),
