@@ -28,7 +28,7 @@ export const ReviewCard = ({ review }: ReviewCardProps) => {
           </div>
           <div className='ml-3  flex flex-col justify-center flex-1'>
             <span className='subtitle-3 text-black'>
-              {/* TODO: 추후 수정 필요 */}
+              {/* TODO: 닉네임 없으면 어떤 정보 보여줄지 확인하기 */}
               {review.nickname ? review.nickname : '닉네임 1'}
             </span>
           </div>

@@ -1,9 +1,13 @@
 'use client';
 
-import { Button } from '@repo/design-system/components/b2c';
+import { Suspense } from 'react';
+
+import { EmptyState, ErrorFallback, Skeleton } from '@repo/design-system/components/b2c';
 import { ActivityComponentType } from '@stackflow/react/future';
+import { ErrorBoundary, ErrorBoundaryFallbackProps } from '@suspensive/react';
 
 import { BookmarkList } from './components/BookmarkList';
+import { LoadingToggle } from '@/components/Devtool/LoadingToggle';
 import { Header } from '@/components/Layout/Header';
 import { Screen } from '@/components/Layout/Screen';
 import { useGetStoreList } from '@/hooks/store/useGetStoreList';
@@ -11,62 +15,94 @@ import { useGetStoreList } from '@/hooks/store/useGetStoreList';
 export const BookmarkListScreen: ActivityComponentType<'BookmarkListScreen'> = () => {
   return (
     <Screen header={<Header title='찜해둔 레스토랑' left={<Header.Back />} />}>
-      <BookmarkContent />
+      <ErrorBoundary
+        fallback={({ reset }: ErrorBoundaryFallbackProps) => (
+          <ErrorFallback className='flex-1'>
+            <ErrorFallback.Title>알 수 없는 에러가 발생했습니다</ErrorFallback.Title>
+            <ErrorFallback.Description>잠시 후 다시 시도해 주세요</ErrorFallback.Description>
+            <ErrorFallback.Actions>
+              <ErrorFallback.Action onClick={reset}>새로고침</ErrorFallback.Action>
+            </ErrorFallback.Actions>
+          </ErrorFallback>
+        )}
+      >
+        <LoadingToggle fallback={<LoadingFallback />}>
+          <Suspense fallback={<LoadingFallback />}>
+            <BookmarkContent />
+          </Suspense>
+        </LoadingToggle>
+      </ErrorBoundary>
     </Screen>
   );
 };
 
 const BookmarkContent = () => {
-  const {
-    data: stores,
-    isPending,
-    isError,
-    refetch,
-  } = useGetStoreList({
+  const { data: stores } = useGetStoreList({
     pageNum: 1,
     pageSize: 10,
   });
 
-  if (isPending) {
-    return <LoadingState />;
+  if (stores.pageInfo.totalCount === 0) {
+    return <EmptyState className='flex-1' title='북마크가 아무것도 없어요.' />;
   }
 
-  if (isError || !stores) {
-    return <ErrorState onRetry={refetch} isLoading={isPending} />;
-  }
-
-  if (stores.data.pageInfo.totalCount === 0) {
-    return <EmptyState />;
-  }
-
-  return <BookmarkList items={stores?.data.list ?? []} />;
+  return <BookmarkList items={stores.list || []} />;
 };
 
-const ErrorState = ({ onRetry, isLoading }: { onRetry: () => void; isLoading: boolean }) => (
-  <div className='flex-1'>
-    <div className='flex flex-col justify-center items-center gap-2'>
-      <span className='text-black font-semibold text-lg text-center'>
-        레스토랑 목록을 불러오지 못했어요.
-      </span>
-    </div>
-    <div className='mt-2 flex gap-3 justify-center items-center'>
-      <Button size='banner' onClick={onRetry} disabled={isLoading}>
-        {isLoading ? '불러오는 중...' : '새로고침'}
-      </Button>
-    </div>
-  </div>
-);
-
-const EmptyState = () => {
+const LoadingFallback = () => {
   return (
-    <div className='flex justify-center items-center h-[560px]'>
-      <p className='text-gray-3'>찜해둔 레스토랑이 없어요.</p>
+    <div className='flex flex-col px-grid-margin'>
+      <div className='flex gap-2 items-center pt-5'>
+        <Skeleton shape='text' width={100} height={32} />
+        <Skeleton shape='text' width={80} height={16} />
+      </div>
+      <div className='flex gap-2 items-center mt-2'>
+        <Skeleton shape='text' width={60} height={14} />
+        <Skeleton shape='text' width={60} height={14} />
+      </div>
+      <Skeleton shape='text' className='mt-2' width={20} height={14} />
+
+      <div className='mt-4 flex justify-between -mx-grid-margin px-grid-margin'>
+        {Array.from({ length: 3 }).map((_, index) => (
+          <div key={index} className='flex flex-col gap-1'>
+            <Skeleton width={120} height={120} />
+          </div>
+        ))}
+      </div>
+      <div className='flex gap-2 items-center pt-15'>
+        <Skeleton shape='text' width={100} height={32} />
+        <Skeleton shape='text' width={80} height={16} />
+      </div>
+      <div className='flex gap-2 items-center mt-2'>
+        <Skeleton shape='text' width={60} height={14} />
+        <Skeleton shape='text' width={60} height={14} />
+      </div>
+      <Skeleton shape='text' className='mt-2' width={20} height={14} />
+
+      <div className='mt-4 flex justify-between -mx-grid-margin px-grid-margin'>
+        {Array.from({ length: 3 }).map((_, index) => (
+          <div key={index} className='flex flex-col gap-1'>
+            <Skeleton width={120} height={120} />
+          </div>
+        ))}
+      </div>
+      <div className='flex gap-2 items-center pt-15'>
+        <Skeleton shape='text' width={100} height={32} />
+        <Skeleton shape='text' width={80} height={16} />
+      </div>
+      <div className='flex gap-2 items-center mt-2'>
+        <Skeleton shape='text' width={60} height={14} />
+        <Skeleton shape='text' width={60} height={14} />
+      </div>
+      <Skeleton shape='text' className='mt-2' width={20} height={14} />
+
+      <div className='mt-4 flex justify-between -mx-grid-margin px-grid-margin'>
+        {Array.from({ length: 3 }).map((_, index) => (
+          <div key={index} className='flex flex-col gap-1'>
+            <Skeleton width={120} height={120} />
+          </div>
+        ))}
+      </div>
     </div>
   );
 };
-
-const LoadingState = () => (
-  <div className='flex justify-center items-center h-[560px]'>
-    <p className='text-gray-2'>로딩 중...</p>
-  </div>
-);
