@@ -266,8 +266,6 @@ const Carousel = ({ imageUrls }: CarouselProps) => {
     });
   }, [carousel]);
 
-  console.log('imageUrls', imageUrls);
-
   return (
     <div className='relative' role='region' aria-roledescription='carousel'>
       <div ref={carouselRef} className='overflow-hidden'>
