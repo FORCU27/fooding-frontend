@@ -20,7 +20,7 @@ export const mockStoreListResponse: GetStoreListResponse = {
       {
         id: 1,
         name: '바다풍경 정육식당 흑돼지 용담탑동본점',
-        mainImage: undefined,
+        mainImage: null,
         averageRating: 4.9,
         city: '합정',
         estimatedWaitingTimeMinutes: 20,
@@ -32,7 +32,7 @@ export const mockStoreListResponse: GetStoreListResponse = {
       {
         id: 2,
         name: '엉터리 생고기 엉생 무한리필 아산테크노본점',
-        mainImage: undefined,
+        mainImage: null,
         averageRating: 4.9,
         city: '합정',
         estimatedWaitingTimeMinutes: 20,
@@ -44,7 +44,7 @@ export const mockStoreListResponse: GetStoreListResponse = {
       {
         id: 3,
         name: '민서네 김밥 홍대점',
-        mainImage: undefined,
+        mainImage: null,
         averageRating: 4.9,
         city: '합정',
         estimatedWaitingTimeMinutes: 20,
@@ -56,7 +56,7 @@ export const mockStoreListResponse: GetStoreListResponse = {
       {
         id: 4,
         name: '민서네 김밥 홍대점',
-        mainImage: undefined,
+        mainImage: null,
         averageRating: 4.9,
         city: '합정',
         estimatedWaitingTimeMinutes: 20,
@@ -68,7 +68,7 @@ export const mockStoreListResponse: GetStoreListResponse = {
       {
         id: 5,
         name: '민서네 김밥 홍대점',
-        mainImage: undefined,
+        mainImage: null,
         averageRating: 4.9,
         city: '합정',
         estimatedWaitingTimeMinutes: 20,
@@ -138,11 +138,16 @@ export const mockStoreReviewListResponse: GetStoreReviewListResponse = {
         content:
           '잘먹었습니다. 감사합니다. 단골인데 항상 챙겨주시고 사장님도 너무 친절해요~^^ 어쩌구 저쩌구 너무 맛잇고 맛좋코 또 오고싶고 어쩌ㅇ구쩌구...',
         profileUrl: 'https://example.com/profile.jpg',
-        imageUrl: MENU_IMAGE_URL,
+        imageUrls: [MENU_IMAGE_URL],
         likeCount: 10,
         nickname: '민수엄마',
-        purpose: '데이트',
-        score: 4.5,
+        purpose: 'BUSINESS',
+        score: {
+          mood: 4.5,
+          service: 4.0,
+          taste: 5.0,
+          total: 4.5,
+        },
         createdAt: '2025-06-20T03:44:25.499Z',
         updatedAt: '2025-06-20T03:44:25.499Z',
       },
