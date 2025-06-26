@@ -3,18 +3,18 @@ import Image from 'next/image';
 import { Store } from '@repo/api/user';
 import { BookmarkIcon, FoodingIcon, StarIcon } from '@repo/design-system/icons';
 
-interface StoresListSectionProps {
-  items: Store[];
+interface StoresListProps {
+  stores: Store[];
 }
 
-export const BookmarkList = ({ items }: StoresListSectionProps) => {
+export const BookmarkList = ({ stores }: StoresListProps) => {
   return (
-    <div className='p-grid-margin flex flex-col gap-5 '>
-      {items.map((item) => (
-        <div key={item.id} className='flex flex-col gap-2 w-full'>
+    <div className='p-grid-margin flex flex-col gap-5'>
+      {stores.map((store) => (
+        <div key={store.id} className='flex flex-col gap-2 w-full'>
           <div className='flex justify-between items-center'>
             <div className='flex items-center gap-2'>
-              <div className='subtitle-2'>{item.name}</div>
+              <div className='subtitle-2'>{store.name}</div>
               <div className='body-6 text-gray-5'>고깃집</div>
             </div>
             <BookmarkIcon
@@ -25,22 +25,22 @@ export const BookmarkList = ({ items }: StoresListSectionProps) => {
           </div>
           <div className='flex items-center gap-2'>
             <StarIcon size={18} fill='#FFD83D' color='#FFD83D' />
-            <span className='subtitle-6'>{item.averageRating}</span>
-            <span className='body-6 text-gray-5'>({item.reviewCount})</span>
+            <span className='subtitle-6'>{store.averageRating}</span>
+            <span className='body-6 text-gray-5'>({store.reviewCount})</span>
             <span className='body-6 text-gray-5'>
-              {item.estimatedWaitingTimeMinutes
-                ? `• 예상 대기시간 ${item.estimatedWaitingTimeMinutes}분`
+              {store.estimatedWaitingTimeMinutes
+                ? `• 예상 대기시간 ${store.estimatedWaitingTimeMinutes}분`
                 : '• 바로 입장가능'}
             </span>
           </div>
-          <div className='body-6 text-gray-5'>{item.city}</div>
+          <div className='body-6 text-gray-5'>{store.city}</div>
           <div>
-            {item.mainImage ? (
+            {store.mainImage !== null ? (
               <Image
                 width={128}
                 height={128}
-                src={`/${item.mainImage}`}
-                alt={item.name || 'store image'}
+                src={`/${store.mainImage}`}
+                alt={store.name || 'store image'}
                 className='rounded-xl mb-4 object-center'
               />
             ) : (

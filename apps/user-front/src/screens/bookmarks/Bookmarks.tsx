@@ -46,7 +46,7 @@ const BookmarkContent = () => {
     return <EmptyState className='flex-1' title='북마크가 아무것도 없어요.' />;
   }
 
-  return <BookmarkList items={stores.list || []} />;
+  return <BookmarkList stores={stores.list} />;
 };
 
 const LoadingFallback = () => {

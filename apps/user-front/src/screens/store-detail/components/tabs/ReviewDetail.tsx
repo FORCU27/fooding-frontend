@@ -21,7 +21,7 @@ export const StoreDetailReviewTab = ({ store }: StoreDetailReviewTabProps) => {
         )}
         {reviews.list.length > 0 && (
           <ul className='mt-6 flex flex-col gap-3 items-center -mx-grid-margin overflow-x-auto scrollbar-hide px-grid-margin pb-8'>
-            <ReviewsList items={reviews.list} />
+            <ReviewsList reviews={reviews.list} />
           </ul>
         )}
       </Section>
