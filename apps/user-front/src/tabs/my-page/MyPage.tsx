@@ -48,7 +48,7 @@ const Content = () => {
   });
 
   return (
-    <div className='w-full overflow-hidden'>
+    <div className='w-full'>
       <div className='flex-col bg-white/80 pb-5 py-grid-margin'>
         <div className='flex justify-between px-grid-margin'>
           <div className='flex justify-center items-center'>
