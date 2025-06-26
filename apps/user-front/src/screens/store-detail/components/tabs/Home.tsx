@@ -12,7 +12,7 @@ import {
 import { Section } from '@/components/Layout/Section';
 import { MenuCard } from '@/components/Store/MenuCard';
 import { ReviewsList } from '@/components/Store/ReviewsList';
-import { StoresListSection } from '@/components/Store/StoresListSection';
+import { StoresList } from '@/components/Store/StoresList';
 import { SubwayLineBadge } from '@/components/SubwayLineBadge';
 import { useGetStoreList } from '@/hooks/store/useGetStoreList';
 import { useGetStoreMenuList } from '@/hooks/store/useGetStoreMenuList';
@@ -96,7 +96,7 @@ export const StoreDetailHomeTab = ({ store }: StoreDetailHomeTabProps) => {
         )}
         {storeReviews.list.length > 0 && (
           <ul className='mt-6 flex gap-3 -mx-grid-margin overflow-x-auto scrollbar-hide px-grid-margin pb-8'>
-            <ReviewsList items={storeReviews.list} />
+            <ReviewsList reviews={storeReviews.list || []} />
           </ul>
         )}
       </Section>
@@ -124,15 +124,15 @@ export const StoreDetailHomeTab = ({ store }: StoreDetailHomeTabProps) => {
       </Section>
       <div className='mt-[10px]'>
         {/* TODO: 다른사람이 함께 본 식당 목록 조회 기능 추가 */}
-        <StoresListSection
+        <StoresList
           subtitle='다른사람이 함께 본 비슷한 식당'
-          items={stores.list}
+          stores={stores.list}
           onClickTotalBtn={noop}
         />
         {/* TODO: 지금 바로 입장 가능한 식당 목록 조회 기능 추가 */}
-        <StoresListSection
+        <StoresList
           subtitle='지금 바로 입장하실 수 있어요!'
-          items={stores.list}
+          stores={stores.list}
           onClickTotalBtn={noop}
         />
       </div>

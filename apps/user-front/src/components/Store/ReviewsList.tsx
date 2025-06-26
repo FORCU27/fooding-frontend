@@ -3,18 +3,17 @@ import { Review } from '@repo/api/user';
 import { ReviewCard } from './ReviewCard';
 
 interface ReviewsListProps {
-  items: Review[];
+  reviews: Review[];
 }
 
-export const ReviewsList = ({ items }: ReviewsListProps) => {
+export const ReviewsList = ({ reviews }: ReviewsListProps) => {
   return (
     <>
-      {items &&
-        items.map((item) => (
-          <li key={item.reviewId} className='flex py-grid-margin bg-white/80'>
-            <ReviewCard review={item} />
-          </li>
-        ))}
+      {reviews.map((review) => (
+        <li key={review.reviewId} className='flex py-grid-margin bg-white/80'>
+          <ReviewCard review={review} />
+        </li>
+      ))}
     </>
   );
 };

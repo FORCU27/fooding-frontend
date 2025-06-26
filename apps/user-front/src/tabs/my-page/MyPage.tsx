@@ -16,7 +16,7 @@ import BottomTab from '@/components/Layout/BottomTab';
 import { Header } from '@/components/Layout/Header';
 import { Screen } from '@/components/Layout/Screen';
 import { useAuth } from '@/components/Provider/AuthProvider';
-import { StoresListSection } from '@/components/Store/StoresListSection';
+import { StoresList } from '@/components/Store/StoresList';
 import { useGetStoreList } from '@/hooks/store/useGetStoreList';
 
 export const MyPageTab: ActivityComponentType<'MyPageTab'> = () => {
@@ -32,8 +32,8 @@ export const MyPageTab: ActivityComponentType<'MyPageTab'> = () => {
       header={<Header title='마이페이지' right={<SettingIcon onClick={handleLogoutClick} />} />}
       bottomTab={<BottomTab currentTab='mypage' />}
     >
-      <ErrorBoundary fallback={errorFallback}>
-        <LoadingToggle fallback={<LoadingFallback />}>
+      <ErrorBoundary fallback={MyPageErrorFallback}>
+        <LoadingToggle fallback={<MyPageLoadingFallback />}>
           <Suspense fallback={null}>
             <Content />
           </Suspense>
@@ -97,13 +97,13 @@ const Content = () => {
       </div>
       {stores && (
         <div className='mt-3'>
-          <StoresListSection
-            items={stores.list}
+          <StoresList
+            stores={stores.list}
             subtitle='찜해둔 식당'
             onClickTotalBtn={() => flow.push('BookmarkListScreen', {})}
           />
-          <StoresListSection
-            items={stores.list}
+          <StoresList
+            stores={stores.list}
             subtitle='최근 본 식당'
             onClickTotalBtn={() => flow.push('MyPageTab', {})}
           />
@@ -113,7 +113,7 @@ const Content = () => {
   );
 };
 
-const LoadingFallback = () => {
+const MyPageLoadingFallback = () => {
   return (
     <div className='px-grid-margin py-grid-margin'>
       <div className='flex gap-2'>
@@ -185,7 +185,7 @@ const LoadingFallback = () => {
   );
 };
 
-const errorFallback = ({ reset }: ErrorBoundaryFallbackProps) => (
+const MyPageErrorFallback = ({ reset }: ErrorBoundaryFallbackProps) => (
   <ErrorFallback className='flex-1'>
     <ErrorFallback.Title>알 수 없는 에러가 발생했습니다</ErrorFallback.Title>
     <ErrorFallback.Description>잠시 후 다시 시도해 주세요</ErrorFallback.Description>

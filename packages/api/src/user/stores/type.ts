@@ -29,14 +29,14 @@ export type Store = z.infer<typeof Store>;
 export const Store = z.object({
   id: z.number(),
   name: z.string(),
-  mainImage: z.string().nullish(),
+  mainImage: z.string().nullable(),
   city: z.string(),
   visitCount: z.number(),
   reviewCount: z.number(),
   averageRating: z.number(),
-  estimatedWaitingTimeMinutes: z.number().nullish(),
-  isBookmarked: z.boolean().nullable(),
-  isFinished: z.boolean().nullable(),
+  estimatedWaitingTimeMinutes: z.number().nullable(),
+  isBookmarked: z.boolean().nullable(), //TODO: DB값 수정 시 타입 변경하기
+  isFinished: z.boolean(),
 });
 
 const StoreImage = z.object({
@@ -47,7 +47,7 @@ const StoreImage = z.object({
 });
 
 export type StoreInfo = z.infer<typeof StoreInfo>;
-export const StoreInfo = Store.extend({
+export const StoreInfo = Store.omit({ mainImage: true }).extend({
   address: z.string(),
   category: z.string(),
   description: z.string(),
