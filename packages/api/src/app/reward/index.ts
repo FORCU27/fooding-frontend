@@ -20,6 +20,6 @@ export const rewardApi = {
     return UserCouponsResponse.parse(response);
   },
   postCoupon: (id: number) => {
-    return api.post(`${ENDPOINT}/coupons/${id}`);
+    return api.post(`${ENDPOINT}/coupons/${id}/request`);
   },
 };
