@@ -1,6 +1,6 @@
 export * from './type';
 
-import { GetStorePostListParams, GetStorePostListResponse } from './type';
+import { GetStorePostByIdResponse, GetStorePostListParams, GetStorePostListResponse } from './type';
 import { api } from '../../shared';
 
 const ENDPOINT = '/user/store-posts';
@@ -12,6 +12,6 @@ export const storePostApi = {
   },
   getStorePostById: async (id: number) => {
     const response = await api.get(`${ENDPOINT}/${id}`);
-    return GetStorePostListResponse.parse(response);
+    return GetStorePostByIdResponse.parse(response);
   },
 };
