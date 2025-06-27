@@ -29,12 +29,12 @@ export type Store = z.infer<typeof Store>;
 export const Store = z.object({
   id: z.number(),
   name: z.string(),
-  mainImage: z.string().nullish(),
+  mainImage: z.string().nullable(),
   city: z.string(),
   visitCount: z.number(),
   reviewCount: z.number(),
   averageRating: z.number(),
-  estimatedWaitingTimeMinutes: z.number().nullish(),
+  estimatedWaitingTimeMinutes: z.number().nullable(),
   isBookmarked: z.boolean().nullable(),
   isFinished: z.boolean().nullable(),
 });
@@ -43,7 +43,7 @@ const StoreImage = z.object({
   id: z.number(),
   imageUrl: z.string(),
   sortOrder: z.number(),
-  tags: z.array(z.string()).optional(),
+  tags: z.array(z.string()).nullable(),
 });
 
 export type StoreInfo = z.infer<typeof StoreInfo>;
@@ -60,7 +60,7 @@ export const StoreInfo = Store.extend({
   isTakeOut: z.boolean(),
   latitude: z.number(),
   longitude: z.number(),
-  images: z.array(StoreImage).optional(),
+  images: z.array(StoreImage).nullable(),
 });
 
 export type GetStoreListParams = {
@@ -124,12 +124,17 @@ export type GetStoreReviewListResponse = z.infer<typeof GetStoreReviewListRespon
 export const GetStoreReviewListResponse = PageResponse(
   z.object({
     reviewId: z.number(),
-    nickname: z.string(),
-    profileUrl: z.string(),
-    imageUrl: z.string(),
+    nickname: z.string().nullable(),
+    profileUrl: z.string().nullable(),
+    imageUrls: z.array(z.string()),
     content: z.string(),
-    score: z.number(),
-    purpose: z.string(),
+    score: z.object({
+      total: z.number(),
+      taste: z.number(),
+      mood: z.number(),
+      service: z.number(),
+    }),
+    purpose: z.enum(VISIT_PURPOSES),
     likeCount: z.number(),
     createdAt: z.iso.datetime({ local: true }),
     updatedAt: z.iso.datetime({ local: true }),
@@ -142,19 +147,19 @@ export const GetStoreOperatingHoursResponse = ApiResponse(
     .object({
       id: z.number(),
       hasHoliday: z.boolean(),
-      regularHolidayType: z.enum(REGULAR_HOLIDAY_TYPES).optional(),
-      regularHoliday: z.enum(DAY_OF_WEEK).optional(),
-      closedNationalHolidays: z.array(z.string()).optional(),
-      customHolidays: z.array(z.iso.date()).optional(),
-      operatingNotes: z.string().optional(),
+      regularHolidayType: z.enum(REGULAR_HOLIDAY_TYPES).nullable(),
+      regularHoliday: z.enum(DAY_OF_WEEK).nullable(),
+      closedNationalHolidays: z.array(z.string()).nullable(),
+      customHolidays: z.array(z.iso.date()).nullable(),
+      operatingNotes: z.string().nullable(),
       dailyOperatingTimes: z.array(
         z.object({
           id: z.number(),
           dayOfWeek: z.enum(DAY_OF_WEEK),
-          openTime: z.iso.time().optional(),
-          closeTime: z.iso.time().optional(),
-          breakStartTime: z.iso.time().optional(),
-          breakEndTime: z.iso.time().optional(),
+          openTime: z.iso.time().nullable(),
+          closeTime: z.iso.time().nullable(),
+          breakStartTime: z.iso.time().nullable(),
+          breakEndTime: z.iso.time().nullable(),
         }),
       ),
     })
@@ -165,17 +170,17 @@ export const GetStoreAdditionalInfoResponse = ApiResponse(
   z
     .object({
       id: z.number(),
-      links: z.array(z.string()).optional(),
+      links: z.array(z.string()).nullable(),
       facilities: z.array(z.string()),
-      paymentMethods: z.array(z.string()).optional(),
+      paymentMethods: z.array(z.string()).nullable(),
       parkingAvailable: z.boolean(),
-      parkingType: z.enum(PARKING_TYPES).optional(),
-      parkingChargeType: z.enum(PARKING_CHARGE_TYPES).optional(),
-      parkingBasicTimeMinutes: z.number().optional(),
-      parkingBasicFee: z.number().optional(),
-      parkingExtraMinutes: z.number().optional(),
-      parkingExtraFee: z.number().optional(),
-      parkingMaxDailyFee: z.number().optional(),
+      parkingType: z.enum(PARKING_TYPES).nullable(),
+      parkingChargeType: z.enum(PARKING_CHARGE_TYPES).nullable(),
+      parkingBasicTimeMinutes: z.number().nullable(),
+      parkingBasicFee: z.number().nullable(),
+      parkingExtraMinutes: z.number().nullable(),
+      parkingExtraFee: z.number().nullable(),
+      parkingMaxDailyFee: z.number().nullable(),
     })
     .nullable(),
 );
