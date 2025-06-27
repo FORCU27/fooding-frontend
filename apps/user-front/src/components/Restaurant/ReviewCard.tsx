@@ -27,7 +27,7 @@ export const ReviewCard = ({ review }: ReviewCardProps) => {
     <div className='w-[350px] flex flex-col rounded-[12px] shrink-0 shadow-[0_4px_16px_rgba(0,0,0,0.05)] bg-white'>
       {review.imageUrl !== null && (
         <div className='relative h-[200px] rounded-t-[12px] overflow-hidden'>
-          <Image fill objectFit='cover' src={review.imageUrl} alt='리뷰 이미지' />
+          <Image fill style={{ objectFit: 'cover' }} src={review.imageUrl} alt='리뷰 이미지' />
         </div>
       )}
       {review.imageUrl === null && (

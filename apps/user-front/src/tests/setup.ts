@@ -1,8 +1,11 @@
+import '@testing-library/jest-dom/vitest';
+
 import { afterAll, afterEach, beforeAll, vi } from 'vitest';
 
+import { mockIntersectionObserver } from './mocks/intersection-observer.mock';
+import { mockMatchMedia } from './mocks/match-media.mock';
+import { mockResizeObserver } from './mocks/resize-observer.mock';
 import { server } from '@/mocks/node';
-
-import '@testing-library/jest-dom/vitest';
 
 beforeAll(() => {
   server.listen();
@@ -11,19 +14,9 @@ beforeAll(() => {
 });
 
 beforeEach(() => {
-  const mockIntersectionObserver = vi.fn();
-
-  mockIntersectionObserver.mockReturnValue({
-    observe: vi.fn(),
-    unobserve: vi.fn(),
-    disconnect: vi.fn(),
-  });
-
-  Object.defineProperty(window, 'IntersectionObserver', {
-    writable: true,
-    configurable: true,
-    value: mockIntersectionObserver,
-  });
+  mockIntersectionObserver();
+  mockResizeObserver();
+  mockMatchMedia();
 });
 
 afterEach(() => server.resetHandlers());

@@ -60,7 +60,7 @@ export const StoreInfo = Store.extend({
   isTakeOut: z.boolean(),
   latitude: z.number(),
   longitude: z.number(),
-  images: z.array(StoreImage).nullable(),
+  images: z.array(StoreImage),
 });
 
 export type GetStoreListParams = {
