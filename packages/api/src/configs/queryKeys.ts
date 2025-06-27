@@ -33,6 +33,9 @@ export const queryKeys = {
       list: 'userStorePostList',
       detail: 'userStorePostDetail',
     },
+    coupon: {
+      infiniteList: 'userCouponInfiniteList',
+    },
   },
   me: {
     user: 'meUser',

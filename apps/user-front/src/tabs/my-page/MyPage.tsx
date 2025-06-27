@@ -82,7 +82,10 @@ const Content = () => {
             <p className='subtitle-6'>5건</p>
           </div>
           <hr className='w-[2px] h-[81px] bg-gray-2 text-gray-2 mx-2' />
-          <div className='flex flex-col justify-center items-center gap-1 cursor-pointer'>
+          <div
+            className='flex flex-col justify-center items-center gap-1 cursor-pointer'
+            onClick={() => flow.push('CouponListScreen', {})}
+          >
             <TicketIcon />
             <p className='body-7 text-gray-5'>쿠폰</p>
             <p className='subtitle-6'>3장</p>
