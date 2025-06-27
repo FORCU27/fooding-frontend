@@ -23,7 +23,7 @@ declare module '@stackflow/config' {
     NotificationListScreen: object;
     StoreDetailScreen: { storeId: number };
     BookmarkListScreen: object;
-    StorePostDetailScreen: object;
+    StorePostDetailScreen: { storePostId: number };
   }
 }
 
@@ -40,7 +40,7 @@ const config = defineConfig({
   ],
 
   transitionDuration: 350,
-  initialActivity: () => 'StorePostDetailScreen',
+  initialActivity: () => 'HomeTab',
 });
 
 export const { Stack } = stackflow({

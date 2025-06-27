@@ -5,6 +5,7 @@ import { Header } from '@/components/Layout/Header';
 import { Screen } from '@/components/Layout/Screen';
 import { StoreTagList } from '@/components/Store/StoreTagList';
 import { useGetStorePostDetail } from '@/hooks/store-post/useGetStorePostDetail';
+import { formatDate } from '@/utils/date';
 
 const mock = {
   tags: ['대표', '공지'],
@@ -39,7 +40,9 @@ const StorePostDetail = ({ storePostId }: StorePostDetailProps) => {
     <div className='flex flex-col px-grid-margin pb-24'>
       <StoreTagList className='mt-5' tags={mock.tags} />
       <h1 className='mt-4 headline-2'>{storePost.title}</h1>
-      <span className='mt-4 body-8 text-gray-5'>{storePost.createdAt}</span>
+      <span className='mt-4 body-8 text-gray-5'>
+        {formatDate(storePost.createdAt, { format: 'dot' })}
+      </span>
       <div className='mt-5 h-[1px] w-full bg-gray-2' />
       {/* TODO: 소식 상세 이미지 추가 */}
       <div className='mt-5 bg-gray-1 rounded-[12px] h-[240px]' />

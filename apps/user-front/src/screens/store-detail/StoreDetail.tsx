@@ -16,8 +16,10 @@ import { Suspense } from '@suspensive/react';
 import useEmblaCarousel from 'embla-carousel-react';
 
 import { StoreDetailHomeTab } from './components/tabs/Home';
+import { StoreDetailPostListTab } from './components/tabs/StorePostList';
 import { LoadingToggle } from '@/components/Devtool/LoadingToggle';
 import { DefaultErrorBoundary } from '@/components/Layout/DefaultErrorBoundary';
+import { FadeIn } from '@/components/Layout/FadeIn';
 import { Header } from '@/components/Layout/Header';
 import { Screen } from '@/components/Layout/Screen';
 import { Section } from '@/components/Layout/Section';
@@ -50,7 +52,9 @@ export const StoreDetailScreen: ActivityComponentType<'StoreDetailScreen'> = ({ 
         </NavButton>
         <LoadingToggle fallback={<StoreDetailLoadingFallback />}>
           <Suspense clientOnly fallback={<StoreDetailLoadingFallback />}>
-            <StoreDetail storeId={params.storeId} showHeader={showHeader} />
+            <FadeIn>
+              <StoreDetail storeId={params.storeId} showHeader={showHeader} />
+            </FadeIn>
           </Suspense>
         </LoadingToggle>
       </DefaultErrorBoundary>
@@ -67,7 +71,7 @@ const StoreDetail = ({ storeId, showHeader }: StoreDetailProps) => {
   const { data: store } = useGetStoreDetail(storeId);
 
   return (
-    <div className='flex flex-col pb-[120px]'>
+    <div className='flex flex-col pb-[120px] min-h-dvh'>
       {showHeader && <Header left={<Header.Back />} title={store.name} />}
       {/* TODO: 공유 기능 추가 */}
       <NavButton className='z-10 absolute right-grid-margin top-3'>
@@ -122,6 +126,9 @@ const StoreDetail = ({ storeId, showHeader }: StoreDetailProps) => {
           <Suspense>
             <ChipTabs.Content value='home'>
               <StoreDetailHomeTab store={store} />
+            </ChipTabs.Content>
+            <ChipTabs.Content value='news'>
+              <StoreDetailPostListTab storeId={storeId} />
             </ChipTabs.Content>
           </Suspense>
         </ChipTabs>

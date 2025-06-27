@@ -11,6 +11,7 @@ import {
 import { ActivityComponentType, useFlow } from '@stackflow/react/future';
 
 import BottomTab from '@/components/Layout/BottomTab';
+import { FadeIn } from '@/components/Layout/FadeIn';
 import { Header } from '@/components/Layout/Header';
 import { Screen } from '@/components/Layout/Screen';
 import { useAuth } from '@/components/Provider/AuthProvider';
@@ -31,7 +32,9 @@ export const MyPageTab: ActivityComponentType<'MyPageTab'> = () => {
       header={<Header title='마이페이지' right={<SettingIcon onClick={handleLogoutClick} />} />}
       bottomTab={<BottomTab currentTab='mypage' />}
     >
-      <Content />
+      <FadeIn>
+        <Content />
+      </FadeIn>
     </Screen>
   );
 };
