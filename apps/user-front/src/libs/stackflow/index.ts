@@ -20,8 +20,8 @@ const config = defineConfig({
     { name: 'ReservationTab' },
     { name: 'MyPageTab' },
     { name: 'NotificationListScreen' },
-    { name: 'StoreDetailScreen' },
     { name: 'BookmarkListScreen' },
+    { name: 'StoreDetailScreen' },
   ],
 
   transitionDuration: 350,
@@ -36,8 +36,8 @@ export const { Stack } = stackflow({
     ReservationTab,
     MyPageTab,
     NotificationListScreen,
-    StoreDetailScreen,
     BookmarkListScreen,
+    StoreDetailScreen,
   },
   plugins: [
     basicRendererPlugin(),
@@ -54,7 +54,7 @@ declare module '@stackflow/config' {
     ReservationTab: object;
     MyPageTab: object;
     NotificationListScreen: object;
-    StoreDetailScreen: { storeId: number };
     BookmarkListScreen: object;
+    StoreDetailScreen: { storeId: number };
   }
 }
