@@ -27,6 +27,7 @@ export const queryKeys = {
       reviewList: 'userStoreReviewList',
       operatingHours: 'userStoreOperatingHours',
       additionalInfo: 'userStoreAdditionalInfo',
+      immediateEntryList: 'userStoreImmediateEntryList',
     },
     storePost: {
       list: 'userStorePostList',

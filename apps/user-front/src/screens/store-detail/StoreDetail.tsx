@@ -16,6 +16,7 @@ import { Suspense } from '@suspensive/react';
 import useEmblaCarousel from 'embla-carousel-react';
 
 import { StoreDetailHomeTab } from './components/tabs/Home';
+import { StoreDetailReviewTab } from './components/tabs/ReviewDetail';
 import { LoadingToggle } from '@/components/Devtool/LoadingToggle';
 import { DefaultErrorBoundary } from '@/components/Layout/DefaultErrorBoundary';
 import { Header } from '@/components/Layout/Header';
@@ -124,6 +125,9 @@ const StoreDetail = ({ storeId, showHeader }: StoreDetailProps) => {
           <Suspense>
             <ChipTabs.Content value='home'>
               <StoreDetailHomeTab store={store} />
+            </ChipTabs.Content>
+            <ChipTabs.Content value='review'>
+              <StoreDetailReviewTab store={store} />
             </ChipTabs.Content>
           </Suspense>
         </ChipTabs>
