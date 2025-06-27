@@ -35,7 +35,7 @@ export const Store = z.object({
   reviewCount: z.number(),
   averageRating: z.number(),
   estimatedWaitingTimeMinutes: z.number().nullable(),
-  isBookmarked: z.boolean().nullable(), //TODO: DB값 수정 시 타입 변경하기
+  isBookmarked: z.boolean(),
   isFinished: z.boolean(),
 });
 
