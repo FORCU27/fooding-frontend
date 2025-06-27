@@ -3,10 +3,9 @@ export * from './type';
 import {
   GetStoresResponse,
   GetStoreServiceListResponse,
-  GetStoresParams,
   CreateStoreWaitingRequest,
   GetStoresWaitingResponse,
-  PostStoreWaitingRequest,
+  PostStoreWaitingResponse,
   GetStoreWaitingOverviewResponse,
 } from './type';
 import { api } from '../../shared';
@@ -33,6 +32,6 @@ export const storeApi = {
 
   createStoreWaiting: async (params: CreateStoreWaitingRequest, storeId: number) => {
     const response = await api.post(`/app/waitings/stores/${storeId}/requests`, params.body);
-    return PostStoreWaitingRequest.parse(response);
+    return PostStoreWaitingResponse.parse(response);
   },
 };

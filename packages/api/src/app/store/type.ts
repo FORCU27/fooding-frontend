@@ -87,12 +87,15 @@ export const GetStoresWaiting = z.object({
 
 export const GetStoresWaitingResponse = ApiResponse(GetStoresWaiting);
 
-export const PostStoreWaitingRequest = z.object({
-  data: z.object({
-    callNumber: z.number(),
-  }),
-  status: z.string(),
+export const PostStoreWaiting = z.object({
+  callNumber: z.number(),
+  waitingTurn: z.number(),
+  expectedTimeMinute: z.number(),
+  recentEntryTimeMinute: z.number(),
 });
+
+export type PostStoreWaiting = z.infer<typeof PostStoreWaiting>;
+export const PostStoreWaitingResponse = ApiResponse(PostStoreWaiting);
 
 export const CreateStoreWaitingRequestBody = z.object({
   name: z.string(),

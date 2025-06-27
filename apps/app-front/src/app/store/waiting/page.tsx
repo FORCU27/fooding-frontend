@@ -8,6 +8,7 @@ import {
   GetStoreWaitingOverviewResponse,
   GetStoreWaitingOverviewType,
   GetStoreWaitingOverviewResult,
+  PostStoreWaiting,
 } from '@repo/api/app';
 import { storeApi, userApi } from '@repo/api/app';
 import { queryKeys } from '@repo/api/configs/query-keys';
@@ -168,16 +169,19 @@ export default function WaitingPage() {
   const { storeId } = useStore();
   const queryClient = useQueryClient();
   const [error, setError] = useState<string | null>(null);
+  const [completeData, setCompleteData] = useState<PostStoreWaiting | null>(null);
 
   const { mutate: submitWaiting, data: mutationResponse } = useMutation({
     mutationFn: (formData: WaitingRegisterData) =>
       storeApi.createStoreWaiting({ body: formData }, storeId),
-    onSuccess: () => {
+    onSuccess: (data) => {
+      console.log('data', data);
+      setCompleteData(data.data);
       resetFormData();
       setIsModalOpen(false);
       setOpenComplete(true);
       queryClient.invalidateQueries({
-        queryKey: [queryKeys.store.waiting, storeId, 'WAITING'],
+        queryKey: [queryKeys.store.waitingOverview, storeId],
       });
     },
     onError: (error) => {
@@ -187,7 +191,7 @@ export default function WaitingPage() {
   });
 
   const { data: waitingOverview } = useQuery({
-    queryKey: [queryKeys.store.waiting, storeId, 'WAITING_OVERVIEW'],
+    queryKey: [queryKeys.store.waitingOverview, storeId],
     queryFn: () => storeApi.getStoreWaitingOverview({ id: storeId }),
     enabled: !!storeId,
   });
@@ -319,7 +323,7 @@ export default function WaitingPage() {
           />
         </FullScreenPanel>
       )}
-      {openComplete && (
+      {openComplete && completeData && (
         <CompleteStep
           onClose={() => {
             setOpenComplete(false);
@@ -327,7 +331,7 @@ export default function WaitingPage() {
             resetFormData();
             setStep('phone');
           }}
-          waitingList={waitingResponse?.data?.list || []}
+          waitingList={completeData}
           currentWaiting={mutationResponse?.data}
         />
       )}
