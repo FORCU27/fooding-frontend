@@ -13,7 +13,7 @@ import { setSelectedStoreId } from '@/services/locale';
 
 export default function StoreSelectPage() {
   const router = useRouter();
-  const { data: user, error: userError } = useQuery({
+  const { data: user } = useQuery({
     queryKey: [queryKeys.me.user],
     queryFn: () => userApi.getUser(),
   });

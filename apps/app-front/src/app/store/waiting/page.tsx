@@ -3,14 +3,8 @@
 import Image from 'next/image';
 import React, { useState } from 'react';
 
-import {
-  GetWaitingDetailResponse,
-  GetStoreWaitingOverviewResponse,
-  GetStoreWaitingOverviewType,
-  GetStoreWaitingOverviewResult,
-  PostStoreWaiting,
-} from '@repo/api/app';
-import { storeApi, userApi } from '@repo/api/app';
+import { GetStoreWaitingOverviewResult, PostStoreWaiting } from '@repo/api/app';
+import { storeApi } from '@repo/api/app';
 import { queryKeys } from '@repo/api/configs/query-keys';
 import { useQuery, useQueryClient, useMutation } from '@tanstack/react-query';
 
@@ -22,7 +16,6 @@ import FullScreenPanel from '@/components/FullScreenPanel';
 import Modal from '@/components/Modal';
 import { useStore } from '@/components/Provider/StoreClientProvider';
 import TermsAgreement from '@/components/TermsAgreement';
-import { C } from 'vitest/dist/chunks/reporters.d.C-cu31ET.js';
 
 const Logo = () => (
   <div className='absolute top-10 right-20'>
