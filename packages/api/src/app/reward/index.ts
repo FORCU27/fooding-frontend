@@ -19,4 +19,7 @@ export const rewardApi = {
     const response = await api.get(`${ENDPOINT}/coupons`, { params });
     return UserCouponsResponse.parse(response);
   },
+  postCoupon: (id: number) => {
+    return api.post(`${ENDPOINT}/coupons/${id}/request`);
+  },
 };

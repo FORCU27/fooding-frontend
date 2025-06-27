@@ -1,6 +1,6 @@
 'use client';
-
 import { useSearchParams } from 'next/navigation';
+import { useState } from 'react';
 
 import { rewardApi, userApi, UserCouponsResponse, UserRewardLogsResponse } from '@repo/api/app';
 import { queryKeys } from '@repo/api/configs/query-keys';
@@ -11,6 +11,7 @@ import z from 'zod';
 import { REWARD_MAIN_TABS, REWARD_SUB_TABS } from '../types';
 import CouponList from './components/CouponList';
 import CouponSubTab from './components/CouponSubTab';
+import CouponUseModal from './components/CouponUseModal';
 import MainTab from './components/MainTab';
 import RewardHistory from './components/RewardHistory';
 import { useStore } from '@/components/Provider/StoreClientProvider';
@@ -19,6 +20,7 @@ const MainTabSearchParam = z.enum(REWARD_MAIN_TABS).catch('coupon');
 const SubTabSearchParam = z.enum(REWARD_SUB_TABS).catch('available');
 
 export default function RewardUsePage() {
+  const [selectedCouponId, setSelectedCouponId] = useState<number | null>(null);
   const searchParams = useSearchParams();
   const mainTab = MainTabSearchParam.parse(searchParams.get('tab'));
   const subTab = SubTabSearchParam.parse(searchParams.get('sub'));
@@ -40,9 +42,10 @@ export default function RewardUsePage() {
   };
 
   const {
-    data: couponData,
+    data: coupons,
     isLoading: isCouponLoading,
     isError: isCouponError,
+    refetch: refetchCoupons,
   } = useQuery<UserCouponsResponse>({
     queryKey: [queryKeys.app.reward.coupons, subTab],
     queryFn: () =>
@@ -63,6 +66,18 @@ export default function RewardUsePage() {
     enabled: !!storeId && !!phoneNumber && mainTab === 'history',
   });
 
+  const handleClickCoupon = async () => {
+    try {
+      await rewardApi.postCoupon(Number(selectedCouponId));
+      alert('쿠폰이 사용되었습니다.');
+      await refetchCoupons();
+      setSelectedCouponId(null);
+    } catch (error) {
+      console.error('쿠폰 사용 중 오류 발생:', error);
+      alert('쿠폰 사용에 실패했습니다. 잠시 후 다시 시도해주세요.');
+    }
+  };
+
   return (
     <div>
       <header className='relative w-full bg-primary-pink flex py-[38px]'>
@@ -79,9 +94,10 @@ export default function RewardUsePage() {
         <main className='flex flex-col gap-[30px] pt-[30px] px-[70px]'>
           <CouponSubTab activeSubTab={subTab} />
           <CouponList
-            list={couponData?.data.list ?? []}
+            list={coupons?.data.list ?? []}
             isLoading={isCouponLoading}
             isError={isCouponError}
+            setSelectedCouponId={(id: number) => setSelectedCouponId(id)}
           />
         </main>
       )}
@@ -92,6 +108,11 @@ export default function RewardUsePage() {
           isError={isLogError}
         />
       )}
+      <CouponUseModal
+        open={selectedCouponId !== null}
+        onClose={() => setSelectedCouponId(null)}
+        onConfirm={handleClickCoupon}
+      />
     </div>
   );
 }
