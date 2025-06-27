@@ -86,7 +86,6 @@ export const mockStoreByIdResponse: GetStoreByIdResponse = {
   data: {
     id: 1,
     name: '홍길동 식당',
-    mainImage: null,
     city: '합정',
     address: '서울특별시 마포구',
     category: '한식',
@@ -138,7 +137,7 @@ export const mockStoreReviewListResponse: GetStoreReviewListResponse = {
         content:
           '잘먹었습니다. 감사합니다. 단골인데 항상 챙겨주시고 사장님도 너무 친절해요~^^ 어쩌구 저쩌구 너무 맛잇고 맛좋코 또 오고싶고 어쩌ㅇ구쩌구...',
         profileUrl: 'https://example.com/profile.jpg',
-        imageUrls: [MENU_IMAGE_URL],
+        imageUrl: MENU_IMAGE_URL,
         likeCount: 10,
         nickname: '민수엄마',
         purpose: 'BUSINESS',

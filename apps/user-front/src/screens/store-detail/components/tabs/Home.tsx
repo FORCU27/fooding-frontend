@@ -1,4 +1,4 @@
-import { mockStoreListResponse, StoreInfo } from '@repo/api/user';
+import { StoreInfo } from '@repo/api/user';
 import { Button, EmptyState } from '@repo/design-system/components/b2c';
 import {
   ClockIcon,
@@ -9,10 +9,11 @@ import {
 } from '@repo/design-system/icons';
 
 import { Section } from '@/components/Layout/Section';
-import { MenuCard } from '@/components/Restaurant/MenuCard';
-import { RestaurantsListSection } from '@/components/Restaurant/RestaurantsListSection';
-import { ReviewCard } from '@/components/Restaurant/ReviewCard';
+import { MenuCard } from '@/components/Store/MenuCard';
+import { ReviewsList } from '@/components/Store/ReviewsList';
+import { StoresList } from '@/components/Store/StoresList';
 import { SubwayLineBadge } from '@/components/SubwayLineBadge';
+import { useGetStoreList } from '@/hooks/store/useGetStoreList';
 import { useGetStoreMenuList } from '@/hooks/store/useGetStoreMenuList';
 import { useGetStoreReviewList } from '@/hooks/store/useGetStoreReviewList';
 import { noop } from '@/utils/noop';
@@ -32,6 +33,7 @@ type StoreDetailHomeTabProps = {
 export const StoreDetailHomeTab = ({ store }: StoreDetailHomeTabProps) => {
   const { data: storeMenus } = useGetStoreMenuList(store.id);
   const { data: storeReviews } = useGetStoreReviewList(store.id);
+  const { data: stores } = useGetStoreList({ sortType: 'RECENT' });
 
   return (
     <div className='flex flex-col'>
@@ -44,7 +46,7 @@ export const StoreDetailHomeTab = ({ store }: StoreDetailHomeTabProps) => {
           <ClockIcon className='size-[18px] stroke-1' />
           {!mock.isFinished && (
             <button className='flex items-center h-[26px] subtitle-7 text-white bg-gradient-to-r from-[#35FFBF] to-[#6CB8FF] rounded-full px-[10px]'>
-              영엄중
+              영업중
             </button>
           )}
           {mock.operatingHours}
@@ -82,7 +84,7 @@ export const StoreDetailHomeTab = ({ store }: StoreDetailHomeTabProps) => {
         <Section.Header>
           <Section.Title className='flex items-center gap-1'>
             리뷰
-            <span className='subtitle-6 text-gray-5'>({store.reviewCount})</span>
+            <span className='subtitle-6 text-gray-5'>({storeReviews.list.length})</span>
           </Section.Title>
           {storeReviews.list.length > 0 && <Section.Link>더보기</Section.Link>}
         </Section.Header>
@@ -91,19 +93,7 @@ export const StoreDetailHomeTab = ({ store }: StoreDetailHomeTabProps) => {
         )}
         {storeReviews.list.length > 0 && (
           <ul className='mt-6 flex gap-3 -mx-grid-margin overflow-x-auto scrollbar-hide px-grid-margin pb-8'>
-            {storeReviews.list.map((review) => (
-              <ReviewCard
-                key={review.reviewId}
-                review={{
-                  content: review.content,
-                  nickname: review.nickname,
-                  profileUrl: review.profileUrl,
-                  imageUrl: review.imageUrls[0] ?? null,
-                  score: review.score.total,
-                  createdAt: review.createdAt,
-                }}
-              />
-            ))}
+            <ReviewsList reviews={storeReviews.list || []} />
           </ul>
         )}
       </Section>
@@ -131,15 +121,15 @@ export const StoreDetailHomeTab = ({ store }: StoreDetailHomeTabProps) => {
       </Section>
       <div className='mt-[10px]'>
         {/* TODO: 다른사람이 함께 본 식당 목록 조회 기능 추가 */}
-        <RestaurantsListSection
+        <StoresList
           subtitle='다른사람이 함께 본 비슷한 식당'
-          items={mockStoreListResponse.data.list}
+          stores={stores.list}
           onClickTotalBtn={noop}
         />
         {/* TODO: 지금 바로 입장 가능한 식당 목록 조회 기능 추가 */}
-        <RestaurantsListSection
+        <StoresList
           subtitle='지금 바로 입장하실 수 있어요!'
-          items={mockStoreListResponse.data.list}
+          stores={stores.list}
           onClickTotalBtn={noop}
         />
       </div>

@@ -141,15 +141,7 @@ export type PaginatedResponseType<T extends z.ZodTypeAny> = z.infer<
   ReturnType<typeof PaginatedResponse<T>>
 >;
 
-export const SORT_TYPES = [
-  'RECENT',
-  'AVERAGE_RATING',
-  'VISIT',
-  'REVIEW',
-  'RECENT',
-  'AVERAGE_RATING',
-  'POPULARITY',
-] as const;
+export const SORT_TYPES = ['RECENT', 'AVERAGE_RATING', 'REVIEW', 'POPULARITY'] as const;
 export type SortType = (typeof SORT_TYPES)[number];
 
 export const SORT_DIRECTIONS = ['ASCENDING', 'DESCENDING'] as const;

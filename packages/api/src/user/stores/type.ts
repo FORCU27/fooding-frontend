@@ -34,8 +34,8 @@ export const Store = z.object({
   reviewCount: z.number(),
   averageRating: z.number(),
   estimatedWaitingTimeMinutes: z.number().nullable(),
-  isBookmarked: z.boolean().nullable(),
-  isFinished: z.boolean().nullable(),
+  isBookmarked: z.boolean(),
+  isFinished: z.boolean(),
 });
 
 const StoreImage = z.object({
@@ -46,12 +46,12 @@ const StoreImage = z.object({
 });
 
 export type StoreInfo = z.infer<typeof StoreInfo>;
-export const StoreInfo = Store.extend({
+export const StoreInfo = Store.omit({ mainImage: true }).extend({
   address: z.string(),
   category: z.string(),
   description: z.string(),
   priceCategory: z.string(),
-  eventDescription: z.string(),
+  eventDescription: z.string().optional(),
   contactNumber: z.string(),
   direction: z.string(),
   isParkingAvailable: z.boolean(),
@@ -59,7 +59,7 @@ export const StoreInfo = Store.extend({
   isTakeOut: z.boolean(),
   latitude: z.number(),
   longitude: z.number(),
-  images: z.array(StoreImage).nullable(),
+  images: z.array(StoreImage),
 });
 
 export type GetStoreListParams = {
@@ -69,6 +69,25 @@ export type GetStoreListParams = {
   sortType?: SortType;
   sortDirection?: SortDirection;
 };
+
+export type Review = z.infer<typeof Review>;
+export const Review = z.object({
+  reviewId: z.number(),
+  nickname: z.string().nullable(),
+  profileUrl: z.string().nullable(),
+  imageUrl: z.string().nullish(),
+  content: z.string(),
+  score: z.object({
+    total: z.number(),
+    taste: z.number(),
+    mood: z.number(),
+    service: z.number(),
+  }),
+  purpose: z.string(),
+  likeCount: z.number(),
+  createdAt: z.iso.datetime({ local: true }),
+  updatedAt: z.iso.datetime({ local: true }),
+});
 
 export type GetStoreReviewListRequest = {
   id: number;
@@ -124,25 +143,7 @@ export const GetStoreMenuListResponse = ApiResponse(
 );
 
 export type GetStoreReviewListResponse = z.infer<typeof GetStoreReviewListResponse>;
-export const GetStoreReviewListResponse = PageResponse(
-  z.object({
-    reviewId: z.number(),
-    nickname: z.string().nullable(),
-    profileUrl: z.string().nullable(),
-    imageUrls: z.array(z.string()),
-    content: z.string(),
-    score: z.object({
-      total: z.number(),
-      taste: z.number(),
-      mood: z.number(),
-      service: z.number(),
-    }),
-    purpose: z.enum(VISIT_PURPOSES),
-    likeCount: z.number(),
-    createdAt: z.iso.datetime({ local: true }),
-    updatedAt: z.iso.datetime({ local: true }),
-  }),
-);
+export const GetStoreReviewListResponse = PageResponse(Review);
 
 export type GetStoreOperatingHoursResponse = z.infer<typeof GetStoreOperatingHoursResponse>;
 export const GetStoreOperatingHoursResponse = ApiResponse(
