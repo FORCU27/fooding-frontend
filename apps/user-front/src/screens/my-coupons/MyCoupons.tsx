@@ -1,3 +1,5 @@
+'use client';
+
 import { useState } from 'react';
 
 import { CouponStatus } from '@repo/api/user';
@@ -10,6 +12,7 @@ import { IntersectionObserver } from '@/components/IntersectionObserver';
 import { DefaultErrorBoundary } from '@/components/Layout/DefaultErrorBoundary';
 import { Header } from '@/components/Layout/Header';
 import { Screen } from '@/components/Layout/Screen';
+import { useApplyCoupon } from '@/hooks/coupon/useApplyCoupon';
 import { useGetInfiniteMyCouponList } from '@/hooks/coupon/useGetMyCouponList';
 
 const COUPONT_LIST_TYPES = ['available', 'used'] as const;
@@ -20,7 +23,7 @@ const couponListTabLabel: Record<CouponListType, string> = {
   used: '사용 완료 쿠폰',
 };
 
-export const CouponListScreen: ActivityComponentType<'CouponListScreen'> = () => {
+export const MyCouponListScreen: ActivityComponentType<'MyCouponListScreen'> = () => {
   return (
     <Screen className='bg-gray-1' header={<Header left={<Header.Back />} title='쿠폰함' />}>
       <Tabs defaultValue={COUPONT_LIST_TYPES[0]} className='flex-1 flex flex-col'>
@@ -33,7 +36,7 @@ export const CouponListScreen: ActivityComponentType<'CouponListScreen'> = () =>
         </Tabs.List>
         {COUPONT_LIST_TYPES.map((type, index) => (
           <DefaultErrorBoundary key={index}>
-            <Suspense>
+            <Suspense clientOnly>
               <Tabs.Content value={type} className='flex-1 flex flex-col'>
                 <CouponList type={type} />
               </Tabs.Content>
@@ -102,7 +105,7 @@ const CouponCard = ({ coupon }: CouponCardProps) => {
         <div className='size-[60px] rounded-[8px] bg-gray-100' />
       </div>
 
-      <UseCouponDialog trigger={<Button className='mt-5'>사용하기</Button>} coupon={coupon} />
+      <ApplyCouponDialog trigger={<Button className='mt-5'>사용하기</Button>} coupon={coupon} />
     </li>
   );
 };
@@ -136,40 +139,85 @@ const CouponDetailDialog = ({ trigger }: CouponDetailDialogProps) => {
   );
 };
 
-type UseCouponDialogProps = {
+type ApplyCouponDialogProps = {
   trigger: React.ReactNode;
   coupon: CouponCardProps['coupon'];
 };
 
-const UseCouponDialog = ({ trigger, coupon }: UseCouponDialogProps) => {
-  const [tableNumber, setTableNumber] = useState('');
-
-  console.log(coupon);
-
+const ApplyCouponDialog = ({ trigger, coupon }: ApplyCouponDialogProps) => {
   return (
     <Dialog>
       <Dialog.Trigger asChild>{trigger}</Dialog.Trigger>
-      <Dialog.Content>
-        <Dialog.Header>
-          <Dialog.Title className='text-center'>쿠폰 사용</Dialog.Title>
-          <Dialog.Description className='sr-only'>쿠폰 사용</Dialog.Description>
-        </Dialog.Header>
-        <Dialog.Body>
-          <Input
-            value={tableNumber}
-            onChange={(e) => setTableNumber(e.target.value)}
-            placeholder='테이블 번호를 입력해주세요'
-          />
-        </Dialog.Body>
-        <Dialog.Footer className='gap-[10px]'>
-          <Dialog.Close asChild>
-            <Button className='w-[136px]' variant='outlined'>
-              취소
-            </Button>
-          </Dialog.Close>
-          <Button disabled={tableNumber.length === 0}>사용하기</Button>
-        </Dialog.Footer>
+      <Dialog.Content className='w-[400px]'>
+        <ApplyCouponDialogContent coupon={coupon} />
       </Dialog.Content>
     </Dialog>
+  );
+};
+
+type ApplyCouponDialogContentProps = {
+  coupon: CouponCardProps['coupon'];
+};
+
+const ApplyCouponDialogContent = ({ coupon }: ApplyCouponDialogContentProps) => {
+  const [tableNumber, setTableNumber] = useState('');
+  const [success, setSuccess] = useState(false);
+
+  const { mutate: applyCoupon, isPending } = useApplyCoupon();
+
+  const onApplyButtonClick = () => {
+    if (isPending) return;
+
+    applyCoupon(coupon.id, {
+      onSuccess: () => {
+        setSuccess(true);
+      },
+      onError: () => {
+        // TODO: 에러 처리
+      },
+    });
+  };
+
+  return (
+    <>
+      {!success && (
+        <>
+          <Dialog.Header>
+            <Dialog.Title className='text-center'>쿠폰 사용</Dialog.Title>
+            <Dialog.Description className='sr-only'>쿠폰 사용</Dialog.Description>
+          </Dialog.Header>
+          <Dialog.Body>
+            <Input
+              value={tableNumber}
+              onChange={(e) => setTableNumber(e.target.value)}
+              placeholder='테이블 번호를 입력해주세요'
+            />
+          </Dialog.Body>
+          <Dialog.Footer className='gap-[10px]'>
+            <Dialog.Close asChild>
+              <Button className='w-[136px]' variant='outlined'>
+                취소
+              </Button>
+            </Dialog.Close>
+            <Button onClick={onApplyButtonClick} disabled={tableNumber.length === 0}>
+              사용하기
+            </Button>
+          </Dialog.Footer>
+        </>
+      )}
+      {success && (
+        <>
+          <Dialog.Header>
+            <Dialog.Title>쿠폰이 사용되었습니다!</Dialog.Title>
+          </Dialog.Header>
+          <Dialog.Body></Dialog.Body>
+          <Dialog.Footer>
+            <Dialog.Close asChild>
+              <Button>확인</Button>
+            </Dialog.Close>
+          </Dialog.Footer>
+        </>
+      )}
+    </>
   );
 };

@@ -6,7 +6,7 @@ import { basicRendererPlugin } from '@stackflow/plugin-renderer-basic';
 import { stackflow } from '@stackflow/react/future';
 
 import { BookmarkListScreen } from '@/screens/bookmarks/Bookmarks';
-import { CouponListScreen } from '@/screens/coupons/Coupons';
+import { MyCouponListScreen } from '@/screens/my-coupons/MyCoupons';
 import { NotificationListScreen } from '@/screens/notifications/Notifications';
 import { StoreDetailScreen } from '@/screens/store-detail/StoreDetail';
 import { HomeTab } from '@/tabs/home/Home';
@@ -23,11 +23,11 @@ const config = defineConfig({
     { name: 'NotificationListScreen' },
     { name: 'StoreDetailScreen' },
     { name: 'BookmarkListScreen' },
-    { name: 'CouponListScreen' },
+    { name: 'MyCouponListScreen' },
   ],
 
   transitionDuration: 350,
-  initialActivity: () => 'HomeTab',
+  initialActivity: () => 'MyCouponListScreen',
 });
 
 export const { Stack } = stackflow({
@@ -40,7 +40,7 @@ export const { Stack } = stackflow({
     NotificationListScreen,
     StoreDetailScreen,
     BookmarkListScreen,
-    CouponListScreen,
+    MyCouponListScreen,
   },
   plugins: [
     basicRendererPlugin(),
@@ -59,6 +59,6 @@ declare module '@stackflow/config' {
     NotificationListScreen: object;
     StoreDetailScreen: { storeId: number };
     BookmarkListScreen: object;
-    CouponListScreen: object;
+    MyCouponListScreen: object;
   }
 }

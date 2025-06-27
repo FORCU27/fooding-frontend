@@ -10,7 +10,7 @@ export const couponApi = {
     const response = await api.get(ENDPOINT, { params });
     return GetMyCouponListResponse.parse(response);
   },
-  useCoupon: async (id: number) => {
+  applyCoupon: async (id: number) => {
     await api.post(`${ENDPOINT}/${id}/request`);
   },
 };
