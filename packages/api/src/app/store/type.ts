@@ -43,7 +43,7 @@ export const StoreServiceItem = z.object({
   storeName: z.string(),
   type: z.string(),
   activation: z.boolean(),
-  createdAt: z.iso.datetime({ local: true }),
+  createdAt: z.string(),
   endedAt: z.string().nullable(),
 });
 
