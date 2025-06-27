@@ -6,8 +6,8 @@ import { formatRelativeTime } from '@/utils/date';
 
 type ReviewCardProps = {
   review: {
-    nickname: string;
-    profileUrl: string;
+    nickname: string | null;
+    profileUrl: string | null;
     imageUrl: string | null;
     content: string;
     score: number;
@@ -40,7 +40,10 @@ export const ReviewCard = ({ review }: ReviewCardProps) => {
           {/* TODO: 프로필 이미지 추가 */}
           <div className='size-[56px] bg-gray-1 rounded-full' />
           <div className='ml-3  flex flex-col justify-center flex-1'>
-            <span className='subtitle-3 text-black'>{review.nickname}</span>
+            {/* TODO: 닉네임이 없을 경우 어떻게 표시하는지 확인 */}
+            {review.nickname !== null && (
+              <span className='subtitle-3 text-black'>{review.nickname}</span>
+            )}
             <span className='flex items-center mt-1 body-7 text-gray-5'>
               리뷰 {mock.author.reviewCount}
             </span>
