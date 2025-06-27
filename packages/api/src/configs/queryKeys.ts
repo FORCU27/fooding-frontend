@@ -9,7 +9,6 @@ export const queryKeys = {
       waitingOverview: 'waitingOverview',
       storeInfo: 'storeStoreInfo',
       stores: 'storeStores',
-      waitingOverview: 'waitingOverview',
     },
     reward: {
       log: 'getLog',
