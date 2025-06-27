@@ -74,8 +74,8 @@ const StoreDetail = ({ storeId, showHeader }: StoreDetailProps) => {
       <NavButton className='z-10 absolute right-grid-margin top-3'>
         <ShareIcon className='size-5' />
       </NavButton>
-      {(!store.images || store.images.length === 0) && <StoreImagePlaceholder />}
-      {store.images && store.images.length > 0 && (
+      {store.images.length === 0 && <StoreImagePlaceholder />}
+      {store.images.length > 0 && (
         <Carousel imageUrls={store.images.map((image) => image.imageUrl)} />
       )}
       <Section className='pt-[30px] pb-[20px]'>
@@ -84,7 +84,9 @@ const StoreDetail = ({ storeId, showHeader }: StoreDetailProps) => {
           <span className='mx-[6px] w-[1px] h-[12px] bg-[#76767630]' />
           {store.category}
         </span>
-        <h1 className='mt-[10px] headline-2 text-black'>{store.name}</h1>
+        <h1 className='mt-[10px] headline-2 text-black' data-testid='store-name'>
+          {store.name}
+        </h1>
         <div className='mt-3 flex items-center'>
           <div className='flex items-center gap-1'>
             <StarIcon className='stroke-fooding-yellow fill-fooding-yellow' />
@@ -279,7 +281,7 @@ const Carousel = ({ imageUrls }: CarouselProps) => {
               aria-roledescription='slide'
               className='h-[280px] min-w-0 shrink-0 grow-0 basis-full relative'
             >
-              <Image fill objectFit='cover' src={imageUrl} alt='메뉴 이미지' />
+              <Image fill style={{ objectFit: 'cover' }} src={imageUrl} alt='메뉴 이미지' />
             </div>
           ))}
         </div>
