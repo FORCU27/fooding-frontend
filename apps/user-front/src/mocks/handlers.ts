@@ -1,4 +1,9 @@
-import { mockNotificationListResponse } from '@repo/api/user';
+import {
+  mockNotificationListResponse,
+  mockStoreByIdResponse,
+  mockStoreMenuListResponse,
+  mockStoreReviewListResponse,
+} from '@repo/api/user';
 import { http, HttpResponse } from 'msw';
 
 export const handlers = [
@@ -11,5 +16,14 @@ export const handlers = [
         sortDirection: 'DESCENDING',
       }),
     );
+  }),
+  http.get<{ id: string }>('/user/stores/:id', () => {
+    return HttpResponse.json(mockStoreByIdResponse);
+  }),
+  http.get<{ id: string }>('/user/stores/:id/menus', () => {
+    return HttpResponse.json(mockStoreMenuListResponse);
+  }),
+  http.get<{ id: string }>('/user/stores/:id/reviews', () => {
+    return HttpResponse.json(mockStoreReviewListResponse);
   }),
 ];
