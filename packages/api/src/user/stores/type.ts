@@ -36,6 +36,7 @@ export const Store = z.object({
   estimatedWaitingTimeMinutes: z.number().nullable(),
   isBookmarked: z.boolean(),
   isFinished: z.boolean(),
+  mainImage: z.string().nullable(),
 });
 
 const StoreImage = z.object({

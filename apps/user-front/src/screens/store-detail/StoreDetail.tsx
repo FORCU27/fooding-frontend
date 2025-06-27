@@ -16,8 +16,8 @@ import { Suspense } from '@suspensive/react';
 import useEmblaCarousel from 'embla-carousel-react';
 
 import { StoreDetailHomeTab } from './components/tabs/Home';
-import { StoreDetailPostListTab } from './components/tabs/StorePostList';
 import { StoreDetailReviewTab } from './components/tabs/ReviewDetail';
+import { StoreDetailPostListTab } from './components/tabs/StorePostList';
 import { LoadingToggle } from '@/components/Devtool/LoadingToggle';
 import { DefaultErrorBoundary } from '@/components/Layout/DefaultErrorBoundary';
 import { FadeIn } from '@/components/Layout/FadeIn';

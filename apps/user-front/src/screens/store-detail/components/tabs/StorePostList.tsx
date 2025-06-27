@@ -15,7 +15,7 @@ export const StoreDetailPostListTab = ({ storeId }: StoreDetailPostListTabProps)
   });
 
   if (storePosts.length === 0) {
-    return <EmptyState className='my-[120px]' title='등록된 가게 소식이 없어요.' />;
+    return <EmptyState className='h-[120px]' title='등록된 가게 소식이 없어요.' />;
   }
 
   return (
