@@ -1,4 +1,4 @@
-import { z } from 'zod';
+import { z } from 'zod/v4';
 
 import { ApiResponse } from '../../shared';
 
@@ -20,7 +20,7 @@ export const User = z.object({
   referralCode: z.string().nullable(),
   profileImage: z.string().nullable(),
   loginCount: z.number(),
-  lastLoggedInAt: z.string(),
+  lastLoggedInAt: z.string().nullable(),
   termsAgreed: z.boolean(),
   termsAgreedAt: z.string(),
   privacyPolicyAgreed: z.boolean(),
@@ -33,6 +33,7 @@ export const User = z.object({
 export type User = z.infer<typeof User>;
 
 export const GetUserResponse = ApiResponse(User);
+export type GetUserResponse = z.infer<typeof GetUserResponse>;
 
 export const AppStoreService = z.object({
   id: z.number(),

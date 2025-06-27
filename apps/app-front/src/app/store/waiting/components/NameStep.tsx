@@ -1,8 +1,7 @@
-import { WaitingRegisterData, UpdateWaitingRegisterData, StepProps } from '../types';
+import { StepProps } from '../types';
 import Button from '@/components/Button';
 
-export function NameStep({ formData, updateFormData, onNext, onPrev, onClickComplete }: StepProps) {
-  const { name } = formData;
+export function NameStep({ formData, updateFormData, onClickComplete }: StepProps) {
   const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     updateFormData('name', e.target.value);
   };

@@ -10,6 +10,7 @@ interface AuthContextType {
   user: AuthLoginUser | null;
   login: (credentials: AuthLoginBody) => Promise<void>;
   socialLogin: (credentials: AuthSocialLoginBody) => Promise<void>;
+  logout: () => void;
   isLoading: boolean;
 }
 
@@ -22,8 +23,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     const initializeAuth = async () => {
       try {
-        const accessToken =
-          Cookies.get(STORAGE_KEYS.ACCESS_TOKEN) || localStorage.getItem(STORAGE_KEYS.ACCESS_TOKEN);
+        const accessToken = Cookies.get(STORAGE_KEYS.ACCESS_TOKEN);
 
         if (!accessToken) {
           setUser(null);
@@ -31,11 +31,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         }
 
         const response = await authApi.getSelf();
-        if (response.status !== 'OK') {
-          throw new Error(`Get user failed: ${response.status}`);
-        }
+
         setUser(response.data);
-      } catch (error) {
+      } catch {
         setUser(null);
         Cookies.remove(STORAGE_KEYS.ACCESS_TOKEN);
         Cookies.remove(STORAGE_KEYS.REFRESH_TOKEN);
@@ -80,14 +78,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     try {
       setIsLoading(true);
       const response = await authApi.socialLogin(credentials);
-      if (response.status !== 'OK') {
-        throw new Error(`Social login failed: ${response.status}`);
-      }
 
       const { accessToken, refreshToken, expiredIn, refreshExpiredIn } = response.data;
-      if (!accessToken || !refreshToken) {
-        throw new Error('Tokens are missing in response');
-      }
 
       Cookies.set(STORAGE_KEYS.ACCESS_TOKEN, accessToken, {
         path: '/',
@@ -101,7 +93,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         sameSite: 'lax',
         expires: new Date(Date.now() + refreshExpiredIn),
       });
+
       const userResponse = await authApi.getSelf();
+
       setUser(userResponse.data);
     } catch (error) {
       console.error('Social login failed:', error);
@@ -110,11 +104,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   };
 
+  const logout = () => {
+    Cookies.remove(STORAGE_KEYS.ACCESS_TOKEN);
+    Cookies.remove(STORAGE_KEYS.REFRESH_TOKEN);
+    setUser(null);
+  };
+
   return (
     <AuthContext.Provider
       value={{
         user,
         login,
+        logout,
         socialLogin,
         isLoading,
       }}
