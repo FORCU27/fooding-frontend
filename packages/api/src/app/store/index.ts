@@ -32,7 +32,7 @@ export const storeApi = {
   },
 
   createStoreWaiting: async (params: CreateStoreWaitingRequest, storeId: number) => {
-    const response = await api.post(`/app/waitings/${storeId}/requests`, params.body);
+    const response = await api.post(`/app/waitings/stores/${storeId}/requests`, params.body);
     return PostStoreWaitingRequest.parse(response);
   },
 };
