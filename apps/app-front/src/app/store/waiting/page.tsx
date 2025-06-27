@@ -1,7 +1,7 @@
 'use client';
 
 import Image from 'next/image';
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 
 import {
   GetWaitingDetailResponse,
@@ -181,7 +181,7 @@ export default function WaitingPage() {
       setIsModalOpen(false);
       setOpenComplete(true);
       queryClient.invalidateQueries({
-        queryKey: [queryKeys.store.waitingOverview, storeId],
+        queryKey: [queryKeys.app.store.waitingOverview, storeId],
       });
     },
     onError: (error) => {
@@ -191,7 +191,7 @@ export default function WaitingPage() {
   });
 
   const { data: waitingOverview } = useQuery({
-    queryKey: [queryKeys.store.waitingOverview, storeId],
+    queryKey: [queryKeys.app.store.waitingOverview, storeId],
     queryFn: () => storeApi.getStoreWaitingOverview({ id: storeId }),
     enabled: !!storeId,
   });

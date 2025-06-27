@@ -1,22 +1,33 @@
-import Image from 'next/image';
+import { ChevronLeftIcon } from '@repo/design-system/icons';
 
-import { SearchInput } from '@repo/design-system/components/b2c';
-import { BellIcon, BookmarkIcon } from '@repo/design-system/icons';
+import { Pop } from '@/libs/stackflow/Pop';
 
-function Header() {
+type HeaderProps = {
+  left?: React.ReactNode;
+  title?: string;
+  right?: React.ReactNode;
+};
+
+export const Header = ({ left, title, right }: HeaderProps) => {
   return (
-    <div className='flex justify-center items-center pl-2 pr-3 w-full h-[60px] bg-white'>
-      <Image src='/images/fooding_icon.png' width={48} height={48} alt='Fooding Icon' />
-      <SearchInput.Container className='mr-3'>
-        <SearchInput placeholder='지금 뜨는 이탈리안 레스토랑은?' />
-        <SearchInput.Button />
-      </SearchInput.Container>
-      <div className='flex justify-between gap-4'>
-        <BookmarkIcon />
-        <BellIcon />
+    <header className='h-[60px] fixed top-0 left-0 right-0 bg-white flex items-end z-10'>
+      <div className='px-3 h-[60px] w-full relative flex items-center justify-between'>
+        <div>{left}</div>
+        <span className='absolute top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2 subtitle-1'>
+          {title}
+        </span>
+        <div>{right}</div>
       </div>
-    </div>
+    </header>
   );
-}
+};
 
-export default Header;
+const Back = () => {
+  return (
+    <Pop className='flex items-center justify-center'>
+      <ChevronLeftIcon size={30} />
+    </Pop>
+  );
+};
+
+Header.Back = Back;

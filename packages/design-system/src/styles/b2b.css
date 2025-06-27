@@ -28,6 +28,9 @@
   --lh-tight: 1.25;
   --lh-normal: 1.35;
   --lh-loose: 1.4;
+
+  /* letter spacing */
+  --ls-tight: -0.025em;
 }
 
 .app-front {
@@ -39,126 +42,147 @@
     font-size: var(--fs-headline-1);
     font-weight: var(--fw-bold);
     line-height: var(--lh-tight);
+    letter-spacing: var(--ls-tight);
   }
 
   .headline-2-1 {
     font-size: var(--fs-headline-2);
     font-weight: var(--fw-medium);
     line-height: var(--lh-tight);
+    letter-spacing: var(--ls-tight);
   }
 
   .headline-2-2 {
     font-size: var(--fs-headline-2);
     font-weight: var(--fw-bold);
     line-height: var(--lh-tight);
+    letter-spacing: var(--ls-tight);
   }
 
   .headline-3-1 {
     font-size: var(--fs-headline-3);
     font-weight: var(--fw-medium);
     line-height: var(--lh-tight);
+    letter-spacing: var(--ls-tight);
   }
 
   .headline-3-2 {
     font-size: var(--fs-headline-3);
     font-weight: var(--fw-bold);
     line-height: var(--lh-tight);
+    letter-spacing: var(--ls-tight);
   }
 
   .headline-4 {
     font-size: var(--fs-headline-4);
     font-weight: var(--fw-semibold);
     line-height: var(--lh-tight);
+    letter-spacing: var(--ls-tight);
   }
 
   .headline-5 {
     font-size: var(--fs-headline-5);
     font-weight: var(--fw-semibold);
     line-height: var(--lh-tight);
+    letter-spacing: var(--ls-tight);
   }
 
   .subtitle-1 {
     font-size: var(--fs-subtitle-1);
     font-weight: var(--fw-medium);
     line-height: var(--lh-normal);
+    letter-spacing: var(--ls-tight);
   }
 
   .subtitle-2-1 {
     font-size: var(--fs-subtitle-2);
     font-weight: var(--fw-medium);
     line-height: var(--lh-normal);
+    letter-spacing: var(--ls-tight);
   }
 
   .subtitle-2-2 {
     font-size: var(--fs-subtitle-2);
     font-weight: var(--fw-bold);
     line-height: var(--lh-normal);
+    letter-spacing: var(--ls-tight);
   }
 
   .subtitle-3 {
     font-size: var(--fs-subtitle-3);
     font-weight: var(--fw-semibold);
     line-height: var(--lh-normal);
+    letter-spacing: var(--ls-tight);
   }
 
   .subtitle-4 {
     font-size: var(--fs-subtitle-4);
     font-weight: var(--fw-medium);
     line-height: var(--lh-normal);
+    letter-spacing: var(--ls-tight);
   }
 
   .subtitle-4-1 {
     font-size: var(--fs-subtitle-4);
     font-weight: var(--fw-medium);
     line-height: var(--lh-normal);
+    letter-spacing: var(--ls-tight);
   }
 
   .subtitle-4-2 {
     font-size: var(--fs-subtitle-4);
     font-weight: var(--fw-medium);
     line-height: var(--lh-normal);
+    letter-spacing: var(--ls-tight);
   }
 
   .body-1 {
     font-size: var(--fs-body-1);
     font-weight: var(--fw-semibold);
     line-height: var(--lh-loose);
+    letter-spacing: var(--ls-tight);
   }
 
   .body-2 {
     font-size: var(--fs-body-2);
     font-weight: var(--fw-medium);
     line-height: var(--lh-loose);
+    letter-spacing: var(--ls-tight);
   }
 
   .body-2-1 {
     font-size: var(--fs-body-2);
     font-weight: var(--fw-medium);
     line-height: var(--lh-loose);
+    letter-spacing: var(--ls-tight);
   }
 
   .body-2-2 {
     font-size: var(--fs-body-2);
     font-weight: var(--fw-medium);
     line-height: var(--lh-loose);
+    letter-spacing: var(--ls-tight);
   }
 
   .body-3 {
     font-size: var(--fs-body-3);
     font-weight: var(--fw-medium);
     line-height: var(--lh-loose);
+    letter-spacing: var(--ls-tight);
   }
 
   .body-4-1 {
     font-size: var(--fs-body-4);
     font-weight: var(--fw-medium);
-    line-height: var(--lh-loose);
+    line-height: var(--lh-tight);
+    letter-spacing: var(--ls-tight);
   }
 
   .body-4-2 {
     font-size: var(--fs-body-4);
     font-weight: var(--fw-bold);
     line-height: var(--lh-loose);
+    letter-spacing: var(--ls-tight);
   }
 }
 

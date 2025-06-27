@@ -1,4 +1,4 @@
-import z from 'zod';
+import { z } from 'zod/v4';
 
 import { ApiResponse } from '../shared';
 
@@ -7,8 +7,6 @@ export type UserRole = (typeof userRoles)[number];
 
 export const socialPlatforms = ['KAKAO', 'NAVER', 'APPLE', 'GOOGLE'] as const;
 export type SocialPlatform = (typeof socialPlatforms)[number];
-
-export type Platform = SocialPlatform | '';
 
 export const AuthLoginUserSchema = z.object({
   id: z.number(),
@@ -23,7 +21,7 @@ export const AuthLoginUserSchema = z.object({
   privacyPolicyAgreed: z.boolean(),
   marketingConsent: z.boolean(),
   lastLoggedInAt: z.string().nullable(),
-  createdAt: z.string(),
+  createdAt: z.iso.datetime({ local: true }),
   updatedAt: z.string(),
 });
 export type AuthLoginUser = z.infer<typeof AuthLoginUserSchema>;

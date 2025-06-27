@@ -15,19 +15,12 @@ export default function StoreSelectPage() {
   const router = useRouter();
   const { data: user, error: userError } = useQuery({
     queryKey: [queryKeys.me.user],
-    queryFn: userApi.getUser,
+    queryFn: () => userApi.getUser(),
   });
-
-  console.log('user data:', user); // API 응답 데이터 확인
-  console.log('user error:', userError); // 에러 확인
-
-  const { data: stores, error: storesError } = useQuery({
-    queryKey: [queryKeys.store.stores],
+  const { data: stores } = useQuery({
+    queryKey: [queryKeys.app.store.stores],
     queryFn: () => storeApi.getStores(),
   });
-
-  console.log('stores data:', stores); // API 응답 데이터 확인
-  console.log('stores error:', storesError); // 에러 확인
 
   const [selectedStore, setSelectedStore] = useState<Store | null>(null);
   return (
@@ -35,8 +28,8 @@ export default function StoreSelectPage() {
     <Suspense fallback={'fallback'}>
       <div className='flex h-screen font-sans'>
         <StoreOwnerProfile
-          ownerName={user?.data.nickname}
-          profileImageSrc={user?.data.profileImage ?? ''}
+          ownerName={user?.data.nickname as string}
+          profileImageSrc={user?.data.profileImage as string}
         />
         <StoreList
           stores={stores?.data}

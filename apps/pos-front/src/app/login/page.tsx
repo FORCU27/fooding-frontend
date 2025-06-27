@@ -16,9 +16,9 @@ import { AppleIcon, GoogleIcon, KakaoIcon, NaverIcon } from '@repo/design-system
 import axios from 'axios';
 import Cookies from 'js-cookie';
 
+import LoginForm from '@/components/Login/LoginForm';
 import { useAuth } from '@/components/Provider/AuthProvider';
 import { env } from '@/configs/env';
-import LoginForm from '@/components/Login/LoginForm';
 
 const platformIcons: Record<SocialPlatform, JSX.Element> = {
   KAKAO: <KakaoIcon size={30} />,
