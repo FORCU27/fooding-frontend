@@ -17,12 +17,7 @@ export default function StoreSelectPage() {
   const { storeId } = useStore();
 
   // const { data: user } = useQuery({ queryKey: ['user'], queryFn: userApi.getUser });
-  const {
-    data: storeServiceList,
-    isLoading,
-    error,
-    isSuccess,
-  } = useQuery({
+  const { data: storeServiceList } = useQuery({
     queryKey: [queryKeys.app.service.list],
     queryFn: () => storeApi.getStoreServiceList({ id: Number(storeId) }),
     enabled: !!storeId,
