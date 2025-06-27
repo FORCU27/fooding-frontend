@@ -17,6 +17,8 @@ export const storeApi = {
   },
   getStoreServiceList: async (params: { id: number }) => {
     const response = await api.get(`/app/store-service/${params.id}`);
+
+    console.log('response', response);
     return GetStoreServiceListResponse.parse(response);
   },
 

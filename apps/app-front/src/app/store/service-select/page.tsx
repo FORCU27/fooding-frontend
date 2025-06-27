@@ -4,6 +4,7 @@ import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
 import { storeApi } from '@repo/api/app';
+import { queryKeys } from '@repo/api/configs/query-keys';
 import { ArrowLeftIcon } from '@repo/design-system/icons';
 import { useQuery } from '@tanstack/react-query';
 
@@ -16,9 +17,15 @@ export default function StoreSelectPage() {
   const { storeId } = useStore();
 
   // const { data: user } = useQuery({ queryKey: ['user'], queryFn: userApi.getUser });
-  const { data: storeServiceList } = useQuery({
-    queryKey: ['storeServiceList'],
+  const {
+    data: storeServiceList,
+    isLoading,
+    error,
+    isSuccess,
+  } = useQuery({
+    queryKey: [queryKeys.app.service.list],
     queryFn: () => storeApi.getStoreServiceList({ id: Number(storeId) }),
+    enabled: !!storeId,
   });
 
   const [selectedService, setSelectedServiceState] = useState<StoreServiceType>(
