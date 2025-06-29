@@ -2,7 +2,7 @@
 
 import { useRouter } from 'next/navigation';
 
-import { MenuItem } from './Layout';
+import { MenuItem } from '../Layouts/SideLayout';
 
 interface Props {
   className?: string;

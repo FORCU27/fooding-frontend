@@ -5,8 +5,8 @@ import { ReactNode, Suspense } from 'react';
 
 import { Metadata } from 'next';
 
-import Analytics from '@/components/GA/Analytics';
-import Layout from '@/components/Home/Layout';
+// import Analytics from '@/components/GA/Analytics';
+import MainLayout from '@/components/Layouts/MainLayout';
 import { AuthProvider } from '@/components/Provider/AuthProvider';
 import { ReactQueryProvider } from '@/components/Provider/ReactQueryProvider';
 import { GA_TRACKING_ID } from '@/libs/ga/gtag';
@@ -47,10 +47,10 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         <ReactQueryProvider>
           <Suspense fallback={<div>페이지를 불러오는 중입니다...</div>}>
             <AuthProvider>
-              <Layout>
+              <MainLayout>
                 {children}
-                <Analytics />
-              </Layout>
+                {/* <Analytics /> */}
+              </MainLayout>
             </AuthProvider>
           </Suspense>
         </ReactQueryProvider>

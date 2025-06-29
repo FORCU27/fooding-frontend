@@ -23,6 +23,8 @@
   --color-gray-4: oklch(0.7 0 0);
   --color-gray-5: oklch(0.57 0 0);
   --color-gray-6: #292929;
+  --color-gray-7: #f9fafb;
+  --color-gray-8: #dde1eb;
 
   /* Base */
   --color-white: oklch(1 0 0);
