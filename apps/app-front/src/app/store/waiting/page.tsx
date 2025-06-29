@@ -189,13 +189,6 @@ export default function WaitingPage() {
     enabled: !!storeId,
   });
 
-  // const { data: waitingResponse } = useQuery({
-  //   queryKey: [queryKeys.store.waiting, storeId, 'WAITING'],
-  //   queryFn: () => storeApi.getStoreWaiting({ id: Number(1), status: 'WAITING' }),
-  // });
-
-  // const waitingList = waitingResponse?.data?.list || [];
-
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [openTerms, setOpenTerms] = useState(false);
   const [openComplete, setOpenComplete] = useState(false);

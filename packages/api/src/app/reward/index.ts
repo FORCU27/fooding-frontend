@@ -5,6 +5,8 @@ import {
   UserRewardLogsResponse,
   UserRewardsLogRequest,
   UserRewardsCouponsRequest,
+  PostRewardGetRequest,
+  PostRewardGetResponse,
 } from './type';
 import { api } from '../../shared';
 
@@ -21,5 +23,11 @@ export const rewardApi = {
   },
   postCoupon: (id: number) => {
     return api.post(`${ENDPOINT}/coupons/${id}/request`);
+  },
+
+  postRewardGet: async (body: PostRewardGetRequest) => {
+    const response = await api.post(`${ENDPOINT}/get`, body);
+    console.log(response);
+    return PostRewardGetResponse.parse(response);
   },
 };
