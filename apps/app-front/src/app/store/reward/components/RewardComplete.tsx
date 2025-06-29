@@ -52,7 +52,7 @@ export function RewardComplete({ onClose }: { onClose: () => void }) {
             </div>
           </div>
           <div className='body-1 text-primary-pink mt-[125px]'>
-            {seconds}초후 메인화면으로 이동합니다.
+            {seconds}초 후 메인화면으로 이동합니다.
           </div>
         </div>
       </div>

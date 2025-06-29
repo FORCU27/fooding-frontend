@@ -101,7 +101,6 @@ export default function WaitingPage() {
         type: 'EVENT',
         channel: 'STORE',
       });
-      console.log('API 성공:', res);
       setIsRewardComplete(true);
     } catch (e) {
       console.error('API 실패:', e);
