@@ -13,7 +13,6 @@ import { ErrorBoundary, ErrorBoundaryFallbackProps, Suspense } from '@suspensive
 
 import { LoadingToggle } from '@/components/Devtool/LoadingToggle';
 import BottomTab from '@/components/Layout/BottomTab';
-import { FadeIn } from '@/components/Layout/FadeIn';
 import { Header } from '@/components/Layout/Header';
 import { Screen } from '@/components/Layout/Screen';
 import { useAuth } from '@/components/Provider/AuthProvider';
@@ -36,9 +35,7 @@ export const MyPageTab: ActivityComponentType<'MyPageTab'> = () => {
       <ErrorBoundary fallback={MyPageErrorFallback}>
         <LoadingToggle fallback={<MyPageLoadingFallback />}>
           <Suspense fallback={null}>
-            <FadeIn>
-              <Content />
-            </FadeIn>
+            <Content />
           </Suspense>
         </LoadingToggle>
       </ErrorBoundary>

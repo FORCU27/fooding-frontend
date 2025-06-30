@@ -12,7 +12,6 @@ import { HomeLoadingFallback } from './components/HomeLoadingFallback';
 import { MainStoreList } from './components/MainStoreList';
 import { LoadingToggle } from '@/components/Devtool/LoadingToggle';
 import BottomTab from '@/components/Layout/BottomTab';
-import { FadeIn } from '@/components/Layout/FadeIn';
 import { Screen } from '@/components/Layout/Screen';
 import { StoresList } from '@/components/Store/StoresList';
 import { useGetStoreImmediateEntryList } from '@/hooks/store/useGetStoreImmediateEntryList';
@@ -74,29 +73,27 @@ const ContentBody = () => {
   });
 
   return (
-    <FadeIn>
-      <div className='flex flex-col w-full'>
-        <Menubar />
-        <div className='bg-white mb-3'>
-          <Banner />
-          <div className='flex flex-col  py-grid-margin mb-3'>
-            <CategoryTabs categories={CATEGORY_LIST} />
-            <MainStoreList stores={stores.list} />
-          </div>
-          <StoresList
-            subtitle='푸딩에서 인기 많은 식당이에요'
-            stores={popularStores.list}
-            onClickTotalBtn={noop}
-          />
-          <StoresList subtitle='새로 오픈했어요!' stores={stores.list} onClickTotalBtn={noop} />
-          <StoresList
-            subtitle='지금 바로 입장하실 수 있어요!'
-            stores={immediateEntryStores.list}
-            onClickTotalBtn={noop}
-          />
+    <div className='flex flex-col w-full'>
+      <Menubar />
+      <div className='bg-white mb-3'>
+        <Banner />
+        <div className='flex flex-col  py-grid-margin mb-3'>
+          <CategoryTabs categories={CATEGORY_LIST} />
+          <MainStoreList stores={stores.list} />
         </div>
+        <StoresList
+          subtitle='푸딩에서 인기 많은 식당이에요'
+          stores={popularStores.list}
+          onClickTotalBtn={noop}
+        />
+        <StoresList subtitle='새로 오픈했어요!' stores={stores.list} onClickTotalBtn={noop} />
+        <StoresList
+          subtitle='지금 바로 입장하실 수 있어요!'
+          stores={immediateEntryStores.list}
+          onClickTotalBtn={noop}
+        />
       </div>
-    </FadeIn>
+    </div>
   );
 };
 
