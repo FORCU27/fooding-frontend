@@ -25,7 +25,7 @@ export const UserCoupon = z.object({
   userId: z.number(),
   couponId: z.number().nullable(),
   storeId: z.number().nullable(),
-  nickname: z.string().nullable(), // 임시로 nullable 처리
+  nickname: z.string(),
   storeName: z.string().nullable(),
   name: z.string(),
   conditions: z.string().nullable(),
