@@ -4,18 +4,22 @@ import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
 import { storeApi } from '@repo/api/app';
+import { queryKeys } from '@repo/api/configs/query-keys';
 import { ArrowLeftIcon } from '@repo/design-system/icons';
 import { useQuery } from '@tanstack/react-query';
 
 import { StoreServiceType, STORE_SERVICE_PATHS } from './types';
+import { useStore } from '@/components/Provider/StoreClientProvider';
 import { getSelectedService, setSelectedService } from '@/services/locale';
 
 export default function StoreSelectPage() {
   const router = useRouter();
+  const { storeId } = useStore();
 
   const { data: storeServiceList } = useQuery({
-    queryKey: ['storeServiceList'],
-    queryFn: () => storeApi.getStoreServiceList({ id: 1 }),
+    queryKey: [queryKeys.app.service.list],
+    queryFn: () => storeApi.getStoreServiceList({ id: Number(storeId) }),
+    enabled: !!storeId,
   });
 
   const [selectedService, setSelectedServiceState] = useState<StoreServiceType>(

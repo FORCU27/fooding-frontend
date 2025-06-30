@@ -1,10 +1,14 @@
 export const queryKeys = {
   admin: {},
   app: {
+    service: {
+      list: 'serviceList',
+    },
     store: {
       waiting: 'waiting',
       storeInfo: 'storeStoreInfo',
       stores: 'storeStores',
+      waitingOverview: 'waitingOverview',
     },
     reward: {
       log: 'getLog',

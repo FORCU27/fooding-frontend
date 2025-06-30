@@ -1,12 +1,14 @@
 import Image from 'next/image';
 
-import { GetWaitingDetailResponse } from '@repo/api/app';
+import { PostStoreWaiting } from '@repo/api/app';
 
 type CompleteStepProps = {
   onClose: () => void;
-  waitingList: GetWaitingDetailResponse[];
+  waitingList: PostStoreWaiting;
   currentWaiting?: {
     callNumber: number;
+    expectedTimeMinute: number;
+    recentEntryTimeMinute: number;
   };
 };
 
@@ -43,21 +45,22 @@ export const CompleteStep = ({ onClose, waitingList, currentWaiting }: CompleteS
             <div className='w-[250px] flex flex-col items-center'>
               <h3 className='subtitle-2-2 font-bold mb-4 mt-4'>현재 웨이팅</h3>
               <p className='text-[125px] font-bold text-primary-pink whitespace-nowrap'>
-                {waitingList.length}
+                {waitingList?.callNumber}
                 <span className='text-3xl ml-2'>팀</span>
               </p>
             </div>
             <div className='w-[250px] border-l border-dark flex flex-col items-center'>
               <h3 className='subtitle-2-2 font-bold mb-4 mt-4'>예상시간</h3>
               <p className='text-[125px] font-bold text-primary-pink whitespace-nowrap'>
-                {waitingList.length * 10}
+                {waitingList?.expectedTimeMinute}
                 <span className='text-3xl ml-2'>분</span>
               </p>
             </div>
             <div className='w-[250px] border-l border-dark flex flex-col items-center'>
               <h3 className='subtitle-2-2 font-bold mb-4 mt-4'>최근입장</h3>
               <p className='text-[125px] font-bold text-primary-pink whitespace-nowrap'>
-                5<span className='text-3xl ml-2'>분</span>
+                {waitingList?.recentEntryTimeMinute}
+                <span className='text-3xl ml-2'>분</span>
               </p>
             </div>
           </div>
