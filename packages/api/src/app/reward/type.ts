@@ -67,3 +67,15 @@ export const UserRewardsCouponsRequest = BaseSearchRequest.extend({
   used: z.boolean(),
 });
 export type UserRewardsCouponsRequest = z.infer<typeof UserRewardsCouponsRequest>;
+
+export const PostRewardGetRequest = z.object({
+  phoneNumber: z.string(),
+  storeId: z.number(),
+  point: z.number(),
+  type: z.enum(['EVENT', 'VISIT']),
+  channel: z.enum(['STORE', 'EVENT_PLATFORM']),
+});
+export type PostRewardGetRequest = z.infer<typeof PostRewardGetRequest>;
+
+export const PostRewardGetResponse = ApiResponse(z.object({}).nullable());
+export type PostRewardGetResponse = z.infer<typeof PostRewardGetResponse>;

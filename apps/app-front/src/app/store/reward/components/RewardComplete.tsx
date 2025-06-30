@@ -1,6 +1,21 @@
 import Image from 'next/image';
+import { useEffect, useState } from 'react';
 
 export function RewardComplete({ onClose }: { onClose: () => void }) {
+  const [seconds, setSeconds] = useState(3);
+
+  useEffect(() => {
+    if (seconds === 0) {
+      onClose();
+      return;
+    }
+    const timer = setTimeout(() => {
+      setSeconds((prev) => prev - 1);
+    }, 1000);
+
+    return () => clearTimeout(timer);
+  }, [seconds, onClose]);
+
   return (
     <div
       className='fixed top-0 left-0 w-full h-screen flex flex-col items-center z-50 bg-white'
@@ -36,7 +51,9 @@ export function RewardComplete({ onClose }: { onClose: () => void }) {
               <p className='subtitle-4 text-gray-5'>카카오톡을 확인해주세요!</p>
             </div>
           </div>
-          <div className='body-1 text-primary-pink mt-[125px]'>3초후 메인화면으로 이동합니다.</div>
+          <div className='body-1 text-primary-pink mt-[125px]'>
+            {seconds}초후 메인화면으로 이동합니다.
+          </div>
         </div>
       </div>
     </div>
