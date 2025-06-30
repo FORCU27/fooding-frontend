@@ -30,7 +30,7 @@ const MainTab = ({ activeTab }: MainTabProps) => {
           onClick={() => handleChange(tab)}
           className={clsx(
             'w-1/2 pt-[24px] pb-[20px] text-center subtitle-3',
-            activeTab === tab ? 'text-white bg-primary-pink' : 'text-primary-pink',
+            activeTab === tab ? 'text-primary-pink' : 'text-white bg-primary-pink',
           )}
         >
           {REWARD_MAIN_TAB_LABELS[tab]}
