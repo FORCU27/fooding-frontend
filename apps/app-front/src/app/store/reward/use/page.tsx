@@ -44,7 +44,6 @@ export default function RewardUsePage() {
   const {
     data: coupons,
     isLoading: isCouponLoading,
-    isError: isCouponError,
     refetch: refetchCoupons,
   } = useQuery<UserCouponsResponse>({
     queryKey: [queryKeys.app.reward.coupons, subTab],
@@ -59,7 +58,6 @@ export default function RewardUsePage() {
   const {
     data: rewardLogData,
     isLoading: isLogLoading,
-    isError: isLogError,
   } = useQuery<UserRewardLogsResponse>({
     queryKey: [queryKeys.app.reward.coupons],
     queryFn: () => rewardApi.getLog(commonParams),
@@ -96,7 +94,6 @@ export default function RewardUsePage() {
           <CouponList
             list={coupons?.data.list ?? []}
             isLoading={isCouponLoading}
-            isError={isCouponError}
             setSelectedCouponId={(id: number) => setSelectedCouponId(id)}
           />
         </main>
@@ -105,7 +102,6 @@ export default function RewardUsePage() {
         <RewardHistory
           rewards={rewardLogData?.data.content ?? []}
           isLoading={isLogLoading}
-          isError={isLogError}
         />
       )}
       <CouponUseModal
