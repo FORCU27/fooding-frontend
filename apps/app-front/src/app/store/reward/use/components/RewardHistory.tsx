@@ -6,7 +6,6 @@ import { formatDate } from '@/app/utils/datetime';
 interface RewardHistoryProps {
   rewards?: RewardLog[];
   isLoading: boolean;
-  isError: boolean;
 }
 
 const CHANNEL_LABELS: Record<RewardLog['channel'], string> = {
@@ -23,10 +22,10 @@ const TYPE_LABELS: Record<RewardLog['type'], string> = {
 
 const getTypeLabel = (type: RewardLog['type']) => TYPE_LABELS[type] ?? '-';
 
-const RewardHistory = ({ rewards, isLoading, isError }: RewardHistoryProps) => {
+const RewardHistory = ({ rewards, isLoading }: RewardHistoryProps) => {
   if (isLoading) return <div>로딩 중...</div>;
-  if (isError) return <div>적립 내역을 불러오지 못했습니다.</div>;
-  if (rewards?.length === 0) return <EmptyList message='적립내역이 비었어요!' />;
+  if (rewards?.length === 0)
+    return <EmptyList message='적립내역이 비었어요!' className='h-[600px]' />;
   return (
     <div className='pt-[60px] px-[70px]'>
       <table className='w-full'>
