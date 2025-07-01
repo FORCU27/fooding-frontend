@@ -62,9 +62,7 @@ export const StoreDetailHomeTab = ({ store }: StoreDetailHomeTabProps) => {
           <Section.Title>메뉴</Section.Title>
           {storeMenus.length > 0 && <Section.Link>더보기</Section.Link>}
         </Section.Header>
-        {storeMenus.length === 0 && (
-          <EmptyState className='h-[120px]' title='등록된 메뉴가 없어요.' />
-        )}
+        {storeMenus.length === 0 && <EmptyState className='mt-10' title='등록된 메뉴가 없어요!' />}
         {storeMenus.length > 0 && (
           <ul className='mt-6 flex gap-3 -mx-grid-margin overflow-x-auto scrollbar-hide px-grid-margin'>
             {/* TODO: 배열 풀어서 표시하는게 맞는지 확인하기 */}
@@ -89,11 +87,11 @@ export const StoreDetailHomeTab = ({ store }: StoreDetailHomeTabProps) => {
           {storeReviews.list.length > 0 && <Section.Link>더보기</Section.Link>}
         </Section.Header>
         {storeReviews.list.length === 0 && (
-          <EmptyState className='h-[120px]' title='등록된 리뷰가 없어요.' />
+          <EmptyState className='mt-10' title='등록된 리뷰가 없어요!' />
         )}
         {storeReviews.list.length > 0 && (
           <ul className='mt-6 flex gap-3 -mx-grid-margin overflow-x-auto scrollbar-hide px-grid-margin pb-8'>
-            <ReviewsList reviews={storeReviews.list || []} />
+            <ReviewsList reviews={storeReviews.list} />
           </ul>
         )}
       </Section>

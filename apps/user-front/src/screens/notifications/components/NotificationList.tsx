@@ -12,7 +12,7 @@ export const NotificationList = () => {
   const { notifications, fetchNextPage } = useInfiniteNotificationList();
 
   if (notifications.length === 0) {
-    return <EmptyState className='flex-1' title='알림이 아무것도 없어요.' />;
+    return <EmptyState className='flex-1' title='도착한 알림이 없어요!' />;
   }
 
   return (
