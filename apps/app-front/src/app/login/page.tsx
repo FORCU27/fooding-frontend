@@ -119,7 +119,7 @@ export default function LoginPage() {
               platform === 'APPLE'
                 ? env.OAUTH_APPLE_REDIRECT_URI || ''
                 : env.OAUTH_REDIRECT_URI || '',
-            role: 'USER',
+            role: 'CEO',
           };
           await socialLogin(credentials);
 
@@ -155,7 +155,7 @@ export default function LoginPage() {
 
       const credentials = {
         ...data,
-        role: 'USER' as const,
+        role: 'CEO' as const,
       };
 
       await authApi.login(credentials);
