@@ -19,7 +19,7 @@ export const StoreDetailPostListTab = ({ storeId }: StoreDetailPostListTabProps)
   }
 
   return (
-    <ul className='py-5 flex flex-col bg-white px-grid-margin divide-y divide-gray-2'>
+    <ul className='pb-[120px] flex flex-col bg-white px-grid-margin divide-y divide-gray-2'>
       {storePosts.map((storePost) => (
         <StorePostListItem key={storePost.id} storePost={storePost} />
       ))}
@@ -42,7 +42,7 @@ const StorePostListItem = ({ storePost }: StorePostListItemProps) => {
 
   return (
     <li
-      className='flex flex-col w-fit'
+      className='flex flex-col py-5'
       role='button'
       tabIndex={0}
       onClick={() => flow.push('StorePostDetailScreen', { storePostId: storePost.id })}
@@ -50,7 +50,9 @@ const StorePostListItem = ({ storePost }: StorePostListItemProps) => {
       {storePost.tags.length > 0 && <StoreTagList tags={storePost.tags} />}
       <div className='mt-3 bg-gray-1 rounded-[12px] size-[180px]' />
       <p className='mt-3 body-5'>{storePost.title}</p>
-      <p className='mt-2 body-8 text-gray-5 whitespace-pre-wrap'>{storePost.content}</p>
+      <p className='mt-2 body-8 text-gray-5 whitespace-pre-wrap line-clamp-2'>
+        {storePost.content}
+      </p>
       <span className='mt-4 body-8 text-gray-5'>
         {formatDate(storePost.createdAt, { format: 'dot' })}
       </span>
