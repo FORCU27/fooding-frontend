@@ -2847,6 +2847,20 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@mswjs/interceptors@npm:^0.39.1":
+  version: 0.39.2
+  resolution: "@mswjs/interceptors@npm:0.39.2"
+  dependencies:
+    "@open-draft/deferred-promise": "npm:^2.2.0"
+    "@open-draft/logger": "npm:^0.3.0"
+    "@open-draft/until": "npm:^2.0.0"
+    is-node-process: "npm:^1.2.0"
+    outvariant: "npm:^1.4.3"
+    strict-event-emitter: "npm:^0.5.1"
+  checksum: 10/faaa95d636363a197f125c32066457fa74d5063d8ccae4c9c0e0510179060d92b1faf8640df45a0623e0bf42a30d610c83364a58e0eb0ca412c87b2e835936c1
+  languageName: node
+  linkType: hard
+
 "@mui/core-downloads-tracker@npm:^7.1.0":
   version: 7.1.0
   resolution: "@mui/core-downloads-tracker@npm:7.1.0"
@@ -5365,6 +5379,24 @@ __metadata:
     turbo: "npm:^2.4.0"
     typescript: "npm:^5.8.3"
     typescript-eslint: "npm:^8.30.1"
+  languageName: unknown
+  linkType: soft
+
+"@repo/msw@workspace:*, @repo/msw@workspace:packages/msw":
+  version: 0.0.0-use.local
+  resolution: "@repo/msw@workspace:packages/msw"
+  dependencies:
+    "@repo/api": "workspace:*"
+    "@repo/design-system": "workspace:*"
+    "@repo/eslint-config": "workspace:*"
+    "@repo/prettier-config": "workspace:*"
+    "@repo/typescript-config": "workspace:*"
+    eslint: "npm:^9.24.0"
+    msw: "npm:^2.10.2"
+    prettier: "npm:^3.5.3"
+    react: "npm:^19.1.0"
+    react-dom: "npm:^19.1.0"
+    typescript: "npm:5.8.2"
   languageName: unknown
   linkType: soft
 
@@ -13210,6 +13242,39 @@ __metadata:
   languageName: node
   linkType: hard
 
+"msw@npm:^2.10.2":
+  version: 2.10.2
+  resolution: "msw@npm:2.10.2"
+  dependencies:
+    "@bundled-es-modules/cookie": "npm:^2.0.1"
+    "@bundled-es-modules/statuses": "npm:^1.0.1"
+    "@bundled-es-modules/tough-cookie": "npm:^0.1.6"
+    "@inquirer/confirm": "npm:^5.0.0"
+    "@mswjs/interceptors": "npm:^0.39.1"
+    "@open-draft/deferred-promise": "npm:^2.2.0"
+    "@open-draft/until": "npm:^2.1.0"
+    "@types/cookie": "npm:^0.6.0"
+    "@types/statuses": "npm:^2.0.4"
+    graphql: "npm:^16.8.1"
+    headers-polyfill: "npm:^4.0.2"
+    is-node-process: "npm:^1.2.0"
+    outvariant: "npm:^1.4.3"
+    path-to-regexp: "npm:^6.3.0"
+    picocolors: "npm:^1.1.1"
+    strict-event-emitter: "npm:^0.5.1"
+    type-fest: "npm:^4.26.1"
+    yargs: "npm:^17.7.2"
+  peerDependencies:
+    typescript: ">= 4.8.x"
+  peerDependenciesMeta:
+    typescript:
+      optional: true
+  bin:
+    msw: cli/index.js
+  checksum: 10/bc90bc34a0b9e978e662f33fa630a0de66c4b6eff3a92b41efa08bf67d79b43e4a961a17b0d274580393c912f4ac6226c76a8bc33148799b1ee43477df712c26
+  languageName: node
+  linkType: hard
+
 "msw@npm:^2.8.4":
   version: 2.8.7
   resolution: "msw@npm:2.8.7"
@@ -16828,6 +16893,7 @@ __metadata:
     "@repo/api": "workspace:*"
     "@repo/design-system": "workspace:*"
     "@repo/eslint-config": "workspace:*"
+    "@repo/msw": "workspace:*"
     "@repo/prettier-config": "workspace:*"
     "@repo/typescript-config": "workspace:*"
     "@stackflow/config": "npm:^1.2.1"

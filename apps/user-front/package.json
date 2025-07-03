@@ -17,6 +17,7 @@
     "@hookform/resolvers": "^5.1.0",
     "@repo/api": "workspace:*",
     "@repo/design-system": "workspace:*",
+    "@repo/msw": "workspace:*",
     "@stackflow/config": "^1.2.1",
     "@stackflow/core": "^1.2.0",
     "@stackflow/link": "^1.6.1",

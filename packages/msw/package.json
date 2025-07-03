@@ -1,0 +1,30 @@
+{
+  "name": "@repo/msw",
+  "version": "0.0.0",
+  "private": true,
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "format": "prettier --cache --write .",
+    "lint": "eslint . --max-warnings 0",
+    "type-check": "tsc --noEmit",
+    "type-check:watch": "tsc --noEmit --watch"
+  },
+  "dependencies": {
+    "@repo/api": "workspace:*",
+    "@repo/design-system": "workspace:*",
+    "msw": "^2.10.2",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0"
+  },
+  "devDependencies": {
+    "@repo/eslint-config": "workspace:*",
+    "@repo/prettier-config": "workspace:*",
+    "@repo/typescript-config": "workspace:*",
+    "eslint": "^9.24.0",
+    "prettier": "^3.5.3",
+    "typescript": "5.8.2"
+  },
+  "prettier": "@repo/prettier-config"
+}
