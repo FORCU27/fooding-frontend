@@ -7,6 +7,7 @@ import { Button, ChipTabs, NavButton, Skeleton } from '@repo/design-system/compo
 import {
   BookmarkIcon,
   ChevronLeftIcon,
+  FoodingIcon,
   IconProps,
   ShareIcon,
   StarIcon,
@@ -249,9 +250,12 @@ type CarouselProps = {
   imageUrls: string[];
 };
 
-// TODO: 등록된 가게 이미지가 없는 경우 플레이스홀더 이미지 추가
 const StoreImagePlaceholder = () => {
-  return <div className='h-[280px] bg-gray-1' />;
+  return (
+    <div className='h-[280px] bg-gray-1 flex justify-center items-center'>
+      <FoodingIcon className='text-[#111111]/10 w-[92px] h-[114px]' />
+    </div>
+  );
 };
 
 const Carousel = ({ imageUrls }: CarouselProps) => {
