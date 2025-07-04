@@ -1,8 +1,7 @@
 import { mockNotificationEmptyListResponse, mockNotificationListResponse } from '@repo/api/user';
-import { createMockHandlerGroup } from '../utils/mock';
-import { BASE_URL } from '../config';
+import { mockClient } from '../utils/mock';
 
-export const notificationHandlers = createMockHandlerGroup(BASE_URL + '/user/notifications', [
+export const notificationHandlers = mockClient.createHandlerGroup('/user/notifications', [
   {
     method: 'GET',
     path: '/',

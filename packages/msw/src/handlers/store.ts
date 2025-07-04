@@ -4,10 +4,9 @@ import {
   mockStoreMenuListResponse,
   mockStoreReviewListResponse,
 } from '@repo/api/user';
-import { createMockHandlerGroup } from '../utils/mock';
-import { BASE_URL } from '../config';
+import { mockClient } from '../utils/mock';
 
-export const storeHandlers = createMockHandlerGroup(BASE_URL + '/user/stores', [
+export const storeHandlers = mockClient.createHandlerGroup('/user/stores', [
   {
     method: 'GET',
     path: '/',
