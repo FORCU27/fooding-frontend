@@ -13,7 +13,7 @@ export const storeHandlers = mockClient.createHandlerGroup('/user/stores', [
     path: '/',
     presets: [
       {
-        label: '성공',
+        label: '[성공] 기본 응답',
         status: 200,
         response: mockStoreListResponse,
       },
@@ -24,7 +24,7 @@ export const storeHandlers = mockClient.createHandlerGroup('/user/stores', [
     path: '/immediate-entry',
     presets: [
       {
-        label: '즉시 입장 가능한 가게 목록',
+        label: '[성공] 기본 응답',
         status: 200,
         response: mockStoreListResponse,
       },
@@ -35,12 +35,12 @@ export const storeHandlers = mockClient.createHandlerGroup('/user/stores', [
     path: '/:id',
     presets: [
       {
-        label: '기본 응답',
+        label: '[성공] 기본 응답',
         status: 200,
         response: mockStoreByIdResponse,
       },
       {
-        label: '존재하지 않는 가게',
+        label: '[실패] 존재하지 않는 가게',
         status: 404,
         response: null,
       },
@@ -51,12 +51,12 @@ export const storeHandlers = mockClient.createHandlerGroup('/user/stores', [
     path: '/:id/menus',
     presets: [
       {
-        label: '기본 응답',
+        label: '[성공] 기본 응답',
         status: 200,
         response: mockStoreMenuListResponse,
       },
       {
-        label: '존재하지 않는 가게의 메뉴',
+        label: '[실패] 존재하지 않는 가게의 메뉴',
         status: 404,
         response: null,
       },
@@ -67,12 +67,12 @@ export const storeHandlers = mockClient.createHandlerGroup('/user/stores', [
     path: '/:id/reviews',
     presets: [
       {
-        label: '기본 응답',
+        label: '[성공] 기본 응답',
         status: 200,
         response: mockStoreReviewListResponse,
       },
       {
-        label: '존재하지 않는 가게의 리뷰',
+        label: '[실패] 존재하지 않는 가게의 리뷰',
         status: 404,
         response: null,
       },

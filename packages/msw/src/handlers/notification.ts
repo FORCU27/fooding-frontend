@@ -8,7 +8,7 @@ export const notificationHandlers = mockClient.createHandlerGroup('/user/notific
     path: '/',
     presets: [
       {
-        label: '읽지 않은 알림 포함',
+        label: '[성공] 기본 응답',
         status: 200,
         response: mockNotificationListResponse({
           page: 1,
@@ -18,17 +18,7 @@ export const notificationHandlers = mockClient.createHandlerGroup('/user/notific
         }),
       },
       {
-        label: '읽지 않은 알림 제외',
-        status: 200,
-        response: mockNotificationListResponse({
-          page: 1,
-          size: 20,
-          sortType: 'RECENT',
-          sortDirection: 'DESCENDING',
-        }),
-      },
-      {
-        label: '빈 리스트',
+        label: '[성공] 빈 리스트',
         status: 200,
         response: mockNotificationEmptyListResponse,
       },
