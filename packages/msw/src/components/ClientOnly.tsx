@@ -1,15 +1,26 @@
-import { useEffect, useState } from 'react';
+import { useSyncExternalStore } from 'react';
 
-export const ClientOnly = ({ children }: { children: React.ReactNode }) => {
-  const [isClient, setIsClient] = useState(false);
+type ClientOnlyProps = {
+  children: React.ReactNode;
+  fallback?: React.ReactNode;
+};
 
-  useEffect(() => {
-    setIsClient(true);
-  }, []);
+export const ClientOnly = ({ children, fallback = null }: ClientOnlyProps) => {
+  const { isClient } = useIsClient();
 
   if (!isClient) {
-    return null;
+    return fallback;
   }
 
   return <>{children}</>;
+};
+
+const emptySubscribe = () => () => {};
+const getSnapshot = () => true;
+const getServerSnapshot = () => false;
+
+const useIsClient = () => {
+  const isClient = useSyncExternalStore(emptySubscribe, getSnapshot, getServerSnapshot);
+
+  return { isClient };
 };
