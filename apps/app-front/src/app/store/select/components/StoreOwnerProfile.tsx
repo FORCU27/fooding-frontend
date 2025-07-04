@@ -52,7 +52,7 @@ export default function StoreOwnerProfile({ ownerName, profileImageSrc }: StoreO
       <div className='flex flex-col items-center pt-[160px]'>
         <p className='subtitle-1'>안녕하세요</p>
         <div className='flex gap-2'>
-          <div className='headline-3-2'>{ownerName}22 </div>
+          <div className='headline-3-2'>{ownerName}</div>
           <div className='headline-3-1'>사장님</div>
         </div>
 

@@ -13,6 +13,7 @@ export const queryKeys = {
     reward: {
       log: 'getLog',
       coupons: 'getCoupons',
+      rewardGet: 'rewardGet',
     },
   },
   ceo: {
