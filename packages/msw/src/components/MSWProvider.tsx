@@ -7,6 +7,7 @@ import { matchHandler, MockHandler, registerHandler } from '../utils/mock';
 import { z } from 'zod/v4';
 import { createContext } from '@repo/design-system/utils';
 import { ClientOnly } from './ClientOnly';
+import { MSWDevtool } from './MSWDevtool';
 
 const STORAGE_KEY = 'enabledHandlerIds';
 
@@ -26,22 +27,38 @@ const defaultHandlerConfig: HandlerConfig = {
   enabledHandlers: [],
 };
 
-export const MSWProvider = ({ children }: { children: React.ReactNode }) => {
+type MSWProviderProps = {
+  children: React.ReactNode;
+  devtools?: boolean;
+  storageKey?: string;
+};
+
+export const MSWProvider = ({ children, devtools = true, storageKey }: MSWProviderProps) => {
   if (process.env.NODE_ENV !== 'development') {
     return <>{children}</>;
   }
 
   return (
     <ClientOnly>
-      <MSWProviderContent>{children}</MSWProviderContent>;
+      <MSWProviderContent devtools={devtools} storageKey={storageKey}>
+        {children}
+      </MSWProviderContent>
     </ClientOnly>
   );
 };
 
-export const MSWProviderContent = ({ children }: { children: React.ReactNode }) => {
+type MSWProviderContentProps = {
+  children: React.ReactNode;
+  devtools: boolean;
+  storageKey?: string;
+};
+
+export const MSWProviderContent = ({ children, devtools, storageKey }: MSWProviderContentProps) => {
+  const resolvedStorageKey = storageKey ?? STORAGE_KEY;
+
   const getInitialHandlerConfig = () => {
     try {
-      const storedValue = window.localStorage.getItem(STORAGE_KEY);
+      const storedValue = window.localStorage.getItem(resolvedStorageKey);
 
       if (!storedValue) {
         return defaultHandlerConfig;
@@ -49,6 +66,7 @@ export const MSWProviderContent = ({ children }: { children: React.ReactNode }) 
 
       return HandlerConfig.parse(JSON.parse(storedValue));
     } catch (error) {
+      localStorage.removeItem(resolvedStorageKey);
       return defaultHandlerConfig;
     }
   };
@@ -109,7 +127,7 @@ export const MSWProviderContent = ({ children }: { children: React.ReactNode }) 
       enabledHandlers,
     };
 
-    window.localStorage.setItem(STORAGE_KEY, JSON.stringify(newConfig));
+    window.localStorage.setItem(resolvedStorageKey, JSON.stringify(newConfig));
 
     const enabledWorkerHandlers = getEnabledHttpHandlers(enabledHandlers);
 
@@ -164,6 +182,7 @@ export const MSWProviderContent = ({ children }: { children: React.ReactNode }) 
         changePreset,
       }}
     >
+      {devtools && <MSWDevtool />}
       {children}
     </MSWProviderContext>
   );
