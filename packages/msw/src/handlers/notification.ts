@@ -1,7 +1,8 @@
-import { mockNotificationListResponse } from '@repo/api/user';
+import { mockNotificationEmptyListResponse, mockNotificationListResponse } from '@repo/api/user';
 import { createMockHandlerGroup } from '../utils/mock';
+import { BASE_URL } from '../config';
 
-export const notificationHandlers = createMockHandlerGroup('/user/notifications', [
+export const notificationHandlers = createMockHandlerGroup(BASE_URL + '/user/notifications', [
   {
     method: 'GET',
     path: '/',
@@ -29,12 +30,7 @@ export const notificationHandlers = createMockHandlerGroup('/user/notifications'
       {
         label: '빈 리스트',
         status: 200,
-        response: mockNotificationListResponse({
-          page: 1,
-          size: 20,
-          sortType: 'RECENT',
-          sortDirection: 'DESCENDING',
-        }),
+        response: mockNotificationEmptyListResponse,
       },
     ],
   },

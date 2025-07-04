@@ -5,8 +5,8 @@ import { SetupWorker, setupWorker } from 'msw/browser';
 import { mockHandlerGroups } from '../handlers';
 import { matchHandler, MockHandler, registerHandler } from '../utils/mock';
 import { z } from 'zod/v4';
-import { Suspense } from '@suspensive/react';
 import { createContext } from '@repo/design-system/utils';
+import { ClientOnly } from './ClientOnly';
 
 const STORAGE_KEY = 'enabledHandlerIds';
 
@@ -32,9 +32,9 @@ export const MSWProvider = ({ children }: { children: React.ReactNode }) => {
   }
 
   return (
-    <Suspense clientOnly>
+    <ClientOnly>
       <MSWProviderContent>{children}</MSWProviderContent>;
-    </Suspense>
+    </ClientOnly>
   );
 };
 

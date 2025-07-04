@@ -5,14 +5,26 @@ import {
   mockStoreReviewListResponse,
 } from '@repo/api/user';
 import { createMockHandlerGroup } from '../utils/mock';
+import { BASE_URL } from '../config';
 
-export const storeHandlers = createMockHandlerGroup('/user/stores', [
+export const storeHandlers = createMockHandlerGroup(BASE_URL + '/user/stores', [
   {
     method: 'GET',
     path: '/',
     presets: [
       {
         label: '성공',
+        status: 200,
+        response: mockStoreListResponse,
+      },
+    ],
+  },
+  {
+    method: 'GET',
+    path: '/immediate-entry',
+    presets: [
+      {
+        label: '즉시 입장 가능한 가게 목록',
         status: 200,
         response: mockStoreListResponse,
       },

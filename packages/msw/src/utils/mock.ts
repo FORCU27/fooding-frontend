@@ -45,7 +45,7 @@ export const registerHandler = (handlers: RegisteredMockHandler[]) => {
 };
 
 const resolveBaseUrl = (baseUrl: string, path: string) => {
-  return baseUrl.startsWith('/') ? baseUrl : `${baseUrl}${path}`;
+  return path === '/' ? baseUrl : `${baseUrl}${path}`;
 };
 
 export const createMockHandlerGroup = <T extends NonEmptyArray<MockHandler>>(

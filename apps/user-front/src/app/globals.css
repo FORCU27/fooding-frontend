@@ -1,5 +1,7 @@
 @import 'tailwindcss';
 
+@source "../../../../packages/msw/**/*.{ts,tsx}";
+
 @import '@repo/design-system/styles/shared.css';
 @import '@repo/design-system/styles/b2c.css';
 

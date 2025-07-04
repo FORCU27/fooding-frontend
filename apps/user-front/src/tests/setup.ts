@@ -1,6 +1,6 @@
 import '@testing-library/jest-dom/vitest';
 
-import { server } from '@repo/msw';
+import { server } from '@repo/msw/server';
 import { afterAll, afterEach, beforeAll, vi } from 'vitest';
 
 import { mockIntersectionObserver } from './mocks/intersection-observer.mock';
