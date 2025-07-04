@@ -7,9 +7,9 @@ import { SetupWorker, setupWorker } from 'msw/browser';
 import { z } from 'zod/v4';
 
 import { mockHandlerGroups } from '../handlers';
+import { ClientOnly } from './ClientOnly';
 import { MSWDevtool } from './MSWDevtool';
 import { matchHandler, MockHandler, registerHandler } from '../utils/mock';
-import { ClientOnly } from './ClientOnly';
 
 const STORAGE_KEY = 'enabledHandlerIds';
 
