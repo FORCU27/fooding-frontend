@@ -27,10 +27,7 @@ export type GetStoresParams = {
   pageSize: number;
 };
 
-export const GetStoresResponse = z.object({
-  status: z.string(),
-  data: z.array(Store),
-});
+export const GetStoresResponse = ApiResponse(z.array(Store));
 
 export type GetStoresResponse = z.infer<typeof GetStoresResponse>;
 
@@ -46,7 +43,7 @@ export const StoreServiceItem = z.object({
   storeName: z.string(),
   type: z.string(),
   activation: z.boolean(),
-  createdAt: z.iso.datetime({ local: true }),
+  createdAt: z.string(),
   endedAt: z.string().nullable(),
 });
 
@@ -90,12 +87,15 @@ export const GetStoresWaiting = z.object({
 
 export const GetStoresWaitingResponse = ApiResponse(GetStoresWaiting);
 
-export const PostStoreWaitingRequest = z.object({
-  data: z.object({
-    callNumber: z.number(),
-  }),
-  status: z.string(),
+export const PostStoreWaiting = z.object({
+  callNumber: z.number(),
+  waitingTurn: z.number(),
+  expectedTimeMinute: z.number(),
+  recentEntryTimeMinute: z.number(),
 });
+
+export type PostStoreWaiting = z.infer<typeof PostStoreWaiting>;
+export const PostStoreWaitingResponse = ApiResponse(PostStoreWaiting);
 
 export const CreateStoreWaitingRequestBody = z.object({
   name: z.string(),
@@ -117,3 +117,12 @@ export type WaitingUser = z.infer<typeof WaitingUser>;
 export type GetWaitingDetailResponse = z.infer<typeof GetWaitingDetailResponse>;
 
 export type GetStoreServiceListResponse = z.infer<typeof GetStoreServiceListResponse>;
+
+export const GetStoreWaitingOverviewType = z.object({
+  waitingCount: z.number(),
+  estimatedWaitingTimeMinutes: z.number(),
+});
+
+export type GetStoreWaitingOverviewResult = z.infer<typeof GetStoreWaitingOverviewType>;
+
+export const GetStoreWaitingOverviewResponse = ApiResponse(GetStoreWaitingOverviewType);

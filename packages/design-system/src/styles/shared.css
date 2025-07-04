@@ -19,9 +19,9 @@
   /* Grays */
   --color-gray-1: #f1f3f5;
   --color-gray-2: #ededed;
-  --color-gray-3: oklch(0.88 0 0);
-  --color-gray-4: oklch(0.7 0 0);
-  --color-gray-5: oklch(0.57 0 0);
+  --color-gray-3: #e2dfdf;
+  --color-gray-4: #bebebe;
+  --color-gray-5: #767676;
   --color-gray-6: #292929;
 
   /* Base */
