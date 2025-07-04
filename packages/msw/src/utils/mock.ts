@@ -1,4 +1,5 @@
 import { http, HttpResponse, JsonBodyType } from 'msw';
+
 import { BASE_URL } from '../config';
 
 type NonEmptyArray<T> = [T, ...T[]];

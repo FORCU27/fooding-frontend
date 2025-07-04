@@ -1,4 +1,5 @@
 import { mockNotificationEmptyListResponse, mockNotificationListResponse } from '@repo/api/user';
+
 import { mockClient } from '../utils/mock';
 
 export const notificationHandlers = mockClient.createHandlerGroup('/user/notifications', [

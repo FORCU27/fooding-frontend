@@ -1,13 +1,15 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-import { SetupWorker, setupWorker } from 'msw/browser';
-import { mockHandlerGroups } from '../handlers';
-import { matchHandler, MockHandler, registerHandler } from '../utils/mock';
-import { z } from 'zod/v4';
+import { useEffect, useRef, useState } from 'react';
+
 import { createContext } from '@repo/design-system/utils';
+import { SetupWorker, setupWorker } from 'msw/browser';
+import { z } from 'zod/v4';
+
+import { mockHandlerGroups } from '../handlers';
 import { ClientOnly } from './ClientOnly';
 import { MSWDevtool } from './MSWDevtool';
+import { matchHandler, MockHandler, registerHandler } from '../utils/mock';
 
 const STORAGE_KEY = 'enabledHandlerIds';
 
@@ -65,7 +67,7 @@ export const MSWProviderContent = ({ children, devtools, storageKey }: MSWProvid
       }
 
       return HandlerConfig.parse(JSON.parse(storedValue));
-    } catch (error) {
+    } catch {
       localStorage.removeItem(resolvedStorageKey);
       return defaultHandlerConfig;
     }
@@ -101,6 +103,7 @@ export const MSWProviderContent = ({ children, devtools, storageKey }: MSWProvid
     return registerHandler(filteredHandlers);
   };
 
+  const isMounted = useRef(false);
   useEffect(() => {
     const startWorker = async () => {
       const enabledHttpHandlers = getEnabledHttpHandlers(handlerConfig.enabledHandlers);
@@ -114,8 +117,14 @@ export const MSWProviderContent = ({ children, devtools, storageKey }: MSWProvid
       setWorker(worker);
     };
 
+    if (isMounted.current) {
+      return;
+    }
+
     startWorker();
-  }, []);
+
+    isMounted.current = true;
+  }, [handlerConfig.enabledHandlers]);
 
   const updateEnabledHandlers = (enabledHandlers: EnabledHandler[]) => {
     if (worker === null) {
@@ -133,8 +142,7 @@ export const MSWProviderContent = ({ children, devtools, storageKey }: MSWProvid
 
     setHandlerConfig(newConfig);
 
-    worker.resetHandlers();
-    worker.use(...enabledWorkerHandlers);
+    worker.resetHandlers(...enabledWorkerHandlers);
   };
 
   const toggleHandlerEnabled = (handler: MockHandler) => {

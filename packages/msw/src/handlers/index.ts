@@ -1,6 +1,6 @@
-import { MockHandlerGroup, registerHandler } from '../utils/mock';
 import { notificationHandlers } from './notification';
 import { storeHandlers } from './store';
+import { MockHandlerGroup, registerHandler } from '../utils/mock';
 
 export const mockHandlerGroups: MockHandlerGroup[] = [notificationHandlers, storeHandlers];
 

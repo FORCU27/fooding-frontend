@@ -1,7 +1,7 @@
+import { cn } from '@repo/design-system/utils';
 import { Switch as SwitchPrimitives } from 'radix-ui';
 import { tv, VariantProps } from 'tailwind-variants';
 
-import { cn } from '@repo/design-system/utils';
 
 type SwitchProps = Omit<SwitchPrimitives.SwitchProps, 'onChange' | 'onCheckedChange'> &
   VariantProps<typeof switchVariants> & {

@@ -1,10 +1,11 @@
 import { ChevronDownIcon, SettingsIcon } from 'lucide-react';
-import { mockHandlerGroups } from '../handlers/index';
-import { matchHandler, MockHandler } from '../utils/mock';
+
 import { useMSWProviderContext } from './MSWProvider';
 import { BASE_URL } from '../config';
 import { Sheet } from './Sheet';
 import { Switch } from './Switch';
+import { mockHandlerGroups } from '../handlers/index';
+import { matchHandler, MockHandler } from '../utils/mock';
 
 export const MSWDevtool = () => {
   return (
