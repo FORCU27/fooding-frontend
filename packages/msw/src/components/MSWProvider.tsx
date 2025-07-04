@@ -103,7 +103,7 @@ export const MSWProviderContent = ({ children, devtools, storageKey }: MSWProvid
     return registerHandler(filteredHandlers);
   };
 
-  const isMounted = useRef(false);
+  const isMountedRef = useRef(false);
   useEffect(() => {
     const startWorker = async () => {
       const enabledHttpHandlers = getEnabledHttpHandlers(handlerConfig.enabledHandlers);
@@ -117,13 +117,13 @@ export const MSWProviderContent = ({ children, devtools, storageKey }: MSWProvid
       setWorker(worker);
     };
 
-    if (isMounted.current) {
+    if (isMountedRef.current) {
       return;
     }
 
     startWorker();
 
-    isMounted.current = true;
+    isMountedRef.current = true;
   }, [handlerConfig.enabledHandlers]);
 
   const updateEnabledHandlers = (enabledHandlers: EnabledHandler[]) => {
