@@ -1,7 +1,7 @@
 import { renderWithProviders } from '@/tests/utils';
 import { NotificationList } from './NotificationList';
 import { screen } from '@testing-library/react';
-import { describe, expect, test, vi } from 'vitest';
+import { describe, expect, test } from 'vitest';
 
 describe('NotificationList', () => {
   test('알림 목록을 정상적으로 표시해야 합니다.', async () => {
