@@ -43,7 +43,7 @@ const BookmarkContent = () => {
   });
 
   if (stores.pageInfo.totalCount === 0) {
-    return <EmptyState className='flex-1' title='북마크가 아무것도 없어요.' />;
+    return <EmptyState className='flex-1' title='북마크가 아무것도 없어요!' />;
   }
 
   return <BookmarkList stores={stores.list} />;

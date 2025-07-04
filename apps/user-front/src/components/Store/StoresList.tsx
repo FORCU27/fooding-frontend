@@ -13,7 +13,7 @@ interface StoresListProps {
 export const StoresList = ({ subtitle, stores, onClickTotalBtn }: StoresListProps) => {
   const handleEmptyStoreList = (stores: Store[]) => {
     if (stores.length === 0) {
-      return <EmptyState className='h-[240px]' title='해당하는 가게 목록이 없어요.' />;
+      return <EmptyState className='h-[240px]' title='해당하는 가게 목록이 없어요!' />;
     }
   };
   return (

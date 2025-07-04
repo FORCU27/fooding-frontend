@@ -26,4 +26,7 @@ export const rewardApi = {
     console.log(response);
     return PostRewardGetResponse.parse(response);
   },
+  postCoupon: (id: number) => {
+    return api.post(`${ENDPOINT}/coupons/${id}/request`);
+  },
 };

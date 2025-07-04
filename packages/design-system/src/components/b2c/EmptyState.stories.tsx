@@ -14,6 +14,6 @@ type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
   render: () => {
-    return <EmptyState className='h-[320px]' title='알림이 아무것도 없어요.' />;
+    return <EmptyState className='h-[320px]' title='도착한 알림이 없어요!' />;
   },
 };
