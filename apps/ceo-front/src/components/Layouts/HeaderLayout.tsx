@@ -64,7 +64,7 @@ const AppBarSection = ({
   const logoutButtonSize = getLogoutButtonSize();
 
   return (
-    <div className={`flex p-3 justify-between items-center ${className || ''}`}>
+    <div className={`flex p-3 justify-between items-center z-50 relative ${className || ''}`}>
       <div className='flex items-center gap-3'>
         {/* 모바일과 태블릿에서만 햄버거 메뉴 표시 */}
         {(screenMode === 'mobile' || screenMode === 'tablet') && (

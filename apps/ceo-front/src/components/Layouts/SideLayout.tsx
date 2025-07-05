@@ -11,13 +11,44 @@ const menuItems: MenuItem[] = [
     id: 'home',
     text: '매장 정보 관리',
     path: '/',
+    // icon: <HomeIcon />,
     subItems: [
-      { id: '/home', text: '홈', path: '/' },
-      { id: '/home/news', text: '소식', path: '/' },
+      { id: '/home', text: '기본정보', path: '/' },
+      { id: '/home/news', text: '부가정보', path: '/' },
       { id: '/home/menus', text: '메뉴', path: '/' },
-      { id: '/home/seatGuide', text: '좌석안내', path: '/' },
-      { id: '/home/facilities', text: '편의시설', path: '/' },
+      { id: '/home/seatGuide', text: '영업시간/휴뮤일', path: '/' },
+      { id: '/home/facilities', text: '시간', path: '/' },
     ],
+  },
+  {
+    id: 'orders',
+    text: '소식',
+    path: '/orders',
+    // icon: <HomeIcon />,
+  },
+  {
+    id: 'orders',
+    text: '단골',
+    path: '/orders',
+    // icon: <HomeIcon />,
+  },
+  {
+    id: 'orders',
+    text: '소식',
+    path: '/orders',
+    // icon: <HomeIcon />,
+  },
+  {
+    id: 'orders',
+    text: '소식',
+    path: '/orders',
+    // icon: <HomeIcon />,
+  },
+  {
+    id: 'orders',
+    text: '소식',
+    path: '/orders',
+    // icon: <HomeIcon />,
   },
   {
     id: 'devices',
@@ -88,18 +119,18 @@ const SideLayout = ({ screenMode = 'desktop', isOpen, onClose }: SideLayoutProps
         {/* 모바일 오버레이 */}
         {isOpen && (
           <div
-            className='fixed inset-0 bg-black bg-opacity-50 z-40 md:hidden'
+            className='fixed top-[64px] left-0 right-0 bottom-0 bg-black opacity-50 z-30 md:hidden'
             onClick={handleBackdropClick}
           />
         )}
 
         {/* 모바일 사이드바 */}
         <div
-          className={`fixed top-[64px] left-0 h-[calc(100vh-64px)] z-50 transform transition-transform duration-300 ease-in-out md:hidden ${
+          className={`fixed top-0 left-0 h-screen z-40 transform transition-transform duration-300 ease-in-out md:hidden ${
             isOpen ? 'translate-x-0' : '-translate-x-full'
           }`}
         >
-          <div className='w-[250px]'>{sidebarContent}</div>
+          <div className='w-[250px] h-full pt-[64px]'>{sidebarContent}</div>
         </div>
       </>
     );
@@ -112,18 +143,18 @@ const SideLayout = ({ screenMode = 'desktop', isOpen, onClose }: SideLayoutProps
         {/* 태블릿 오버레이 */}
         {isOpen && (
           <div
-            className='fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden md:block'
+            className='fixed top-[64px] left-0 right-0 bottom-0 bg-black opacity-50 z-30 lg:hidden md:block'
             onClick={handleBackdropClick}
           />
         )}
 
         {/* 태블릿 사이드바 */}
         <div
-          className={`fixed top-[64px] left-0 h-[calc(100vh-64px)] z-50 transform transition-transform duration-300 ease-in-out lg:hidden md:block ${
+          className={`fixed top-0 left-0 h-screen z-40 transform transition-transform duration-300 ease-in-out lg:hidden md:block ${
             isOpen ? 'translate-x-0' : '-translate-x-full'
           }`}
         >
-          <div className='w-[280px]'>{sidebarContent}</div>
+          <div className='w-[280px] h-full pt-[64px]'>{sidebarContent}</div>
         </div>
       </>
     );
@@ -131,8 +162,8 @@ const SideLayout = ({ screenMode = 'desktop', isOpen, onClose }: SideLayoutProps
 
   // 데스크톱 모드: 항상 표시되는 고정 사이드바
   return (
-    <div className='hidden lg:block'>
-      <div className='w-[200px]'>{sidebarContent}</div>
+    <div className='hidden lg:block h-full'>
+      <div className='w-[200px] h-full'>{sidebarContent}</div>
     </div>
   );
 };
