@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+
 import { ScreenMode } from '../types/layout';
 
 export const useSidebar = () => {

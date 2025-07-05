@@ -50,7 +50,6 @@ const MenuItemComponent = memo(
     menu,
     onMenuClick,
     onSubMenuClick,
-    screenMode,
     isActive,
     activeSubItem,
   }: {
