@@ -21,21 +21,21 @@ export async function middleware(request: NextRequest) {
   const token = request.cookies.get(STORAGE_KEYS.ACCESS_TOKEN);
   const isAuthenticated = !!token;
 
-  // if (authType === AuthType.PRIVATE && !isAuthenticated) {
-  //   const url = new URL('/login', request.url);
-  //   url.searchParams.set('returnTo', path);
-  //   return NextResponse.redirect(url);
-  // }
+  if (authType === AuthType.PRIVATE && !isAuthenticated) {
+    const url = new URL('/login', request.url);
+    url.searchParams.set('returnTo', path);
+    return NextResponse.redirect(url);
+  }
 
-  // if (authType === AuthType.GUEST && isAuthenticated) {
-  //   return NextResponse.redirect(new URL('/', request.url));
-  // }
+  if (authType === AuthType.GUEST && isAuthenticated) {
+    return NextResponse.redirect(new URL('/', request.url));
+  }
 
-  // if (authType === AuthType.PUBLIC && path === '/' && !isAuthenticated) {
-  //   const url = new URL('/login', request.url);
-  //   url.searchParams.set('returnTo', path);
-  //   return NextResponse.redirect(url);
-  // }
+  if (authType === AuthType.PUBLIC && path === '/' && !isAuthenticated) {
+    const url = new URL('/login', request.url);
+    url.searchParams.set('returnTo', path);
+    return NextResponse.redirect(url);
+  }
 
   return NextResponse.next();
 }

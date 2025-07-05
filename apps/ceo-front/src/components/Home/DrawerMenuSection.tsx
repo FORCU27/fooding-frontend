@@ -2,16 +2,22 @@
 
 import { useRouter } from 'next/navigation';
 
-import { MenuItem } from '../Layouts/SideLayout';
-
+import { ScreenMode, MenuItem } from '../../types/layout';
 interface Props {
   className?: string;
   menuList: MenuItem[];
   onMenuClick?: (menu: MenuItem) => void;
   onSubMenuClick?: (subMenu: MenuItem) => void;
+  screenMode?: ScreenMode;
 }
 
-const DrawerMenuSection = ({ className, menuList, onMenuClick, onSubMenuClick }: Props) => {
+const DrawerMenuSection = ({
+  className,
+  menuList,
+  onMenuClick,
+  onSubMenuClick,
+  // screenMode = 'desktop',
+}: Props) => {
   return (
     <li className={`flex flex-col p-7 ${className || ''}`}>
       <ul className='space-y-4'>
