@@ -5,7 +5,7 @@ import { ReactNode, Suspense } from 'react';
 
 import { Metadata } from 'next';
 
-// import Analytics from '@/components/GA/Analytics';
+import Analytics from '@/components/GA/Analytics';
 import MainLayout from '@/components/Layouts/MainLayout';
 import { AuthProvider } from '@/components/Provider/AuthProvider';
 import { ReactQueryProvider } from '@/components/Provider/ReactQueryProvider';
@@ -49,7 +49,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
             <AuthProvider>
               <MainLayout>
                 {children}
-                {/* <Analytics /> */}
+                <Analytics />
               </MainLayout>
             </AuthProvider>
           </Suspense>
