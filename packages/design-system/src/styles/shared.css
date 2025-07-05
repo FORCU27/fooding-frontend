@@ -9,7 +9,7 @@
   --color-fooding-yellow: oklch(0.88 0.2 100);
   --color-fooding-green: oklch(0.74 0.19 145);
   --color-fooding-blue: oklch(0.92 0.23 200);
-  --color-fooding-purple: oklch(0.6 0.14 300);
+  --color-fooding-purple: #6366f1;
 
   /* Interaction */
   --color-error-red: oklch(0.61 0.21 25);

@@ -1,11 +1,12 @@
 'use client';
 
 import { usePathname } from 'next/navigation';
+import { useState, useEffect } from 'react';
 
 import FooterLayout from './FooterLayout';
 import HeaderLayout from './HeaderLayout';
 import SideLayout from './SideLayout';
-import { useSidebar } from '../../hooks/useSidebar';
+import { ScreenMode } from '../../types/layout';
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -14,7 +15,39 @@ interface LayoutProps {
 const Layout = ({ children }: LayoutProps) => {
   const pathname = usePathname();
   const isLoginPage = pathname === '/login';
-  const { isOpen, screenMode, toggleSidebar, closeSidebar } = useSidebar();
+
+  const [isOpen, setIsOpen] = useState(false);
+  const [screenMode, setScreenMode] = useState<ScreenMode>('desktop');
+
+  // 화면 크기 감지
+  useEffect(() => {
+    const checkScreenSize = () => {
+      const width = window.innerWidth;
+
+      if (width < 768) {
+        setScreenMode('mobile');
+      } else if (width < 1024) {
+        setScreenMode('tablet');
+      } else {
+        setScreenMode('desktop');
+      }
+    };
+
+    checkScreenSize();
+    window.addEventListener('resize', checkScreenSize);
+
+    return () => window.removeEventListener('resize', checkScreenSize);
+  }, []);
+
+  // 페이지 변경 시 모바일/태블릿에서 사이드바 자동 닫기
+  useEffect(() => {
+    if (screenMode === 'mobile' || screenMode === 'tablet') {
+      setIsOpen(false);
+    }
+  }, [pathname, screenMode]);
+
+  const toggleSidebar = () => setIsOpen(!isOpen);
+  const closeSidebar = () => setIsOpen(false);
 
   if (isLoginPage) {
     return <div className='min-h-screen'>{children}</div>;
@@ -35,7 +68,7 @@ const Layout = ({ children }: LayoutProps) => {
   return (
     <div className='flex flex-col min-h-screen'>
       <HeaderLayout
-        className='h-[64px] border-b border-gray-8'
+        className='h-[74px] border-b border-gray-8'
         screenMode={screenMode}
         isSidebarOpen={isOpen}
         onToggleSidebar={toggleSidebar}
