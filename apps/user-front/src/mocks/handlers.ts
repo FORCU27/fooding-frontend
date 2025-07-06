@@ -1,6 +1,7 @@
 import {
   mockNotificationListResponse,
   mockStoreByIdResponse,
+  mockStoreListResponse,
   mockStoreMenuListResponse,
   mockStoreReviewListResponse,
 } from '@repo/api/user';
@@ -16,6 +17,9 @@ export const handlers = [
         sortDirection: 'DESCENDING',
       }),
     );
+  }),
+  http.get('/user/stores', () => {
+    return HttpResponse.json(mockStoreListResponse);
   }),
   http.get<{ id: string }>('/user/stores/:id', () => {
     return HttpResponse.json(mockStoreByIdResponse);

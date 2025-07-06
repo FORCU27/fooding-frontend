@@ -1,7 +1,6 @@
-import { StoreInfo } from '@repo/api/user';
+import { mockStoreReviewListResponse, StoreInfo } from '@repo/api/user';
 import { Button, EmptyState } from '@repo/design-system/components/b2c';
 import {
-  ChevronRightIcon,
   ClockIcon,
   CompassIcon,
   MarkPinIcon,
@@ -16,7 +15,6 @@ import { StoresList } from '@/components/Store/StoresList';
 import { SubwayLineBadge } from '@/components/SubwayLineBadge';
 import { useGetStoreList } from '@/hooks/store/useGetStoreList';
 import { useGetStoreMenuList } from '@/hooks/store/useGetStoreMenuList';
-import { useGetStoreReviewList } from '@/hooks/store/useGetStoreReviewList';
 import { noop } from '@/utils/noop';
 
 const mock = {
@@ -33,7 +31,8 @@ type StoreDetailHomeTabProps = {
 
 export const StoreDetailHomeTab = ({ store }: StoreDetailHomeTabProps) => {
   const { data: storeMenus } = useGetStoreMenuList(store.id);
-  const { data: storeReviews } = useGetStoreReviewList(store.id);
+  // const { data: storeReviews } = useGetStoreReviewList(store.id);
+  const { data: reviews } = mockStoreReviewListResponse; //TODO: 추후 목데이터 제거
   const { data: stores } = useGetStoreList({ sortType: 'RECENT' });
 
   return (
@@ -63,9 +62,7 @@ export const StoreDetailHomeTab = ({ store }: StoreDetailHomeTabProps) => {
           <Section.Title>메뉴</Section.Title>
           <Section.Link>더보기</Section.Link>
         </Section.Header>
-        {storeMenus.length === 0 && (
-          <EmptyState className='h-[120px]' title='등록된 메뉴가 없어요.' />
-        )}
+        {storeMenus.length === 0 && <EmptyState className='mt-10' title='등록된 메뉴가 없어요!' />}
         {storeMenus.length > 0 && (
           <ul className='mt-6 flex gap-3 -mx-grid-margin overflow-x-auto scrollbar-hide px-grid-margin'>
             {/* TODO: 왜 배열일까 */}
@@ -84,19 +81,16 @@ export const StoreDetailHomeTab = ({ store }: StoreDetailHomeTabProps) => {
         <Section.Header>
           <Section.Title className='flex items-center gap-1'>
             리뷰
-            <span className='subtitle-6 text-gray-5'>({storeReviews.list.length})</span>
+            <span className='subtitle-6 text-gray-5'>({reviews.list.length})</span>
           </Section.Title>
-          <button className='flex items-center h-fit body-5 text-gray-5'>
-            더보기
-            <ChevronRightIcon className='size-[18px]' />
-          </button>
+          {reviews.list.length > 0 && <Section.Link>더보기</Section.Link>}
         </Section.Header>
-        {storeReviews.list.length === 0 && (
-          <EmptyState className='h-[120px]' title='등록된 리뷰가 없어요.' />
+        {reviews.list.length === 0 && (
+          <EmptyState className='mt-10' title='등록된 리뷰가 없어요!' />
         )}
-        {storeReviews.list.length > 0 && (
+        {reviews.list.length > 0 && (
           <ul className='mt-6 flex gap-3 -mx-grid-margin overflow-x-auto scrollbar-hide px-grid-margin pb-8'>
-            <ReviewsList reviews={storeReviews.list || []} />
+            <ReviewsList reviews={reviews.list} />
           </ul>
         )}
       </Section>

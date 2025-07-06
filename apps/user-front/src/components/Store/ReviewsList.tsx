@@ -11,7 +11,7 @@ export const ReviewsList = ({ reviews }: ReviewsListProps) => {
     <>
       {reviews.map((review) => (
         <li key={review.reviewId} className='flex py-grid-margin bg-white/80'>
-          <ReviewCard review={review} />
+          {<ReviewCard review={review} />}
         </li>
       ))}
     </>
