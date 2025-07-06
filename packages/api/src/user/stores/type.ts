@@ -76,7 +76,7 @@ export const Review = z.object({
   reviewId: z.number(),
   nickname: z.string().nullable(),
   profileUrl: z.string().nullable(),
-  imageUrl: z.string().nullish(),
+  imageUrls: z.string().array(),
   content: z.string(),
   score: z.object({
     total: z.number(),
