@@ -5,6 +5,8 @@ import {
   UserRewardLogsResponse,
   UserRewardsLogRequest,
   UserRewardsCouponsRequest,
+  PostRewardGetRequest,
+  PostRewardGetResponse,
 } from './type';
 import { api } from '../../shared';
 
@@ -18,6 +20,11 @@ export const rewardApi = {
   getCoupons: async (params: UserRewardsCouponsRequest) => {
     const response = await api.get(`${ENDPOINT}/coupons`, { params });
     return UserCouponsResponse.parse(response);
+  },
+  postRewardGet: async (body: PostRewardGetRequest) => {
+    const response = await api.post(`${ENDPOINT}/get`, body);
+    console.log(response);
+    return PostRewardGetResponse.parse(response);
   },
   postCoupon: (id: number) => {
     return api.post(`${ENDPOINT}/coupons/${id}/request`);
