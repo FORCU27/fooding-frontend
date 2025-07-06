@@ -20,16 +20,21 @@ import { StoresList } from '@/components/Store/StoresList';
 import { useGetStoreList } from '@/hooks/store/useGetStoreList';
 
 export const MyPageTab: ActivityComponentType<'MyPageTab'> = () => {
-  const { logout } = useAuth();
-
-  const handleLogoutClick = async () => {
-    logout();
-    location.reload();
-  };
+  const flow = useFlow();
 
   return (
     <Screen
-      header={<Header title='마이페이지' right={<SettingIcon onClick={handleLogoutClick} />} />}
+      header={
+        <Header
+          title='마이페이지'
+          right={
+            <SettingIcon
+              className='cursor-pointer'
+              onClick={() => flow.push('SettingScreen', {})}
+            />
+          }
+        />
+      }
       bottomTab={<BottomTab currentTab='mypage' />}
     >
       <ErrorBoundary fallback={MyPageErrorFallback}>
