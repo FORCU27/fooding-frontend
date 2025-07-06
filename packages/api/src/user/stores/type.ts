@@ -61,6 +61,7 @@ export const StoreInfo = Store.omit({ mainImage: true }).extend({
   latitude: z.number(),
   longitude: z.number(),
   images: z.array(StoreImage),
+  bookmarkCount: z.number(),
 });
 
 export type GetStoreListParams = {
