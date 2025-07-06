@@ -103,6 +103,7 @@ export const mockStoreByIdResponse: GetStoreByIdResponse = {
     estimatedWaitingTimeMinutes: 20,
     latitude: 37.5665,
     longitude: 126.978,
+    bookmarkCount: 2,
     images: [
       {
         id: 1,
