@@ -94,7 +94,7 @@ export default function WaitingPage() {
 
   const handleRewardGet = async () => {
     try {
-      const res = await rewardApi.postRewardGet({
+      await rewardApi.postRewardGet({
         phoneNumber: phoneNumber.replace(/-/g, ''),
         storeId: Number(storeId),
         point: 1,
