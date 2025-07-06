@@ -41,7 +41,7 @@ export const StoresList = ({ subtitle, stores, onClickTotalBtn }: StoresListProp
         )}
       </div>
       {handleEmptyStoreList(stores)}
-      <ul className='overflow-x-auto scrollbar-hide px-grid-margin flex gap-3'>
+      <ul className='flex px-grid-margin overflow-x-auto scrollbar-hide w-dvw justify-between gap-3'>
         {stores.map((store) => (
           <StoreCard store={store} key={store.id} />
         ))}

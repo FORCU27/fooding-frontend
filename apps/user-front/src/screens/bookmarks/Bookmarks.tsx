@@ -10,11 +10,11 @@ import { BookmarkList } from './components/BookmarkList';
 import { LoadingToggle } from '@/components/Devtool/LoadingToggle';
 import { Header } from '@/components/Layout/Header';
 import { Screen } from '@/components/Layout/Screen';
-import { useGetStoreList } from '@/hooks/store/useGetStoreList';
+import { useGetBookmarkList } from '@/hooks/user/useGetBookmarkList';
 
 export const BookmarkListScreen: ActivityComponentType<'BookmarkListScreen'> = () => {
   return (
-    <Screen header={<Header title='찜해둔 레스토랑' left={<Header.Back />} />}>
+    <Screen header={<Header title='찜해 둔 레스토랑' left={<Header.Back />} />}>
       <ErrorBoundary
         fallback={({ reset }: ErrorBoundaryFallbackProps) => (
           <ErrorFallback className='flex-1'>
@@ -37,16 +37,16 @@ export const BookmarkListScreen: ActivityComponentType<'BookmarkListScreen'> = (
 };
 
 const BookmarkContent = () => {
-  const { data: stores } = useGetStoreList({
+  const { data: bookmarks } = useGetBookmarkList({
     pageNum: 1,
     pageSize: 10,
   });
 
-  if (stores.pageInfo.totalCount === 0) {
+  if (bookmarks.list.length === 0) {
     return <EmptyState className='flex-1' title='북마크가 아무것도 없어요!' />;
   }
 
-  return <BookmarkList stores={stores.list} />;
+  return <BookmarkList />;
 };
 
 const LoadingFallback = () => {

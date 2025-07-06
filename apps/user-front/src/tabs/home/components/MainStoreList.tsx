@@ -4,22 +4,27 @@ import { Store } from '@repo/api/user';
 import { BookmarkIcon, FoodingIcon, StarIcon } from '@repo/design-system/icons';
 import { useFlow } from '@stackflow/react/future';
 
+import { useAddBookmark } from '@/hooks/user/useAddBookmark';
+import { useDeleteBookmark } from '@/hooks/user/useDeleteBookmark';
+
 interface MainStoreListProps {
   stores: Store[];
 }
 
 export const MainStoreList = ({ stores }: MainStoreListProps) => {
   const flow = useFlow();
+  const addBookMark = useAddBookmark();
+  const deleteBookMark = useDeleteBookmark();
+
+  const handleBookmarkClick = (isBookmarked: boolean, storeId: number) => {
+    return isBookmarked ? deleteBookMark.mutate(storeId) : addBookMark.mutate(storeId);
+  };
 
   return (
     <div className='flex flex-col px-grid-margin bg-white/80'>
       <ul className='flex gap-3 overflow-x-auto scrollbar-hide -mx-grid-margin px-grid-margin'>
         {stores.map((store) => (
-          <li
-            key={store.id}
-            className='flex flex-col cursor-pointer relative'
-            onClick={() => flow.push('StoreDetailScreen', { storeId: store.id })}
-          >
+          <li key={store.id} className='flex flex-col relative'>
             <div className='relative mb-2 rounded-xl overflow-hidden w-[220px] h-[140px]'>
               {store.mainImage !== null ? (
                 <Image
@@ -48,9 +53,13 @@ export const MainStoreList = ({ stores }: MainStoreListProps) => {
               cursor='pointer'
               color={store.isBookmarked ? 'var(--color-primary-pink)' : 'white'}
               fill={store.isBookmarked ? 'var(--color-primary-pink)' : 'none'}
+              onClick={() => handleBookmarkClick(store.isBookmarked, store.id)}
             />
 
-            <div className='flex flex-col gap-1'>
+            <div
+              className='flex flex-col gap-1 cursor-pointer'
+              onClick={() => flow.push('StoreDetailScreen', { storeId: store.id })}
+            >
               <div className='subtitle-5 flex items-center gap-1'>
                 <p className='subtitle-5 w-[128px] truncate'>{store.name}</p>
                 <StarIcon size={18} fill='#FFD83D' color='#FFD83D' />
