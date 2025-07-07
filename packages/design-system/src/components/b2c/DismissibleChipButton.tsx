@@ -3,13 +3,13 @@ import React from 'react';
 import { CloseIcon } from '../../icons';
 import { cn } from '../../utils';
 
-type DismissableChipButtonProps = React.ComponentPropsWithRef<'button'>;
+type DismissibleChipButtonProps = React.ComponentPropsWithRef<'button'>;
 
-export const DismissableChipButton = ({
+export const DismissibleChipButton = ({
   className,
   children,
   ...props
-}: DismissableChipButtonProps) => {
+}: DismissibleChipButtonProps) => {
   return (
     <button
       className={cn(

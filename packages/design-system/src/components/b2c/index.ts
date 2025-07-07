@@ -11,4 +11,4 @@ export * from './ErrorFallback';
 export * from './Skeleton';
 export * from './FullscreenBottomSheet';
 export * from './EmptyState';
-export * from './DismissableChipButton';
+export * from './DismissibleChipButton';

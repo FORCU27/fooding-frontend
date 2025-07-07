@@ -1,9 +1,9 @@
 import type { StoryObj } from '@storybook/react';
-import { DismissableChipButton } from './DismissableChipButton';
+import { DismissibleChipButton } from './DismissibleChipButton';
 import { useState } from 'react';
 
 const meta = {
-  title: 'components/b2c/DismissableChipButton',
+  title: 'components/b2c/DismissibleChipButton',
   parameters: {
     layout: 'centered',
   },
@@ -15,7 +15,7 @@ type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
   render: () => {
-    return <DismissableChipButton>레이블</DismissableChipButton>;
+    return <DismissibleChipButton>레이블</DismissibleChipButton>;
   },
 };
 
@@ -28,12 +28,12 @@ export const WithList: Story = {
     return (
       <div className='flex flex-wrap gap-2'>
         {list.map((value) => (
-          <DismissableChipButton
+          <DismissibleChipButton
             key={value}
             onClick={() => setList((prev) => prev.filter((v) => v !== value))}
           >
             레이블 {value + 1}
-          </DismissableChipButton>
+          </DismissibleChipButton>
         ))}
       </div>
     );
