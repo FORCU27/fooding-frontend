@@ -56,7 +56,7 @@ const Content = ({ value: initialValue, onChange }: ContentProps) => {
   };
 
   return (
-    <div className='flex flex-col'>
+    <>
       <BottomSheet.Header>
         <BottomSheet.Title className='font-bold text-[24px]'>관심지역 설정</BottomSheet.Title>
         <div className='mt-5 flex flex-wrap gap-2'>
@@ -106,7 +106,7 @@ const Content = ({ value: initialValue, onChange }: ContentProps) => {
           <Button onClick={onConfirmButtonClick}>설정 완료</Button>
         </BottomSheet.Close>
       </BottomSheet.Footer>
-    </div>
+    </>
   );
 };
 
