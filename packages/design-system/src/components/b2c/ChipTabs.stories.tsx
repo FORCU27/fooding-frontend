@@ -1,7 +1,6 @@
 import type { StoryObj } from '@storybook/react';
 
 import { ChipTabs } from './ChipTabs';
-import { useState } from 'react';
 
 const meta = {
   title: 'components/b2c/ChipTabs',
