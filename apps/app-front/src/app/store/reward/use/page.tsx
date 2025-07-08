@@ -55,13 +55,11 @@ export default function RewardUsePage() {
     enabled: !!storeId && !!phoneNumber && mainTab === 'coupon',
   });
 
-  const {
-    data: rewardLogData,
-    isLoading: isLogLoading,
-  } = useQuery<UserRewardLogsResponse>({
+  const { data: rewardLogData, isLoading: isLogLoading } = useQuery<UserRewardLogsResponse>({
     queryKey: [queryKeys.app.reward.coupons],
     queryFn: () => rewardApi.getLog(commonParams),
     enabled: !!storeId && !!phoneNumber && mainTab === 'history',
+    refetchInterval: 10000,
   });
 
   const handleClickCoupon = async () => {
@@ -99,10 +97,7 @@ export default function RewardUsePage() {
         </main>
       )}
       {mainTab === 'history' && (
-        <RewardHistory
-          rewards={rewardLogData?.data.content ?? []}
-          isLoading={isLogLoading}
-        />
+        <RewardHistory rewards={rewardLogData?.data.content ?? []} isLoading={isLogLoading} />
       )}
       <CouponUseModal
         open={selectedCouponId !== null}
