@@ -25,3 +25,15 @@ export const Bookmark = z.object({
 
 export type GetBookmarkStoreListResponse = z.infer<typeof GetBookmarkStoreListResponse>;
 export const GetBookmarkStoreListResponse = PageResponse(Bookmark);
+
+export type CreateBookmarkResponse = z.infer<typeof CreateBookmarkResponse>;
+export const CreateBookmarkResponse = z.object({
+  status: z.string(),
+  data: z.number(),
+});
+
+export type DeleteBookmarkResponse = z.infer<typeof DeleteBookmarkResponse>;
+export const DeleteBookmarkResponse = z.object({
+  status: z.string(),
+  data: z.null(),
+});

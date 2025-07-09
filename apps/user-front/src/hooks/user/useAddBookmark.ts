@@ -1,64 +1,40 @@
 import { queryKeys } from '@repo/api/configs/query-keys';
-import {
-  Bookmark,
-  GetBookmarkStoreListResponse,
-  GetStoreListResponse,
-  userApi,
-} from '@repo/api/user';
+import { GetStoreListResponse, userApi } from '@repo/api/user';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 export const useAddBookmark = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
+    mutationKey: [queryKeys.user.bookmark, 'create'],
     mutationFn: (storeId: number) => userApi.createBookmarkStore(storeId),
 
     onMutate: async (storeId: number) => {
-      await Promise.all([
-        queryClient.cancelQueries({ queryKey: [queryKeys.user.bookmark] }),
-        queryClient.cancelQueries({ queryKey: [queryKeys.user.store.list] }),
-      ]);
+      await queryClient.cancelQueries({ queryKey: [queryKeys.user.store.list] });
+      const data = queryClient.getQueriesData<GetStoreListResponse['data']>({
+        queryKey: [queryKeys.user.store.list],
+      });
 
-      const previousBookmarkData = queryClient.getQueryData<GetBookmarkStoreListResponse>([
-        queryKeys.user.bookmark,
-      ]);
+      for (const [queryKey, previousStoreList] of data) {
+        if (!previousStoreList) continue;
 
-      const previousStoreList = queryClient.getQueryData<GetStoreListResponse>([
-        queryKeys.user.store.list,
-      ]);
-
-      if (previousBookmarkData) {
-        queryClient.setQueryData<GetBookmarkStoreListResponse>([queryKeys.user.bookmark], {
-          ...previousBookmarkData,
-          data: {
-            ...previousBookmarkData.data,
-            list: [...previousBookmarkData.data.list, { id: storeId } as Bookmark],
-          },
-        });
-      }
-
-      if (previousStoreList) {
-        queryClient.setQueryData<GetStoreListResponse>([queryKeys.user.store.list], {
+        queryClient.setQueryData<GetStoreListResponse['data']>(queryKey, {
           ...previousStoreList,
-          data: {
-            ...previousStoreList.data,
-            list: previousStoreList.data.list.map((store) =>
-              store.id === storeId ? { ...store, isBookmarked: true } : store,
-            ),
-          },
+          list: previousStoreList.list.map((store) =>
+            store.id === storeId ? { ...store, isBookmarked: true } : store,
+          ),
         });
       }
 
-      return { previousBookmarkData, previousStoreList };
+      return { data };
     },
 
     onError: (_error, _, context) => {
-      if (context?.previousBookmarkData) {
-        queryClient.setQueryData([queryKeys.user.bookmark], context.previousBookmarkData);
-      }
-
-      if (context?.previousStoreList) {
-        queryClient.setQueryData([queryKeys.user.store.list], context.previousStoreList);
+      if (context?.data) {
+        for (const [queryKey, previousStoreList] of context.data) {
+          if (!previousStoreList) continue;
+          queryClient.setQueryData<GetStoreListResponse['data']>(queryKey, previousStoreList);
+        }
       }
     },
 

@@ -1,7 +1,12 @@
 export * from './mock';
 export * from './type';
 
-import { GetBookmarkStoreListParams, GetBookmarkStoreListResponse } from './type';
+import {
+  CreateBookmarkResponse,
+  DeleteBookmarkResponse,
+  GetBookmarkStoreListParams,
+  GetBookmarkStoreListResponse,
+} from './type';
 import { api } from '../../shared';
 
 const ENDPOINT = '/user';
@@ -21,10 +26,11 @@ export const userApi = {
         },
       },
     );
-    return GetBookmarkStoreListResponse.parse(response);
+
+    return CreateBookmarkResponse.parse(response);
   },
   deleteBookmarkStore: async (storeId: number) => {
     const response = await api.delete(`${ENDPOINT}/bookmarks/${storeId}`);
-    return GetBookmarkStoreListResponse.parse(response);
+    return DeleteBookmarkResponse.parse(response);
   },
 };
