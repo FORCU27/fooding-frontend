@@ -111,8 +111,7 @@ export const Login = ({ onSuccess = noop }: LoginProps) => {
           const credentials: AuthSocialLoginBody = {
             code,
             provider: platform,
-            redirectUri:
-              platform === 'APPLE' ? env.OAUTH_APPLE_REDIRECT_URI : env.OAUTH_REDIRECT_URI,
+            redirectUri: env.OAUTH_REDIRECT_URI,
             role: 'USER',
           };
           await socialLogin(credentials);
