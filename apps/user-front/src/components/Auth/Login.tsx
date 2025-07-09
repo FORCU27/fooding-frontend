@@ -32,7 +32,6 @@ const getPlatformUrl = (platform: SocialPlatform): string => {
   const {
     GOOGLE_CLIENT_ID,
     OAUTH_REDIRECT_URI,
-    OAUTH_APPLE_REDIRECT_URI,
     KAKAO_CLIENT_ID,
     NAVER_CLIENT_ID,
     APPLE_CLIENT_ID,
@@ -112,8 +111,7 @@ export const Login = ({ onSuccess = noop }: LoginProps) => {
           const credentials: AuthSocialLoginBody = {
             code,
             provider: platform,
-            redirectUri:
-              platform === 'APPLE' ? env.OAUTH_APPLE_REDIRECT_URI : env.OAUTH_REDIRECT_URI,
+            redirectUri: env.OAUTH_REDIRECT_URI,
             role: 'USER',
           };
           await socialLogin(credentials);
