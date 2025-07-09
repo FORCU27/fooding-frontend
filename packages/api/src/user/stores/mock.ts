@@ -5,7 +5,14 @@ import {
   GetStoreReviewListResponse,
 } from './type';
 
-const MENU_IMAGE_URL = '/images/home/menuitem1.png';
+const MENU_IMAGE_URL =
+  'https://img.freepik.com/free-photo/top-view-table-full-food_23-2149209253.jpg';
+
+const MENU_IMAGE_URLS = [
+  'https://img.freepik.com/premium-photo/dinner-with-lot-delicious-food_73110-6357.jpg',
+  'https://img.freepik.com/free-photo/top-view-table-full-food_23-2149209253.jpg',
+  'https://img.freepik.com/free-photo/chicken-steak-with-lemon-tomato-chili-carrot-white-plate_1150-25887.jpg',
+];
 
 export const mockStoreListResponse: GetStoreListResponse = {
   status: 'OK',
@@ -136,9 +143,9 @@ export const mockStoreReviewListResponse: GetStoreReviewListResponse = {
       {
         reviewId: 1,
         content:
-          '잘먹었습니다. 감사합니다. 단골인데 항상 챙겨주시고 사장님도 너무 친절해요~^^ 어쩌구 저쩌구 너무 맛잇고 맛좋코 또 오고싶고 어쩌ㅇ구쩌구...',
-        profileUrl: 'https://example.com/profile.jpg',
-        imageUrl: MENU_IMAGE_URL,
+          '잘먹었습니다. 감사합니다. 단골인데 항상 챙겨주시고 사장님도 너무 친절해요~^^ 어쩌구 저쩌구 너무 맛잇고 맛좋코 또 오고싶고 어쩌ㅇ구쩌구 어쩌ㅇ구쩌구어쩌ㅇ구쩌구',
+        profileUrl: 'https://img.freepik.com/free-vector/woman-with-long-black-hair_90220-2937.jpg',
+        imageUrls: [MENU_IMAGE_URL],
         likeCount: 10,
         nickname: '민수엄마',
         purpose: 'BUSINESS',
@@ -151,12 +158,46 @@ export const mockStoreReviewListResponse: GetStoreReviewListResponse = {
         createdAt: '2025-06-20T03:44:25.499Z',
         updatedAt: '2025-06-20T03:44:25.499Z',
       },
+      {
+        reviewId: 2,
+        content: '잘먹었습니다. 감사합니다.',
+        profileUrl: 'https://img.freepik.com/free-vector/flat-style-woman-avatar_90220-2876.jpg',
+        imageUrls: MENU_IMAGE_URLS,
+        likeCount: 10,
+        nickname: '민수',
+        purpose: 'BUSINESS',
+        score: {
+          mood: 3.5,
+          service: 4.0,
+          taste: 5.0,
+          total: 3.5,
+        },
+        createdAt: '2025-06-20T03:44:25.499Z',
+        updatedAt: '2025-06-20T03:44:25.499Z',
+      },
+      {
+        reviewId: 3,
+        content: '잘먹었습니다.',
+        profileUrl: 'https://img.freepik.com/free-vector/woman-with-long-black-hair_90220-2937.jpg',
+        imageUrls: [],
+        likeCount: 1,
+        nickname: '리뷰~',
+        purpose: 'BUSINESS',
+        score: {
+          mood: 4.5,
+          service: 4.0,
+          taste: 5.0,
+          total: 2.5,
+        },
+        createdAt: '2025-06-20T03:44:25.499Z',
+        updatedAt: '2025-06-20T03:44:25.499Z',
+      },
     ],
     pageInfo: {
       pageNum: 1,
       pageSize: 10,
       totalPages: 1,
-      totalCount: 1,
+      totalCount: 3,
     },
   },
 };

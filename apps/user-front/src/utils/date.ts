@@ -11,6 +11,19 @@ export const formatDate = (isoString: string) => {
 };
 
 /**
+ * ISO 8601 -> YYYY.MM.DD
+ */
+
+export const formatDotDate = (isoString: string) => {
+  const date = new Date(isoString);
+  const year = date.getUTCFullYear();
+  const month = String(date.getUTCMonth() + 1).padStart(2, '0');
+  const day = String(date.getUTCDate()).padStart(2, '0');
+
+  return `${year}.${month}.${day}`;
+};
+
+/**
  * ISO 8601 -> 방금 전, 1시간 전, 2일 전 등
  */
 export const formatRelativeTime = (isoString: string) => {

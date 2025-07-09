@@ -19,6 +19,19 @@ export const mockNotificationListResponse = (
   };
 };
 
+export const mockNotificationEmptyListResponse: GetNotificationListResponse = {
+  status: 'OK',
+  data: {
+    pageInfo: {
+      pageNum: 1,
+      pageSize: 20,
+      totalCount: 0,
+      totalPages: 0,
+    },
+    list: [],
+  },
+};
+
 const mockNotificationList: Notification[] = Array.from({ length: 80 }, (_, index) => ({
   id: index + 1,
   category: index % 3 === 0 ? 'EVENT' : index % 3 === 1 ? 'NOTICE' : 'SERVICE',
