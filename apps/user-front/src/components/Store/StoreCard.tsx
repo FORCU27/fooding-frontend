@@ -1,11 +1,8 @@
 import Image from 'next/image';
 
 import { Store } from '@repo/api/user';
-import { BookmarkIcon, FoodingIcon, StarIcon } from '@repo/design-system/icons';
+import { FoodingIcon, StarIcon } from '@repo/design-system/icons';
 import { useFlow } from '@stackflow/react/future';
-
-import { useAddBookmark } from '@/hooks/user/useAddBookmark';
-import { useDeleteBookmark } from '@/hooks/user/useDeleteBookmark';
 
 interface StoreCardProps {
   store: Store;
@@ -13,21 +10,14 @@ interface StoreCardProps {
 
 export const StoreCard = ({ store }: StoreCardProps) => {
   const flow = useFlow();
-  const addBookMark = useAddBookmark();
-  const deleteBookMark = useDeleteBookmark();
-
-  const handleAddBookmarkClick = (storeId: number) => {
-    addBookMark.mutate(storeId);
-  };
-
-  const handleDeleteBookmarkClick = (storeId: number) => {
-    deleteBookMark.mutate(storeId);
-  };
 
   return (
     <li key={store.id} className='flex flex-col min-h-[240px] relative'>
       <div className='h-full w-[140px]'>
-        <div className='relative h-[140px] mb-2 rounded-xl overflow-hidden'>
+        <div
+          className='relative h-[140px] mb-2 rounded-xl overflow-hidden'
+          onClick={() => flow.push('StoreDetailScreen', { storeId: store.id })}
+        >
           {store.mainImage !== null ? (
             <Image
               width={140}
@@ -46,30 +36,11 @@ export const StoreCard = ({ store }: StoreCardProps) => {
               <p className='subtitle-3 text-white'>영업 종료</p>
             </div>
           )}
-          <div className='absolute top-2 right-2'>
-            {store.isBookmarked ? (
-              <BookmarkIcon
-                color='var(--color-primary-pink)'
-                fill='var(--color-primary-pink)'
-                size={24}
-                cursor='pointer'
-                onClick={() => handleDeleteBookmarkClick(store.id)}
-              />
-            ) : (
-              <BookmarkIcon
-                color='white'
-                size={24}
-                cursor='pointer'
-                onClick={() => handleAddBookmarkClick(store.id)}
-              />
-            )}
-          </div>
         </div>
-        <div
-          className='cursor-pointer'
-          onClick={() => flow.push('StoreDetailScreen', { storeId: store.id })}
-        >
-          <div className='break-words line-clamp-2 subtitle-5 w-[144px]'>{store.name}</div>
+        <div>
+          <div className='flex p-1'>
+            <span className='break-words line-clamp-2 subtitle-5 w-[144px]'>{store.name}</span>
+          </div>
           <div className='flex flex-col gap-1'>
             <div className='subtitle-5 flex items-center gap-1 h-[17px]'>
               <StarIcon size={18} fill='#FFD83D' color='#FFD83D' />

@@ -58,11 +58,11 @@ const Content = () => {
 
   const { data: bookmarks } = useGetBookmarkList({
     pageNum: 1,
-    pageSize: 3,
+    pageSize: 5,
   });
   const { data: stores } = useGetStoreList({
     pageNum: 1,
-    pageSize: 3,
+    pageSize: 5,
   });
 
   return (
@@ -73,7 +73,7 @@ const Content = () => {
             <div className='flex justify-center items-center w-[64px] h-[64px] bg-gray-1 rounded-full'>
               <FoodingIcon fillOpacity={0.1} />
             </div>
-            <div className='flex flex-col mx-5 justify-center items-center w-[100px]'>
+            <div className='flex flex-col mx-5 justify-center w-[100px]'>
               <p className='subtitle-4 mb-2'>{user?.nickname ? user?.nickname : user?.email}</p>
               <div className='flex justify-between w-full'>
                 <p className='text-gray-5 body-8'>팔로워 0</p>
@@ -113,7 +113,7 @@ const Content = () => {
           <div className='flex flex-col py-grid-margin bg-white/80'>
             <div className='flex justify-between mb-4 px-grid-margin'>
               <div className='subtitle-3'>찜해 둔 식당</div>
-              {(bookmarks?.list.length ?? 0) === 0 ? (
+              {(bookmarks.list.length ?? 0) === 0 ? (
                 <button
                   className='flex justify-center items-center body-5 text-gray-3'
                   onClick={() => flow.push('BookmarkListScreen', {})}
@@ -132,8 +132,8 @@ const Content = () => {
                 </button>
               )}
             </div>
-            <ul className='flex px-grid-margin overflow-x-auto scrollbar-hide w-dvw justify-between gap-3'>
-              {bookmarks?.list.map((bookmark: Bookmark) => (
+            <ul className='flex px-grid-margin overflow-x-auto scrollbar-hide w-dvw gap-3'>
+              {bookmarks.list.map((bookmark: Bookmark) => (
                 <BookmarkCard bookmark={bookmark} key={bookmark.id} />
               ))}
             </ul>
