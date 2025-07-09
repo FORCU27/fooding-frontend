@@ -32,7 +32,6 @@ const getPlatformUrl = (platform: SocialPlatform): string => {
   const {
     GOOGLE_CLIENT_ID,
     OAUTH_REDIRECT_URI,
-    OAUTH_APPLE_REDIRECT_URI,
     KAKAO_CLIENT_ID,
     NAVER_CLIENT_ID,
     APPLE_CLIENT_ID,
