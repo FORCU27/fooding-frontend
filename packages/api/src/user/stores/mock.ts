@@ -9,7 +9,7 @@ const MENU_IMAGE_URL =
   'https://img.freepik.com/free-photo/top-view-table-full-food_23-2149209253.jpg';
 
 const MENU_IMAGE_URLS = [
-  'https://img.freepik.com/premium-photo/dinner-with-lot-delicious-food_73110-6357.jpg',
+  'https://img.freepik.com/free-photo/tasty-food-arrangement-top-view_23-2149182261.jpg',
   'https://img.freepik.com/free-photo/top-view-table-full-food_23-2149209253.jpg',
   'https://img.freepik.com/free-photo/chicken-steak-with-lemon-tomato-chili-carrot-white-plate_1150-25887.jpg',
 ];
