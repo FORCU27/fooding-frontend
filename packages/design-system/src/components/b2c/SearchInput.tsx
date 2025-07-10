@@ -1,44 +1,59 @@
-import { SearchIcon } from '../../icons';
+import { useState } from 'react';
+
+import { CloseIcon, SearchIcon } from '../../icons';
 import { cn } from '../../utils';
 
-type SearchInputProps = React.ComponentPropsWithRef<'input'>;
-
-type ContainerProps = React.ComponentPropsWithRef<'div'>;
-
-const Container = ({ className, ...props }: ContainerProps) => {
-  return <div className={cn('w-full relative h-fit', className)} {...props} />;
+type SearchInputProps = Omit<
+  React.ComponentPropsWithRef<'input'>,
+  'onChange' | 'value' | 'defaultValue'
+> & {
+  value?: string;
+  onChange?: (value: string) => void;
+  defaultValue?: string;
 };
 
-const SearchInput = ({ className, ...props }: SearchInputProps) => {
+const SearchInput = ({
+  className,
+  value: externalValue,
+  onChange: externalOnChange,
+  defaultValue,
+  ...props
+}: SearchInputProps) => {
+  const [internalValue, setInternalValue] = useState(defaultValue ?? '');
+
+  const value = externalValue ?? internalValue;
+  const onChange = externalOnChange ?? setInternalValue;
+
+  const onInputChange: React.ChangeEventHandler<HTMLInputElement> = (event) => {
+    onChange(event.target.value);
+  };
+
+  const clearInput = () => {
+    onChange('');
+  };
+
   return (
-    <input
-      className={cn(
-        'w-full h-[44px] bg-gray-1 rounded-[8px] px-[16px] pr-11 outline-none',
-        'text-[14px] text-black font-medium placeholder:text-gray-5 plcaceholder:font-normal',
-        className,
+    <div className={cn('relative w-full h-fit', className)}>
+      <SearchIcon className='absolute top-1/2 left-3 -translate-y-1/2 text-gray-5' />
+      <input
+        className={cn(
+          'w-full h-[44px] bg-gray-1 rounded-[8px] pl-11 pr-10 outline-none',
+          'text-[14px] text-black font-medium placeholder:text-gray-5 plcaceholder:font-normal',
+        )}
+        value={value}
+        onChange={onInputChange}
+        {...props}
+      />
+      {value.length > 0 && (
+        <button
+          className='absolute top-1/2 right-3 -translate-y-1/2 size-5 rounded-full text-gray-1 bg-gray-5 flex justify-center items-center'
+          onClick={clearInput}
+        >
+          <CloseIcon size={12} strokeWidth={4} />
+        </button>
       )}
-      {...props}
-    />
+    </div>
   );
 };
-
-type ButtonProps = React.ComponentPropsWithRef<'button'>;
-
-const Button = ({ className, ...props }: ButtonProps) => {
-  return (
-    <button
-      className={cn(
-        'absolute top-1/2 -translate-y-1/2 right-3 text-gray-5 cursor-pointer',
-        className,
-      )}
-      {...props}
-    >
-      <SearchIcon size={24} />
-    </button>
-  );
-};
-
-SearchInput.Container = Container;
-SearchInput.Button = Button;
 
 export { SearchInput };
