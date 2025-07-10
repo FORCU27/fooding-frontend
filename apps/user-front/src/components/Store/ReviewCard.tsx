@@ -16,7 +16,7 @@ export const ReviewCard = ({ review }: ReviewCardProps) => {
   return (
     <div className='w-[350px] h-[390px] flex flex-col rounded-[12px] shrink-0 shadow-[0_4px_16px_rgba(0,0,0,0.05)] bg-white'>
       {firstImageUrl ? (
-        <div className='relative h-[200px] rounded-t-[12px] overflow-hidden'>
+        <div className='relative w-[350px] h-[200px] rounded-t-[12px] overflow-hidden'>
           <Image fill style={{ objectFit: 'cover' }} src={firstImageUrl} alt='리뷰 이미지' />
         </div>
       ) : (
@@ -25,8 +25,8 @@ export const ReviewCard = ({ review }: ReviewCardProps) => {
         </div>
       )}
 
-      <div className='flex flex-col pt-5 px-6 pb-10'>
-        <div className='flex'>
+      <div className='flex flex-col pt-3 px-5 pb-10'>
+        <div className='flex mb-3'>
           <div className='flex justify-center items-center size-[56px] bg-gray-1 rounded-full'>
             <FoodingIcon width={25} height={31} color='rgba(17, 17, 17, 0.1)' />
           </div>
@@ -43,7 +43,7 @@ export const ReviewCard = ({ review }: ReviewCardProps) => {
             </span>
           </div>
         </div>
-        <p className='pt-1 body-3 text-black line-clamp-3'>{review.content}</p>
+        <p className='body-3 text-black line-clamp-3 h-[70px]'>{review.content}</p>
       </div>
     </div>
   );

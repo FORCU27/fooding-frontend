@@ -1,7 +1,9 @@
 'use client';
 
+import { Bookmark } from '@repo/api/user';
 import { Button, ErrorFallback, Skeleton } from '@repo/design-system/components/b2c';
 import {
+  ChevronRightIcon,
   FoodingIcon,
   GiftIcon,
   MessageDotsSquareIcon,
@@ -18,18 +20,25 @@ import { Screen } from '@/components/Layout/Screen';
 import { useAuth } from '@/components/Provider/AuthProvider';
 import { StoresList } from '@/components/Store/StoresList';
 import { useGetStoreList } from '@/hooks/store/useGetStoreList';
+import { useGetBookmarkList } from '@/hooks/user/useGetBookmarkList';
+import { BookmarkCard } from '@/screens/bookmarks/components/BookmarkCard';
 
 export const MyPageTab: ActivityComponentType<'MyPageTab'> = () => {
-  const { logout } = useAuth();
-
-  const handleLogoutClick = async () => {
-    logout();
-    location.reload();
-  };
+  const flow = useFlow();
 
   return (
     <Screen
-      header={<Header title='마이페이지' right={<SettingIcon onClick={handleLogoutClick} />} />}
+      header={
+        <Header
+          title='마이페이지'
+          right={
+            <SettingIcon
+              className='cursor-pointer'
+              onClick={() => flow.push('SettingScreen', {})}
+            />
+          }
+        />
+      }
       bottomTab={<BottomTab currentTab='mypage' />}
     >
       <ErrorBoundary fallback={MyPageErrorFallback}>
@@ -47,9 +56,13 @@ const Content = () => {
   const { user } = useAuth();
   const flow = useFlow();
 
+  const { data: bookmarks } = useGetBookmarkList({
+    pageNum: 1,
+    pageSize: 5,
+  });
   const { data: stores } = useGetStoreList({
     pageNum: 1,
-    pageSize: 3,
+    pageSize: 5,
   });
 
   return (
@@ -60,9 +73,9 @@ const Content = () => {
             <div className='flex justify-center items-center w-[64px] h-[64px] bg-gray-1 rounded-full'>
               <FoodingIcon fillOpacity={0.1} />
             </div>
-            <div className='flex-col mx-5 justify-center items-center w-[100px]'>
+            <div className='flex flex-col mx-5 justify-center w-[100px]'>
               <p className='subtitle-4 mb-2'>{user?.nickname ? user?.nickname : user?.email}</p>
-              <div className='flex justify-between'>
+              <div className='flex justify-between w-full'>
                 <p className='text-gray-5 body-8'>팔로워 0</p>
                 <hr className='w-[1px] h-[14px] bg-gray-2 text-gray-2' />
                 <p className='text-gray-5 body-8'>팔로잉 0</p>
@@ -97,11 +110,35 @@ const Content = () => {
       </div>
       {stores && (
         <div className='mt-3'>
-          <StoresList
-            stores={stores.list}
-            subtitle='찜해둔 식당'
-            onClickTotalBtn={() => flow.push('BookmarkListScreen', {})}
-          />
+          <div className='flex flex-col py-grid-margin bg-white/80'>
+            <div className='flex justify-between mb-4 px-grid-margin'>
+              <div className='subtitle-3'>찜해 둔 식당</div>
+              {(bookmarks.list.length ?? 0) === 0 ? (
+                <button
+                  className='flex justify-center items-center body-5 text-gray-3'
+                  onClick={() => flow.push('BookmarkListScreen', {})}
+                  disabled
+                >
+                  <span>전체보기</span>
+                  <ChevronRightIcon size={14} />
+                </button>
+              ) : (
+                <button
+                  className='flex justify-center items-center body-5 text-gray-5 cursor-pointer hover:text-black'
+                  onClick={() => flow.push('BookmarkListScreen', {})}
+                >
+                  <span>전체보기</span>
+                  <ChevronRightIcon size={14} />
+                </button>
+              )}
+            </div>
+            <ul className='flex px-grid-margin overflow-x-auto scrollbar-hide w-dvw gap-3'>
+              {bookmarks.list.map((bookmark: Bookmark) => (
+                <BookmarkCard bookmark={bookmark} key={bookmark.id} />
+              ))}
+            </ul>
+          </div>
+
           <StoresList
             stores={stores.list}
             subtitle='최근 본 식당'

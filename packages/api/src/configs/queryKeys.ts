@@ -38,6 +38,7 @@ export const queryKeys = {
       list: 'userStorePostList',
       detail: 'userStorePostDetail',
     },
+    bookmark: 'userBookmark',
   },
   me: {
     user: 'meUser',
