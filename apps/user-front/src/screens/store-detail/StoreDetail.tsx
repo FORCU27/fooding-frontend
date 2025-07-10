@@ -93,7 +93,7 @@ const StoreDetail = ({ storeId, showHeader }: StoreDetailProps) => {
 
     setIsBookmarked(!bookmarkState);
 
-    const mutation = bookmarkState ? addBookMark : deleteBookMark;
+    const mutation = bookmarkState ? deleteBookMark : addBookMark;
 
     mutation.mutate(store.id, {
       onError: () => {
