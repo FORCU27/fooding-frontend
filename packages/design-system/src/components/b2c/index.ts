@@ -12,3 +12,4 @@ export * from './Skeleton';
 export * from './FullscreenBottomSheet';
 export * from './EmptyState';
 export * from './DismissibleChipButton';
+export * from './Switch';

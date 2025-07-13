@@ -10,12 +10,21 @@ import { B2BRefreshIcon, B2BDeleteIcon } from '@repo/design-system/icons';
 import { RewardComplete } from './components/RewardComplete';
 import Button from '@/components/Button';
 import { useStore } from '@/components/Provider/StoreClientProvider';
+import { useConsecutiveClick } from '@/hooks/useConsecutiveClick';
 
 export default function WaitingPage() {
   const router = useRouter();
   const [phoneNumber, setPhoneNumber] = useState('010-');
 
   const { storeId } = useStore();
+
+  const { handleClick } = useConsecutiveClick({
+    targetCount: 5,
+    timeoutMs: 2000,
+    onSuccess: () => {
+      router.push('/store/select');
+    },
+  });
 
   const updateFormData = (key: string, value: string) => {
     setPhoneNumber(value);
@@ -114,7 +123,13 @@ export default function WaitingPage() {
         <div className='w-[50%] h-full bg-white '>
           <div className='h-full flex flex-col'>
             {/* 왼쪽 컨텐츠 */}{' '}
-            <Image src='/images/fooding-logo.png' alt='logo' width={204} height={48} />
+            <Image
+              src='/images/fooding-logo.png'
+              alt='logo'
+              width={204}
+              height={48}
+              onClick={handleClick}
+            />
             <div className='body-2 text-gray-5 mt-[112px]'>
               마일리지 적립 링크를 전달 받으시기 위해
             </div>
