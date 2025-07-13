@@ -7,6 +7,7 @@ import { stackflow } from '@stackflow/react/future';
 
 import { BookmarkListScreen } from '@/screens/bookmarks/Bookmarks';
 import { NotificationListScreen } from '@/screens/notifications/Notifications';
+import { NotificationSettingScreen } from '@/screens/settings/Notifications';
 import { SettingScreen } from '@/screens/settings/Settings';
 import { StoreDetailScreen } from '@/screens/store-detail/StoreDetail';
 import { HomeTab } from '@/tabs/home/Home';
@@ -24,6 +25,7 @@ const config = defineConfig({
     { name: 'BookmarkListScreen' },
     { name: 'StoreDetailScreen' },
     { name: 'SettingScreen' },
+    { name: 'NotificationSettingScreen' },
   ],
 
   transitionDuration: 350,
@@ -41,6 +43,7 @@ export const { Stack } = stackflow({
     BookmarkListScreen,
     StoreDetailScreen,
     SettingScreen,
+    NotificationSettingScreen,
   },
   plugins: [
     basicRendererPlugin(),
@@ -60,5 +63,6 @@ declare module '@stackflow/config' {
     BookmarkListScreen: object;
     StoreDetailScreen: { storeId: number };
     SettingScreen: object;
+    NotificationSettingScreen: object;
   }
 }

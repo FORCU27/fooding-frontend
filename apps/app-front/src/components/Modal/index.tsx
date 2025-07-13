@@ -66,7 +66,7 @@ export default function Modal({
             aria-label='닫기'
             type='button'
           >
-            <CloseIcon />
+            <CloseIcon size={60} />
           </button>
         )}
         <div className='w-full h-full flex items-center justify-center'>{children}</div>
