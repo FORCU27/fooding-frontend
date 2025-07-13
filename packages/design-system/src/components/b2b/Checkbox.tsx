@@ -7,12 +7,12 @@ interface CheckboxProps {
   disabled?: boolean;
 }
 
-export const Checkbox: React.FC<CheckboxProps> = ({
+export const Checkbox = ({
   size = 'small',
   checked = false,
   pressed = false,
   disabled = false,
-}) => {
+}: CheckboxProps) => {
   const isLarge = size === 'large';
 
   const dimension = isLarge ? 34 : 25;
@@ -42,5 +42,3 @@ export const Checkbox: React.FC<CheckboxProps> = ({
     </svg>
   );
 };
-
-export default Checkbox;
