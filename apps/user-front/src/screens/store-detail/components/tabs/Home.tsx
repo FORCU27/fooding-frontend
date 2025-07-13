@@ -60,24 +60,23 @@ export const StoreDetailHomeTab = ({ store }: StoreDetailHomeTabProps) => {
       <Section className='mt-[10px] pb-8'>
         <Section.Header>
           <Section.Title>메뉴</Section.Title>
-          {storeMenus.length > 0 && <Section.Link>더보기</Section.Link>}
+          <Section.Link>더보기</Section.Link>
         </Section.Header>
         {storeMenus.length === 0 && <EmptyState className='mt-10' title='등록된 메뉴가 없어요!' />}
         {storeMenus.length > 0 && (
           <ul className='mt-6 flex gap-3 -mx-grid-margin overflow-x-auto scrollbar-hide px-grid-margin'>
-            {/* TODO: 배열 풀어서 표시하는게 맞는지 확인하기 */}
-            {storeMenus
-              .flatMap((menu) => menu.menu)
-              .map((menu) => (
-                <MenuCard key={menu.id}>
-                  <MenuCard.Image src={null} alt={menu.name} />
-                  <MenuCard.Title>{menu.name}</MenuCard.Title>
-                  <MenuCard.Price>{menu.price.toLocaleString()}</MenuCard.Price>
-                </MenuCard>
-              ))}
+            {/* TODO: 왜 배열일까 */}
+            {storeMenus[0]?.menu.map((menu) => (
+              <MenuCard key={menu.id}>
+                <MenuCard.Image src={null} alt={menu.name} />
+                <MenuCard.Title>{menu.name}</MenuCard.Title>
+                <MenuCard.Price>{menu.price.toLocaleString()}</MenuCard.Price>
+              </MenuCard>
+            ))}
           </ul>
         )}
       </Section>
+      {/* TODO: 리뷰 목록 조회 기능 추가 */}
       <Section className='mt-[10px]'>
         <Section.Header>
           <Section.Title className='flex items-center gap-1'>
@@ -104,12 +103,12 @@ export const StoreDetailHomeTab = ({ store }: StoreDetailHomeTabProps) => {
         <div className='mt-3 flex flex-col gap-1'>
           <span className='body-6 flex items-center gap-[10px]'>
             <MarkPinIcon className='size-[18px] stroke-1' />
-            {mock.location}
+            제주 제주시 서해안로 654 바다풍경 정육식당
           </span>
           <span className='body-6 flex items-center'>
             <TrainIcon className='mr-[10px] size-[18px] stroke-1' />
-            <SubwayLineBadge className='mr-1' line={mock.subwayNumber} />
-            {mock.subwayLocation}
+            <SubwayLineBadge className='mr-1' line={6} />
+            제주역에서 847m
           </span>
         </div>
         <Button className='mt-5' variant='gray'>
