@@ -44,7 +44,6 @@ const getPlatformUrl = (platform: SocialPlatform): string => {
   const {
     GOOGLE_CLIENT_ID,
     OAUTH_REDIRECT_URI,
-    OAUTH_APPLE_REDIRECT_URI,
     KAKAO_CLIENT_ID,
     NAVER_CLIENT_ID,
     APPLE_CLIENT_ID,
@@ -53,7 +52,7 @@ const getPlatformUrl = (platform: SocialPlatform): string => {
   const platformUrls: Record<SocialPlatform, string> = {
     KAKAO: `https://kauth.kakao.com/oauth/authorize?response_type=code&client_id=${KAKAO_CLIENT_ID}&redirect_uri=${OAUTH_REDIRECT_URI}`,
     NAVER: `https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=${NAVER_CLIENT_ID}&redirect_uri=${OAUTH_REDIRECT_URI}&state=test1234`,
-    APPLE: `https://appleid.apple.com/auth/authorize?response_type=code&response_mode=form_post&client_id=${APPLE_CLIENT_ID}&redirect_uri=${OAUTH_APPLE_REDIRECT_URI}&scope=name%20email&state=test123`,
+    APPLE: `https://appleid.apple.com/auth/authorize?response_type=code&response_mode=form_post&client_id=${APPLE_CLIENT_ID}&redirect_uri=${OAUTH_REDIRECT_URI}&scope=name%20email&state=test123`,
     GOOGLE: `https://accounts.google.com/o/oauth2/v2/auth?client_id=${GOOGLE_CLIENT_ID}&redirect_uri=${OAUTH_REDIRECT_URI}&response_type=code&scope=email%20profile`,
   };
 
@@ -115,10 +114,7 @@ export default function LoginPage() {
           const credentials: AuthSocialLoginBody = {
             code,
             provider: platform,
-            redirectUri:
-              platform === 'APPLE'
-                ? env.OAUTH_APPLE_REDIRECT_URI || ''
-                : env.OAUTH_REDIRECT_URI || '',
+            redirectUri: env.OAUTH_REDIRECT_URI || '',
             role: 'CEO',
           };
           await socialLogin(credentials);
