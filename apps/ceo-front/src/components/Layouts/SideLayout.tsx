@@ -36,20 +36,20 @@ const createMenuItems = (activeMenuId: string | null) => [
       { id: '/store/news', text: '부가정보', path: '/store/news' },
       { id: '/store/menus', text: '메뉴', path: '/store/menus' },
       { id: '/store/seatGuide', text: '영업시간/휴뮤일', path: '/store/seatGuide' },
-      { id: '/store/facilities', text: '시간', path: '/store/facilities' },
+      { id: '/store/photo', text: '사진', path: '/store/photo' },
     ],
   },
-  {
-    id: 'news',
-    text: '소식',
-    path: '/news',
-    iconType: 'news' as const,
-  },
+
   {
     id: 'regular',
-    text: '단골',
-    path: '/regular',
+    text: '고객관리',
+    path: '/regular/news',
     iconType: 'regular' as const,
+    subItems: [
+      { id: '/regular/news', text: '소식', path: '/regular/news' },
+      { id: '/regular/favorite', text: '단골', path: '/regular/favorite' },
+      { id: '/regular/review', text: '리뷰', path: '/regular/review' },
+    ],
   },
   {
     id: 'reward',
@@ -59,7 +59,7 @@ const createMenuItems = (activeMenuId: string | null) => [
     subItems: [
       { id: '/reward/point', text: '적립', path: '/reward/point' },
       { id: '/reward/coupon', text: '쿠폰', path: '/reward/coupon' },
-      { id: '/reward/pointshop', text: '포인트샵', path: '/reward/pointshop' },
+      { id: '/reward/pointshop', text: '포인트 샵', path: '/reward/pointshop' },
     ],
   },
   {
