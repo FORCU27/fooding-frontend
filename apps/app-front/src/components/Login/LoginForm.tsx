@@ -1,6 +1,7 @@
 import { PropsWithoutRef, useState } from 'react';
 
 import { AuthLoginBody } from '@repo/api/auth';
+import { Input } from '@repo/design-system/components/b2b';
 import { VisibilityIcon, VisibilityOffIcon } from '@repo/design-system/icons';
 import { useForm } from 'react-hook-form';
 
@@ -12,9 +13,6 @@ export interface FormProps {
 
 const INPUT_STYLES =
   'w-[642px] h-[94px] p-5 bg-[#F1F3F5] rounded-[50px] text-[#767676] text-[28px]';
-
-const ERROR_INPUT_STYLES =
-  'w-[642px] h-[94px] p-5 border border-[#E11300] bg-[#F1F3F5] rounded-[50px] text-[#E11300] text-[28px]';
 
 const LoginForm = (props: PropsWithoutRef<FormProps>) => {
   const [showPassword, setShowPassword] = useState<boolean>(false);
@@ -46,14 +44,14 @@ const LoginForm = (props: PropsWithoutRef<FormProps>) => {
       className='flex flex-col justify-center items-center'
       noValidate
     >
-      <div className='flex flex-col gap-4'>
+      <div className='flex flex-col gap-4 w-full'>
         <div className='relative'>
-          <input
+          <Input
             required
             autoFocus
             type='email'
             placeholder='아이디를 입력해주세요.'
-            className={errors.email ? ERROR_INPUT_STYLES : INPUT_STYLES}
+            status={errors.email ? 'error' : 'off'}
             {...register('email')}
           />
           <button
@@ -66,11 +64,11 @@ const LoginForm = (props: PropsWithoutRef<FormProps>) => {
           </button>
         </div>
         <div className='relative'>
-          <input
+          <Input
             required
             type={showPassword ? 'text' : 'password'}
             placeholder='비밀번호를 입력해주세요.'
-            className={INPUT_STYLES}
+            status={errors.email ? 'error' : 'off'}
             {...register('password')}
           />
           <button
