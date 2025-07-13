@@ -8,7 +8,7 @@ interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   status?: InputStatus;
 }
 
-const Input: React.FC<InputProps> = ({ status = 'off', className, ...props }) => {
+export const Input: React.FC<InputProps> = ({ status = 'off', className, ...props }) => {
   const baseStyle =
     'w-full h-[94px] px-[40px] py-[30px] rounded-full bg-gray-1 outline-none subtitle-4-1';
   const textStyle = {
@@ -28,4 +28,3 @@ const Input: React.FC<InputProps> = ({ status = 'off', className, ...props }) =>
   return <input {...props} className={clsx(baseStyle, textStyle, borderStyle, className)} />;
 };
 
-export default Input;
