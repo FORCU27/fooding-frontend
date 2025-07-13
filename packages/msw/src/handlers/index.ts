@@ -1,8 +1,13 @@
 import { notificationHandlers } from './notification';
 import { storeHandlers } from './store';
+import { storePostHandlers } from './store-post';
 import { MockHandlerGroup, registerHandler } from '../utils/mock';
 
-export const mockHandlerGroups: MockHandlerGroup[] = [notificationHandlers, storeHandlers];
+export const mockHandlerGroups: MockHandlerGroup[] = [
+  notificationHandlers,
+  storeHandlers,
+  storePostHandlers,
+];
 
 export const handlers = mockHandlerGroups.flatMap((handler) =>
   registerHandler(

@@ -24,7 +24,7 @@ declare module '@stackflow/config' {
     NotificationListScreen: object;
     StoreDetailScreen: { storeId: number };
     BookmarkListScreen: object;
-    StorePostDetailScreen: { storePostId: number };
+    StorePostDetailScreen: { storePostId: number; storeName: string };
     SettingScreen: object;
   }
 }
