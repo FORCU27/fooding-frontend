@@ -11,7 +11,6 @@ import {
   B2BCeoSidebarStatisticsIcon,
 } from '@repo/design-system/icons';
 
-import { MenuItem } from '../../types/layout';
 import DrawerMenuSection from '../Home/DrawerMenuSection';
 
 // 아이콘 컴포넌트를 메모이제이션
@@ -25,7 +24,7 @@ const MenuIcons = {
 } as const;
 
 // 메뉴 아이템을 컴포넌트 외부로 이동하여 매번 재생성 방지
-const createMenuItems = (activeMenuId: string | null) => [
+const createMenuItems = () => [
   {
     id: 'store',
     text: '매장 정보 관리',
@@ -86,7 +85,7 @@ const SideLayout = ({ isOpen, onClose }: SideLayoutProps) => {
   const pathname = usePathname();
 
   // 모든 로직을 인라인으로 처리
-  const allMenuItems = createMenuItems(null);
+  const allMenuItems = createMenuItems();
   const activeMenu = (() => {
     for (const menu of allMenuItems) {
       if (menu.subItems) {
@@ -102,7 +101,8 @@ const SideLayout = ({ isOpen, onClose }: SideLayoutProps) => {
   })();
 
   const activeMenuId = activeMenu?.menu.id || null;
-  const menuItems = createMenuItems(activeMenuId).map((menu) => {
+
+  const menuItems = createMenuItems().map((menu) => {
     const IconComponent = MenuIcons[menu.iconType];
     return {
       ...menu,

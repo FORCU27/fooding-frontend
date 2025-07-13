@@ -1,7 +1,7 @@
 'use client';
 
 import { usePathname } from 'next/navigation';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 
 import FooterLayout from './FooterLayout';
 import HeaderLayout from './HeaderLayout';

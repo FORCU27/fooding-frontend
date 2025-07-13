@@ -1,7 +1,7 @@
 'use client';
 
 import { useRouter, usePathname } from 'next/navigation';
-import { useCallback, memo, useEffect } from 'react';
+import { memo } from 'react';
 
 import { MenuItem } from '../../types/layout';
 
