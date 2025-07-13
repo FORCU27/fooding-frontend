@@ -1,7 +1,7 @@
 import Image from 'next/image';
 
 import { Store } from '@repo/api/user';
-import { BookmarkIcon, FoodingIcon, StarIcon } from '@repo/design-system/icons';
+import { FoodingIcon, StarIcon } from '@repo/design-system/icons';
 import { useFlow } from '@stackflow/react/future';
 
 interface MainStoreListProps {
@@ -15,12 +15,11 @@ export const MainStoreList = ({ stores }: MainStoreListProps) => {
     <div className='flex flex-col px-grid-margin bg-white/80'>
       <ul className='flex gap-3 overflow-x-auto scrollbar-hide -mx-grid-margin px-grid-margin'>
         {stores.map((store) => (
-          <li
-            key={store.id}
-            className='flex flex-col cursor-pointer relative'
-            onClick={() => flow.push('StoreDetailScreen', { storeId: store.id })}
-          >
-            <div className='relative mb-2 rounded-xl overflow-hidden w-[220px] h-[140px]'>
+          <li key={store.id} className='flex flex-col relative'>
+            <div
+              className='relative mb-2 rounded-xl overflow-hidden w-[220px] h-[140px]'
+              onClick={() => flow.push('StoreDetailScreen', { storeId: store.id })}
+            >
               {store.mainImage !== null ? (
                 <Image
                   width={220}
@@ -42,20 +41,14 @@ export const MainStoreList = ({ stores }: MainStoreListProps) => {
               )}
             </div>
 
-            <BookmarkIcon
-              className='absolute top-2 right-2'
-              size={24}
-              cursor='pointer'
-              color={store.isBookmarked ? 'var(--color-primary-pink)' : 'white'}
-              fill={store.isBookmarked ? 'var(--color-primary-pink)' : 'none'}
-            />
-
-            <div className='flex flex-col gap-1'>
+            <div className='flex flex-col p-1'>
               <div className='subtitle-5 flex items-center gap-1'>
-                <p className='subtitle-5 w-[128px] truncate'>{store.name}</p>
-                <StarIcon size={18} fill='#FFD83D' color='#FFD83D' />
-                <span className='text-[#FFD83D] subtitle-6'>{store.averageRating}</span>
-                <span className='body-6 text-gray-5'>({store.reviewCount})</span>
+                <p className='subtitle-5 max-w-[125px] truncate'>{store.name}</p>
+                <div className='flex justify-center items-center'>
+                  <StarIcon size={18} fill='#FFD83D' color='#FFD83D' />
+                  <span className='text-[#FFD83D] subtitle-6'>{store.averageRating}</span>
+                </div>
+                <span className='flex body-6 text-gray-5'>({store.reviewCount})</span>
               </div>
               <p className='body-8 text-gray-5'>
                 {store.city.length >= 3 ? store.city.slice(0, 2) : store.city} •{' '}

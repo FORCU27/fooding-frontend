@@ -1,12 +1,13 @@
 'use client';
 
 import Image from 'next/image';
-import { useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 import { Button, ChipTabs, NavButton, Skeleton } from '@repo/design-system/components/b2c';
 import {
   BookmarkIcon,
   ChevronLeftIcon,
+  FoodingIcon,
   IconProps,
   ShareIcon,
   StarIcon,
@@ -17,13 +18,17 @@ import { Suspense } from '@suspensive/react';
 import { StoreDetailHomeTab } from './components/tabs/Home';
 import { StoreDetailReviewTab } from './components/tabs/ReviewDetail';
 import { StoreDetailPostListTab } from './components/tabs/StorePostList';
+import { useLoginBottomSheet } from '@/components/Auth/LoginBottomSheet';
 import { Carousel } from '@/components/Carousel';
 import { LoadingToggle } from '@/components/Devtool/LoadingToggle';
 import { DefaultErrorBoundary } from '@/components/Layout/DefaultErrorBoundary';
 import { Header } from '@/components/Layout/Header';
 import { Screen } from '@/components/Layout/Screen';
 import { Section } from '@/components/Layout/Section';
+import { useAuth } from '@/components/Provider/AuthProvider';
 import { useGetStoreDetail } from '@/hooks/store/useGetStoreDetail';
+import { useAddBookmark } from '@/hooks/user/useAddBookmark';
+import { useDeleteBookmark } from '@/hooks/user/useDeleteBookmark';
 import { useScrollVisibility } from '@/hooks/useScrollVisibility';
 import { cn } from '@/utils/cn';
 
@@ -66,7 +71,37 @@ type StoreDetailProps = {
 };
 
 const StoreDetail = ({ storeId, showHeader }: StoreDetailProps) => {
+  const { user } = useAuth();
   const { data: store } = useGetStoreDetail(storeId);
+  const loginBottomSheet = useLoginBottomSheet();
+  const addBookMark = useAddBookmark();
+  const deleteBookMark = useDeleteBookmark();
+  const isLoggedIn = !!user;
+  const [isBookmarked, setIsBookmarked] = useState(store.isBookmarked);
+
+  useEffect(() => {
+    setIsBookmarked(store.isBookmarked);
+  }, [store.isBookmarked]);
+
+  const handleBookmarkClick = (e: React.MouseEvent) => {
+    if (!isLoggedIn && !isBookmarked) {
+      e.preventDefault();
+      loginBottomSheet.open();
+      return;
+    }
+
+    const bookmarkState = isBookmarked;
+
+    setIsBookmarked(!bookmarkState);
+
+    const mutation = bookmarkState ? deleteBookMark : addBookMark;
+
+    mutation.mutate(store.id, {
+      onError: () => {
+        setIsBookmarked(!bookmarkState);
+      },
+    });
+  };
 
   return (
     <div className='flex flex-col pb-[120px] min-h-dvh'>
@@ -144,8 +179,12 @@ const StoreDetail = ({ storeId, showHeader }: StoreDetailProps) => {
         )}
       >
         <button className='flex flex-col size-[56px] justify-center items-center gap-1 shrink-0 cursor-pointer'>
-          {/* TODO: 북마크 기능 추가 */}
-          <BookmarkIcon />
+          <BookmarkIcon
+            cursor='pointer'
+            color={isBookmarked ? 'var(--color-primary-pink)' : 'var(--color-gray-5)'}
+            fill={isBookmarked ? 'var(--color-primary-pink)' : 'none'}
+            onClick={handleBookmarkClick}
+          />
           <span className='subtitle-4 text-black h-[19px]'>{mock.bookmarkCount}</span>
         </button>
         {/* TODO: 줄서기 기능 추가 */}
@@ -253,9 +292,12 @@ type CarouselProps = {
   imageUrls: string[];
 };
 
-// TODO: 등록된 가게 이미지가 없는 경우 플레이스홀더 이미지 추가
 const StoreImagePlaceholder = () => {
-  return <div className='shrink-0 h-[280px] bg-gray-1' />;
+  return (
+    <div className='h-[280px] bg-gray-1 flex justify-center items-center'>
+      <FoodingIcon className='text-[#111111]/10 w-[92px] h-[114px]' />
+    </div>
+  );
 };
 
 const StoreImageCarousel = ({ imageUrls }: CarouselProps) => {

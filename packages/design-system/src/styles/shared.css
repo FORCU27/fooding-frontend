@@ -9,7 +9,7 @@
   --color-fooding-yellow: oklch(0.88 0.2 100);
   --color-fooding-green: oklch(0.74 0.19 145);
   --color-fooding-blue: oklch(0.92 0.23 200);
-  --color-fooding-purple: oklch(0.6 0.14 300);
+  --color-fooding-purple: #6366f1;
 
   /* Interaction */
   --color-error-red: oklch(0.61 0.21 25);
@@ -19,10 +19,12 @@
   /* Grays */
   --color-gray-1: #f1f3f5;
   --color-gray-2: #ededed;
-  --color-gray-3: oklch(0.88 0 0);
-  --color-gray-4: oklch(0.7 0 0);
-  --color-gray-5: oklch(0.57 0 0);
+  --color-gray-3: #e2dfdf;
+  --color-gray-4: #bebebe;
+  --color-gray-5: #767676;
   --color-gray-6: #292929;
+  --color-gray-7: #f9fafb;
+  --color-gray-8: #dde1eb;
 
   /* Base */
   --color-white: oklch(1 0 0);

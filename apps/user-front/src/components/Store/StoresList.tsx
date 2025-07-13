@@ -13,7 +13,7 @@ interface StoresListProps {
 export const StoresList = ({ subtitle, stores, onClickTotalBtn }: StoresListProps) => {
   const handleEmptyStoreList = (stores: Store[]) => {
     if (stores.length === 0) {
-      return <EmptyState className='h-[240px]' title='해당하는 가게 목록이 없어요.' />;
+      return <EmptyState className='h-[240px]' title='해당하는 가게 목록이 없어요!' />;
     }
   };
   return (
@@ -41,7 +41,7 @@ export const StoresList = ({ subtitle, stores, onClickTotalBtn }: StoresListProp
         )}
       </div>
       {handleEmptyStoreList(stores)}
-      <ul className='overflow-x-auto scrollbar-hide px-grid-margin flex gap-3'>
+      <ul className='flex px-grid-margin overflow-x-auto scrollbar-hide w-dvw gap-3'>
         {stores.map((store) => (
           <StoreCard store={store} key={store.id} />
         ))}

@@ -49,8 +49,8 @@ const FullscreenBottomSheetContent = ({ className, children, ...props }: DialogC
         {...props}
       >
         {children}
-        <DialogPrimitives.Close className='absolute top-4 right-4 size-10 rounded-full bg-gray-1 flex justify-center items-center active:bg-gray-2'>
-          <CloseIcon size={24} />
+        <DialogPrimitives.Close className='absolute top-4 right-4 size-10 rounded-full flex justify-center items-center'>
+          <CloseIcon size={28} />
         </DialogPrimitives.Close>
       </DialogPrimitives.Content>
     </DialogPrimitives.Portal>

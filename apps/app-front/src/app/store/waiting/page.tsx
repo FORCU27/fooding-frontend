@@ -3,7 +3,7 @@
 import Image from 'next/image';
 import React, { useState } from 'react';
 
-import { GetWaitingDetailResponse } from '@repo/api/app';
+import { GetStoreWaitingOverviewResult, PostStoreWaiting } from '@repo/api/app';
 import { storeApi } from '@repo/api/app';
 import { queryKeys } from '@repo/api/configs/query-keys';
 import { useQuery, useQueryClient, useMutation } from '@tanstack/react-query';
@@ -99,19 +99,19 @@ const WaitingInfo = () => (
   </div>
 );
 
-const WaitingStats = ({ list }: { list: GetWaitingDetailResponse[] }) => (
+const WaitingStats = ({ waitingOverview }: { waitingOverview?: GetStoreWaitingOverviewResult }) => (
   <div className='flex flex-row mt-12'>
     <div className='w-[250px] flex flex-col items-center'>
       <h3 className='subtitle-2-2 font-bold mb-4 mt-4'>현재 웨이팅</h3>
       <p className='text-[125px] font-bold text-primary-pink whitespace-nowrap'>
-        {list?.length}
+        {waitingOverview?.waitingCount ?? 0}
         <span className='text-3xl ml-2'>팀</span>
       </p>
     </div>
     <div className='w-[250px] border-l border-dark flex flex-col items-center'>
       <h3 className='subtitle-2-2 font-bold mb-4 mt-4'>예상시간</h3>
       <p className='text-[125px] font-bold text-primary-pink whitespace-nowrap'>
-        {list?.length * 1}
+        {waitingOverview?.estimatedWaitingTimeMinutes ?? 0}
         <span className='text-3xl ml-2'>분</span>
       </p>
     </div>
@@ -133,15 +133,15 @@ const ActionButtons = ({ onClick }: { onClick: () => void }) => {
 
 const MainContent = ({
   onClick,
-  list,
+  waitingOverview,
 }: {
   onClick: () => void;
-  list?: GetWaitingDetailResponse[];
+  waitingOverview?: GetStoreWaitingOverviewResult;
 }) => (
   <div className='flex-1 max-w-4xl'>
     <StoreName />
     <WaitingInfo />
-    <WaitingStats list={list || []} />
+    <WaitingStats waitingOverview={waitingOverview} />
     <ActionButtons onClick={onClick} />
   </div>
 );
@@ -162,16 +162,19 @@ export default function WaitingPage() {
   const { storeId } = useStore();
   const queryClient = useQueryClient();
   const [error, setError] = useState<string | null>(null);
+  const [completeData, setCompleteData] = useState<PostStoreWaiting | null>(null);
 
   const { mutate: submitWaiting, data: mutationResponse } = useMutation({
     mutationFn: (formData: WaitingRegisterData) =>
-      storeApi.createStoreWaiting({ body: formData }, Number(storeId)),
-    onSuccess: () => {
+      storeApi.createStoreWaiting({ body: formData }, storeId),
+    onSuccess: (data) => {
+      console.log('data', data);
+      setCompleteData(data.data);
       resetFormData();
       setIsModalOpen(false);
       setOpenComplete(true);
       queryClient.invalidateQueries({
-        queryKey: [queryKeys.app.store.waiting, storeId, 'WAITING'],
+        queryKey: [queryKeys.app.store.waitingOverview, storeId],
       });
     },
     onError: (error) => {
@@ -180,12 +183,11 @@ export default function WaitingPage() {
     },
   });
 
-  const { data: waitingResponse } = useQuery({
-    queryKey: [queryKeys.app.store.waiting, storeId, 'WAITING'],
-    queryFn: () => storeApi.getStoreWaiting({ id: Number(storeId), status: 'WAITING' }),
+  const { data: waitingOverview } = useQuery({
+    queryKey: [queryKeys.app.store.waitingOverview, storeId],
+    queryFn: () => storeApi.getStoreWaitingOverview({ id: storeId }),
+    enabled: !!storeId,
   });
-
-  const waitingList = waitingResponse?.data?.list || [];
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [openTerms, setOpenTerms] = useState(false);
@@ -263,7 +265,7 @@ export default function WaitingPage() {
   return (
     <div className='flex h-screen border-l-20 border-primary-pink bg-primary-pink relative'>
       <div className='flex-[2] bg-white p-16 relative'>
-        <MainContent onClick={() => setIsModalOpen(true)} list={waitingList} />
+        <MainContent onClick={() => setIsModalOpen(true)} waitingOverview={waitingOverview?.data} />
       </div>
       <div className='flex-1 bg-primary-pink relative'>
         <Logo />
@@ -307,7 +309,7 @@ export default function WaitingPage() {
           />
         </FullScreenPanel>
       )}
-      {openComplete && (
+      {openComplete && completeData && (
         <CompleteStep
           onClose={() => {
             setOpenComplete(false);
@@ -315,7 +317,7 @@ export default function WaitingPage() {
             resetFormData();
             setStep('phone');
           }}
-          waitingList={waitingResponse?.data?.list || []}
+          waitingList={completeData}
           currentWaiting={mutationResponse?.data}
         />
       )}
