@@ -39,6 +39,7 @@ export const queryKeys = {
       detail: 'userStorePostDetail',
     },
     bookmark: 'userBookmark',
+    reservation: { reservationList: 'userReservationList' },
   },
   me: {
     user: 'meUser',
