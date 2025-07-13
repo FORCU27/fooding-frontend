@@ -92,12 +92,11 @@ const createMenuItems = (activeMenuId: string | null) => [
 ];
 
 interface SideLayoutProps {
-  screenMode?: ScreenMode;
   isOpen?: boolean;
   onClose?: () => void;
 }
 
-const SideLayout = ({ screenMode = 'desktop', isOpen, onClose }: SideLayoutProps) => {
+const SideLayout = ({ isOpen, onClose }: SideLayoutProps) => {
   const router = useRouter();
   const pathname = usePathname();
 
@@ -135,12 +134,10 @@ const SideLayout = ({ screenMode = 'desktop', isOpen, onClose }: SideLayoutProps
     (menu: MenuItem) => {
       console.log(menu);
       router.push(menu.path);
-      // 모바일과 태블릿에서 메뉴 클릭 시 사이드바 닫기
-      if (screenMode === 'mobile' || screenMode === 'tablet') {
-        onClose?.();
-      }
+      // 모바일/태블릿에서 메뉴 클릭 시 사이드바 닫기
+      onClose?.();
     },
-    [router, screenMode, onClose],
+    [router, onClose],
   );
 
   // useCallback으로 배경 클릭 핸들러 메모이제이션
@@ -160,66 +157,36 @@ const SideLayout = ({ screenMode = 'desktop', isOpen, onClose }: SideLayoutProps
         className='border-r border-gray-8 bg-white h-full'
         menuList={menuItems}
         onMenuClick={handleMenuClick}
-        screenMode={screenMode}
         activeMenu={activeMenu}
       />
     ),
-    [menuItems, handleMenuClick, screenMode, activeMenu],
+    [menuItems, handleMenuClick, activeMenu],
   );
 
   // 모바일 모드: 오버레이 + 슬라이드 사이드바
-  if (screenMode === 'mobile') {
-    return (
-      <>
-        {/* 모바일 오버레이 */}
-        {isOpen && (
-          <div
-            className='fixed top-[64px] left-0 right-0 bottom-0 bg-black opacity-50 z-30 md:hidden'
-            onClick={handleBackdropClick}
-          />
-        )}
-
-        {/* 모바일 사이드바 */}
-        <div
-          className={`fixed top-0 left-0 h-screen z-40 transform transition-transform duration-300 ease-in-out md:hidden ${
-            isOpen ? 'translate-x-0' : '-translate-x-full'
-          }`}
-        >
-          <div className='w-[250px] h-full pt-[64px]'>{sidebarContent}</div>
-        </div>
-      </>
-    );
-  }
-
-  // 태블릿 모드: 오버레이 + 슬라이드 사이드바 (모바일과 비슷하지만 더 넓음)
-  if (screenMode === 'tablet') {
-    return (
-      <>
-        {/* 태블릿 오버레이 */}
-        {isOpen && (
-          <div
-            className='fixed top-[64px] left-0 right-0 bottom-0 bg-black opacity-50 z-30 lg:hidden md:block'
-            onClick={handleBackdropClick}
-          />
-        )}
-
-        {/* 태블릿 사이드바 */}
-        <div
-          className={`fixed top-0 left-0 h-screen z-40 transform transition-transform duration-300 ease-in-out lg:hidden md:block ${
-            isOpen ? 'translate-x-0' : '-translate-x-full'
-          }`}
-        >
-          <div className='w-[280px] h-full pt-[64px]'>{sidebarContent}</div>
-        </div>
-      </>
-    );
-  }
-
-  // 데스크톱 모드: 항상 표시되는 고정 사이드바
   return (
-    <div className='hidden lg:block h-full'>
-      <div className='w-[240px] h-full'>{sidebarContent}</div>
-    </div>
+    <>
+      {/* 오버레이 - 모바일/태블릿에서만 */}
+      {isOpen && (
+        <div
+          className='fixed top-[64px] left-0 right-0 bottom-0 bg-black opacity-50 z-30 lg:hidden'
+          onClick={handleBackdropClick}
+        />
+      )}
+
+      {/* 사이드바 - 모든 화면 크기에서 */}
+      <div
+        className={`
+          fixed top-0 left-0 h-screen z-40 transform transition-transform duration-300 ease-in-out
+          lg:relative lg:transform-none lg:transition-none
+          ${isOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
+        `}
+      >
+        <div className='w-[250px] md:w-[280px] lg:w-[240px] h-full pt-[64px] lg:pt-0'>
+          {sidebarContent}
+        </div>
+      </div>
+    </>
   );
 };
 

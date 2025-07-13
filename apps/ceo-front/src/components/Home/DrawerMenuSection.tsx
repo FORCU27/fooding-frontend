@@ -10,19 +10,11 @@ interface Props {
   menuList: MenuItem[];
   onMenuClick?: (menu: MenuItem) => void;
   onSubMenuClick?: (subMenu: MenuItem) => void;
-  screenMode?: ScreenMode;
   activeMenu?: { menu: MenuItem; subItem: MenuItem | null } | null;
 }
 
 const DrawerMenuSection = memo(
-  ({
-    className,
-    menuList,
-    onMenuClick,
-    onSubMenuClick,
-    screenMode = 'desktop',
-    activeMenu,
-  }: Props) => {
+  ({ className, menuList, onMenuClick, onSubMenuClick, activeMenu }: Props) => {
     return (
       <li className={`flex flex-col py-[32px] ${className || ''}`}>
         <ul className=''>
@@ -32,7 +24,6 @@ const DrawerMenuSection = memo(
               menu={menu}
               onMenuClick={onMenuClick}
               onSubMenuClick={onSubMenuClick}
-              screenMode={screenMode}
               isActive={activeMenu?.menu.id === menu.id}
               activeSubItem={activeMenu?.subItem || null}
             />
@@ -56,7 +47,6 @@ const MenuItemComponent = memo(
     menu: MenuItem;
     onMenuClick?: (menu: MenuItem) => void;
     onSubMenuClick?: (subMenu: MenuItem) => void;
-    screenMode: ScreenMode;
     isActive: boolean;
     activeSubItem: MenuItem | null;
   }) => {
