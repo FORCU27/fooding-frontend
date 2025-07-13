@@ -294,7 +294,7 @@ type CarouselProps = {
 
 const StoreImagePlaceholder = () => {
   return (
-    <div className='h-[280px] bg-gray-1 flex justify-center items-center'>
+    <div className='h-[280px] bg-gray-1 flex justify-center items-center shrink-0'>
       <FoodingIcon className='text-[#111111]/10 w-[92px] h-[114px]' />
     </div>
   );
