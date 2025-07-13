@@ -1,23 +1,22 @@
 'use client';
 
-import Image from 'next/image';
 import React, { useState } from 'react';
 
-import { GetStoreWaitingOverviewResult, PostStoreWaiting } from '@repo/api/app';
+import { PostStoreWaiting } from '@repo/api/app';
 import { storeApi } from '@repo/api/app';
 import { queryKeys } from '@repo/api/configs/query-keys';
-import { useQuery, useQueryClient, useMutation } from '@tanstack/react-query';
+import { useQueryClient, useMutation } from '@tanstack/react-query';
 
 import { CompleteStep } from './components/CompleteStep';
+import { FoodImage } from './components/FoodImage';
+import { MainContent } from './components/MainContent';
 import ModalContent from './components/registerWating';
+import { WatingLogo } from './components/WatingLogo';
 import { Step, WaitingRegisterData } from './types';
 import FullScreenPanel from '@/components/FullScreenPanel';
 import Modal from '@/components/Modal';
 import { useStore } from '@/components/Provider/StoreClientProvider';
 import TermsAgreement from '@/components/TermsAgreement';
-import { WatingLogo } from './components/WatingLogo';
-import { MainContent } from './components/MainContent';
-import { FoodImage } from './components/FoodImage';
 import { useGetStoreWaitingOverview } from '@/hooks/store/useGetStoreWaitingOverview';
 
 export default function WaitingPage() {

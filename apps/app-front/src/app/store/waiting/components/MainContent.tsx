@@ -1,9 +1,9 @@
 import { GetStoreWaitingOverviewResult } from '@repo/api/app';
 
+import { ActionButtons } from './ActionButtons';
 import { StoreName } from './StoreName';
 import { WaitingInfo } from './WaitingInfo';
 import { WaitingStats } from './WaitingStats';
-import { ActionButtons } from './ActionButtons';
 
 export const MainContent = ({
   onClick,
