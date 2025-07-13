@@ -1,7 +1,6 @@
 'use client';
 
 import { useRouter, usePathname } from 'next/navigation';
-import { useCallback, useMemo } from 'react';
 
 import {
   B2BCeoSidebarStoreIcon,
@@ -12,8 +11,18 @@ import {
   B2BCeoSidebarStatisticsIcon,
 } from '@repo/design-system/icons';
 
-import { MenuItem, ScreenMode } from '../../types/layout';
+import { MenuItem } from '../../types/layout';
 import DrawerMenuSection from '../Home/DrawerMenuSection';
+
+// 아이콘 컴포넌트를 메모이제이션
+const MenuIcons = {
+  store: B2BCeoSidebarStoreIcon,
+  news: B2BCeoSidebarNewsIcon,
+  regular: B2BCeoSidebarReqularIcon,
+  reward: B2BCeoSidebarRewardIcon,
+  statistics: B2BCeoSidebarStatisticsIcon,
+  devices: B2BCeoSidebarDeviceIcon,
+} as const;
 
 // 메뉴 아이템을 컴포넌트 외부로 이동하여 매번 재생성 방지
 const createMenuItems = (activeMenuId: string | null) => [
@@ -21,9 +30,7 @@ const createMenuItems = (activeMenuId: string | null) => [
     id: 'store',
     text: '매장 정보 관리',
     path: '/store/basic',
-    icon: (
-      <B2BCeoSidebarStoreIcon size={20} stroke={activeMenuId === 'store' ? '#6366F1' : '#111111'} />
-    ),
+    iconType: 'store' as const,
     subItems: [
       { id: '/store/basic', text: '기본정보', path: '/store/basic' },
       { id: '/store/news', text: '부가정보', path: '/store/news' },
@@ -36,58 +43,36 @@ const createMenuItems = (activeMenuId: string | null) => [
     id: 'news',
     text: '소식',
     path: '/news',
-    icon: (
-      <B2BCeoSidebarNewsIcon size={20} stroke={activeMenuId === 'news' ? '#6366F1' : '#111111'} />
-    ),
+    iconType: 'news' as const,
   },
   {
     id: 'regular',
     text: '단골',
     path: '/regular',
-    icon: (
-      <B2BCeoSidebarReqularIcon
-        size={20}
-        stroke={activeMenuId === 'regular' ? '#6366F1' : '#111111'}
-      />
-    ),
+    iconType: 'regular' as const,
   },
   {
     id: 'reward',
     text: '리워드 · 쿠폰',
     path: '/reward',
+    iconType: 'reward' as const,
     subItems: [
       { id: '/reward/point', text: '적립', path: '/reward/point' },
       { id: '/reward/coupon', text: '쿠폰', path: '/reward/coupon' },
       { id: '/reward/pointshop', text: '포인트샵', path: '/reward/pointshop' },
     ],
-    icon: (
-      <B2BCeoSidebarRewardIcon
-        size={20}
-        stroke={activeMenuId === 'reward' ? '#6366F1' : '#111111'}
-      />
-    ),
   },
   {
     id: 'statistics',
     text: '통계',
     path: '/statistics',
-    icon: (
-      <B2BCeoSidebarStatisticsIcon
-        size={20}
-        stroke={activeMenuId === 'statistics' ? '#6366F1' : '#111111'}
-      />
-    ),
+    iconType: 'statistics' as const,
   },
   {
     id: 'devices',
     text: '기기관리',
     path: '/devices',
-    icon: (
-      <B2BCeoSidebarDeviceIcon
-        size={20}
-        stroke={activeMenuId === 'devices' ? '#6366F1' : '#111111'}
-      />
-    ),
+    iconType: 'devices' as const,
   },
 ];
 
@@ -100,90 +85,57 @@ const SideLayout = ({ isOpen, onClose }: SideLayoutProps) => {
   const router = useRouter();
   const pathname = usePathname();
 
-  // useMemo로 활성 메뉴 계산 메모이제이션
-  const activeMenu = useMemo(() => {
-    // 서브메뉴가 있는 경우 서브메뉴 경로 확인
-    const allMenuItems = createMenuItems(null); // 임시로 null 전달
-
+  // 모든 로직을 인라인으로 처리
+  const allMenuItems = createMenuItems(null);
+  const activeMenu = (() => {
     for (const menu of allMenuItems) {
       if (menu.subItems) {
         const activeSubItem = menu.subItems.find(
           (subItem) => pathname === subItem.path || pathname.startsWith(subItem.path),
         );
-        if (activeSubItem) {
-          return { menu, subItem: activeSubItem };
-        }
-      } else {
-        // 메인 메뉴 경로 확인
-        if (pathname === menu.path || pathname.startsWith(menu.path)) {
-          return { menu, subItem: null };
-        }
+        if (activeSubItem) return { menu, subItem: activeSubItem };
+      } else if (pathname === menu.path || pathname.startsWith(menu.path)) {
+        return { menu, subItem: null };
       }
     }
     return null;
-  }, [pathname]);
+  })();
 
-  // 활성 메뉴 ID 추출
   const activeMenuId = activeMenu?.menu.id || null;
+  const menuItems = createMenuItems(activeMenuId).map((menu) => {
+    const IconComponent = MenuIcons[menu.iconType];
+    return {
+      ...menu,
+      icon: <IconComponent size={20} stroke={activeMenuId === menu.id ? '#ff2b3d' : '#111111'} />,
+    };
+  });
 
-  // 활성 메뉴 ID를 기반으로 메뉴 아이템 생성
-  const menuItems = useMemo(() => createMenuItems(activeMenuId), [activeMenuId]);
-
-  // useCallback으로 함수 메모이제이션
-  const handleMenuClick = useCallback(
-    (menu: MenuItem) => {
-      console.log(menu);
-      router.push(menu.path);
-      // 모바일/태블릿에서 메뉴 클릭 시 사이드바 닫기
-      onClose?.();
-    },
-    [router, onClose],
-  );
-
-  // useCallback으로 배경 클릭 핸들러 메모이제이션
-  const handleBackdropClick = useCallback(
-    (e: React.MouseEvent) => {
-      if (e.target === e.currentTarget) {
-        onClose?.();
-      }
-    },
-    [onClose],
-  );
-
-  // useMemo로 사이드바 컨텐츠 메모이제이션
-  const sidebarContent = useMemo(
-    () => (
-      <DrawerMenuSection
-        className='border-r border-gray-8 bg-white h-full'
-        menuList={menuItems}
-        onMenuClick={handleMenuClick}
-        activeMenu={activeMenu}
-      />
-    ),
-    [menuItems, handleMenuClick, activeMenu],
-  );
-
-  // 모바일 모드: 오버레이 + 슬라이드 사이드바
   return (
     <>
-      {/* 오버레이 - 모바일/태블릿에서만 */}
       {isOpen && (
         <div
           className='fixed top-[64px] left-0 right-0 bottom-0 bg-black opacity-50 z-30 lg:hidden'
-          onClick={handleBackdropClick}
+          onClick={(e) => e.target === e.currentTarget && onClose?.()}
         />
       )}
 
-      {/* 사이드바 - 모든 화면 크기에서 */}
       <div
-        className={`
-          fixed top-0 left-0 h-screen z-40 transform transition-transform duration-300 ease-in-out
-          lg:relative lg:transform-none lg:transition-none
-          ${isOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
-        `}
+        className={`fixed top-0 left-0 h-screen z-40 transform transition-transform duration-300 ease-in-out lg:relative lg:transform-none lg:transition-none ${isOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}`}
       >
         <div className='w-[250px] md:w-[280px] lg:w-[240px] h-full pt-[64px] lg:pt-0'>
-          {sidebarContent}
+          <DrawerMenuSection
+            className='border-r border-gray-8 bg-white h-full'
+            menuList={menuItems}
+            onMenuClick={(menu) => {
+              router.push(menu.path);
+              onClose?.();
+            }}
+            onSubMenuClick={(menu) => {
+              router.push(menu.path);
+              onClose?.();
+            }}
+            activeMenu={activeMenu}
+          />
         </div>
       </div>
     </>

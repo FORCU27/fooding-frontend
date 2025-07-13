@@ -6,7 +6,6 @@ import { useState, useEffect } from 'react';
 import FooterLayout from './FooterLayout';
 import HeaderLayout from './HeaderLayout';
 import SideLayout from './SideLayout';
-import { ScreenMode } from '../../types/layout';
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -16,7 +15,8 @@ const Layout = ({ children }: LayoutProps) => {
   const pathname = usePathname();
   const isLoginPage = pathname === '/login';
 
-  const [isOpen, setIsOpen] = useState(false);
+  // 초기값을 함수로 설정
+  const [isOpen, setIsOpen] = useState(() => false);
 
   const toggleSidebar = () => setIsOpen(!isOpen);
   const closeSidebar = () => setIsOpen(false);
@@ -26,7 +26,7 @@ const Layout = ({ children }: LayoutProps) => {
   }
 
   return (
-    <div className='flex flex-col min-h-screen'>
+    <div className='flex flex-col min-h-screen' suppressHydrationWarning>
       <HeaderLayout
         className='h-[74px] border-b border-gray-8'
         isSidebarOpen={isOpen}

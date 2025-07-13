@@ -2,10 +2,8 @@
 
 import Image from 'next/image';
 
-import { ScreenMode } from '../../types/layout';
 interface Props {
   className?: string;
-  screenMode?: ScreenMode;
   isSidebarOpen?: boolean;
   onToggleSidebar?: () => void;
 }
