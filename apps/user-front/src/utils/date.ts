@@ -1,13 +1,34 @@
+type FormatOption = 'korean' | 'dot' | 'dash';
 /**
- * ISO 8601 -> YYYY년 MM월 DD일
+ * ISO 8601을 특정 형식으로 변환합니다.
+ *
+ * @example
+ * formatDate('2025-06-27T12:00:00Z', { format: 'korean' }) // "2025년 06월 27일"
+ * formatDate('2023-06-27T12:00:00Z', { format: 'dot' }) // "2025.06.27"
+ * formatDate('2023-06-27T12:00:00Z', { format: 'dash' }) // "2025-06-27"
  */
-export const formatDate = (isoString: string) => {
+export const formatDate = (
+  isoString: string,
+  options?: {
+    format?: FormatOption;
+  },
+): string => {
+  const DEFAULT_FORMAT: FormatOption = 'korean';
+
+  const format = options?.format ?? DEFAULT_FORMAT;
+
   const date = new Date(isoString);
   const year = date.getUTCFullYear();
   const month = String(date.getUTCMonth() + 1).padStart(2, '0');
   const day = String(date.getUTCDate()).padStart(2, '0');
 
-  return `${year}년 ${month}월 ${day}일`;
+  const formattedDate: Record<FormatOption, string> = {
+    korean: `${year}년 ${month}월 ${day}일`,
+    dot: `${year}.${month}.${day}`,
+    dash: `${year}-${month}-${day}`,
+  };
+
+  return formattedDate[format];
 };
 
 /**

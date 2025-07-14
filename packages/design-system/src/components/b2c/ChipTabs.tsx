@@ -41,7 +41,7 @@ const ChipTabsList = ({ className, children, size, ...props }: ChipTabsListProps
   return (
     <ChipTabsListContext value={{ size }}>
       <TabsPrimitives.List
-        className={cn('bg-white inline-flex items-center gap-3', className)}
+        className={cn('bg-white inline-flex items-center gap-2', className)}
         {...props}
       >
         {children}

@@ -30,6 +30,8 @@ export const MyPageLink = ({ BottomTabItem, BottomTabLabel, isActive }: MyPageLi
   }, [clicked, isLoggedIn, flow, loginBottomSheet]);
 
   const handleClick = (e: React.MouseEvent) => {
+    if (isActive) e.preventDefault();
+
     if (!isLoggedIn) {
       e.preventDefault();
       setClicked(true);
