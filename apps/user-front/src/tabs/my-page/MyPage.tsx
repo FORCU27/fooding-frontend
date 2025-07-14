@@ -97,7 +97,7 @@ const Content = () => {
           <hr className='w-[2px] h-[81px] bg-gray-2 text-gray-2 mx-2' />
           <div
             className='flex flex-col justify-center items-center gap-1 cursor-pointer'
-            onClick={() => flow.push('CouponListScreen', {})}
+            onClick={() => flow.push('MyCouponListScreen', {})}
           >
             <TicketIcon />
             <p className='body-7 text-gray-5'>쿠폰</p>
