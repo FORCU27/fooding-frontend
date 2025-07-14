@@ -19,18 +19,21 @@ export type GetMyCouponListParams = {
   storeId?: number;
 };
 
-export const GetMyCouponListResponse = PageResponse(
-  z.object({
-    id: z.number(),
-    storeId: z.number(),
-    storeName: z.string().nullable(),
-    name: z.string(),
-    conditions: z.string().nullable(),
-    benefitType: z.enum(BEFENIT_TYPES),
-    discountType: z.enum(DISCOUNT_TYPES),
-    status: z.enum(COUPON_STATUS),
-    usedAt: z.iso.datetime({ local: true }).nullable(),
-    expiredOn: z.iso.date().nullable(),
-    createdDateAt: z.iso.datetime({ local: true }),
-  }),
-);
+export type Coupon = z.infer<typeof Coupon>;
+export const Coupon = z.object({
+  id: z.number(),
+  storeId: z.number(),
+  storeName: z.string().nullable(),
+  name: z.string(),
+  conditions: z.string().nullable(),
+  benefitType: z.enum(BEFENIT_TYPES),
+  discountType: z.enum(DISCOUNT_TYPES),
+  discountValue: z.number(),
+  status: z.enum(COUPON_STATUS),
+  usedAt: z.iso.datetime({ local: true }).nullable(),
+  expiredOn: z.iso.date().nullable(),
+  createdDateAt: z.iso.datetime({ local: true }),
+});
+
+export type GetMyCouponListResponse = z.infer<typeof GetMyCouponListResponse>;
+export const GetMyCouponListResponse = PageResponse(Coupon);

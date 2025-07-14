@@ -2,9 +2,9 @@
 
 import { useState } from 'react';
 
-import { CouponStatus } from '@repo/api/user';
+import { Coupon } from '@repo/api/user';
 import { Button, Dialog, EmptyState, Input, Tabs } from '@repo/design-system/components/b2c';
-import { CloseIcon } from '@repo/design-system/icons';
+import { CloseIcon, InfoCircleIcon } from '@repo/design-system/icons';
 import { ActivityComponentType } from '@stackflow/react/future';
 import { Suspense } from '@suspensive/react';
 
@@ -69,6 +69,7 @@ const CouponList = ({ type }: CouponListProps) => {
   return (
     <div className='px-grid-margin'>
       <span className='mt-5 body-6 text-gray-5 flex'>쿠폰 1장</span>
+
       <ul className='mt-3 flex flex-col gap-5'>
         {coupons.map((coupon) => (
           <CouponCard key={coupon.id} coupon={coupon} />
@@ -80,31 +81,34 @@ const CouponList = ({ type }: CouponListProps) => {
 };
 
 type CouponCardProps = {
-  coupon: {
-    id: number;
-    name: string;
-    status: CouponStatus;
-  };
+  coupon: Coupon;
 };
 
 const CouponCard = ({ coupon }: CouponCardProps) => {
   return (
     <li className='p-5 flex flex-col bg-white rounded-[12px]'>
       <div className='flex justify-between'>
-        <span className='body-4'>김가네 김밥</span>
+        <span className='body-4'>{coupon.storeName}</span>
         <CouponDetailDialog
-          trigger={<span className='size-8 rounded-full bg-gray-1' />}
+          trigger={
+            <button
+              className='size-8 flex justify-center rounded-full items-center text-gray-5'
+              aria-label='쿠폰 상세 보기'
+            >
+              <InfoCircleIcon />
+            </button>
+          }
           coupon={coupon}
         />
       </div>
       <div className='mt-5 flex'>
         <div className='flex flex-col flex-1'>
-          <span className='subtitle-1'>계란김밥 증정 쿠폰</span>
+          <span className='subtitle-1'>{coupon.name}</span>
           <span className='body-8 text-gray-5'>사용기간: 2025-02-01 12:12:12</span>
         </div>
+        {/* TODO: 이미지 추가 */}
         <div className='size-[60px] rounded-[8px] bg-gray-100' />
       </div>
-
       <ApplyCouponDialog trigger={<Button className='mt-5'>사용하기</Button>} coupon={coupon} />
     </li>
   );

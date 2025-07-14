@@ -29,3 +29,4 @@ export { default as CompassIcon } from './CompassIcon';
 export { default as ShareIcon } from './ShareIcon';
 export { default as HeartIcon } from './HeartIcon';
 export { default as MessageSquareIcon } from './MessageSquareIcon';
+export { default as InfoCircleIcon } from './InfoCircleIcon';

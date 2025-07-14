@@ -1,4 +1,5 @@
 export * from './type';
+export * from './mock';
 
 import { GetMyCouponListParams, GetMyCouponListResponse } from './type';
 import { api } from '../../shared';

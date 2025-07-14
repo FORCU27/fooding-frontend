@@ -49,7 +49,7 @@ const config = defineConfig({
   ],
 
   transitionDuration: 350,
-  initialActivity: () => 'MyCouponListScreen',
+  initialActivity: () => 'HomeTab',
 });
 
 export const { Stack } = stackflow({
