@@ -5,7 +5,7 @@ import { ChevronDownIcon, IconProps } from '../../icons';
 import { cn } from '../../utils';
 
 const chipButtonVariants = tv({
-  base: 'h-[33px] flex justify-center items-center px-3 rounded-full text-sm font-mediunm whitespace-nowrap cursor-pointer border',
+  base: 'h-[33px] flex justify-center items-center px-3 rounded-full text-sm font-medium whitespace-nowrap cursor-pointer border',
   variants: {
     variant: {
       contained: 'bg-gray-6 text-white border-transparent',
