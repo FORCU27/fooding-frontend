@@ -6,9 +6,9 @@ export const queryKeys = {
     },
     store: {
       waiting: 'waiting',
+      waitingOverview: 'waitingOverview',
       storeInfo: 'storeStoreInfo',
       stores: 'storeStores',
-      waitingOverview: 'waitingOverview',
     },
     reward: {
       log: 'getLog',

@@ -20,6 +20,7 @@ export const AuthLoginUserSchema = z.object({
   termsAgreed: z.boolean(),
   privacyPolicyAgreed: z.boolean(),
   marketingConsent: z.boolean(),
+  pushAgreed: z.boolean(),
   lastLoggedInAt: z.string().nullable(),
   createdAt: z.iso.datetime({ local: true }),
   updatedAt: z.string(),
@@ -45,6 +46,21 @@ export const GetAuthResponseSchema = z.object({
   refreshToken: z.string(),
   refreshExpiredIn: z.number(),
 });
+
+export type AuthUpdateUserBody = {
+  nickname?: string;
+  phoneNumber?: string;
+  gender?: string;
+  referralCode?: string;
+  marketingConsent?: boolean;
+  pushAgreed?: boolean;
+};
+
+export const GetUserUpdateResponseSchema = z.object({
+  status: z.string(),
+  data: z.null(),
+});
+
 export type GetAuthResponse = z.infer<typeof GetAuthResponseSchema>;
 
 export const GetLoginResponseSchema = ApiResponse(GetAuthResponseSchema);
@@ -52,3 +68,5 @@ export type GetLoginResponse = z.infer<typeof GetLoginResponseSchema>;
 
 export const GetUserResponseSchema = ApiResponse(AuthLoginUserSchema);
 export type GetUserResponse = z.infer<typeof GetUserResponseSchema>;
+
+export type GetUserUpdateResponse = z.infer<typeof GetUserUpdateResponseSchema>;
