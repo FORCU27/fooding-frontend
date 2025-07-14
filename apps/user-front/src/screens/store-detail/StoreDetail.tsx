@@ -149,8 +149,8 @@ const StoreDetail = ({ storeId, showHeader }: StoreDetailProps) => {
         </div>
       </Section>
       <Section className='mt-[10px] py-[14px]'>
-        <ChipTabs defaultValue='home' className='-mx-grid-margin w-auto'>
-          <ChipTabs.List className='overflow-x-auto w-full scrollbar-hide px-grid-margin'>
+        <ChipTabs defaultValue='home' scrollable>
+          <ChipTabs.List>
             <ChipTabs.Trigger value='home'>홈</ChipTabs.Trigger>
             <ChipTabs.Trigger value='news'>소식</ChipTabs.Trigger>
             <ChipTabs.Trigger value='menu'>메뉴</ChipTabs.Trigger>
