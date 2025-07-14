@@ -7,22 +7,28 @@ import { Button, ChipTabs, NavButton, Skeleton } from '@repo/design-system/compo
 import {
   BookmarkIcon,
   ChevronLeftIcon,
+  FoodingIcon,
   IconProps,
   ShareIcon,
   StarIcon,
 } from '@repo/design-system/icons';
 import { ActivityComponentType, useFlow } from '@stackflow/react/future';
 import { Suspense } from '@suspensive/react';
-import useEmblaCarousel from 'embla-carousel-react';
 
 import { StoreDetailHomeTab } from './components/tabs/Home';
 import { StoreDetailReviewTab } from './components/tabs/ReviewDetail';
+import { StoreDetailPostListTab } from './components/tabs/StorePostList';
+import { useLoginBottomSheet } from '@/components/Auth/LoginBottomSheet';
+import { Carousel } from '@/components/Carousel';
 import { LoadingToggle } from '@/components/Devtool/LoadingToggle';
 import { DefaultErrorBoundary } from '@/components/Layout/DefaultErrorBoundary';
 import { Header } from '@/components/Layout/Header';
 import { Screen } from '@/components/Layout/Screen';
 import { Section } from '@/components/Layout/Section';
+import { useAuth } from '@/components/Provider/AuthProvider';
 import { useGetStoreDetail } from '@/hooks/store/useGetStoreDetail';
+import { useAddBookmark } from '@/hooks/user/useAddBookmark';
+import { useDeleteBookmark } from '@/hooks/user/useDeleteBookmark';
 import { useScrollVisibility } from '@/hooks/useScrollVisibility';
 import { cn } from '@/utils/cn';
 
@@ -65,10 +71,40 @@ type StoreDetailProps = {
 };
 
 const StoreDetail = ({ storeId, showHeader }: StoreDetailProps) => {
+  const { user } = useAuth();
   const { data: store } = useGetStoreDetail(storeId);
+  const loginBottomSheet = useLoginBottomSheet();
+  const addBookMark = useAddBookmark();
+  const deleteBookMark = useDeleteBookmark();
+  const isLoggedIn = !!user;
+  const [isBookmarked, setIsBookmarked] = useState(store.isBookmarked);
+
+  useEffect(() => {
+    setIsBookmarked(store.isBookmarked);
+  }, [store.isBookmarked]);
+
+  const handleBookmarkClick = (e: React.MouseEvent) => {
+    if (!isLoggedIn && !isBookmarked) {
+      e.preventDefault();
+      loginBottomSheet.open();
+      return;
+    }
+
+    const bookmarkState = isBookmarked;
+
+    setIsBookmarked(!bookmarkState);
+
+    const mutation = bookmarkState ? deleteBookMark : addBookMark;
+
+    mutation.mutate(store.id, {
+      onError: () => {
+        setIsBookmarked(!bookmarkState);
+      },
+    });
+  };
 
   return (
-    <div className='flex flex-col pb-[120px]'>
+    <div className='flex flex-col pb-[120px] min-h-dvh'>
       {showHeader && <Header left={<Header.Back />} title={store.name} />}
       {/* TODO: 공유 기능 추가 */}
       <NavButton className='z-10 absolute right-grid-margin top-3'>
@@ -76,7 +112,7 @@ const StoreDetail = ({ storeId, showHeader }: StoreDetailProps) => {
       </NavButton>
       {store.images.length === 0 && <StoreImagePlaceholder />}
       {store.images.length > 0 && (
-        <Carousel imageUrls={store.images.map((image) => image.imageUrl)} />
+        <StoreImageCarousel imageUrls={store.images.map((image) => image.imageUrl)} />
       )}
       <Section className='pt-[30px] pb-[20px]'>
         <span className='flex items-center body-5 text-gray-5'>
@@ -126,6 +162,9 @@ const StoreDetail = ({ storeId, showHeader }: StoreDetailProps) => {
             <ChipTabs.Content value='home'>
               <StoreDetailHomeTab store={store} />
             </ChipTabs.Content>
+            <ChipTabs.Content value='news'>
+              <StoreDetailPostListTab storeId={storeId} />
+            </ChipTabs.Content>
             <ChipTabs.Content value='review'>
               <StoreDetailReviewTab store={store} />
             </ChipTabs.Content>
@@ -140,8 +179,12 @@ const StoreDetail = ({ storeId, showHeader }: StoreDetailProps) => {
         )}
       >
         <button className='flex flex-col size-[56px] justify-center items-center gap-1 shrink-0 cursor-pointer'>
-          {/* TODO: 북마크 기능 추가 */}
-          <BookmarkIcon />
+          <BookmarkIcon
+            cursor='pointer'
+            color={isBookmarked ? 'var(--color-primary-pink)' : 'var(--color-gray-5)'}
+            fill={isBookmarked ? 'var(--color-primary-pink)' : 'none'}
+            onClick={handleBookmarkClick}
+          />
           <span className='subtitle-4 text-black h-[19px]'>{mock.bookmarkCount}</span>
         </button>
         {/* TODO: 줄서기 기능 추가 */}
@@ -249,48 +292,31 @@ type CarouselProps = {
   imageUrls: string[];
 };
 
-// TODO: 등록된 가게 이미지가 없는 경우 플레이스홀더 이미지 추가
 const StoreImagePlaceholder = () => {
-  return <div className='h-[280px] bg-gray-1' />;
+  return (
+    <div className='h-[280px] bg-gray-1 flex justify-center items-center shrink-0'>
+      <FoodingIcon className='text-[#111111]/10 w-[92px] h-[114px]' />
+    </div>
+  );
 };
 
-const Carousel = ({ imageUrls }: CarouselProps) => {
-  const [carouselRef, carousel] = useEmblaCarousel({
-    loop: true,
-  });
-  const [currentIndex, setCurrentIndex] = useState<number | null>(null);
-
-  useEffect(() => {
-    if (!carousel) return;
-
-    setCurrentIndex(carousel.selectedScrollSnap() + 1);
-
-    carousel.on('select', () => {
-      setCurrentIndex(carousel.selectedScrollSnap() + 1);
-    });
-  }, [carousel]);
-
+const StoreImageCarousel = ({ imageUrls }: CarouselProps) => {
   return (
-    <div className='relative' role='region' aria-roledescription='carousel'>
-      <div ref={carouselRef} className='overflow-hidden'>
-        <div className='flex'>
-          {imageUrls.map((imageUrl, index) => (
-            <div
-              key={index}
-              role='group'
-              aria-roledescription='slide'
-              className='h-[280px] min-w-0 shrink-0 grow-0 basis-full relative'
-            >
-              <Image fill style={{ objectFit: 'cover' }} src={imageUrl} alt='메뉴 이미지' />
-            </div>
-          ))}
-        </div>
-      </div>
-      {currentIndex !== null && (
-        <div className='absolute bottom-5 right-5 text-white text-xs p-[10px] flex justify-center items-center bg-black/60 rounded-[8px] h-7'>
-          {currentIndex} / {imageUrls.length}
-        </div>
-      )}
-    </div>
+    <Carousel>
+      <Carousel.List>
+        {imageUrls.map((imageUrl, index) => (
+          <Carousel.Item key={index} className='h-[280px]'>
+            <Image fill style={{ objectFit: 'cover' }} src={imageUrl} alt='메뉴 이미지' />
+          </Carousel.Item>
+        ))}
+      </Carousel.List>
+      <Carousel.Pagination>
+        {({ page }) => (
+          <div className='absolute bottom-5 right-5 text-white text-xs p-[10px] flex justify-center items-center bg-black/60 rounded-[8px] h-7'>
+            {page} / {imageUrls.length}
+          </div>
+        )}
+      </Carousel.Pagination>
+    </Carousel>
   );
 };

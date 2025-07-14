@@ -1,4 +1,3 @@
-// ModalContent.tsx (예시)
 import { MemberCountStep } from './MemberCountStep';
 import { NameStep } from './NameStep';
 import { PhoneStep } from './PhoneStep';

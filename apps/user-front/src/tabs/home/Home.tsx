@@ -81,19 +81,18 @@ const ContentBody = () => {
           <CategoryTabs categories={CATEGORY_LIST} />
           <MainStoreList stores={stores.list} />
         </div>
+        <StoresList
+          subtitle='푸딩에서 인기 많은 식당이에요'
+          stores={popularStores.list}
+          onClickTotalBtn={noop}
+        />
+        <StoresList subtitle='새로 오픈했어요!' stores={stores.list} onClickTotalBtn={noop} />
+        <StoresList
+          subtitle='지금 바로 입장하실 수 있어요!'
+          stores={immediateEntryStores.list}
+          onClickTotalBtn={noop}
+        />
       </div>
-
-      <StoresList
-        subtitle='푸딩에서 인기 많은 식당이에요'
-        stores={popularStores.list}
-        onClickTotalBtn={noop}
-      />
-      <StoresList subtitle='새로 오픈했어요!' stores={stores.list} onClickTotalBtn={noop} />
-      <StoresList
-        subtitle='지금 바로 입장하실 수 있어요!'
-        stores={immediateEntryStores.list}
-        onClickTotalBtn={noop}
-      />
     </div>
   );
 };

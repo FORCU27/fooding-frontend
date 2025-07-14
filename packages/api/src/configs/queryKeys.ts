@@ -1,14 +1,19 @@
 export const queryKeys = {
   admin: {},
   app: {
+    service: {
+      list: 'serviceList',
+    },
     store: {
       waiting: 'waiting',
+      waitingOverview: 'waitingOverview',
       storeInfo: 'storeStoreInfo',
       stores: 'storeStores',
     },
     reward: {
       log: 'getLog',
       coupons: 'getCoupons',
+      rewardGet: 'rewardGet',
     },
   },
   ceo: {
@@ -36,6 +41,7 @@ export const queryKeys = {
     coupon: {
       infiniteList: 'userCouponInfiniteList',
     },
+    bookmark: 'userBookmark',
   },
   me: {
     user: 'meUser',

@@ -4,7 +4,7 @@
 import { createContext, useContext } from 'react';
 
 type StoreContextType = {
-  storeId: string | null;
+  storeId: number;
 };
 
 const StoreContext = createContext<StoreContextType | null>(null);
@@ -24,7 +24,7 @@ export function StoreClientProvider({
   initialStoreId,
 }: {
   children: React.ReactNode;
-  initialStoreId: string | null;
+  initialStoreId: number;
 }) {
   return <StoreContext value={{ storeId: initialStoreId }}>{children}</StoreContext>;
 }

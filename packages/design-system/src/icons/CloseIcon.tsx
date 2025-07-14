@@ -1,28 +1,21 @@
 import { IconProps } from './type';
 
-export default function CloseIcon({
-  size = 60,
-  color = 'currentColor',
-  fill = 'none',
-  ...props
-}: IconProps) {
+export default function CloseIcon({ size = 24, ...props }: IconProps) {
   return (
     <svg
+      xmlns='http://www.w3.org/2000/svg'
       width={size}
       height={size}
-      viewBox='0 0 60 60'
-      xmlns='http://www.w3.org/2000/svg'
-      fill={fill}
-      color={color}
+      viewBox='0 0 24 24'
+      fill='none'
+      stroke='currentColor'
+      strokeWidth='2'
+      strokeLinecap='round'
+      strokeLinejoin='round'
       {...props}
     >
-      <path
-        d='M45 15L15 45M15 15L45 45'
-        stroke='currentColor'
-        strokeWidth='5'
-        strokeLinecap='round'
-        strokeLinejoin='round'
-      />
+      <path d='M18 6 6 18' />
+      <path d='m6 6 12 12' />
     </svg>
   );
 }

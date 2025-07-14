@@ -5,6 +5,12 @@ import { ApiResponse, PaginatedResponse, PageResponse } from '../../shared';
 export const BenefitType = z.enum(['DISCOUNT', 'GIFT']);
 export type BenefitType = z.infer<typeof BenefitType>;
 
+export const DiscountType = z.enum(['PERCENT', 'FIXED']);
+export type DiscountType = z.infer<typeof DiscountType>;
+
+export const CouponStatus = z.enum(['AVAILABLE', 'REQUESTED', 'USED']);
+export type CouponStatus = z.infer<typeof CouponStatus>;
+
 export const RewardStatus = z.enum(['PUBLISHED', 'EARNED', 'CANCELED', 'USED']);
 export type RewardStatus = z.infer<typeof RewardStatus>;
 
@@ -17,18 +23,18 @@ export type Channel = z.infer<typeof Channel>;
 export const UserCoupon = z.object({
   id: z.number(),
   userId: z.number(),
-  couponId: z.number(),
-  storeId: z.number(),
-  nickname: z.string().nullable(),
-  storeName: z.string(),
+  couponId: z.number().nullable(),
+  storeId: z.number().nullable(),
+  nickname: z.string(),
+  storeName: z.string().nullable(),
   name: z.string(),
   conditions: z.string().nullable(),
   benefitType: BenefitType,
-  discountType: z.string(),
+  discountType: DiscountType,
   discountValue: z.number(),
-  used: z.boolean(),
+  status: CouponStatus,
   usedAt: z.string().nullable(),
-  expiredOn: z.string(),
+  expiredOn: z.string().nullable(),
   createdDateAt: z.string(),
 });
 export type UserCoupon = z.infer<typeof UserCoupon>;
@@ -67,3 +73,15 @@ export const UserRewardsCouponsRequest = BaseSearchRequest.extend({
   used: z.boolean(),
 });
 export type UserRewardsCouponsRequest = z.infer<typeof UserRewardsCouponsRequest>;
+
+export const PostRewardGetRequest = z.object({
+  phoneNumber: z.string(),
+  storeId: z.number(),
+  point: z.number(),
+  type: z.enum(['EVENT', 'VISIT']),
+  channel: z.enum(['STORE', 'EVENT_PLATFORM']),
+});
+export type PostRewardGetRequest = z.infer<typeof PostRewardGetRequest>;
+
+export const PostRewardGetResponse = ApiResponse(z.object({}).nullable());
+export type PostRewardGetResponse = z.infer<typeof PostRewardGetResponse>;

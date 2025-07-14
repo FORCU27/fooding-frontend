@@ -8,11 +8,30 @@ import { stackflow } from '@stackflow/react/future';
 import { BookmarkListScreen } from '@/screens/bookmarks/Bookmarks';
 import { MyCouponListScreen } from '@/screens/my-coupons/MyCoupons';
 import { NotificationListScreen } from '@/screens/notifications/Notifications';
+import { NotificationSettingScreen } from '@/screens/settings/Notifications';
+import { SettingScreen } from '@/screens/settings/Settings';
 import { StoreDetailScreen } from '@/screens/store-detail/StoreDetail';
+import { StorePostDetailScreen } from '@/screens/store-post-detail/StorePostDetail';
 import { HomeTab } from '@/tabs/home/Home';
 import { MyPageTab } from '@/tabs/my-page/MyPage';
 import { ReservationTab } from '@/tabs/reservation/Reservation';
 import { SearchTab } from '@/tabs/search/Search';
+
+declare module '@stackflow/config' {
+  interface Register {
+    HomeTab: object;
+    SearchTab: object;
+    ReservationTab: object;
+    MyPageTab: object;
+    NotificationListScreen: object;
+    StoreDetailScreen: { storeId: number };
+    BookmarkListScreen: object;
+    MyCouponListScreen: object;
+    StorePostDetailScreen: { storePostId: number; storeName: string };
+    SettingScreen: object;
+    NotificationSettingScreen: object;
+  }
+}
 
 const config = defineConfig({
   activities: [
@@ -21,9 +40,12 @@ const config = defineConfig({
     { name: 'ReservationTab' },
     { name: 'MyPageTab' },
     { name: 'NotificationListScreen' },
-    { name: 'StoreDetailScreen' },
     { name: 'BookmarkListScreen' },
     { name: 'MyCouponListScreen' },
+    { name: 'StorePostDetailScreen' },
+    { name: 'StoreDetailScreen' },
+    { name: 'SettingScreen' },
+    { name: 'NotificationSettingScreen' },
   ],
 
   transitionDuration: 350,
@@ -38,9 +60,12 @@ export const { Stack } = stackflow({
     ReservationTab,
     MyPageTab,
     NotificationListScreen,
-    StoreDetailScreen,
     BookmarkListScreen,
     MyCouponListScreen,
+    StorePostDetailScreen,
+    StoreDetailScreen,
+    SettingScreen,
+    NotificationSettingScreen,
   },
   plugins: [
     basicRendererPlugin(),
@@ -50,15 +75,4 @@ export const { Stack } = stackflow({
   ],
 });
 
-declare module '@stackflow/config' {
-  interface Register {
-    HomeTab: object;
-    SearchTab: object;
-    ReservationTab: object;
-    MyPageTab: object;
-    NotificationListScreen: object;
-    StoreDetailScreen: { storeId: number };
-    BookmarkListScreen: object;
-    MyCouponListScreen: object;
-  }
 }

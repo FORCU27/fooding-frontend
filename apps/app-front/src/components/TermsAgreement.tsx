@@ -1,4 +1,5 @@
-import { ArrowLeftIcon, CheckIcon } from '@repo/design-system/icons';
+import { Checkbox } from '@repo/design-system/components/b2b';
+import { ArrowLeftIcon } from '@repo/design-system/icons';
 
 type CheckedKeys = 'termsAgreed' | 'privacyPolicyAgreed' | 'thirdPartyAgreed' | 'marketingConsent';
 
@@ -69,7 +70,7 @@ const TermsAgreement = ({ onClose, formData, updateFormData }: TermsAgreementPro
           className='rounded-full border-2 border-gray-2 py-[28px] px-[40px] flex items-center justify-between cursor-pointer w-full'
         >
           <span className='subtitle-2-1'>전체 동의</span>
-          <CheckIcon variant={allAgreed ? 'default' : 'disabled'} />
+          <Checkbox size='large' checked={allAgreed} />
         </button>
 
         <ul className='px-[40px] pt-[10px]'>
@@ -99,7 +100,7 @@ const TermsAgreement = ({ onClose, formData, updateFormData }: TermsAgreementPro
                 aria-checked={formData[term.key]}
                 tabIndex={0}
               >
-                <CheckIcon variant={formData[term.key] ? 'default' : 'disabled'} />
+                <Checkbox size='large' checked={formData[term.key]} />
               </div>
             </li>
           ))}
