@@ -1,35 +1,31 @@
 import Image from 'next/image';
 
-import { ReservationCompleted } from '@repo/api/user';
-import { CloseIcon, FoodingIcon, StarIcon } from '@repo/design-system/icons';
+import { ReservationCompleted, WAITING_TYPES } from '@repo/api/user';
+import { CloseIcon, FoodingIcon } from '@repo/design-system/icons';
 
+import { StarRating } from '@/components/Store/StarRating';
 import { formatDotDate } from '@/utils/date';
+
+const WATING_TYPE_LABELS: Record<(typeof WAITING_TYPES)[number], string> = {
+  IN_PERSON: '현장 웨이팅',
+  ONLINE: '온라인 웨이팅',
+};
 
 interface ReservationCompletedCardProps {
   reservation: ReservationCompleted;
+  showEditButton: boolean;
 }
 
-export const ReservationCompletedCard = ({ reservation }: ReservationCompletedCardProps) => {
-  const isReviewWithin20Days = (createdAt: string): boolean => {
-    const createdDate = new Date(createdAt);
-    const today = new Date();
-
-    const diffTime = today.getTime() - createdDate.getTime();
-    const diffDays = diffTime / (1000 * 60 * 60 * 24);
-
-    return diffDays <= 20;
-  };
-
-  const showEditButton = isReviewWithin20Days(reservation.createdAt);
-
+export const ReservationCompletedCard = ({
+  reservation,
+  showEditButton,
+}: ReservationCompletedCardProps) => {
   return (
     <div className='flex flex-col bg-white/80 rounded-xl p-4 gap-3'>
       <div className='flex justify-between'>
         <p className='body-4'>
-          {reservation.isWaiting
-            ? reservation.waitingType === 'ONLINE'
-              ? '온라인 웨이팅'
-              : '현장 웨이팅'
+          {reservation.isWaiting && reservation.waitingType
+            ? WATING_TYPE_LABELS[reservation.waitingType]
             : '예약'}
         </p>
         <CloseIcon className='text-gray-5' />
@@ -67,26 +63,14 @@ export const ReservationCompletedCard = ({ reservation }: ReservationCompletedCa
         {reservation.reviewRate ? (
           <div className='flex w-full justify-center items-center gap-4'>
             <div className='body-4'>{reservation.reviewRate}</div>
-            <div className='flex gap-1'>
-              <StarIcon className=' stroke-fooding-yellow fill-fooding-yellow' />
-              <StarIcon className=' stroke-fooding-yellow fill-fooding-yellow' />
-              <StarIcon className='stroke-gray-3 fill-gray-3' />
-              <StarIcon className='stroke-gray-3 fill-gray-3' />
-              <StarIcon className='stroke-gray-3 fill-gray-3' />
-            </div>
+            <StarRating score={reservation.reviewRate} starSize={24} />
           </div>
         ) : (
           <div className='flex w-full flex-col justify-center items-center gap-3'>
             {showEditButton ? (
               <>
                 <p className='body-4 text-center'>리뷰를 남겨주세요!</p>
-                <div className='flex gap-1'>
-                  <StarIcon className='stroke-gray-3 fill-gray-3' />
-                  <StarIcon className='stroke-gray-3 fill-gray-3' />
-                  <StarIcon className='stroke-gray-3 fill-gray-3' />
-                  <StarIcon className='stroke-gray-3 fill-gray-3' />
-                  <StarIcon className='stroke-gray-3 fill-gray-3' />
-                </div>
+                <StarRating score={0} starSize={24} />
               </>
             ) : (
               <p className='body-4 text-gray-4 p-2'>리뷰 작성기간이 만료되었어요</p>
