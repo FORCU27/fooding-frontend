@@ -1,123 +1,95 @@
 'use client';
 
-import { createContext, useContext, useState, ReactNode, useEffect } from 'react';
+import { createContext, useContext, ReactNode, useCallback } from 'react';
 
 import { authApi, AuthLoginBody, AuthLoginUser, AuthSocialLoginBody } from '@repo/api/auth';
+import { queryKeys } from '@repo/api/configs/query-keys';
 import { STORAGE_KEYS } from '@repo/api/configs/storage-keys';
+import { useQueryClient, useQuery } from '@tanstack/react-query';
 import Cookies from 'js-cookie';
 
 interface AuthContextType {
-  user: AuthLoginUser | null;
+  user: AuthLoginUser | undefined;
+  isLoading: boolean;
   login: (credentials: AuthLoginBody) => Promise<void>;
   socialLogin: (credentials: AuthSocialLoginBody) => Promise<void>;
   logout: () => void;
-  isLoading: boolean;
 }
 
 const AuthContext = createContext<AuthContextType | null>(null);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const [user, setUser] = useState<AuthLoginUser | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const queryClient = useQueryClient();
 
-  useEffect(() => {
-    const initializeAuth = async () => {
-      try {
-        const accessToken = Cookies.get(STORAGE_KEYS.ACCESS_TOKEN);
+  const { data: user, isLoading } = useQuery({
+    queryKey: [queryKeys.me.user],
+    queryFn: async () => {
+      const accessToken = Cookies.get(STORAGE_KEYS.ACCESS_TOKEN);
+      if (!accessToken) throw new Error('토큰이 존재하지 않습니다.');
+      const response = await authApi.getSelf();
+      return response.data;
+    },
+    retry: false,
+  });
 
-        if (!accessToken) {
-          setUser(null);
-          return;
-        }
+  const setTokens = (
+    accessToken: string,
+    refreshToken: string,
+    expiredIn: number,
+    refreshExpiredIn: number,
+  ) => {
+    Cookies.set(STORAGE_KEYS.ACCESS_TOKEN, accessToken, {
+      path: '/',
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax',
+      expires: new Date(Date.now() + expiredIn),
+    });
+    Cookies.set(STORAGE_KEYS.REFRESH_TOKEN, refreshToken, {
+      path: '/',
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax',
+      expires: new Date(Date.now() + refreshExpiredIn),
+    });
+  };
 
-        const response = await authApi.getSelf();
-
-        setUser(response.data);
-      } catch {
-        setUser(null);
-        Cookies.remove(STORAGE_KEYS.ACCESS_TOKEN);
-        Cookies.remove(STORAGE_KEYS.REFRESH_TOKEN);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    initializeAuth();
-  }, []);
-
-  const login = async (credentials: AuthLoginBody) => {
-    try {
-      setIsLoading(true);
+  const login = useCallback(
+    async (credentials: AuthLoginBody) => {
       const response = await authApi.login(credentials);
       const { accessToken, refreshToken, expiredIn, refreshExpiredIn } = response.data;
 
-      Cookies.set(STORAGE_KEYS.ACCESS_TOKEN, accessToken, {
-        path: '/',
-        secure: process.env.NODE_ENV === 'production',
-        sameSite: 'lax',
-        expires: new Date(Date.now() + expiredIn),
-      });
-      Cookies.set(STORAGE_KEYS.REFRESH_TOKEN, refreshToken, {
-        path: '/',
-        secure: process.env.NODE_ENV === 'production',
-        sameSite: 'lax',
-        expires: new Date(Date.now() + refreshExpiredIn),
-      });
+      setTokens(accessToken, refreshToken, expiredIn, refreshExpiredIn);
 
-      const userResponse = await authApi.getSelf();
-      setUser(userResponse.data);
-    } catch (error) {
-      console.error('Email login failed:', error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
+      await queryClient.invalidateQueries({ queryKey: [queryKeys.me.user] });
+    },
+    [queryClient],
+  );
 
-  // 소셜 로그인
-  const socialLogin = async (credentials: AuthSocialLoginBody) => {
-    try {
-      setIsLoading(true);
+  const socialLogin = useCallback(
+    async (credentials: AuthSocialLoginBody) => {
       const response = await authApi.socialLogin(credentials);
-
       const { accessToken, refreshToken, expiredIn, refreshExpiredIn } = response.data;
 
-      Cookies.set(STORAGE_KEYS.ACCESS_TOKEN, accessToken, {
-        path: '/',
-        secure: process.env.NODE_ENV === 'production',
-        sameSite: 'lax',
-        expires: new Date(Date.now() + expiredIn),
-      });
-      Cookies.set(STORAGE_KEYS.REFRESH_TOKEN, refreshToken, {
-        path: '/',
-        secure: process.env.NODE_ENV === 'production',
-        sameSite: 'lax',
-        expires: new Date(Date.now() + refreshExpiredIn),
-      });
+      setTokens(accessToken, refreshToken, expiredIn, refreshExpiredIn);
 
-      const userResponse = await authApi.getSelf();
+      await queryClient.invalidateQueries({ queryKey: [queryKeys.me.user] });
+    },
+    [queryClient],
+  );
 
-      setUser(userResponse.data);
-    } catch (error) {
-      console.error('Social login failed:', error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const logout = () => {
+  const logout = useCallback(() => {
     Cookies.remove(STORAGE_KEYS.ACCESS_TOKEN);
     Cookies.remove(STORAGE_KEYS.REFRESH_TOKEN);
-    setUser(null);
-  };
+    queryClient.removeQueries({ queryKey: [queryKeys.me.user] });
+  }, [queryClient]);
 
   return (
     <AuthContext.Provider
       value={{
         user,
-        login,
-        logout,
-        socialLogin,
         isLoading,
+        login,
+        socialLogin,
+        logout,
       }}
     >
       {children}
@@ -127,10 +99,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
 export function useAuth() {
   const context = useContext(AuthContext);
-
   if (!context) {
     throw new Error('useAuth must be used within an AuthProvider');
   }
-
   return context;
 }
