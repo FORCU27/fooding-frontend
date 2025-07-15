@@ -5,6 +5,7 @@ import { ChevronDownIcon, StarIcon } from '@repo/design-system/icons';
 import { Section } from '@/components/Layout/Section';
 import { ReviewsDetailList } from '@/components/Store/ReviewsDetailList';
 import { useGetStoreDetail } from '@/hooks/store/useGetStoreDetail';
+import { getRatingRatios, RatingRatio } from '@/utils/rating';
 
 type StoreDetailReviewTabProps = {
   store: StoreInfo;
@@ -55,28 +56,22 @@ interface RatingBarProps {
 }
 
 export const RatingBar = ({ ratingCounts }: RatingBarProps) => {
-  const total = Object.values(ratingCounts).reduce((sum, val) => sum + val, 0);
-  const scores = [5, 4, 3, 2, 1];
+  const ratingRatios: RatingRatio[] = getRatingRatios(ratingCounts);
 
   return (
     <div className='max-w-[310px] flex flex-col gap-2'>
-      {scores.map((score, idx) => {
-        const count = ratingCounts[score] || 0;
-        const ratio = total > 0 ? (count / total) * 100 : 0;
-
-        return (
-          <div key={`${idx}_${score}`} className='flex items-center'>
-            <span className='body-7 mr-2 w-[22px]'>{score}점</span>
-            <div className='relative w-[200px] h-[6px] bg-gray-200 rounded-full overflow-hidden'>
-              <div
-                className='absolute top-0 left-0 h-full bg-[#FFCB05]'
-                style={{ width: `${ratio}%` }}
-              />
-            </div>
-            <span className='body-8 text-gray-5 w-[22px] ml-2'>{count}</span>
+      {ratingRatios.map(({ score, count, ratio }) => (
+        <div key={score} className='flex items-center'>
+          <span className='body-7 mr-2 w-[22px]'>{score}점</span>
+          <div className='relative w-[200px] h-[6px] bg-gray-200 rounded-full overflow-hidden'>
+            <div
+              className='absolute top-0 left-0 h-full bg-[#FFCB05]'
+              style={{ width: `${ratio}%` }}
+            />
           </div>
-        );
-      })}
+          <span className='body-8 text-gray-5 w-[22px] ml-2'>{count}</span>
+        </div>
+      ))}
     </div>
   );
 };

@@ -46,3 +46,18 @@ export const formatRelativeTime = (isoString: string) => {
   if (diffInMonths < 12) return `${diffInMonths}개월 전`;
   return `${diffInYears}년 전`;
 };
+
+/**
+ * 생성일로부터 20일 이내인지 판단
+ * @param createdAt ISO 날짜 문자열
+ * @returns 20일 이내면 true, 아니면 false
+ */
+export const isReviewWithin20Days = (createdAt: string): boolean => {
+  const createdDate = new Date(createdAt);
+  const today = new Date();
+
+  const diffTime = today.getTime() - createdDate.getTime();
+  const diffDays = diffTime / (1000 * 60 * 60 * 24);
+
+  return diffDays <= 20;
+};
