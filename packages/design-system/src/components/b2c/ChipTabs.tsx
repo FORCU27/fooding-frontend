@@ -24,13 +24,26 @@ const chipTabsVariants = tv({
 
 type ChipTabsProps = Omit<TabsPrimitives.TabsProps, 'onChange' | 'onValueChange'> & {
   onChange?: (value: string) => void;
+  scrollable?: boolean;
 };
 
-const ChipTabs = ({ className, children, onChange, ...props }: ChipTabsProps) => {
+const ChipTabs = ({
+  className,
+  children,
+  onChange,
+  scrollable = false,
+  ...props
+}: ChipTabsProps) => {
   return (
-    <TabsPrimitives.Root className={cn('w-full', className)} onValueChange={onChange} {...props}>
-      {children}
-    </TabsPrimitives.Root>
+    <ChipTabsContext value={{ scrollable }}>
+      <TabsPrimitives.Root
+        className={cn('w-full', scrollable && '-mx-grid-margin w-auto', className)}
+        onValueChange={onChange}
+        {...props}
+      >
+        {children}
+      </TabsPrimitives.Root>
+    </ChipTabsContext>
   );
 };
 
@@ -38,10 +51,16 @@ type ChipTabsListProps = React.ComponentPropsWithRef<typeof TabsPrimitives.List>
   VariantProps<typeof chipTabsVariants>;
 
 const ChipTabsList = ({ className, children, size, ...props }: ChipTabsListProps) => {
+  const { scrollable } = useChipTabsContext();
+
   return (
     <ChipTabsListContext value={{ size }}>
       <TabsPrimitives.List
-        className={cn('bg-white inline-flex items-center gap-2', className)}
+        className={cn(
+          'bg-white inline-flex items-center gap-2',
+          scrollable && 'overflow-x-auto w-full scrollbar-hide px-grid-margin',
+          className,
+        )}
         {...props}
       >
         {children}
@@ -72,12 +91,18 @@ const ChipTabsContent = ({ className, children, ...props }: ChipTabsContentProps
   );
 };
 
+type ChipTabsContextValue = {
+  scrollable: boolean;
+};
+
 type ChipTabsListContextValue = {
   size: VariantProps<typeof chipTabsVariants>['size'];
 };
 
 const [ChipTabsListContext, useChipTabsListContext] =
   createContext<ChipTabsListContextValue>('ChipTabsList');
+
+const [ChipTabsContext, useChipTabsContext] = createContext<ChipTabsContextValue>('ChipTabs');
 
 ChipTabs.List = ChipTabsList;
 ChipTabs.Trigger = ChipTabsTrigger;
