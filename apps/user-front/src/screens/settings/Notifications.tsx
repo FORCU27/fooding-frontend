@@ -1,7 +1,6 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useState } from 'react';
 
 import { Switch } from '@repo/design-system/components/b2c';
 import { ActivityComponentType } from '@stackflow/react/future';
@@ -23,33 +22,46 @@ export const NotificationSettingScreen: ActivityComponentType<'NotificationSetti
 
 const NotificationSettingScreenContent = () => {
   const { data: user } = useGetUserInfo();
-  const updateAgreeStatus = useUpdateUserInfo();
+  const updateUserInfo = useUpdateUserInfo();
 
-  const initialMarketingAgree = useRef(user?.marketingConsent);
-  const initialPushAgree = useRef(user?.pushAgreed);
+  const [marketingAgreeChecked, setMarketingAgreeChecked] = useState(user.marketingConsent);
+  const [pushAgreeChecked, setPushAgreeChecked] = useState(user.pushAgreed);
 
-  const [marketingAgreeChecked, setMarketingAgreeChecked] = useState(initialMarketingAgree.current);
-  const [pushAgreeChecked, setPushAgreeChecked] = useState(initialPushAgree.current);
+  const onMarketingConsentChange = (value: boolean) => {
+    setMarketingAgreeChecked(value);
 
-  const handleSwitchChange = (key: 'push' | 'marketing', value: boolean) => {
-    if (key === 'push') setPushAgreeChecked(value);
-    if (key === 'marketing') setMarketingAgreeChecked(value);
+    updateUserInfo.mutate(
+      {
+        marketingConsent: value,
+        pushAgreed: user.pushAgreed,
+        nickname: user.nickname ?? undefined,
+        gender: user.gender ?? undefined,
+      },
+      {
+        onError: () => {
+          setMarketingAgreeChecked(!value);
+        },
+      },
+    );
   };
 
-  useEffect(() => {
-    const isChanged =
-      marketingAgreeChecked !== initialMarketingAgree.current ||
-      pushAgreeChecked !== initialPushAgree.current;
+  const onPushAgreeChange = (value: boolean) => {
+    setPushAgreeChecked(value);
 
-    if (!user || !isChanged) return;
-
-    updateAgreeStatus.mutate({
-      marketingConsent: marketingAgreeChecked,
-      pushAgreed: pushAgreeChecked,
-      nickname: user.nickname ?? undefined,
-      gender: user.gender ?? undefined,
-    });
-  }, [marketingAgreeChecked, pushAgreeChecked]);
+    updateUserInfo.mutate(
+      {
+        marketingConsent: user.marketingConsent,
+        pushAgreed: value,
+        nickname: user.nickname ?? undefined,
+        gender: user.gender ?? undefined,
+      },
+      {
+        onError: () => {
+          setPushAgreeChecked(!value);
+        },
+      },
+    );
+  };
 
   return (
     <Screen
@@ -59,7 +71,10 @@ const NotificationSettingScreenContent = () => {
       <div className='flex flex-col px-grid-margin py-grid-margin body-3 gap-9'>
         <div className='flex justify-between'>
           <span>서비스 알림 받기</span>
-          <Switch checked={pushAgreeChecked} onChange={(val) => handleSwitchChange('push', val)} />
+          <Switch
+            checked={pushAgreeChecked}
+            onChange={(pushAgreeChecked) => onPushAgreeChange(pushAgreeChecked)}
+          />
         </div>
         <div className='flex justify-between'>
           <div>
@@ -71,7 +86,7 @@ const NotificationSettingScreenContent = () => {
           </div>
           <Switch
             checked={marketingAgreeChecked}
-            onChange={(val) => handleSwitchChange('marketing', val)}
+            onChange={(marketingAgreeChecked) => onMarketingConsentChange(marketingAgreeChecked)}
           />
         </div>
       </div>
