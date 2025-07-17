@@ -64,4 +64,4 @@ export type GetLoginResponse = z.infer<typeof GetLoginResponseSchema>;
 export const GetUserResponseSchema = ApiResponse(AuthLoginUserSchema);
 export type GetUserResponse = z.infer<typeof GetUserResponseSchema>;
 
-export const GetUserUpdateResponseSchema = ApiResponse(z.null());
+export const UpdateUserInfoResponseSchema = ApiResponse(z.null());

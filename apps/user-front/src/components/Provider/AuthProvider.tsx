@@ -9,7 +9,7 @@ import { useQueryClient, useQuery } from '@tanstack/react-query';
 import Cookies from 'js-cookie';
 
 interface AuthContextType {
-  user: AuthLoginUser | undefined;
+  user: AuthLoginUser | null;
   isLoading: boolean;
   login: (credentials: AuthLoginBody) => Promise<void>;
   socialLogin: (credentials: AuthSocialLoginBody) => Promise<void>;
@@ -21,11 +21,11 @@ const AuthContext = createContext<AuthContextType | null>(null);
 export function AuthProvider({ children }: { children: ReactNode }) {
   const queryClient = useQueryClient();
 
-  const { data: user, isLoading } = useQuery({
+  const { data: user, isLoading } = useQuery<AuthLoginUser | null>({
     queryKey: [queryKeys.me.user],
     queryFn: async () => {
       const accessToken = Cookies.get(STORAGE_KEYS.ACCESS_TOKEN);
-      if (!accessToken) throw new Error('토큰이 존재하지 않습니다.');
+      if (!accessToken) return null;
       const response = await authApi.getSelf();
       return response.data;
     },
@@ -85,7 +85,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   return (
     <AuthContext.Provider
       value={{
-        user,
+        user: user || null,
         isLoading,
         login,
         socialLogin,
