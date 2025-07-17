@@ -7,7 +7,7 @@ import {
   AuthUpdateUserBody,
   GetLoginResponseSchema,
   GetUserResponseSchema,
-  GetUserUpdateResponseSchema,
+  UpdateUserInfoResponseSchema,
 } from './type';
 
 export const authApi = {
@@ -28,6 +28,6 @@ export const authApi = {
 
   updateInfo: async (body: AuthUpdateUserBody) => {
     const response = await api.put('/auth/me', { ...body });
-    return GetUserUpdateResponseSchema.parse(response);
+    return UpdateUserInfoResponseSchema.parse(response);
   },
 };
