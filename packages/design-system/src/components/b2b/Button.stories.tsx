@@ -1,5 +1,4 @@
 import type { StoryObj } from '@storybook/react';
-import { ArrowRightIcon, PlusIcon } from 'lucide-react';
 
 import { Button } from './Button';
 
@@ -19,13 +18,13 @@ export const AppMedium: Story = {
     return (
       <div className='flex flex-col gap-4'>
         <Button area='app' size='medium' variant='outlined'>
-          Botten
+          Button
         </Button>
         <Button area='app' size='medium' variant='active'>
-          Botten
+          Button
         </Button>
         <Button area='app' size='medium' disabled>
-          Botten
+          Button
         </Button>
       </div>
     );
@@ -37,13 +36,13 @@ export const AppLong: Story = {
     return (
       <div className='flex flex-col gap-4'>
         <Button area='app' size='large' variant='outlined'>
-          Botten
+          Button
         </Button>
         <Button area='app' size='large' variant='black'>
-          Botten
+          Button
         </Button>
         <Button area='app' size='large' variant='gray' disabled>
-          Botten
+          Button
         </Button>
       </div>
     );
@@ -73,13 +72,13 @@ export const RewardShort: Story = {
     return (
       <div className='flex flex-col gap-4'>
         <Button area='reward' size='small' variant='primary'>
-          Botten
+          Button
         </Button>
         <Button area='reward' size='small' action='press'>
-          Botten
+          Button
         </Button>
         <Button area='reward' size='small' variant='gray'>
-          Botten
+          Button
         </Button>
       </div>
     );
@@ -91,13 +90,13 @@ export const RewardShortSecondary: Story = {
     return (
       <div className='flex flex-col gap-4'>
         <Button area='reward' size='small' variant='secondary'>
-          Botten
+          Button
         </Button>
         <Button area='reward' size='small' variant='secondary' action='press'>
-          Botten
+          Button
         </Button>
         <Button area='reward' size='small' variant='outlined'>
-          Botten
+          Button
         </Button>
       </div>
     );
@@ -109,13 +108,13 @@ export const RewardShortTertiary: Story = {
     return (
       <div className='flex flex-col gap-4'>
         <Button area='reward' size='small' variant='tertiary'>
-          Botten
+          Button
         </Button>
         <Button area='reward' size='small' variant='tertiary' action='press'>
-          Botten
+          Button
         </Button>
         <Button area='reward' size='small' variant='outlined'>
-          Botten
+          Button
         </Button>
       </div>
     );
@@ -127,13 +126,13 @@ export const RewardMini: Story = {
     return (
       <div className='flex flex-col gap-4'>
         <Button area='reward' size='mini' variant='primary'>
-          Botten
+          Button
         </Button>
         <Button area='reward' size='mini' action='press'>
-          Botten
+          Button
         </Button>
         <Button area='reward' size='mini' variant='gray'>
-          Botten
+          Button
         </Button>
       </div>
     );

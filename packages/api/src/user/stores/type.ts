@@ -29,7 +29,6 @@ export type Store = z.infer<typeof Store>;
 export const Store = z.object({
   id: z.number(),
   name: z.string(),
-  mainImage: z.string().nullable(),
   city: z.string(),
   visitCount: z.number(),
   reviewCount: z.number(),
@@ -37,6 +36,7 @@ export const Store = z.object({
   estimatedWaitingTimeMinutes: z.number().nullable(),
   isBookmarked: z.boolean(),
   isFinished: z.boolean(),
+  mainImage: z.string().nullable(),
 });
 
 const StoreImage = z.object({
@@ -113,7 +113,11 @@ export type GetStoreImageListResponse = z.infer<typeof GetStoreImageListResponse
 export const GetStoreImageListResponse = PageResponse(StoreImage);
 
 export type GetStoreListResponse = z.infer<typeof GetStoreListResponse>;
-export const GetStoreListResponse = PageResponse(Store);
+export const GetStoreListResponse = PageResponse(
+  Store.extend({
+    mainImage: z.string().nullable(),
+  }),
+);
 
 export type GetStoreByIdResponse = z.infer<typeof GetStoreByIdResponse>;
 export const GetStoreByIdResponse = ApiResponse(StoreInfo);

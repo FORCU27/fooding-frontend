@@ -6,9 +6,9 @@ export const queryKeys = {
     },
     store: {
       waiting: 'waiting',
+      waitingOverview: 'waitingOverview',
       storeInfo: 'storeStoreInfo',
       stores: 'storeStores',
-      waitingOverview: 'waitingOverview',
     },
     reward: {
       log: 'getLog',
@@ -39,6 +39,7 @@ export const queryKeys = {
       detail: 'userStorePostDetail',
     },
     bookmark: 'userBookmark',
+    reservation: { reservationList: 'userReservationList' },
   },
   me: {
     user: 'meUser',

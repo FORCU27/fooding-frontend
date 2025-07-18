@@ -1,4 +1,5 @@
-import { B2BCheckBoxIcon, B2BRefreshIcon, B2BDeleteIcon } from '@repo/design-system/icons';
+import { Checkbox } from '@repo/design-system/components/b2b';
+import { B2BRefreshIcon, B2BDeleteIcon } from '@repo/design-system/icons';
 
 import { StepProps } from '../types';
 import Button from '@/components/Button';
@@ -94,9 +95,7 @@ export function PhoneStep({
       <NumberPad onNumberClick={handleNumberClick} />
       <div className='flex items-center gap-2 mt-[15px] mb-[25px]'>
         <div onClick={onClickAllTerms}>
-          <B2BCheckBoxIcon
-            fill={isAllRequiredTermsAgreed ? 'var(--color-primary-pink)' : 'var(--color-gray-5)'}
-          />
+          <Checkbox checked={isAllRequiredTermsAgreed} />
         </div>
         <div
           className='text-gray-5 body-2-2 underline-offset-2 underline cursor-pointer'

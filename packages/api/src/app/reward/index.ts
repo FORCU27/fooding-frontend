@@ -21,12 +21,13 @@ export const rewardApi = {
     const response = await api.get(`${ENDPOINT}/coupons`, { params });
     return UserCouponsResponse.parse(response);
   },
+  postCoupon: (id: number) => {
+    return api.post(`${ENDPOINT}/coupons/${id}/request`);
+  },
+
   postRewardGet: async (body: PostRewardGetRequest) => {
     const response = await api.post(`${ENDPOINT}/get`, body);
     console.log(response);
     return PostRewardGetResponse.parse(response);
-  },
-  postCoupon: (id: number) => {
-    return api.post(`${ENDPOINT}/coupons/${id}/request`);
   },
 };

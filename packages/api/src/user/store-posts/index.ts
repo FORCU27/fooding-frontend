@@ -1,4 +1,5 @@
 export * from './type';
+export * from './mock';
 
 import { GetStorePostByIdResponse, GetStorePostListParams, GetStorePostListResponse } from './type';
 import { api } from '../../shared';

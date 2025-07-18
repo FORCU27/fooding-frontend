@@ -1,8 +1,9 @@
 import Image from 'next/image';
 
 import { Review } from '@repo/api/user';
-import { FoodingIcon, HeartIcon, MessageSquareIcon, StarIcon } from '@repo/design-system/icons';
+import { FoodingIcon, HeartIcon, MessageSquareIcon } from '@repo/design-system/icons';
 
+import { StarRating } from './StarRating';
 import { formatDotDate } from '@/utils/date';
 
 interface ReviewCardProps {
@@ -89,32 +90,6 @@ export const ReviewDetailCard = ({ review }: ReviewCardProps) => {
           <span className='body-7 color-gray-6'>1</span>
         </div>
       </div>
-    </div>
-  );
-};
-
-interface StarRatingProps {
-  score: number;
-}
-
-export const StarRating = ({ score }: StarRatingProps) => {
-  const fullStars = Math.floor(score);
-  const totalStars = 5;
-
-  return (
-    <div className='flex justify-center items-center gap-[2px]'>
-      {Array.from({ length: totalStars }).map((_, idx) => {
-        const isFilled = idx < fullStars;
-        return (
-          <StarIcon
-            key={idx}
-            size={18}
-            className={`${
-              isFilled ? 'stroke-fooding-yellow fill-fooding-yellow' : 'stroke-gray-3 fill-gray-3'
-            }`}
-          />
-        );
-      })}
     </div>
   );
 };

@@ -1,15 +1,17 @@
 'use client';
 
 import { ChevronRightIcon } from '@repo/design-system/icons';
-import { ActivityComponentType } from '@stackflow/react/future';
+import { ActivityComponentType, useFlow } from '@stackflow/react/future';
 
 import BottomTab from '@/components/Layout/BottomTab';
 import { Header } from '@/components/Layout/Header';
 import { Screen } from '@/components/Layout/Screen';
 import { useAuth } from '@/components/Provider/AuthProvider';
+import { cn } from '@/utils/cn';
 
 export const SettingScreen: ActivityComponentType<'SettingScreen'> = () => {
   const { logout } = useAuth();
+  const flow = useFlow();
 
   const handleLogoutClick = async () => {
     logout();
@@ -21,47 +23,92 @@ export const SettingScreen: ActivityComponentType<'SettingScreen'> = () => {
       header={<Header title='설정' left={<Header.Back />} />}
       bottomTab={<BottomTab currentTab='mypage' />}
     >
-      <div className='flex flex-col justify-baseline items-baseline px-grid-margin py-grid-margin body-5'>
-        <div className='flex flex-col w-full gap-9'>
-          <p className='body-6 text-gray-5'>계정</p>
-          <button className='flex justify-between'>
-            <span>프로필 수정</span>
-            <ChevronRightIcon size={16} className='cursor-pointer' />
-          </button>
-          <button className='flex justify-between'>
-            <span>내정보 수정</span>
-            <ChevronRightIcon size={16} className='cursor-pointer' />
-          </button>
-        </div>
-        <div className='flex flex-col w-full gap-9 mt-11'>
-          <p className='body-6 text-gray-5'>서비스 이용</p>
-          <button className='flex justify-between'>
-            <span>알림 설정</span>
-            <ChevronRightIcon size={16} className='cursor-pointer' />
-          </button>
-          <button className='flex justify-between'>
-            <span>1:1 문의</span>
-            <ChevronRightIcon size={16} className='cursor-pointer' />
-          </button>
-        </div>
-        <div className='flex flex-col w-full mt-11 mb-8 gap-7'>
-          <p className='body-4 text-gray-5 mb-[11px]'>기타</p>
-          <button className='flex justify-between'>
-            <span>공지사항 및 이용약관</span>
-            <ChevronRightIcon size={16} className='cursor-pointer' />
-          </button>
-          <button className='flex justify-between'>
-            <span>개선 제안</span>
-            <ChevronRightIcon size={16} className='cursor-pointer' />
-          </button>
-        </div>
-        <div className='flex flex-col subtitle-5 gap-7'>
-          <button className='flex justify-between cursor-pointer' onClick={handleLogoutClick}>
-            로그아웃
-          </button>
-          <button className='flex justify-between cursor-pointer'>회원탈퇴</button>
-        </div>
+      <div className='flex flex-col justify-baseline items-baseline body-3'>
+        <MenuItemGroup label={<MenuItemGroupLabel>계정</MenuItemGroupLabel>}>
+          <MenuItem>
+            <MenuItemText>프로필 수정</MenuItemText>
+            <MenuItemChevronRight />
+          </MenuItem>
+          <MenuItem>
+            <MenuItemText>내정보 수정</MenuItemText>
+            <MenuItemChevronRight />
+          </MenuItem>
+        </MenuItemGroup>
+        <hr className='w-full text-white bg-gray-1 h-[10px]' />
+        <MenuItemGroup label={<MenuItemGroupLabel>서비스 이용</MenuItemGroupLabel>}>
+          <MenuItem onClick={() => flow.push('NotificationSettingScreen', {})}>
+            <MenuItemText>알림 설정</MenuItemText>
+            <MenuItemChevronRight />
+          </MenuItem>
+          <MenuItem>
+            <MenuItemText>1:1 문의</MenuItemText>
+            <MenuItemChevronRight />
+          </MenuItem>
+        </MenuItemGroup>
+        <hr className='w-full text-white bg-gray-1 h-[10px]' />
+        <MenuItemGroup label={<MenuItemGroupLabel>기타</MenuItemGroupLabel>}>
+          <MenuItem>
+            <MenuItemText>공지사항 및 이용약관</MenuItemText>
+            <MenuItemChevronRight />
+          </MenuItem>
+          <MenuItem>
+            <MenuItemText>개선 제안</MenuItemText>
+            <MenuItemChevronRight />
+          </MenuItem>
+          <MenuItem onClick={handleLogoutClick}>로그아웃</MenuItem>
+          <MenuItem>회원탈퇴</MenuItem>
+        </MenuItemGroup>
       </div>
     </Screen>
   );
+};
+
+type MenuItemGroupProps = React.ComponentPropsWithRef<'div'> & {
+  label: React.ReactNode;
+};
+
+const MenuItemGroup = ({ className, children, label, ...props }: MenuItemGroupProps) => {
+  return (
+    <div className={cn('flex flex-col w-full pt-5 pb-3', className)} {...props}>
+      {label}
+      {children}
+    </div>
+  );
+};
+
+type MenuItemGroupLabelProps = React.ComponentPropsWithRef<'span'>;
+
+const MenuItemGroupLabel = ({ className, children, ...props }: MenuItemGroupLabelProps) => {
+  return (
+    <span className={cn('body-6 text-gray-5 px-grid-margin pb-3', className)} {...props}>
+      {children}
+    </span>
+  );
+};
+
+type MenuItemProps = React.ComponentPropsWithRef<'button'>;
+
+const MenuItem = ({ className, children, ...props }: MenuItemProps) => {
+  return (
+    <button
+      className={cn('flex justify-between py-[18px] px-grid-margin active:bg-gray-1', className)}
+      {...props}
+    >
+      {children}
+    </button>
+  );
+};
+
+type MenuItemLabelProps = React.ComponentPropsWithRef<'span'>;
+
+const MenuItemText = ({ className, children, ...props }: MenuItemLabelProps) => {
+  return (
+    <span className={cn('text-base', className)} {...props}>
+      {children}
+    </span>
+  );
+};
+
+const MenuItemChevronRight = () => {
+  return <ChevronRightIcon size={24} className='cursor-pointer text-gray-5' />;
 };

@@ -2,22 +2,18 @@
 
 import { useState, useEffect } from 'react';
 
-import { ScreenMode } from '../types/layout';
-
 export const useSidebar = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const [screenMode, setScreenMode] = useState<ScreenMode>('desktop');
-
   useEffect(() => {
     const checkScreenSize = () => {
       const width = window.innerWidth;
 
       if (width < 768) {
-        setScreenMode('mobile');
+        setIsOpen(false);
       } else if (width < 1024) {
-        setScreenMode('tablet');
+        setIsOpen(false);
       } else {
-        setScreenMode('desktop');
+        setIsOpen(true);
       }
     };
 
@@ -32,10 +28,6 @@ export const useSidebar = () => {
 
   return {
     isOpen,
-    screenMode,
-    isMobile: screenMode === 'mobile',
-    isTablet: screenMode === 'tablet',
-    isDesktop: screenMode === 'desktop',
     toggleSidebar,
     closeSidebar,
   };
