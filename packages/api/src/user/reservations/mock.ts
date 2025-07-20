@@ -1,4 +1,8 @@
-import { GetReservationCompletedListResponse, GetReservationListResponse } from './type';
+import {
+  GetReservationByIdResponse,
+  GetReservationCompletedListResponse,
+  GetReservationListResponse,
+} from './type';
 
 export const mockReservationListResponse: GetReservationListResponse = {
   status: 'OK',
@@ -92,5 +96,19 @@ export const mockReservationCompletedListResponse: GetReservationCompletedListRe
         createdAt: '2025-07-02T03:44:25.499Z',
       },
     ],
+  },
+};
+
+export const mockReservationDetailResponse: GetReservationByIdResponse = {
+  status: 'OK',
+  data: {
+    id: 3,
+    storeId: 3,
+    name: '정육식당 흑돼지',
+    isWaiting: false,
+    adultCount: 2,
+    mainImgUrl:
+      'https://img.freepik.com/free-photo/tasty-food-arrangement-top-view_23-2149182261.jpg',
+    createdAt: '2025-07-02T03:44:25.499Z',
   },
 };
