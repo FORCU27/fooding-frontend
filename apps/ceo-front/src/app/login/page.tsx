@@ -6,9 +6,11 @@ import { JSX, useCallback, useState } from 'react';
 import { AuthSocialLoginBody, SocialPlatform, socialPlatforms } from '@repo/api/auth';
 import { STORAGE_KEYS } from '@repo/api/configs/storage-keys';
 import { SocialButton } from '@repo/design-system/components';
+import { Input, Checkbox, Button } from '@repo/design-system/components/b2c';
 import { AppleIcon, GoogleIcon, KakaoIcon, NaverIcon } from '@repo/design-system/icons';
 import Cookies from 'js-cookie';
 
+import FooterLayout from '@/components/Layouts/FooterLayout';
 import { useAuth } from '@/components/Provider/AuthProvider';
 import { env } from '@/configs/env';
 
@@ -125,34 +127,92 @@ export default function LoginPage() {
   );
 
   return (
-    <div className='flex w-screen h-screen justify-center items-center'>
-      <div className='flex flex-col p-4 justify-around items-center w-[554px] h-[757px] border border-gray-3 rounded-[11px]'>
-        <div className='h-[90px] flex flex-col justify-center items-center'>
+    <div className='flex flex-col'>
+      <div className='flex w-screen'>
+        {/* 왼쪽 일러스트 영역 (1380px 이상일 때만 보이도록) */}
+        <div className='hidden md:flex flex-1 bg-[#F9F9F9] custom-hide:block overflow-hidden relative'>
           <Image
-            src='/images/fooding-logo.png'
-            alt='logo'
-            width={253}
-            height={60}
-            className='mb-4'
+            src='/images/login-illust.png'
+            alt='login illust'
+            width={1380}
+            height={1200}
+            className='object-cover'
+            style={{
+              width: '1380px',
+              height: '1200px',
+              minWidth: '1380px',
+              minHeight: '1200px',
+            }}
           />
-          <p className='text-gray-5 text-medium'>사장님을 위한 전용 공간에 오신 걸 환영합니다</p>
         </div>
 
-        {/* FIXME: 추후 일반 로그인 추가 */}
-
-        <div className='flex gap-[16]'>
-          {socialPlatforms.map((platform) => (
-            <div key={platform} className='flex flex-col justify-between items-center w-[96px]'>
-              <SocialButton
-                platform={platform}
-                icon={platformIcons[platform]}
-                onClick={() => handleSocialLogin(platform)}
-                styles={platformStyles[platform]}
-              />
+        {/* 오른쪽 폼 영역 */}
+        <div className='flex items-center justify-center w-full lg:w-[808px] relative'>
+          <div className='absolute top-[50px] right-[60px]'>
+            <Image src='/images/fooding-ceo-logo.svg' alt='logo' width={153} height={24} />
+          </div>
+          <div className='w-[450px] h-[678px]'>
+            <h1 className='headline-2'>로그인</h1>
+            {/* TODO Spacer 컴포넌트 추가 */}
+            <div className='h-[12px]' />
+            <div className='flex flex-col gap-[4px]'>
+              <p className='body-3'>사장님을 위한 전용 공간에 오신 걸 환영합니다.</p>
+              <p className='body-6 text-blue-500'>계정이 없으신가요?</p>
             </div>
-          ))}
+            <div className='h-[45px]' />
+            <form>
+              <div className='flex flex-col gap-[20px]'>
+                <div className='flex flex-col gap-[8px]'>
+                  <p className='subtitle-3'>아이디</p>
+                  <Input required autoFocus type='email' className='px-[20px] py-[18px] body-2' />
+                </div>
+                <div className='flex flex-col gap-[8px]'>
+                  <p className='subtitle-3'>비밀번호</p>
+                  <Input
+                    required
+                    autoFocus
+                    type='password'
+                    className='px-[20px] py-[18px] body-2'
+                  />
+                </div>
+              </div>
+              <div className='h-[12px]' />
+              <div className='flex justify-between'>
+                <div className='flex gap-[8px]'>
+                  <Checkbox />
+                  <p>아이디 저장</p>
+                </div>
+                <p className='body-6 text-gray-5'>아이디/비밀번호를 잊으셨나요?</p>
+              </div>
+              <div className='h-[68px]' />
+              <Button className='py-[17px] rounded-full subtitle-1'>로그인</Button>
+            </form>
+            <div className='h-[120px]'/>
+            {/* 소셜 로그인 버튼 */}
+            <div className='flex justify-center gap-4 mt-8'>
+              {socialPlatforms.map((platform) => (
+                <SocialButton
+                  key={platform}
+                  platform={platform}
+                  icon={platformIcons[platform]}
+                  onClick={() => handleSocialLogin(platform)}
+                  styles={platformStyles[platform]}
+                />
+              ))}
+            </div>
+          </div>
         </div>
+
+        {/* 1380px 이하에서 일러스트 숨김 처리 */}
+        <style jsx>{`
+          @media (max-width: 1379px) {
+            .custom-hide {
+              display: none !important;
+            }
+          }
+        `}</style>
       </div>
+      <FooterLayout />
     </div>
   );
 }
