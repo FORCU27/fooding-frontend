@@ -4056,7 +4056,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@radix-ui/react-select@npm:2.2.5":
+"@radix-ui/react-select@npm:2.2.5, @radix-ui/react-select@npm:^2.2.5":
   version: 2.2.5
   resolution: "@radix-ui/react-select@npm:2.2.5"
   dependencies:
@@ -5319,6 +5319,7 @@ __metadata:
   resolution: "@repo/design-system@workspace:packages/design-system"
   dependencies:
     "@chromatic-com/storybook": "npm:^4.0.0"
+    "@radix-ui/react-select": "npm:^2.2.5"
     "@repo/eslint-config": "workspace:*"
     "@repo/typescript-config": "workspace:*"
     "@storybook/addon-docs": "npm:^9.0.4"

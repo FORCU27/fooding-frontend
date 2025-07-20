@@ -4,6 +4,7 @@ import { CeoCard } from './CeoCard';
 import { CeoCarnSubtitle } from './CeoCarnSubtitle';
 import { CeoInput } from './CeoInput';
 import { CeoTextArea } from './CeoTextArea';
+import { CeoSelectBox } from './CeoSelectBox';
 
 const meta = {
   title: 'Components/ceo/Page',
@@ -33,8 +34,21 @@ export const Default: Story = {
         </CeoCarnSubtitle>
       </CeoCard>
       <CeoCard>
-        <CeoCarnSubtitle label='업체명' required>
-          <CeoInput id='name' inputType='search' />
+        <CeoCarnSubtitle label='업종' required>
+          <CeoSelectBox
+            options={[
+              { value: '1', label: '족발 보쌈@@@@@@@@@@@@@@' },
+              { value: '2', label: '고기' },
+              { value: '3', label: '패스트푸드' },
+              { value: '4', label: '피자' },
+              { value: '5', label: '야식' },
+              { value: '6', label: '치킨' },
+              { value: '7', label: '카페' },
+              { value: '8', label: '분식' },
+              { value: '9', label: '아시안' },
+            ]}
+            label='업종 선택'
+          />
         </CeoCarnSubtitle>
       </CeoCard>
       <CeoCard>

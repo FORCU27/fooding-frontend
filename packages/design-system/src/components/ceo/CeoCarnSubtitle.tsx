@@ -1,5 +1,4 @@
 import type { ReactNode } from 'react';
-import { CeoInput } from './CeoInput';
 
 type CeoNameInputProps = {
   label: string;
