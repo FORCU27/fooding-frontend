@@ -2,6 +2,7 @@
 
 import * as Select from '@radix-ui/react-select';
 import { ChevronDownIcon, ChevronUpIcon } from 'lucide-react';
+
 import { cn } from '../../utils/cn';
 
 type CeoSelectBoxProps = Select.SelectProps & {

@@ -1,5 +1,7 @@
 import { type ComponentPropsWithRef } from 'react';
+
 import { SearchIcon, LinkIcon } from 'lucide-react';
+
 import { cn } from '../../utils/cn';
 
 type CeoInputProps = ComponentPropsWithRef<'input'> & {

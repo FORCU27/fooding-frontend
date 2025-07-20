@@ -1,6 +1,7 @@
 'use client';
 
 import { type ComponentPropsWithRef, useState, useId } from 'react';
+
 import { cn } from '../../utils/cn';
 
 type CeoCheckBoxProps = Omit<ComponentPropsWithRef<'input'>, 'type'> & {
