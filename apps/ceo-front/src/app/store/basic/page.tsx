@@ -12,8 +12,8 @@ import {
 
 const BasicInfoPage = () => {
   return (
-    <CardForm className='w-[1080px] mx-auto'>
-      <div className='headline-2 mt-15'>기본 정보</div>
+    <CardForm className=''>
+      <div className='headline-2'>기본 정보</div>
       <CeoCard>
         <CeoCarnSubtitle label='업체명' required>
           <CeoInput id='name' />
