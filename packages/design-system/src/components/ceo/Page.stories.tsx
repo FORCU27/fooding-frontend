@@ -5,6 +5,7 @@ import { CeoCarnSubtitle } from './CeoCarnSubtitle';
 import { CeoInput } from './CeoInput';
 import { CeoTextArea } from './CeoTextArea';
 import { CeoSelectBox } from './CeoSelectBox';
+import { CeoButton } from './CeoButton';
 
 const meta = {
   title: 'Components/ceo/Page',
@@ -73,6 +74,9 @@ export const Default: Story = {
           <CeoTextArea id='name' maxLength={1000} />
         </CeoCarnSubtitle>
       </CeoCard>
+      <div className='flex justify-center'>
+        <CeoButton>저장</CeoButton>
+      </div>
     </CardForm>
   ),
 };
