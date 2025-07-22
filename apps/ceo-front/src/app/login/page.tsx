@@ -164,7 +164,12 @@ export default function LoginPage() {
               <div className='flex flex-col gap-[20px]'>
                 <div className='flex flex-col gap-[8px]'>
                   <p className='subtitle-3'>아이디</p>
-                  <Input required autoFocus type='email' className='px-[20px] py-[18px] body-2' />
+                  <Input
+                    required
+                    autoFocus
+                    type='email'
+                    className='px-[20px] py-[18px] body-2 h-[58px]'
+                  />
                 </div>
                 <div className='flex flex-col gap-[8px]'>
                   <p className='subtitle-3'>비밀번호</p>
@@ -172,13 +177,13 @@ export default function LoginPage() {
                     required
                     autoFocus
                     type='password'
-                    className='px-[20px] py-[18px] body-2'
+                    className='px-[20px] py-[18px] body-2 h-[58px]'
                   />
                 </div>
               </div>
               <div className='h-[12px]' />
               <div className='flex justify-between'>
-                <div className='flex gap-[8px]'>
+                <div className='flex gap-[8px] cursor-pointer'>
                   <Checkbox />
                   <p>아이디 저장</p>
                 </div>
@@ -187,7 +192,7 @@ export default function LoginPage() {
               <div className='h-[68px]' />
               <Button className='py-[17px] rounded-full subtitle-1'>로그인</Button>
             </form>
-            <div className='h-[120px]'/>
+            <div className='h-[120px]' />
             {/* 소셜 로그인 버튼 */}
             <div className='flex justify-center gap-4 mt-8'>
               {socialPlatforms.map((platform) => (
@@ -197,7 +202,7 @@ export default function LoginPage() {
                   icon={platformIcons[platform]}
                   onClick={() => handleSocialLogin(platform)}
                   styles={platformStyles[platform]}
-                />
+              />
               ))}
             </div>
           </div>
