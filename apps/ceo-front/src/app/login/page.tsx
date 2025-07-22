@@ -7,7 +7,14 @@ import { AuthSocialLoginBody, SocialPlatform, socialPlatforms } from '@repo/api/
 import { STORAGE_KEYS } from '@repo/api/configs/storage-keys';
 import { SocialButton } from '@repo/design-system/components';
 import { Input, Checkbox, Button } from '@repo/design-system/components/b2c';
-import { AppleIcon, GoogleIcon, KakaoIcon, NaverIcon } from '@repo/design-system/icons';
+import {
+  AppleIcon,
+  GoogleIcon,
+  KakaoIcon,
+  NaverIcon,
+  EyeOffIcon,
+  EyeOnIcon,
+} from '@repo/design-system/icons';
 import Cookies from 'js-cookie';
 
 import FooterLayout from '@/components/Layouts/FooterLayout';
@@ -63,8 +70,13 @@ export default function LoginPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [, setIsLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState<boolean>(false);
 
   const { socialLogin } = useAuth();
+
+  const handleTogglePasswordVisibility = () => {
+    setShowPassword((prev) => !prev);
+  };
 
   const handleSocialLogin = useCallback(
     async (platform: SocialPlatform) => {
@@ -173,12 +185,22 @@ export default function LoginPage() {
                 </div>
                 <div className='flex flex-col gap-[8px]'>
                   <p className='subtitle-3'>비밀번호</p>
-                  <Input
-                    required
-                    autoFocus
-                    type='password'
-                    className='px-[20px] py-[18px] body-2 h-[58px]'
-                  />
+                  <div className='relative'>
+                    <Input
+                      required
+                      type={showPassword ? 'text' : 'password'}
+                      autoFocus
+                      className='px-[20px] py-[18px] body-2 h-[58px]'
+                    />
+                    <button
+                      type='button'
+                      onClick={handleTogglePasswordVisibility}
+                      className='absolute right-[20px] top-1/2 -translate-y-1/2 text-gray-500 cursor-pointer hover:text-gray-700'
+                      aria-label={showPassword ? '비밀번호 숨기기' : '비밀번호 표시'}
+                    >
+                      {showPassword ? <EyeOnIcon /> : <EyeOffIcon />}
+                    </button>
+                  </div>
                 </div>
               </div>
               <div className='h-[12px]' />
@@ -202,7 +224,7 @@ export default function LoginPage() {
                   icon={platformIcons[platform]}
                   onClick={() => handleSocialLogin(platform)}
                   styles={platformStyles[platform]}
-              />
+                />
               ))}
             </div>
           </div>
