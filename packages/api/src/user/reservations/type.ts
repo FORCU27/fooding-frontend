@@ -20,6 +20,27 @@ export const Reservation = z.object({
   createdAt: z.iso.datetime({ local: true }),
 });
 
+export type Waiting = z.infer<typeof Waiting>;
+export const Waiting = z.object({
+  id: z.number(),
+  storeId: z.number(),
+  user: z.object({
+    id: z.number(),
+    storeId: z.number(),
+    name: z.string(),
+    phoneNumber: z.string(),
+    count: z.number(),
+  }),
+  callNumber: z.number(),
+  channel: z.enum(WAITING_TYPES).optional(),
+  waitingNumber: z.number().optional(),
+  infantChairCount: z.number(),
+  infantCount: z.number(),
+  adultCount: z.number(),
+  memo: z.string(),
+  createdAt: z.iso.datetime({ local: true }),
+});
+
 export type ReservationCompleted = z.infer<typeof ReservationCompleted>;
 export const ReservationCompleted = Reservation.extend({
   reviewRate: z.number().nullish(),
@@ -35,3 +56,6 @@ export const GetReservationCompletedListResponse = PageResponse(ReservationCompl
 
 export type GetReservationByIdResponse = z.infer<typeof GetReservationByIdResponse>;
 export const GetReservationByIdResponse = ApiResponse(Reservation);
+
+export type GetWaitingDetailResponse = z.infer<typeof GetWaitingDetailResponse>;
+export const GetWaitingDetailResponse = ApiResponse(Waiting);

@@ -3,6 +3,7 @@ import Image from 'next/image';
 import { Reservation } from '@repo/api/user';
 import { Button } from '@repo/design-system/components/b2c';
 import { CloseIcon, FoodingIcon } from '@repo/design-system/icons';
+import { useFlow } from '@stackflow/react/future';
 
 import { formatDotDate } from '@/utils/date';
 
@@ -11,8 +12,18 @@ interface ReservationCardProps {
 }
 
 export const ReservationCard = ({ reservation }: ReservationCardProps) => {
+  const flow = useFlow();
+
+  const handleReservationCardClick = (isWaiting: boolean, reservationId: number) => {
+    if (isWaiting === reservation.isWaiting)
+      return flow.push('WaitingDetailScreen', { waitingId: reservationId });
+    return;
+  };
   return (
-    <div className='flex flex-col bg-white/80 rounded-xl p-4 gap-3'>
+    <div
+      className='flex flex-col bg-white/80 rounded-xl p-4 gap-3'
+      onClick={() => handleReservationCardClick(reservation.isWaiting, reservation.id)}
+    >
       <div className='flex justify-between'>
         <p className='body-4'>
           {reservation.isWaiting
