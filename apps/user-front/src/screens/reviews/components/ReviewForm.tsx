@@ -6,6 +6,8 @@ import { Button } from '@repo/design-system/components/b2c';
 import { CloseIcon, ImageIcon } from '@repo/design-system/icons';
 import { useForm } from 'react-hook-form';
 
+import { StarRating } from '@/components/Store/StarRating';
+
 export interface ReviewFormProps {
   handleSubmit: (data: CreateStoreReviewBody) => void;
 }
@@ -23,11 +25,21 @@ export const ReviewForm = ({ handleSubmit }: ReviewFormProps) => {
     defaultValues: {
       content: '',
       imageUrls: [],
+      taste: 0,
+      mood: 0,
+      service: 0,
     },
   });
 
+  const handleStarChange = (category: 'taste' | 'mood' | 'service', score: number) => {
+    setValue(category, score);
+  };
+
   const text = watch('content') || '';
   const imageUrls = watch('imageUrls') || [];
+  const tasteScore = watch('taste');
+  const serviceScore = watch('service');
+  const moodScore = watch('mood');
 
   const handleImageClick = () => {
     fileInputRef.current?.click();
@@ -41,6 +53,7 @@ export const ReviewForm = ({ handleSubmit }: ReviewFormProps) => {
   //TODO: 파일 업로드 API 나오면 수정
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files || []);
+
     const readers = files.map((file) => {
       return new Promise<string>((resolve) => {
         const reader = new FileReader();
@@ -56,9 +69,28 @@ export const ReviewForm = ({ handleSubmit }: ReviewFormProps) => {
 
   return (
     <form onSubmit={onSubmit(handleSubmit)} className='flex flex-col gap-10'>
+      <div className='flex flex-col gap-10 mb-10 justify-center items-center'>
+        <div className='flex subtitle-4 justify-around w-full'>
+          <div className='min-w-[45px]'>음식</div>
+          <StarRating starSize={24} onChange={(val) => handleStarChange('taste', val)} />
+          <p {...register('taste')}>{tasteScore !== undefined ? tasteScore.toFixed(1) : '0.0'}</p>
+        </div>
+        <div className='flex subtitle-4 justify-around w-full'>
+          <div className='min-w-[45px]'>분위기</div>
+          <StarRating starSize={24} onChange={(val) => handleStarChange('mood', val)} />
+          <p {...register('mood')}>{moodScore !== undefined ? moodScore.toFixed(1) : '0.0'}</p>
+        </div>
+        <div className='flex subtitle-4 justify-around w-full'>
+          <div className='min-w-[45px]'>서비스</div>
+          <StarRating starSize={24} onChange={(val) => handleStarChange('service', val)} />
+          <p {...register('service')}>
+            {serviceScore !== undefined ? serviceScore.toFixed(1) : '0.0'}
+          </p>
+        </div>
+      </div>
       <input
         type='file'
-        accept='image/*'
+        accept='image/png, image/jpg, image/jpeg'
         multiple
         ref={fileInputRef}
         style={{ display: 'none' }}
@@ -68,6 +100,7 @@ export const ReviewForm = ({ handleSubmit }: ReviewFormProps) => {
         <ImageIcon />
         <span className='ml-2'>사진 추가하기</span>
       </Button>
+
       <div className='flex gap-2 overflow-x-auto scrollbar-hide flex-nowrap'>
         {imageUrls.map((url, idx) => (
           <div key={idx} className='relative min-w-[100px] min-h-[100px]'>
@@ -89,7 +122,6 @@ export const ReviewForm = ({ handleSubmit }: ReviewFormProps) => {
       <div className='relative'>
         <textarea
           {...register('content')}
-          value={text}
           maxLength={maxLength}
           className='w-full border border-gray-2 rounded-2xl p-6 h-[200px] resize-none focus:outline-none focus:border-gray-4'
         />
