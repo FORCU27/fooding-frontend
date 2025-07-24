@@ -11,6 +11,7 @@ import { NotificationSettingScreen } from '@/screens/settings/Notifications';
 import { SettingScreen } from '@/screens/settings/Settings';
 import { StoreDetailScreen } from '@/screens/store-detail/StoreDetail';
 import { StorePostDetailScreen } from '@/screens/store-post-detail/StorePostDetail';
+import { WaitingDetailScreen } from '@/screens/waiting-detail/WaitingDetail';
 import { HomeTab } from '@/tabs/home/Home';
 import { MyPageTab } from '@/tabs/my-page/MyPage';
 import { ReservationTab } from '@/tabs/reservation/Reservation';
@@ -28,6 +29,7 @@ declare module '@stackflow/config' {
     StorePostDetailScreen: { storePostId: number; storeName: string };
     SettingScreen: object;
     NotificationSettingScreen: object;
+    WaitingDetailScreen: { waitingId: number };
   }
 }
 
@@ -43,6 +45,7 @@ const config = defineConfig({
     { name: 'StoreDetailScreen' },
     { name: 'SettingScreen' },
     { name: 'NotificationSettingScreen' },
+    { name: 'WaitingDetailScreen' },
   ],
 
   transitionDuration: 350,
@@ -62,6 +65,7 @@ export const { Stack } = stackflow({
     StoreDetailScreen,
     SettingScreen,
     NotificationSettingScreen,
+    WaitingDetailScreen,
   },
   plugins: [
     basicRendererPlugin(),

@@ -45,6 +45,23 @@ export const formatDotDate = (isoString: string) => {
 };
 
 /**
+ * @param createdAt -> YYYY.MM.DD HH:mm
+ */
+
+export const formatDotDateTime = (isoString: string) => {
+  const date = new Date(isoString);
+
+  const year = date.getUTCFullYear();
+  const month = String(date.getUTCMonth() + 1).padStart(2, '0');
+  const day = String(date.getUTCDate()).padStart(2, '0');
+
+  const hours = String(date.getUTCHours()).padStart(2, '0');
+  const minutes = String(date.getUTCMinutes()).padStart(2, '0');
+
+  return `${year}.${month}.${day} ${hours}:${minutes}`;
+};
+
+/**
  * ISO 8601 -> 방금 전, 1시간 전, 2일 전 등
  */
 export const formatRelativeTime = (isoString: string) => {
