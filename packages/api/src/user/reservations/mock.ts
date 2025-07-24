@@ -1,4 +1,8 @@
-import { GetReservationCompletedListResponse, GetReservationListResponse } from './type';
+import {
+  GetReservationCompletedListResponse,
+  GetReservationListResponse,
+  GetWaitingDetailResponse,
+} from './type';
 
 export const mockReservationListResponse: GetReservationListResponse = {
   status: 'OK',
@@ -92,5 +96,28 @@ export const mockReservationCompletedListResponse: GetReservationCompletedListRe
         createdAt: '2025-07-02T03:44:25.499Z',
       },
     ],
+  },
+};
+
+export const mockWaitingDetailResponse: GetWaitingDetailResponse = {
+  status: 'OK',
+  data: {
+    id: 1,
+    storeId: 1,
+    user: {
+      id: 1,
+      storeId: 1,
+      name: '홍길동',
+      phoneNumber: '01012345678',
+      count: 1,
+    },
+    callNumber: 1,
+    waitingNumber: 1,
+    channel: 'IN_PERSON',
+    infantChairCount: 1,
+    infantCount: 1,
+    adultCount: 1,
+    memo: '아이 1명, 어른 3명입니다. 창가 자리 부탁드립니다.',
+    createdAt: '2025-07-24T15:44:25.499Z',
   },
 };
