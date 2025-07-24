@@ -1,6 +1,6 @@
 import { z } from 'zod/v4';
 
-import { PageResponse } from '../../shared';
+import { ApiResponse, PageResponse } from '../../shared';
 
 export const WAITING_TYPES = ['IN_PERSON', 'ONLINE'] as const;
 export const waitingType = z.enum(WAITING_TYPES);
@@ -32,3 +32,6 @@ export type GetReservationCompletedListResponse = z.infer<
   typeof GetReservationCompletedListResponse
 >;
 export const GetReservationCompletedListResponse = PageResponse(ReservationCompleted);
+
+export type GetReservationByIdResponse = z.infer<typeof GetReservationByIdResponse>;
+export const GetReservationByIdResponse = ApiResponse(Reservation);

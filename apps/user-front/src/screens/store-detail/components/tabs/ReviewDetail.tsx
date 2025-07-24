@@ -43,7 +43,7 @@ export const StoreDetailReviewTab = ({ store }: StoreDetailReviewTabProps) => {
       </div>
       {reviews?.list.length === 0 && <EmptyState className='mt-10' title='등록된 리뷰가 없어요!' />}
       {reviews && reviews?.list.length > 0 && (
-        <ul className='flex flex-col mt-2'>
+        <ul className='flex flex-col mt-2 pb-24'>
           <ReviewsDetailList reviews={reviews?.list || []} />
         </ul>
       )}
