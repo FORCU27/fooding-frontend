@@ -57,7 +57,7 @@ const WaitingDetail = ({ waitingId }: StoreDetailProps) => {
   };
 
   return (
-    <div className='flex flex-col'>
+    <div className='flex flex-col bg-gray-1'>
       <div className='flex flex-col p-5 bg-white/80'>
         <div className='flex border border-gray-2 items-center w-full h-[100px] p-5 rounded-xl gap-4 '>
           {storeInfo.images.length !== 0 ? (
