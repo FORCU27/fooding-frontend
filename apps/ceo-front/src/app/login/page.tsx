@@ -1,7 +1,7 @@
 'use client';
 import Image from 'next/image';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { JSX, useCallback, useState } from 'react';
+import { JSX, useCallback, useState, useEffect } from 'react';
 
 import { AuthSocialLoginBody, SocialPlatform, socialPlatforms } from '@repo/api/auth';
 import { STORAGE_KEYS } from '@repo/api/configs/storage-keys';
@@ -21,6 +21,7 @@ import FooterLayout from '@/components/Layouts/FooterLayout';
 import { useAuth } from '@/components/Provider/AuthProvider';
 import { env } from '@/configs/env';
 
+// TODO 컴포넌트 분리
 const platformIcons: Record<SocialPlatform, JSX.Element> = {
   KAKAO: <KakaoIcon size={30} />,
   NAVER: <NaverIcon size={30} />,
@@ -34,6 +35,7 @@ const platformStyles: Record<SocialPlatform, string> = {
   APPLE: 'bg-black rounded-[50%] h-[64px] w-[64px]',
   GOOGLE: 'bg-[#F2F2F2] rounded-[50%] h-[64px] w-[64px]',
 };
+
 const getPlatformUrl = (platform: SocialPlatform): string | null => {
   const {
     GOOGLE_CLIENT_ID,
@@ -69,13 +71,51 @@ const openSocialLoginPopup = (loginUrl: string) => {
 export default function LoginPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const [, setIsLoading] = useState(false);
+  const [, setIsLoading] = useState<boolean>(false);
+  const [email, setEmail] = useState<string>('');
+  const [password, setPassword] = useState<string>('');
   const [showPassword, setShowPassword] = useState<boolean>(false);
+  const [errorMessage, setErrorMessage] = useState<string>('');
+  const [isRememberId, setIsRememberId] = useState(false);
 
-  const { socialLogin } = useAuth();
+  const { login, socialLogin } = useAuth();
 
   const handleTogglePasswordVisibility = () => {
     setShowPassword((prev) => !prev);
+  };
+
+  const handleLogin = async () => {
+    if (!email || !password) {
+      setErrorMessage('이메일과 비밀번호를 입력해주세요');
+      return;
+    }
+    setIsLoading(true);
+    try {
+      await login({ email, password, role: 'CEO' });
+
+      if (isRememberId) {
+        localStorage.setItem('saved_email', email);
+      } else {
+        localStorage.removeItem('saved_email');
+      }
+
+      router.replace('/');
+    } catch (err: any) {
+      // TODO any 타입 fix
+      const status = err?.response?.status;
+      const message = err?.response?.data?.message;
+
+      if (status === 400) {
+        setErrorMessage('비밀번호가 일치하지 않습니다.\n입력한 내용을 다시 확인해주세요');
+      } else if (status === 401 || status === 404) {
+        setErrorMessage('존재하지 않는 계정입니다.\n이메일을 다시 확인해주세요');
+      } else if (status === 500) {
+        setErrorMessage('서버 오류가 발생했습니다.\n잠시 후 다시 시도해주세요');
+      } else {
+        setErrorMessage(message ?? '로그인에 실패했습니다.\n다시 시도해주세요');
+      }
+    }
+    setIsLoading(false);
   };
 
   const handleSocialLogin = useCallback(
@@ -138,6 +178,14 @@ export default function LoginPage() {
     [router, searchParams, socialLogin],
   );
 
+  useEffect(() => {
+    const savedEmail = localStorage.getItem('saved_email');
+    if (savedEmail) {
+      setEmail(savedEmail);
+      setIsRememberId(true);
+    }
+  }, []);
+
   return (
     <div className='flex flex-col'>
       <div className='flex w-screen'>
@@ -180,7 +228,9 @@ export default function LoginPage() {
                     required
                     autoFocus
                     type='email'
-                    className='px-[20px] py-[18px] body-2 h-[58px]'
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    className={`px-[20px] py-[18px] body-2 h-[58px] ${errorMessage ? 'border-red-500 text-red-500' : ''}`}
                   />
                 </div>
                 <div className='flex flex-col gap-[8px]'>
@@ -189,8 +239,9 @@ export default function LoginPage() {
                     <Input
                       required
                       type={showPassword ? 'text' : 'password'}
-                      autoFocus
-                      className='px-[20px] py-[18px] body-2 h-[58px]'
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      className={`px-[20px] py-[18px] body-2 h-[58px] ${errorMessage ? 'border-red-500 text-red-500' : ''}`}
                     />
                     <button
                       type='button'
@@ -205,14 +256,27 @@ export default function LoginPage() {
               </div>
               <div className='h-[12px]' />
               <div className='flex justify-between'>
-                <div className='flex gap-[8px] cursor-pointer'>
-                  <Checkbox />
-                  <p>아이디 저장</p>
+                <div className='flex gap-[8px] items-center cursor-pointer'>
+                  <Checkbox
+                    checked={isRememberId}
+                    onChange={(checked) => setIsRememberId(Boolean(checked))}
+                  />
+                  <p onClick={() => setIsRememberId((prev) => !prev)}>아이디 저장</p>
                 </div>
+
                 <p className='body-6 text-gray-5'>아이디/비밀번호를 잊으셨나요?</p>
               </div>
+              {errorMessage.length > 0 && (
+                <p className='mt-2 text-sm text-red-500 whitespace-pre-line'>{errorMessage}</p>
+              )}
               <div className='h-[68px]' />
-              <Button className='py-[17px] rounded-full subtitle-1'>로그인</Button>
+              <Button
+                onClick={() => handleLogin()}
+                disabled={email.length == 0 || password.length == 0}
+                className='py-[17px] rounded-full subtitle-1'
+              >
+                로그인
+              </Button>
             </form>
             <div className='h-[120px]' />
             {/* 소셜 로그인 버튼 */}
