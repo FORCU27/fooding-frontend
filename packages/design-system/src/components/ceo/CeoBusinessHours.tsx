@@ -2,9 +2,9 @@
 
 import { useState } from 'react';
 
-import { CeoToggleGroup, CeoToggleGroupItem } from './CeoToggleGroup';
-import { CeoTimePicker } from './CeoTimePicker';
 import { CeoCheckBox } from './CeoCheckBox';
+import { CeoTimePicker } from './CeoTimePicker';
+import { CeoToggleGroup, CeoToggleGroupItem } from './CeoToggleGroup';
 
 type OperatingMode = 'everyday' | 'byday';
 type DayHours = { start: string; end: string; isClosed: boolean };

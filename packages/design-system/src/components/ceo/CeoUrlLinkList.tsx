@@ -1,9 +1,11 @@
 'use client';
 
 import { useState } from 'react';
-import { CeoInput } from './CeoInput';
+
 import { LinkIcon, Trash2Icon } from 'lucide-react';
+
 import { CeoButton } from './CeoButton';
+import { CeoInput } from './CeoInput';
 
 type CeoUrlLinkListProps = {
   initialUrls?: string[];
@@ -20,7 +22,7 @@ const CeoUrlLinkList = ({ initialUrls = [], maxLinks = 5 }: CeoUrlLinkListProps)
         new URL(inputValue); // Validate URL format
         setUrls([...urls, inputValue]);
         setInputValue('');
-      } catch (error) {
+      } catch {
         alert('올바른 URL 형식이 아닙니다.');
       }
     }
