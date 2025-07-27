@@ -17,6 +17,7 @@ export const Reservation = z.object({
   waitingNumber: z.number().optional(),
   adultCount: z.number(),
   mainImgUrl: z.string().optional(),
+  reservationDate: z.iso.datetime({ local: true }).optional(),
   createdAt: z.iso.datetime({ local: true }),
 });
 
@@ -56,3 +57,6 @@ export const GetReservationCompletedListResponse = PageResponse(ReservationCompl
 
 export type GetWaitingDetailResponse = z.infer<typeof GetWaitingDetailResponse>;
 export const GetWaitingDetailResponse = ApiResponse(Waiting);
+
+export type GetReservationDetailResponse = z.infer<typeof GetReservationDetailResponse>;
+export const GetReservationDetailResponse = ApiResponse(Reservation);
