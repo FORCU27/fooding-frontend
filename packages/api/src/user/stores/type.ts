@@ -29,30 +29,30 @@ export type Store = z.infer<typeof Store>;
 export const Store = z.object({
   id: z.number(),
   name: z.string(),
-  mainImage: z.string().nullish(),
   city: z.string(),
   visitCount: z.number(),
   reviewCount: z.number(),
   averageRating: z.number(),
-  estimatedWaitingTimeMinutes: z.number().nullish(),
-  isBookmarked: z.boolean().nullable(),
-  isFinished: z.boolean().nullable(),
+  estimatedWaitingTimeMinutes: z.number().nullable(),
+  isBookmarked: z.boolean(),
+  isFinished: z.boolean(),
+  mainImage: z.string().nullable(),
 });
 
 const StoreImage = z.object({
   id: z.number(),
   imageUrl: z.string(),
   sortOrder: z.number(),
-  tags: z.array(z.string()).optional(),
+  tags: z.array(z.string()).nullable(),
 });
 
 export type StoreInfo = z.infer<typeof StoreInfo>;
-export const StoreInfo = Store.extend({
+export const StoreInfo = Store.omit({ mainImage: true }).extend({
   address: z.string(),
   category: z.string(),
   description: z.string(),
   priceCategory: z.string(),
-  eventDescription: z.string(),
+  eventDescription: z.string().optional(),
   contactNumber: z.string(),
   direction: z.string(),
   isParkingAvailable: z.boolean(),
@@ -60,7 +60,8 @@ export const StoreInfo = Store.extend({
   isTakeOut: z.boolean(),
   latitude: z.number(),
   longitude: z.number(),
-  images: z.array(StoreImage).optional(),
+  images: z.array(StoreImage),
+  bookmarkCount: z.number(),
 });
 
 export type GetStoreListParams = {
@@ -70,6 +71,25 @@ export type GetStoreListParams = {
   sortType?: SortType;
   sortDirection?: SortDirection;
 };
+
+export type Review = z.infer<typeof Review>;
+export const Review = z.object({
+  reviewId: z.number(),
+  nickname: z.string().nullable(),
+  profileUrl: z.string().nullable(),
+  imageUrls: z.string().array(),
+  content: z.string(),
+  score: z.object({
+    total: z.number(),
+    taste: z.number(),
+    mood: z.number(),
+    service: z.number(),
+  }),
+  purpose: z.string(),
+  likeCount: z.number(),
+  createdAt: z.iso.datetime({ local: true }),
+  updatedAt: z.iso.datetime({ local: true }),
+});
 
 export type GetStoreReviewListRequest = {
   id: number;
@@ -93,7 +113,11 @@ export type GetStoreImageListResponse = z.infer<typeof GetStoreImageListResponse
 export const GetStoreImageListResponse = PageResponse(StoreImage);
 
 export type GetStoreListResponse = z.infer<typeof GetStoreListResponse>;
-export const GetStoreListResponse = PageResponse(Store);
+export const GetStoreListResponse = PageResponse(
+  Store.extend({
+    mainImage: z.string().nullable(),
+  }),
+);
 
 export type GetStoreByIdResponse = z.infer<typeof GetStoreByIdResponse>;
 export const GetStoreByIdResponse = ApiResponse(StoreInfo);
@@ -121,58 +145,50 @@ export const GetStoreMenuListResponse = ApiResponse(
 );
 
 export type GetStoreReviewListResponse = z.infer<typeof GetStoreReviewListResponse>;
-export const GetStoreReviewListResponse = PageResponse(
-  z.object({
-    reviewId: z.number(),
-    nickname: z.string(),
-    imageUrl: z.string(),
-    content: z.string(),
-    score: z.number(),
-    purpose: z.string(),
-    likeCount: z.number(),
-    createdAt: z.iso.datetime({ local: true }),
-    updatedAt: z.iso.datetime({ local: true }),
-  }),
-);
+export const GetStoreReviewListResponse = PageResponse(Review);
 
 export type GetStoreOperatingHoursResponse = z.infer<typeof GetStoreOperatingHoursResponse>;
 export const GetStoreOperatingHoursResponse = ApiResponse(
-  z.object({
-    id: z.number(),
-    hasHoliday: z.boolean(),
-    regularHolidayType: z.enum(REGULAR_HOLIDAY_TYPES).optional(),
-    regularHoliday: z.enum(DAY_OF_WEEK).optional(),
-    closedNationalHolidays: z.array(z.string()).optional(),
-    customHolidays: z.array(z.iso.date()).optional(),
-    operatingNotes: z.string().optional(),
-    dailyOperatingTimes: z.array(
-      z.object({
-        id: z.number(),
-        dayOfWeek: z.enum(DAY_OF_WEEK),
-        openTime: z.iso.time().optional(),
-        closeTime: z.iso.time().optional(),
-        breakStartTime: z.iso.time().optional(),
-        breakEndTime: z.iso.time().optional(),
-      }),
-    ),
-  }),
+  z
+    .object({
+      id: z.number(),
+      hasHoliday: z.boolean(),
+      regularHolidayType: z.enum(REGULAR_HOLIDAY_TYPES).nullable(),
+      regularHoliday: z.enum(DAY_OF_WEEK).nullable(),
+      closedNationalHolidays: z.array(z.string()).nullable(),
+      customHolidays: z.array(z.iso.date()).nullable(),
+      operatingNotes: z.string().nullable(),
+      dailyOperatingTimes: z.array(
+        z.object({
+          id: z.number(),
+          dayOfWeek: z.enum(DAY_OF_WEEK),
+          openTime: z.iso.time().nullable(),
+          closeTime: z.iso.time().nullable(),
+          breakStartTime: z.iso.time().nullable(),
+          breakEndTime: z.iso.time().nullable(),
+        }),
+      ),
+    })
+    .nullable(),
 );
 
 export const GetStoreAdditionalInfoResponse = ApiResponse(
-  z.object({
-    id: z.number(),
-    links: z.array(z.string()),
-    facilities: z.array(z.string()),
-    paymentMethods: z.array(z.string()).optional(),
-    parkingAvailable: z.boolean(),
-    parkingType: z.enum(PARKING_TYPES).optional(),
-    parkingChargeType: z.enum(PARKING_CHARGE_TYPES).optional(),
-    parkingBasicTimeMinutes: z.number().optional(),
-    parkingBasicFee: z.number().optional(),
-    parkingExtraMinutes: z.number().optional(),
-    parkingExtraFee: z.number().optional(),
-    parkingMaxDailyFee: z.number().optional(),
-  }),
+  z
+    .object({
+      id: z.number(),
+      links: z.array(z.string()).nullable(),
+      facilities: z.array(z.string()),
+      paymentMethods: z.array(z.string()).nullable(),
+      parkingAvailable: z.boolean(),
+      parkingType: z.enum(PARKING_TYPES).nullable(),
+      parkingChargeType: z.enum(PARKING_CHARGE_TYPES).nullable(),
+      parkingBasicTimeMinutes: z.number().nullable(),
+      parkingBasicFee: z.number().nullable(),
+      parkingExtraMinutes: z.number().nullable(),
+      parkingExtraFee: z.number().nullable(),
+      parkingMaxDailyFee: z.number().nullable(),
+    })
+    .nullable(),
 );
 
 export type CreateStoreReviewBody = {
@@ -184,4 +200,5 @@ export type CreateStoreReviewBody = {
   taste: number;
   mood: number;
   service: number;
+  imageUrls: string[];
 };

@@ -24,13 +24,20 @@ const tabsVariants = tv({
 
 type TabsProps = Omit<TabsPrimitives.TabsProps, 'onChange' | 'onValueChange'> & {
   onChange?: (value: string) => void;
+  scrollable?: boolean;
 };
 
-const Tabs = ({ className, children, onChange, ...props }: TabsProps) => {
+const Tabs = ({ className, children, onChange, scrollable = false, ...props }: TabsProps) => {
   return (
-    <TabsPrimitives.Root className={cn('w-full', className)} onValueChange={onChange} {...props}>
-      {children}
-    </TabsPrimitives.Root>
+    <TabsContext value={{ scrollable }}>
+      <TabsPrimitives.Root
+        className={cn('w-full', scrollable && '-mx-grid-margin w-auto', className)}
+        onValueChange={onChange}
+        {...props}
+      >
+        {children}
+      </TabsPrimitives.Root>
+    </TabsContext>
   );
 };
 
@@ -40,10 +47,17 @@ type TabsListProps = React.ComponentPropsWithRef<typeof TabsPrimitives.List> &
   };
 
 const TabsList = ({ className, children, fullWidth = false, size, ...props }: TabsListProps) => {
+  const { scrollable } = useTabsContext();
+
   return (
     <TabsListContext value={{ fullWidth, size }}>
       <TabsPrimitives.List
-        className={cn('bg-white flex items-center', fullWidth && 'w-full', className)}
+        className={cn(
+          'bg-white flex items-center',
+          fullWidth && 'w-full',
+          scrollable && 'overflow-x-auto w-full scrollbar-hide px-grid-margin',
+          className,
+        )}
         {...props}
       >
         {children}
@@ -77,10 +91,16 @@ const TabsContent = ({ className, children, ...props }: TabsContentProps) => {
   );
 };
 
+type TabsContextValue = {
+  scrollable: boolean;
+};
+
 type TabsListContextValue = {
   fullWidth: boolean;
   size: VariantProps<typeof tabsVariants>['size'];
 };
+
+const [TabsContext, useTabsContext] = createContext<TabsContextValue>('Tabs');
 
 const [TabsListContext, useTabsListContext] = createContext<TabsListContextValue>('TabsList');
 

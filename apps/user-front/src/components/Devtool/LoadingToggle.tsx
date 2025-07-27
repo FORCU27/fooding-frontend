@@ -12,8 +12,8 @@ type LoadingToggleProps = {
  *
  * @example
  * ```tsx
- * <LoadingToggle fallback={<div>Loading...</div>}>
- *  <div>Content goes here</div>
+ * <LoadingToggle fallback={<div>로딩 중</div>}>
+ *  <div>컨텐츠</div>
  * </LoadingToggle>
  */
 export const LoadingToggle = ({ children, fallback }: LoadingToggleProps) => {

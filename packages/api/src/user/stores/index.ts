@@ -50,4 +50,8 @@ export const storeApi = {
   createStoreReview: async (body: CreateStoreReviewBody) => {
     await api.post(`${ENDPOINT}/reviews`, body);
   },
+  getStoreImmediateEntryList: async (params: GetStoreListParams) => {
+    const response = await api.get(`${ENDPOINT}/immediate-entry`, { params });
+    return GetStoreListResponse.parse(response);
+  },
 };

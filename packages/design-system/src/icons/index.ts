@@ -27,3 +27,8 @@ export { default as PhoneIcon } from './PhoneIcon';
 export { default as TrainIcon } from './TrainIcon';
 export { default as CompassIcon } from './CompassIcon';
 export { default as ShareIcon } from './ShareIcon';
+export { default as HeartIcon } from './HeartIcon';
+export { default as MessageSquareIcon } from './MessageSquareIcon';
+export { default as ImageIcon } from './ImageIcon';
+export { default as EyeOffIcon } from './EyeOffIcon';
+export { default as EyeOnIcon } from './EyeOnIcon';

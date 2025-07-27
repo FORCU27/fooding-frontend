@@ -1,7 +1,6 @@
 import type { StoryObj } from '@storybook/react';
 
 import { ChipTabs } from './ChipTabs';
-import { useState } from 'react';
 
 const meta = {
   title: 'components/b2c/ChipTabs',
@@ -35,20 +34,22 @@ export const Default: Story = {
   },
 };
 
-export const HorizontalScroll: Story = {
+export const ScrollableList: Story = {
   render: () => {
     return (
-      <ChipTabs defaultValue='1'>
-        <ChipTabs.List className='overflow-x-auto w-full scrollbar-hide'>
-          <ChipTabs.Trigger value='1'>홈</ChipTabs.Trigger>
-          <ChipTabs.Trigger value='2'>소식</ChipTabs.Trigger>
-          <ChipTabs.Trigger value='3'>메뉴</ChipTabs.Trigger>
-          <ChipTabs.Trigger value='4'>사진</ChipTabs.Trigger>
-          <ChipTabs.Trigger value='5'>리뷰</ChipTabs.Trigger>
-          <ChipTabs.Trigger value='6'>매장정보</ChipTabs.Trigger>
-          <ChipTabs.Trigger value='7'>더보기</ChipTabs.Trigger>
-        </ChipTabs.List>
-      </ChipTabs>
+      <div className='w-[375px]'>
+        <ChipTabs defaultValue='1' scrollable>
+          <ChipTabs.List>
+            <ChipTabs.Trigger value='1'>홈</ChipTabs.Trigger>
+            <ChipTabs.Trigger value='2'>소식</ChipTabs.Trigger>
+            <ChipTabs.Trigger value='3'>메뉴</ChipTabs.Trigger>
+            <ChipTabs.Trigger value='4'>사진</ChipTabs.Trigger>
+            <ChipTabs.Trigger value='5'>리뷰</ChipTabs.Trigger>
+            <ChipTabs.Trigger value='6'>매장정보</ChipTabs.Trigger>
+            <ChipTabs.Trigger value='7'>더보기</ChipTabs.Trigger>
+          </ChipTabs.List>
+        </ChipTabs>
+      </div>
     );
   },
 };

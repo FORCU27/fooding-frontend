@@ -51,20 +51,22 @@ export const FullWidth: Story = {
   },
 };
 
-export const HorizontalScroll: Story = {
+export const ScrollableList: Story = {
   render: () => {
     return (
-      <Tabs defaultValue='1'>
-        <Tabs.List className='overflow-x-auto w-full scrollbar-hide'>
-          <Tabs.Trigger value='1'>홈</Tabs.Trigger>
-          <Tabs.Trigger value='2'>소식</Tabs.Trigger>
-          <Tabs.Trigger value='3'>메뉴</Tabs.Trigger>
-          <Tabs.Trigger value='4'>사진</Tabs.Trigger>
-          <Tabs.Trigger value='5'>리뷰</Tabs.Trigger>
-          <Tabs.Trigger value='6'>매장정보</Tabs.Trigger>
-          <Tabs.Trigger value='7'>더보기</Tabs.Trigger>
-        </Tabs.List>
-      </Tabs>
+      <div className='w-[375px]'>
+        <Tabs defaultValue='1' scrollable>
+          <Tabs.List>
+            <Tabs.Trigger value='1'>홈</Tabs.Trigger>
+            <Tabs.Trigger value='2'>소식</Tabs.Trigger>
+            <Tabs.Trigger value='3'>메뉴</Tabs.Trigger>
+            <Tabs.Trigger value='4'>사진</Tabs.Trigger>
+            <Tabs.Trigger value='5'>리뷰</Tabs.Trigger>
+            <Tabs.Trigger value='6'>매장정보</Tabs.Trigger>
+            <Tabs.Trigger value='7'>더보기</Tabs.Trigger>
+          </Tabs.List>
+        </Tabs>
+      </div>
     );
   },
 };

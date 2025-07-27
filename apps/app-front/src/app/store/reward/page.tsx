@@ -4,14 +4,27 @@ import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import React, { useState } from 'react';
 
+import { rewardApi } from '@repo/api/app';
 import { B2BRefreshIcon, B2BDeleteIcon } from '@repo/design-system/icons';
 
 import { RewardComplete } from './components/RewardComplete';
 import Button from '@/components/Button';
+import { useStore } from '@/components/Provider/StoreClientProvider';
+import { useConsecutiveClick } from '@/hooks/useConsecutiveClick';
 
 export default function WaitingPage() {
   const router = useRouter();
   const [phoneNumber, setPhoneNumber] = useState('010-');
+
+  const { storeId } = useStore();
+
+  const { handleClick } = useConsecutiveClick({
+    targetCount: 5,
+    timeoutMs: 2000,
+    onSuccess: () => {
+      router.push('/store/select');
+    },
+  });
 
   const updateFormData = (key: string, value: string) => {
     setPhoneNumber(value);
@@ -88,6 +101,21 @@ export default function WaitingPage() {
 
   const [isRewardComplete, setIsRewardComplete] = useState(false);
 
+  const handleRewardGet = async () => {
+    try {
+      await rewardApi.postRewardGet({
+        phoneNumber: phoneNumber.replace(/-/g, ''),
+        storeId: Number(storeId),
+        point: 1,
+        type: 'EVENT',
+        channel: 'STORE',
+      });
+      setIsRewardComplete(true);
+    } catch (e) {
+      console.error('API 실패:', e);
+    }
+  };
+
   return (
     <>
       <div className='flex w-full h-screen overflow-hidden border-l-20 border-primary-pink px-[80px] py-[60px] gap-[65px]'>
@@ -95,14 +123,24 @@ export default function WaitingPage() {
         <div className='w-[50%] h-full bg-white '>
           <div className='h-full flex flex-col'>
             {/* 왼쪽 컨텐츠 */}{' '}
-            <Image src='/images/fooding-logo.png' alt='logo' width={204} height={48} />
+            <Image
+              src='/images/fooding-logo.png'
+              alt='logo'
+              width={204}
+              height={48}
+              onClick={handleClick}
+            />
             <div className='body-2 text-gray-5 mt-[112px]'>
               마일리지 적립 링크를 전달 받으시기 위해
             </div>
             <div className='headline-3-2 text-black whitespace-nowrap mt-5 mb-15'>
               휴대폰 번호를 입력해주세요
             </div>
-            <Button size='sm' variant='secondary' onClick={() => router.push('/store/reward/use')}>
+            <Button
+              size='sm'
+              variant={phoneNumber?.length >= 13 ? 'secondary' : 'disabled'}
+              onClick={() => router.push('/store/reward/use')}
+            >
               리워드 사용하기
             </Button>
           </div>
@@ -116,7 +154,7 @@ export default function WaitingPage() {
               <NumberPad onNumberClick={handleNumberClick} />
               <Button
                 variant={isPhoneNumberComplete ? 'default' : 'disabled'}
-                onClick={() => setIsRewardComplete(true)}
+                onClick={handleRewardGet}
               >
                 적립하기
               </Button>

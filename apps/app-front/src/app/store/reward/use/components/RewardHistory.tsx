@@ -1,11 +1,11 @@
 import { RewardLog } from '@repo/api/app';
 
+import EmptyList from './EmptyList';
 import { formatDate } from '@/app/utils/datetime';
 
-interface RewardHistory {
+interface RewardHistoryProps {
   rewards?: RewardLog[];
   isLoading: boolean;
-  isError: boolean;
 }
 
 const CHANNEL_LABELS: Record<RewardLog['channel'], string> = {
@@ -22,10 +22,10 @@ const TYPE_LABELS: Record<RewardLog['type'], string> = {
 
 const getTypeLabel = (type: RewardLog['type']) => TYPE_LABELS[type] ?? '-';
 
-const RewardHistory = ({ rewards, isLoading, isError }: RewardHistory) => {
+const RewardHistory = ({ rewards, isLoading }: RewardHistoryProps) => {
   if (isLoading) return <div>로딩 중...</div>;
-  if (isError) return <div>적립 내역을 불러오지 못했습니다.</div>;
-  if (rewards?.length === 0) return <div>적립내역이 존재하지 않습니다.</div>;
+  if (rewards?.length === 0)
+    return <EmptyList message='적립내역이 비었어요!' className='h-[600px]' />;
   return (
     <div className='pt-[60px] px-[70px]'>
       <table className='w-full'>

@@ -7,6 +7,7 @@ export const DefaultErrorBoundary = ({ children }: { children: React.ReactNode }
     <QueryErrorResetBoundary>
       {({ reset }) => (
         <ErrorBoundary
+          onReset={reset}
           fallback={
             <ErrorFallback className='flex-1'>
               <ErrorFallback.Title>알 수 없는 에러가 발생했습니다</ErrorFallback.Title>

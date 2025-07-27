@@ -1,14 +1,19 @@
 export const queryKeys = {
   admin: {},
   app: {
+    service: {
+      list: 'serviceList',
+    },
     store: {
       waiting: 'waiting',
+      waitingOverview: 'waitingOverview',
       storeInfo: 'storeStoreInfo',
       stores: 'storeStores',
     },
     reward: {
       log: 'getLog',
       coupons: 'getCoupons',
+      rewardGet: 'rewardGet',
     },
   },
   ceo: {
@@ -24,14 +29,18 @@ export const queryKeys = {
       list: 'userStoreList',
       detail: 'userStoreDetail',
       menuList: 'userStoreMenuList',
+      review: 'userStoreReview',
       reviewList: 'userStoreReviewList',
       operatingHours: 'userStoreOperatingHours',
       additionalInfo: 'userStoreAdditionalInfo',
+      immediateEntryList: 'userStoreImmediateEntryList',
     },
     storePost: {
       list: 'userStorePostList',
       detail: 'userStorePostDetail',
     },
+    bookmark: 'userBookmark',
+    reservation: { list: 'userReservationList', detail: 'userReservationDetail' },
   },
   me: {
     user: 'meUser',

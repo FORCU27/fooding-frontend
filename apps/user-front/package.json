@@ -17,6 +17,7 @@
     "@hookform/resolvers": "^5.1.0",
     "@repo/api": "workspace:*",
     "@repo/design-system": "workspace:*",
+    "@repo/msw": "workspace:*",
     "@stackflow/config": "^1.2.1",
     "@stackflow/core": "^1.2.0",
     "@stackflow/link": "^1.6.1",
@@ -28,11 +29,13 @@
     "axios": "^1.8.4",
     "clsx": "^2.1.1",
     "dayjs": "^1.11.13",
+    "embla-carousel-react": "^8.6.0",
     "js-cookie": "^3.0.5",
     "next": "^15.3.0",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "react-hook-form": "^7.55.0",
+    "react-kakao-maps-sdk": "^1.2.0",
     "swiper": "^11.2.6",
     "tailwind-merge": "^3.2.0",
     "zod": "^3.24.2"
@@ -54,7 +57,6 @@
     "@vitejs/plugin-react": "^4.4.0",
     "eslint": "^9.24.0",
     "jsdom": "^26.1.0",
-    "msw": "^2.8.4",
     "next-router-mock": "^1.0.2",
     "postcss": "^8.5.3",
     "prettier": "3.5.3",
@@ -64,5 +66,10 @@
     "vite-tsconfig-paths": "^5.1.4",
     "vitest": "^3.1.1"
   },
-  "prettier": "@repo/prettier-config"
+  "prettier": "@repo/prettier-config",
+  "msw": {
+    "workerDirectory": [
+      "public"
+    ]
+  }
 }

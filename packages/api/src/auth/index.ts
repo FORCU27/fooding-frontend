@@ -4,8 +4,10 @@ import { api } from '../shared';
 import {
   AuthLoginBody,
   AuthSocialLoginBody,
+  AuthUpdateUserBody,
   GetLoginResponseSchema,
   GetUserResponseSchema,
+  UpdateUserInfoResponseSchema,
 } from './type';
 
 export const authApi = {
@@ -22,5 +24,10 @@ export const authApi = {
   getSelf: async () => {
     const response = await api.get('/auth/me');
     return GetUserResponseSchema.parse(response);
+  },
+
+  updateInfo: async (body: AuthUpdateUserBody) => {
+    const response = await api.put('/auth/me', { ...body });
+    return UpdateUserInfoResponseSchema.parse(response);
   },
 };

@@ -1,9 +1,13 @@
 'use client';
 
+import Image from 'next/image';
+import { useEffect, useRef, useState } from 'react';
+
 import { Button, ChipTabs, NavButton, Skeleton } from '@repo/design-system/components/b2c';
 import {
   BookmarkIcon,
   ChevronLeftIcon,
+  FoodingIcon,
   IconProps,
   ShareIcon,
   StarIcon,
@@ -12,35 +16,48 @@ import { ActivityComponentType, useFlow } from '@stackflow/react/future';
 import { Suspense } from '@suspensive/react';
 
 import { StoreDetailHomeTab } from './components/tabs/Home';
+import { StoreDetailReviewTab } from './components/tabs/ReviewDetail';
+import { StoreDetailPostListTab } from './components/tabs/StorePostList';
+import { useLoginBottomSheet } from '@/components/Auth/LoginBottomSheet';
+import { Carousel } from '@/components/Carousel';
 import { LoadingToggle } from '@/components/Devtool/LoadingToggle';
 import { DefaultErrorBoundary } from '@/components/Layout/DefaultErrorBoundary';
+import { Header } from '@/components/Layout/Header';
 import { Screen } from '@/components/Layout/Screen';
 import { Section } from '@/components/Layout/Section';
+import { useAuth } from '@/components/Provider/AuthProvider';
 import { useGetStoreDetail } from '@/hooks/store/useGetStoreDetail';
+import { useAddBookmark } from '@/hooks/user/useAddBookmark';
+import { useDeleteBookmark } from '@/hooks/user/useDeleteBookmark';
+import { useScrollVisibility } from '@/hooks/useScrollVisibility';
 import { cn } from '@/utils/cn';
 
+// TODO: mock 데이터 제거
 const mock = {
   realtimeViewers: 5,
   waitingCount: 7,
   bookmarkCount: 103,
 } as const;
 
-export const StoreDetailScreen: ActivityComponentType<'StoreDetailScreen'> = () => {
+export const StoreDetailScreen: ActivityComponentType<'StoreDetailScreen'> = ({ params }) => {
   const flow = useFlow();
 
-  const params = {
-    storeId: 1,
-  };
+  const screenRef = useRef<HTMLDivElement>(null);
+
+  const { isVisible: showHeader } = useScrollVisibility({
+    threshold: 280,
+    ref: screenRef,
+  });
 
   return (
-    <Screen>
+    <Screen ref={screenRef}>
       <DefaultErrorBoundary>
         <NavButton className='z-10 absolute left-grid-margin top-3' onClick={() => flow.pop()}>
           <ChevronLeftIcon className='size-7' />
         </NavButton>
         <LoadingToggle fallback={<StoreDetailLoadingFallback />}>
           <Suspense clientOnly fallback={<StoreDetailLoadingFallback />}>
-            <StoreDetail storeId={params.storeId} />
+            <StoreDetail storeId={params.storeId} showHeader={showHeader} />
           </Suspense>
         </LoadingToggle>
       </DefaultErrorBoundary>
@@ -50,25 +67,62 @@ export const StoreDetailScreen: ActivityComponentType<'StoreDetailScreen'> = () 
 
 type StoreDetailProps = {
   storeId: number;
+  showHeader: boolean;
 };
 
-const StoreDetail = ({ storeId }: StoreDetailProps) => {
+const StoreDetail = ({ storeId, showHeader }: StoreDetailProps) => {
+  const { user } = useAuth();
   const { data: store } = useGetStoreDetail(storeId);
+  const loginBottomSheet = useLoginBottomSheet();
+  const addBookMark = useAddBookmark();
+  const deleteBookMark = useDeleteBookmark();
+  const isLoggedIn = !!user;
+  const [isBookmarked, setIsBookmarked] = useState(store.isBookmarked);
+
+  useEffect(() => {
+    setIsBookmarked(store.isBookmarked);
+  }, [store.isBookmarked]);
+
+  const handleBookmarkClick = (e: React.MouseEvent) => {
+    if (!isLoggedIn && !isBookmarked) {
+      e.preventDefault();
+      loginBottomSheet.open();
+      return;
+    }
+
+    const bookmarkState = isBookmarked;
+
+    setIsBookmarked(!bookmarkState);
+
+    const mutation = bookmarkState ? deleteBookMark : addBookMark;
+
+    mutation.mutate(store.id, {
+      onError: () => {
+        setIsBookmarked(!bookmarkState);
+      },
+    });
+  };
 
   return (
-    <div className='flex flex-col pb-[120px]'>
+    <div className='flex flex-col pb-[120px] min-h-dvh'>
+      {showHeader && <Header left={<Header.Back />} title={store.name} />}
       {/* TODO: 공유 기능 추가 */}
       <NavButton className='z-10 absolute right-grid-margin top-3'>
         <ShareIcon className='size-5' />
       </NavButton>
-      <div className='h-[280px] bg-gray-300 relative flex flex-col shrink-0' />
+      {store.images.length === 0 && <StoreImagePlaceholder />}
+      {store.images.length > 0 && (
+        <StoreImageCarousel imageUrls={store.images.map((image) => image.imageUrl)} />
+      )}
       <Section className='pt-[30px] pb-[20px]'>
         <span className='flex items-center body-5 text-gray-5'>
           {store.address}
           <span className='mx-[6px] w-[1px] h-[12px] bg-[#76767630]' />
           {store.category}
         </span>
-        <h1 className='mt-[10px] headline-2 text-black'>{store.name}</h1>
+        <h1 className='mt-[10px] headline-2 text-black' data-testid='store-name'>
+          {store.name}
+        </h1>
         <div className='mt-3 flex items-center'>
           <div className='flex items-center gap-1'>
             <StarIcon className='stroke-fooding-yellow fill-fooding-yellow' />
@@ -95,8 +149,8 @@ const StoreDetail = ({ storeId }: StoreDetailProps) => {
         </div>
       </Section>
       <Section className='mt-[10px] py-[14px]'>
-        <ChipTabs defaultValue='home' className='-mx-grid-margin w-auto'>
-          <ChipTabs.List className='overflow-x-auto w-full scrollbar-hide px-grid-margin'>
+        <ChipTabs defaultValue='home' scrollable>
+          <ChipTabs.List>
             <ChipTabs.Trigger value='home'>홈</ChipTabs.Trigger>
             <ChipTabs.Trigger value='news'>소식</ChipTabs.Trigger>
             <ChipTabs.Trigger value='menu'>메뉴</ChipTabs.Trigger>
@@ -107,6 +161,12 @@ const StoreDetail = ({ storeId }: StoreDetailProps) => {
           <Suspense>
             <ChipTabs.Content value='home'>
               <StoreDetailHomeTab store={store} />
+            </ChipTabs.Content>
+            <ChipTabs.Content value='news'>
+              <StoreDetailPostListTab storeId={storeId} />
+            </ChipTabs.Content>
+            <ChipTabs.Content value='review'>
+              <StoreDetailReviewTab store={store} />
             </ChipTabs.Content>
           </Suspense>
         </ChipTabs>
@@ -119,8 +179,12 @@ const StoreDetail = ({ storeId }: StoreDetailProps) => {
         )}
       >
         <button className='flex flex-col size-[56px] justify-center items-center gap-1 shrink-0 cursor-pointer'>
-          {/* TODO: 북마크 기능 추가 */}
-          <BookmarkIcon />
+          <BookmarkIcon
+            cursor='pointer'
+            color={isBookmarked ? 'var(--color-primary-pink)' : 'var(--color-gray-5)'}
+            fill={isBookmarked ? 'var(--color-primary-pink)' : 'none'}
+            onClick={handleBookmarkClick}
+          />
           <span className='subtitle-4 text-black h-[19px]'>{mock.bookmarkCount}</span>
         </button>
         {/* TODO: 줄서기 기능 추가 */}
@@ -221,5 +285,38 @@ const StoreDetailLoadingFallback = () => {
         <Skeleton shape='text' className='mt-2' width={160} height={20} />
       </div>
     </div>
+  );
+};
+
+type CarouselProps = {
+  imageUrls: string[];
+};
+
+const StoreImagePlaceholder = () => {
+  return (
+    <div className='h-[280px] bg-gray-1 flex justify-center items-center shrink-0'>
+      <FoodingIcon className='text-[#111111]/10 w-[92px] h-[114px]' />
+    </div>
+  );
+};
+
+const StoreImageCarousel = ({ imageUrls }: CarouselProps) => {
+  return (
+    <Carousel>
+      <Carousel.List>
+        {imageUrls.map((imageUrl, index) => (
+          <Carousel.Item key={index} className='h-[280px]'>
+            <Image fill style={{ objectFit: 'cover' }} src={imageUrl} alt='메뉴 이미지' />
+          </Carousel.Item>
+        ))}
+      </Carousel.List>
+      <Carousel.Pagination>
+        {({ page }) => (
+          <div className='absolute bottom-5 right-5 text-white text-xs p-[10px] flex justify-center items-center bg-black/60 rounded-[8px] h-7'>
+            {page} / {imageUrls.length}
+          </div>
+        )}
+      </Carousel.Pagination>
+    </Carousel>
   );
 };

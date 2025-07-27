@@ -6,5 +6,4 @@ export const env = {
   NAVER_CLIENT_ID: process.env.NEXT_PUBLIC_NAVER_CLIENT_ID as string,
   APPLE_CLIENT_ID: process.env.NEXT_PUBLIC_APPLE_CLIENT_ID as string,
   OAUTH_REDIRECT_URI: process.env.NEXT_PUBLIC_OAUTH_REDIRECT_URI as string,
-  OAUTH_APPLE_REDIRECT_URI: process.env.NEXT_PUBLIC_OAUTH_APPLE_REDIRECT_URI as string,
 } as const;
