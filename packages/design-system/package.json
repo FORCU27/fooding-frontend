@@ -13,6 +13,7 @@
   "exports": {
     "./components/ceo": "./src/components/ceo/index.ts",
     "./components/b2c": "./src/components/b2c/index.ts",
+    "./components/b2b": "./src/components/b2b/index.ts",
     "./components": "./src/components/index.ts",
     "./font": "./src/font/index.ts",
     "./icons": "./src/icons/index.ts",
