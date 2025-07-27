@@ -36,6 +36,8 @@ export const UserCoupon = z.object({
   usedAt: z.string().nullable(),
   expiredOn: z.string().nullable(),
   createdDateAt: z.string(),
+  tableNumber: z.string().nullable(),
+  point: z.number().nullable(),
 });
 export type UserCoupon = z.infer<typeof UserCoupon>;
 
