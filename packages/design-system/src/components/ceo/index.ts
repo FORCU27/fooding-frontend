@@ -10,3 +10,4 @@ export * from './CeoToggleGroup';
 export * from './CeoUrlLinkList';
 export * from './CeoBusinessHours';
 export * from './CeoTimePicker';
+export * from './CeoDialog';
