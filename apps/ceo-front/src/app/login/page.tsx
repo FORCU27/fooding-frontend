@@ -41,7 +41,6 @@ export default function LoginPage() {
           </div>
           <div className='w-[450px] h-[678px]'>
             <h1 className='headline-2'>{isSignUp ? '회원가입' : '로그인'}</h1>
-            {/* TODO Spacer 컴포넌트 추가 */}
             <div className='h-[12px]' />
             <div className='flex flex-col gap-[4px]'>
               <p className='body-3'>사장님을 위한 전용 공간에 오신 걸 환영합니다.</p>
@@ -56,15 +55,6 @@ export default function LoginPage() {
             {isSignUp ? <RegisterForm /> : <LoginForm {...loginForm} />}
           </div>
         </div>
-
-        {/* 1380px 이하에서 일러스트 숨김 처리 */}
-        <style jsx>{`
-          @media (max-width: 1379px) {
-            .custom-hide {
-              display: none !important;
-            }
-          }
-        `}</style>
       </div>
       <FooterLayout />
     </div>
