@@ -1596,6 +1596,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@date-fns/tz@npm:1.2.0":
+  version: 1.2.0
+  resolution: "@date-fns/tz@npm:1.2.0"
+  checksum: 10/a9c2d32f98a5a5c655a7d3843046a5a36779b2ef0db803c608291976e6254e594a085777bf738379f50c7e9fc2ffebbf8bb836e9e9759a5ef2b703f91bb785de
+  languageName: node
+  linkType: hard
+
 "@electron/get@npm:^2.0.0":
   version: 2.0.3
   resolution: "@electron/get@npm:2.0.3"
@@ -3841,7 +3848,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@radix-ui/react-popover@npm:1.1.14":
+"@radix-ui/react-popover@npm:1.1.14, @radix-ui/react-popover@npm:^1.1.14":
   version: 1.1.14
   resolution: "@radix-ui/react-popover@npm:1.1.14"
   dependencies:
@@ -4190,7 +4197,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@radix-ui/react-tabs@npm:1.1.12":
+"@radix-ui/react-tabs@npm:1.1.12, @radix-ui/react-tabs@npm:^1.1.12":
   version: 1.1.12
   resolution: "@radix-ui/react-tabs@npm:1.1.12"
   dependencies:
@@ -4246,7 +4253,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@radix-ui/react-toggle-group@npm:1.1.10":
+"@radix-ui/react-toggle-group@npm:1.1.10, @radix-ui/react-toggle-group@npm:^1.1.10":
   version: 1.1.10
   resolution: "@radix-ui/react-toggle-group@npm:1.1.10"
   dependencies:
@@ -5326,7 +5333,10 @@ __metadata:
   resolution: "@repo/design-system@workspace:packages/design-system"
   dependencies:
     "@chromatic-com/storybook": "npm:^4.0.0"
+    "@radix-ui/react-popover": "npm:^1.1.14"
     "@radix-ui/react-select": "npm:^2.2.5"
+    "@radix-ui/react-tabs": "npm:^1.1.12"
+    "@radix-ui/react-toggle-group": "npm:^1.1.10"
     "@repo/eslint-config": "workspace:*"
     "@repo/typescript-config": "workspace:*"
     "@storybook/addon-docs": "npm:^9.0.4"
@@ -5336,6 +5346,7 @@ __metadata:
     "@types/react-dom": "npm:^19.1.2"
     "@vitejs/plugin-react": "npm:^4.5.0"
     clsx: "npm:^2.1.1"
+    date-fns: "npm:^4.1.0"
     eslint: "npm:^9.24.0"
     eslint-plugin-storybook: "npm:^9.0.4"
     lucide-react: "npm:^0.511.0"
@@ -5343,6 +5354,7 @@ __metadata:
     prettier: "npm:3.5.3"
     radix-ui: "npm:^1.1.3"
     react: "npm:^19.1.0"
+    react-day-picker: "npm:^9.8.0"
     react-dom: "npm:^19.1.0"
     storybook: "npm:^9.0.4"
     tailwind-merge: "npm:^3.2.0"
@@ -8168,6 +8180,7 @@ __metadata:
     postcss: "npm:^8.5.3"
     prettier: "npm:3.5.3"
     react: "npm:^19.1.0"
+    react-daum-postcode: "npm:^3.2.0"
     react-dom: "npm:^19.1.0"
     react-hook-form: "npm:^7.55.0"
     swiper: "npm:^11.2.6"
@@ -8742,6 +8755,20 @@ __metadata:
     es-errors: "npm:^1.3.0"
     is-data-view: "npm:^1.0.1"
   checksum: 10/fa3bdfa0968bea6711ee50375094b39f561bce3f15f9e558df59de9c25f0bdd4cddc002d9c1d70ac7772ebd36854a7e22d1761e7302a934e6f1c2263bcf44aa2
+  languageName: node
+  linkType: hard
+
+"date-fns-jalali@npm:4.1.0-0":
+  version: 4.1.0-0
+  resolution: "date-fns-jalali@npm:4.1.0-0"
+  checksum: 10/0005e0e37d449aa998cfc353395b0292eea4778aba4283dad4fa0e3559cf0a7fc7ce9123fb6f22c235285219d4f4774c88bb9c01fa2694c6a5efbbcd33efe7fc
+  languageName: node
+  linkType: hard
+
+"date-fns@npm:4.1.0, date-fns@npm:^4.1.0":
+  version: 4.1.0
+  resolution: "date-fns@npm:4.1.0"
+  checksum: 10/d5f6e9de5bbc52310f786099e18609289ed5e30af60a71e0646784c8185ddd1d0eebcf7c96b7faaaefc4a8366f3a3a4244d099b6d0866ee2bec80d1361e64342
   languageName: node
   linkType: hard
 
@@ -14429,6 +14456,28 @@ __metadata:
     iconv-lite: "npm:0.4.24"
     unpipe: "npm:1.0.0"
   checksum: 10/863b5171e140546a4d99f349b720abac4410338e23df5e409cfcc3752538c9caf947ce382c89129ba976f71894bd38b5806c774edac35ebf168d02aa1ac11a95
+  languageName: node
+  linkType: hard
+
+"react-daum-postcode@npm:^3.2.0":
+  version: 3.2.0
+  resolution: "react-daum-postcode@npm:3.2.0"
+  peerDependencies:
+    react: ">=16.8.0"
+  checksum: 10/d8d240bc26ee86f0648b12eaf5fa3e4677784ac06ffec3f8d367608790a9ef85f545100af3fe2819f06b26396a45b4bdf09cf34ef04d71181f36d9a493b0935e
+  languageName: node
+  linkType: hard
+
+"react-day-picker@npm:^9.8.0":
+  version: 9.8.0
+  resolution: "react-day-picker@npm:9.8.0"
+  dependencies:
+    "@date-fns/tz": "npm:1.2.0"
+    date-fns: "npm:4.1.0"
+    date-fns-jalali: "npm:4.1.0-0"
+  peerDependencies:
+    react: ">=16.8.0"
+  checksum: 10/6ebb121b8ae24883b6bb9d57b26d41fcaf516851ec6bb334607e53873d8f736a91d4c71b5f9b6d9c6f4a59461843116a778ec033464943031f8360ad220469a1
   languageName: node
   linkType: hard
 
