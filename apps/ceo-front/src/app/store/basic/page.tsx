@@ -13,9 +13,17 @@ import {
   CeoToggleGroupItem,
   CeoUrlLinkList,
   CeoBusinessHours,
+  CeoDialog,
+  CeoDialogTrigger,
+  CeoDialogContent,
+  CeoDialogHeader,
+  CeoDialogTitle,
+  CeoDialogDescription,
+  CeoDialogFooter,
 } from '@repo/design-system/components/ceo';
 import KakaoMap from '@/components/KakoMap';
 import { useKakaoMap } from '@/hooks/useKakaoMap';
+import DaumPostcode from 'react-daum-postcode';
 
 const BasicInfoPage = () => {
   const [parkingInfo, setParkingInfo] = useState('possible');
@@ -44,6 +52,10 @@ const BasicInfoPage = () => {
       }
     },
   });
+
+  const onCompletePost = (data: any) => {
+    console.log(data);
+  };
 
   return (
     <CardForm className=''>
@@ -140,17 +152,70 @@ const BasicInfoPage = () => {
               isMapInitialized={isMapInitialized}
               onScriptLoad={handleScriptLoad}
             />
-            <button
-              className='absolute bottom-2 right-2 z-100 bg-white rounded-md p-2'
-              type='button'
-              onClick={() => {
-                console.log('clickedLatlng', clickedLatlng);
-              }}
-            >
-              위치 수정
-            </button>
+            <CeoDialog>
+              <CeoDialogTrigger asChild>
+                <button
+                  className='absolute bottom-2 right-2 z-1 bg-white rounded-md p-2 shadow-md hover:bg-gray-50 transition-colors cursor-pointer'
+                  type='button'
+                >
+                  위치 수정
+                </button>
+              </CeoDialogTrigger>
+              <CeoDialogContent>
+                <CeoDialogHeader>
+                  <CeoDialogTitle>위치 수정</CeoDialogTitle>
+                </CeoDialogHeader>
+                <div className='py-4'>
+                  <div className='w-full h-[300px] relative mb-4'>
+                    <KakaoMap
+                      mapContainerRef={mapContainerRef}
+                      isMapInitialized={isMapInitialized}
+                      onScriptLoad={handleScriptLoad}
+                    />
+                  </div>
+                  {clickedLatlng && (
+                    <div className='bg-gray-50 p-3 rounded-lg'>
+                      <p className='text-sm text-gray-600'>선택된 위치:</p>
+                      <p className='font-medium'>
+                        위도: {clickedLatlng.lat.toFixed(6)}, 경도: {clickedLatlng.lng.toFixed(6)}
+                      </p>
+                    </div>
+                  )}
+                </div>
+                <CeoDialogFooter>
+                  <CeoButton variant='outline'>취소</CeoButton>
+                  <CeoButton>위치 저장</CeoButton>
+                </CeoDialogFooter>
+              </CeoDialogContent>
+            </CeoDialog>
           </div>
-          <CeoInput id='name' inputType='search' disabled={true} />
+          <CeoDialog>
+            <CeoDialogTrigger asChild>
+              <CeoInput id='name' inputType='search' />
+              {/* <button
+                className='w-full h-[58px] bg-white rounded-md p-2 shadow-md hover:bg-gray-50 transition-colors cursor-pointer'
+                type='button'
+              >
+                위치 수정
+              </button> */}
+            </CeoDialogTrigger>
+            <CeoDialogContent>
+              <CeoDialogHeader>
+                <CeoDialogTitle>변경하실 주소를 알려주세요</CeoDialogTitle>
+              </CeoDialogHeader>
+              <div className='py-4 '>
+                <DaumPostcode
+                  style={{ height: '500px' }}
+                  onComplete={onCompletePost}
+                ></DaumPostcode>
+              </div>
+              <CeoDialogFooter>
+                <CeoButton variant='outline'>취소</CeoButton>
+                <CeoButton>위치 저장</CeoButton>
+              </CeoDialogFooter>
+            </CeoDialogContent>
+          </CeoDialog>
+
           <CeoInput id='name' />
         </CeoCarnSubtitle>
       </CeoCard>

@@ -8173,6 +8173,7 @@ __metadata:
     postcss: "npm:^8.5.3"
     prettier: "npm:3.5.3"
     react: "npm:^19.1.0"
+    react-daum-postcode: "npm:^3.2.0"
     react-dom: "npm:^19.1.0"
     react-hook-form: "npm:^7.55.0"
     swiper: "npm:^11.2.6"
@@ -14441,6 +14442,15 @@ __metadata:
     iconv-lite: "npm:0.4.24"
     unpipe: "npm:1.0.0"
   checksum: 10/863b5171e140546a4d99f349b720abac4410338e23df5e409cfcc3752538c9caf947ce382c89129ba976f71894bd38b5806c774edac35ebf168d02aa1ac11a95
+  languageName: node
+  linkType: hard
+
+"react-daum-postcode@npm:^3.2.0":
+  version: 3.2.0
+  resolution: "react-daum-postcode@npm:3.2.0"
+  peerDependencies:
+    react: ">=16.8.0"
+  checksum: 10/d8d240bc26ee86f0648b12eaf5fa3e4677784ac06ffec3f8d367608790a9ef85f545100af3fe2819f06b26396a45b4bdf09cf34ef04d71181f36d9a493b0935e
   languageName: node
   linkType: hard
 
