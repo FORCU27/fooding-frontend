@@ -14,11 +14,36 @@ import {
   CeoUrlLinkList,
   CeoBusinessHours,
 } from '@repo/design-system/components/ceo';
+import KakaoMap from '@/components/KakoMap';
+import { useKakaoMap } from '@/hooks/useKakaoMap';
 
 const BasicInfoPage = () => {
   const [parkingInfo, setParkingInfo] = useState('possible');
   const [amenities, setAmenities] = useState<string[]>(['reception', 'reservation', 'waiting']);
-  const [holidays, setHolidays] = useState<Date[] | undefined>();
+
+  // 페이지에서 훅 사용
+  const [clickedLatlng, setClickedLatlng] = useState<{ lat: number; lng: number } | null>(null);
+
+  // useKakaoMap 훅 사용
+  const { mapContainerRef, map, isMapInitialized, handleScriptLoad } = useKakaoMap({
+    // 지도 초기 중심점 및 레벨 설정 (선택 사항)
+    center: { lat: 33.450701, lng: 126.570667 }, // 제주도
+    level: 3,
+    // 지도 클릭 이벤트 핸들러
+    onMapClick: (mouseEvent) => {
+      const latlng = mouseEvent.latLng;
+      setClickedLatlng({ lat: latlng.getLat(), lng: latlng.getLng() });
+      console.log(`Clicked at: ${latlng.getLat()}, ${latlng.getLng()}`);
+      // 이곳에서 마커 추가 등의 추가 작업 수행
+      if (map) {
+        // 마커 추가 예시 (API가 완전히 로드된 후)
+        const marker = new window.kakao.maps.Marker({
+          position: latlng,
+          map: map,
+        });
+      }
+    },
+  });
 
   return (
     <CardForm className=''>
@@ -106,9 +131,25 @@ const BasicInfoPage = () => {
           <CeoInput id='name' />
         </CeoCarnSubtitle>
       </CeoCard>
+
       <CeoCard>
         <CeoCarnSubtitle label='주소' required>
-          <div>지도</div>
+          <div className='w-full h-[180px] relative'>
+            <KakaoMap
+              mapContainerRef={mapContainerRef}
+              isMapInitialized={isMapInitialized}
+              onScriptLoad={handleScriptLoad}
+            />
+            <button
+              className='absolute bottom-2 right-2 z-100 bg-white rounded-md p-2'
+              type='button'
+              onClick={() => {
+                console.log('clickedLatlng', clickedLatlng);
+              }}
+            >
+              위치 수정
+            </button>
+          </div>
           <CeoInput id='name' inputType='search' />
           <CeoInput id='name' />
         </CeoCarnSubtitle>
