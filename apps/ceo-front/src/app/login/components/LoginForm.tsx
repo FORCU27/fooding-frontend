@@ -24,7 +24,6 @@ interface LoginFormProps {
   setEmail: (v: string) => void;
   setPassword: (v: string) => void;
   setIsRememberId: React.Dispatch<React.SetStateAction<boolean>>;
-  setErrorMessage: (v: string) => void;
   handleLogin: () => void;
 }
 
@@ -43,7 +42,6 @@ export default function LoginForm({
   setEmail,
   setPassword,
   setIsRememberId,
-  setErrorMessage,
   handleLogin,
 }: LoginFormProps) {
   const [showPassword, setShowPassword] = useState(false);
