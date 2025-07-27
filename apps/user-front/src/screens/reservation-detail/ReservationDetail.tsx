@@ -4,7 +4,7 @@
 import Image from 'next/image';
 import { useRef, useState } from 'react';
 
-import { mockWaitingDetailResponse } from '@repo/api/user';
+import { mockReservationDetailResponse } from '@repo/api/user';
 import { Button, Skeleton } from '@repo/design-system/components/b2c';
 import {
   ChevronDownIcon,
@@ -17,7 +17,7 @@ import {
 import { ActivityComponentType } from '@stackflow/react/future';
 import { Suspense } from '@suspensive/react';
 
-import { StoreInfoMap } from './components/StoreInfoMap';
+import { StoreInfoMap } from '../waiting-detail/components/StoreInfoMap';
 import { LoadingToggle } from '@/components/Devtool/LoadingToggle';
 import { DefaultErrorBoundary } from '@/components/Layout/DefaultErrorBoundary';
 import { Header } from '@/components/Layout/Header';
@@ -25,15 +25,17 @@ import { Screen } from '@/components/Layout/Screen';
 import { useGetStoreDetail } from '@/hooks/store/useGetStoreDetail';
 import { formatDotDateTime } from '@/utils/date';
 
-export const WaitingDetailScreen: ActivityComponentType<'WaitingDetailScreen'> = ({ params }) => {
+export const ReservationDetailScreen: ActivityComponentType<'ReservationDetailScreen'> = ({
+  params,
+}) => {
   const screenRef = useRef<HTMLDivElement>(null);
 
   return (
-    <Screen ref={screenRef} header={<Header title='웨이팅 상세정보' left={<Header.Back />} />}>
+    <Screen ref={screenRef} header={<Header title='예약 상세정보' left={<Header.Back />} />}>
       <DefaultErrorBoundary>
-        <LoadingToggle fallback={<WaitingDetailLoadingFallback />}>
-          <Suspense clientOnly fallback={<WaitingDetailLoadingFallback />}>
-            <WaitingDetail waitingId={params.waitingId} />
+        <LoadingToggle fallback={<ReservationDetailLoadingFallback />}>
+          <Suspense clientOnly fallback={<ReservationDetailLoadingFallback />}>
+            <ReservationDetail reservationId={params.reservationId} />
           </Suspense>
         </LoadingToggle>
       </DefaultErrorBoundary>
@@ -42,13 +44,13 @@ export const WaitingDetailScreen: ActivityComponentType<'WaitingDetailScreen'> =
 };
 
 type StoreDetailProps = {
-  waitingId: number;
+  reservationId: number;
 };
 
-const WaitingDetail = ({ waitingId }: StoreDetailProps) => {
+const ReservationDetail = ({ reservationId }: StoreDetailProps) => {
   //TODO: mock 데이터 제거
-  const { data: waiting } = mockWaitingDetailResponse;
-  const { data: storeInfo } = useGetStoreDetail(waiting.storeId);
+  const { data: reservation } = mockReservationDetailResponse;
+  const { data: storeInfo } = useGetStoreDetail(reservation.storeId);
   const [isAlertClick, setIsAlertClick] = useState(false);
   const [isParkingClick, setIsParkingClick] = useState(false);
   const handleChevronClick = (category: 'alert' | 'parking') => {
@@ -81,51 +83,19 @@ const WaitingDetail = ({ waitingId }: StoreDetailProps) => {
             <div className='flex subtitle-4'>{storeInfo.name}</div>
           </div>
         </div>
-        <div className='flex flex-col mt-8 gap-6'>
-          <p className='subtitle-3'>나의 순서</p>
-          <div>
-            <p className='headline-3 mb-2'>웨이팅 번호 {waiting.waitingNumber}번</p>
-            <p className='body-5 text-gray-5'>{formatDotDateTime(waiting.createdAt)} 등록</p>
-          </div>
+        <div className='flex flex-col my-6 gap-6'>
+          <p className='subtitle-3'>예약정보</p>
+          <p className='body-5 text-gray-5'>
+            <span>
+              {reservation.reservationDate && formatDotDateTime(reservation.reservationDate)}
+            </span>
+            <span> {reservation.adultCount}명</span>
+          </p>
         </div>
       </div>
 
       <div className='flex flex-col p-5 bg-white/80 mt-[10px]'>
-        <div className='flex gap-4 mb-6 items-center'>
-          <EditIcon />
-          <p className='subtitle-3'>등록정보</p>
-        </div>
-        <div className='flex justify-between subtitle-4'>
-          <div className='flex flex-col gap-5'>
-            <p>이름</p>
-            <p>이용 방식</p>
-            <p>총 입장 인원</p>
-          </div>
-          <div className='flex flex-col gap-5 text-right'>
-            <p>{waiting.user.name}</p>
-            <p>먹고갈게요 | 매장식사</p>
-            <p>{waiting.adultCount + waiting.infantCount}명</p>
-          </div>
-        </div>
-        <div className='flex justify-between mt-5 text-gray-5 subtitle-6'>
-          <div className='flex gap-4'>
-            <hr className='flex h-[70px] w-1 bg-gray-2 border-none' />
-            <div className='flex flex-col gap-[10px]'>
-              <p>성인</p>
-              <p>유아</p>
-              {waiting.infantChairCount !== 0 ? (
-                <p>ㄴ 유아용 의자 {waiting.infantChairCount}</p>
-              ) : (
-                ''
-              )}
-            </div>
-          </div>
-          <div className='flex flex-col gap-[10px] text-right'>
-            <p>{waiting.adultCount}명</p>
-            <p>{waiting.infantCount}명</p>
-          </div>
-        </div>
-        <div className='flex justify-between mt-9 items-center'>
+        <div className='flex justify-between'>
           <div className='flex gap-4 items-center'>
             <AlertCircleIcon />
             <p className='subtitle-3'>유의사항</p>
@@ -236,25 +206,11 @@ const WaitingDetail = ({ waitingId }: StoreDetailProps) => {
   );
 };
 
-const WaitingDetailLoadingFallback = () => {
+const ReservationDetailLoadingFallback = () => {
   return (
     <div className='flex flex-col'>
       <Skeleton shape='square' height={280} />
     </div>
-  );
-};
-
-const EditIcon = () => {
-  return (
-    <svg width='24' height='24' viewBox='0 0 24 24' fill='none' xmlns='http://www.w3.org/2000/svg'>
-      <path
-        d='M2.87604 18.1159C2.92198 17.7024 2.94496 17.4957 3.00751 17.3025C3.06301 17.131 3.14143 16.9679 3.24064 16.8174C3.35246 16.6478 3.49955 16.5008 3.79373 16.2066L17 3.0003C18.1046 1.89573 19.8955 1.89573 21 3.0003C22.1046 4.10487 22.1046 5.89573 21 7.0003L7.79373 20.2066C7.49955 20.5008 7.35245 20.6479 7.18289 20.7597C7.03245 20.8589 6.86929 20.9373 6.69785 20.9928C6.5046 21.0553 6.29786 21.0783 5.88437 21.1243L2.5 21.5003L2.87604 18.1159Z'
-        stroke='#111111'
-        strokeWidth='2'
-        strokeLinecap='round'
-        strokeLinejoin='round'
-      />
-    </svg>
   );
 };
 
