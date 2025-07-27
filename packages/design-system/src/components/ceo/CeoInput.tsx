@@ -5,10 +5,11 @@ import { SearchIcon, LinkIcon } from 'lucide-react';
 import { cn } from '../../utils/cn';
 
 type CeoInputProps = ComponentPropsWithRef<'input'> & {
-  inputType?: 'search' | 'url';
+  inputType?: 'search' | 'url' | 'text';
+  disabled?: boolean;
 };
 
-const CeoInput = ({ inputType, className, ...props }: CeoInputProps) => {
+const CeoInput = ({ inputType = 'text', className, disabled = false, ...props }: CeoInputProps) => {
   const renderIcon = () => {
     switch (inputType) {
       case 'search':
@@ -31,8 +32,10 @@ const CeoInput = ({ inputType, className, ...props }: CeoInputProps) => {
           'flex h-[58px] w-full rounded-[8px] border border-gray-3 bg-white px-[10px] py-[16px] text-[20px] font-bold text-black placeholder:text-gray-5 placeholder:font-normal',
           { 'pr-10': inputType },
           className,
+          { 'opacity-50 cursor-pointer bg-gray-1 text-gray-5': disabled },
         )}
         {...props}
+        disabled={disabled}
       />
       {renderIcon()}
     </div>

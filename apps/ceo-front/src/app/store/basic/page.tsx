@@ -150,7 +150,7 @@ const BasicInfoPage = () => {
               위치 수정
             </button>
           </div>
-          <CeoInput id='name' inputType='search' />
+          <CeoInput id='name' inputType='search' disabled={true} />
           <CeoInput id='name' />
         </CeoCarnSubtitle>
       </CeoCard>
