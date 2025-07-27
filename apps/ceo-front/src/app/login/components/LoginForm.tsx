@@ -23,7 +23,7 @@ interface LoginFormProps {
   isRememberId: boolean;
   setEmail: (v: string) => void;
   setPassword: (v: string) => void;
-  setIsRememberId: (v: boolean) => void;
+  setIsRememberId: React.Dispatch<React.SetStateAction<boolean>>;
   setErrorMessage: (v: string) => void;
   handleLogin: () => void;
 }
