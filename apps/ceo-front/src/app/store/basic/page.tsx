@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+
 import {
   CardForm,
   CeoButton,
@@ -18,12 +19,12 @@ import {
   CeoDialogContent,
   CeoDialogHeader,
   CeoDialogTitle,
-  CeoDialogDescription,
   CeoDialogFooter,
 } from '@repo/design-system/components/ceo';
+import DaumPostcode from 'react-daum-postcode';
+
 import KakaoMap from '@/components/KakoMap';
 import { useKakaoMap } from '@/hooks/useKakaoMap';
-import DaumPostcode from 'react-daum-postcode';
 
 const BasicInfoPage = () => {
   const [parkingInfo, setParkingInfo] = useState('possible');
@@ -45,7 +46,7 @@ const BasicInfoPage = () => {
       // 이곳에서 마커 추가 등의 추가 작업 수행
       if (map) {
         // 마커 추가 예시 (API가 완전히 로드된 후)
-        const marker = new window.kakao.maps.Marker({
+        new window.kakao.maps.Marker({
           position: latlng,
           map: map,
         });
@@ -53,7 +54,15 @@ const BasicInfoPage = () => {
     },
   });
 
-  const onCompletePost = (data: any) => {
+  interface PostcodeData {
+    address: string;
+    addressType: string;
+    bname: string;
+    buildingName: string;
+    zonecode: string;
+  }
+
+  const onCompletePost = (data: PostcodeData) => {
     console.log(data);
   };
 
