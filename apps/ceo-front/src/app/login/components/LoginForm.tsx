@@ -75,7 +75,6 @@ export default function LoginForm({
               value={email}
               onChange={(e) => {
                 setEmail(e.target.value);
-                setErrorMessage('');
               }}
               className={`px-[20px] py-[18px] body-2 h-[58px] ${errorMessage ? 'border-red-500 text-red-500' : ''}`}
             />
@@ -89,7 +88,6 @@ export default function LoginForm({
                 value={password}
                 onChange={(e) => {
                   setPassword(e.target.value);
-                  setErrorMessage('');
                 }}
                 className={`px-[20px] py-[18px] body-2 h-[58px] ${errorMessage ? 'border-red-500 text-red-500' : ''}`}
               />

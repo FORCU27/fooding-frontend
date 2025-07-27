@@ -46,7 +46,7 @@ export default function LoginPage() {
               <p className='body-3'>사장님을 위한 전용 공간에 오신 걸 환영합니다.</p>
               <button
                 onClick={() => setIsSignUp((prev) => !prev)}
-                className='flex body-6 text-blue-500'
+                className='flex body-6 text-blue-500 cursor-pointer'
               >
                 {isSignUp ? '이미 계정이 있으신가요?' : '계정이 없으신가요?'}
               </button>
