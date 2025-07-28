@@ -303,20 +303,22 @@ const StoreImagePlaceholder = () => {
 const StoreImageCarousel = ({ imageUrls }: CarouselProps) => {
   return (
     <Carousel>
-      <Carousel.List>
-        {imageUrls.map((imageUrl, index) => (
-          <Carousel.Item key={index} className='h-[280px]'>
-            <Image fill style={{ objectFit: 'cover' }} src={imageUrl} alt='메뉴 이미지' />
-          </Carousel.Item>
-        ))}
-      </Carousel.List>
-      <Carousel.Pagination>
-        {({ page }) => (
-          <div className='absolute bottom-5 right-5 text-white text-xs p-[10px] flex justify-center items-center bg-black/60 rounded-[8px] h-7'>
-            {page} / {imageUrls.length}
-          </div>
-        )}
-      </Carousel.Pagination>
+      <Carousel.Region>
+        <Carousel.List>
+          {imageUrls.map((imageUrl, index) => (
+            <Carousel.Item key={index} className='h-[280px]'>
+              <Image fill style={{ objectFit: 'cover' }} src={imageUrl} alt='메뉴 이미지' />
+            </Carousel.Item>
+          ))}
+        </Carousel.List>
+        <Carousel.Pagination>
+          {({ page }) => (
+            <div className='absolute bottom-5 right-5 text-white text-xs p-[10px] flex justify-center items-center bg-black/60 rounded-[8px] h-7'>
+              {page} / {imageUrls.length}
+            </div>
+          )}
+        </Carousel.Pagination>
+      </Carousel.Region>
     </Carousel>
   );
 };
