@@ -13,3 +13,6 @@ export * from './FullscreenBottomSheet';
 export * from './EmptyState';
 export * from './DismissibleChipButton';
 export * from './Switch';
+export * from './Checkbox';
+export * from './ChipButton';
+export * from './ChipFilter';

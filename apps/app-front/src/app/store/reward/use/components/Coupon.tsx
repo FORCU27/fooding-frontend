@@ -11,7 +11,7 @@ interface CouponProps {
 
 const Coupon = ({ coupon, setSelectedCouponId }: CouponProps) => {
   return (
-    <div className='flex flex-col px-[28px] py-[30px] max-w-[274px] rounded-2xl border-2 border-gray-2 items-center'>
+    <div className='flex flex-col px-[28px] py-[30px] min-w-[274px] max-w-[274px] rounded-2xl border-2 border-gray-2 items-center'>
       <p className='self-start body-1 text-gray-6 pb-[30px]'>{coupon.name}</p>
       <GiftIcon size={120} className='text-gray-2' />
       <div className='pb-[30px]' />

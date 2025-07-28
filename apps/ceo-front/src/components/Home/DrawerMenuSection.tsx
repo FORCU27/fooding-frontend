@@ -1,28 +1,20 @@
 'use client';
 
 import { useRouter, usePathname } from 'next/navigation';
-import { useCallback, memo, useMemo } from 'react';
+import { memo } from 'react';
 
-import { ScreenMode, MenuItem } from '../../types/layout';
+import { MenuItem } from '../../types/layout';
 
 interface Props {
   className?: string;
   menuList: MenuItem[];
   onMenuClick?: (menu: MenuItem) => void;
   onSubMenuClick?: (subMenu: MenuItem) => void;
-  screenMode?: ScreenMode;
   activeMenu?: { menu: MenuItem; subItem: MenuItem | null } | null;
 }
 
 const DrawerMenuSection = memo(
-  ({
-    className,
-    menuList,
-    onMenuClick,
-    onSubMenuClick,
-    screenMode = 'desktop',
-    activeMenu,
-  }: Props) => {
+  ({ className, menuList, onMenuClick, onSubMenuClick, activeMenu }: Props) => {
     return (
       <li className={`flex flex-col py-[32px] ${className || ''}`}>
         <ul className=''>
@@ -32,7 +24,6 @@ const DrawerMenuSection = memo(
               menu={menu}
               onMenuClick={onMenuClick}
               onSubMenuClick={onSubMenuClick}
-              screenMode={screenMode}
               isActive={activeMenu?.menu.id === menu.id}
               activeSubItem={activeMenu?.subItem || null}
             />
@@ -56,7 +47,6 @@ const MenuItemComponent = memo(
     menu: MenuItem;
     onMenuClick?: (menu: MenuItem) => void;
     onSubMenuClick?: (subMenu: MenuItem) => void;
-    screenMode: ScreenMode;
     isActive: boolean;
     activeSubItem: MenuItem | null;
   }) => {
@@ -64,7 +54,7 @@ const MenuItemComponent = memo(
     const pathname = usePathname();
 
     // URL 기반으로 서브메뉴 확장 상태 계산
-    const isExpanded = useMemo(() => {
+    const isExpanded = (() => {
       if (!menu.subItems) return false;
 
       // 현재 활성화된 서브메뉴가 있거나, 현재 경로가 이 메뉴의 서브메뉴 중 하나와 일치하면 확장
@@ -74,10 +64,10 @@ const MenuItemComponent = memo(
           pathname.startsWith(subItem.path) ||
           activeSubItem?.id === subItem.id,
       );
-    }, [menu.subItems, pathname, activeSubItem]);
+    })();
 
     // useCallback으로 클릭 핸들러 메모이제이션
-    const handleMenuClick = useCallback(() => {
+    const handleMenuClick = () => {
       if (menu.subItems) {
         // 서브메뉴가 있으면 첫 번째 서브메뉴로 이동하거나 토글
         if (!isExpanded) {
@@ -91,22 +81,19 @@ const MenuItemComponent = memo(
         // 서브메뉴가 없으면 페이지 이동
         onMenuClick?.(menu);
       }
-    }, [menu, isExpanded, router, onMenuClick]);
+    };
 
-    const handleSubMenuClick = useCallback(
-      (subMenu: MenuItem) => {
-        onSubMenuClick?.(subMenu);
-        router.push(subMenu.path);
-      },
-      [onSubMenuClick, router],
-    );
+    const handleSubMenuClick = (subMenu: MenuItem) => {
+      onSubMenuClick?.(subMenu);
+      router.push(subMenu.path);
+    };
 
     return (
       <li className=''>
         <div
-          className={`body-2 cursor-pointer py-[17px] px-[32px] hover:bg-[#6366F11A] rounded transition-colors flex items-center justify-between ${
-            menu.subItems ? 'hover:bg-[#6366F11A]' : ''
-          } ${isActive ? 'text-fooding-purple' : ''}`}
+          className={`body-2 cursor-pointer py-[17px] px-[32px] hover:bg-primary-pink/5 rounded transition-colors flex items-center justify-between ${
+            menu.subItems ? 'hover:bg-' : ''
+          } ${isActive ? 'text-primary-pink bg-primary-pink/5' : ''}`}
           onClick={handleMenuClick}
         >
           <div className='flex items-center gap-2'>
@@ -140,10 +127,10 @@ const MenuItemComponent = memo(
               <li
                 key={subMenu.id}
                 onClick={() => handleSubMenuClick(subMenu)}
-                className={`body-2 text-gray-5 cursor-pointer pt-[9px] pb-[12px] pl-[60px] hover:bg-[#6366F11A] rounded transition-colors 
-              ${activeSubItem?.id === subMenu.id ? 'text-fooding-purple font-semibold' : ''}`}
+                className={`body-2 cursor-pointer pt-[9px] pb-[12px] pl-[60px] hover:bg-primary-pink/5 rounded transition-colors 
+    ${pathname === subMenu.path ? 'text-black font-medium' : 'text-gray-5'}`}
               >
-                {subMenu.text}
+                - {subMenu.text}
               </li>
             ))}
           </ul>

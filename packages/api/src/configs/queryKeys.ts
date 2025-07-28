@@ -42,6 +42,7 @@ export const queryKeys = {
       infiniteList: 'userCouponInfiniteList',
     },
     bookmark: 'userBookmark',
+    reservation: { reservationList: 'userReservationList' },
   },
   me: {
     user: 'meUser',
