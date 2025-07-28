@@ -35,12 +35,12 @@ const Select = <TValue extends string>({
         onChange={onSelectChange}
         {...props}
       >
-        {children}
         {placeholder && (
           <option value='' disabled selected>
             {placeholder}
           </option>
         )}
+        {children}
       </select>
       <ChevronDownIcon className='absolute right-5 top-1/2 -translate-y-1/2 pointer-events-none text-gray-5 peer-disabled:opacity-50' />
     </div>
