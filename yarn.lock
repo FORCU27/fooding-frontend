@@ -13737,6 +13737,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"overlay-kit@npm:^1.8.4":
+  version: 1.8.4
+  resolution: "overlay-kit@npm:1.8.4"
+  peerDependencies:
+    react: ^16.8 || ^17 || ^18 || ^19
+    react-dom: ^16.8 || ^17 || ^18 || ^19
+  checksum: 10/c7b3d727e48fc380c3235d50fd561dbfcb64474aae9db4ad33708c58dd9a366a0fcdbe14f2414ad72aa7fd7ecde2fa52affd74ebb9a1ce0c36e0a4be8dfdf5db
+  languageName: node
+  linkType: hard
+
 "own-keys@npm:^1.0.1":
   version: 1.0.1
   resolution: "own-keys@npm:1.0.1"
@@ -16890,6 +16900,7 @@ __metadata:
     jsdom: "npm:^26.1.0"
     next: "npm:^15.3.0"
     next-router-mock: "npm:^1.0.2"
+    overlay-kit: "npm:^1.8.4"
     postcss: "npm:^8.5.3"
     prettier: "npm:3.5.3"
     react: "npm:^19.1.0"

@@ -30,6 +30,7 @@ export const useGetInfiniteMyCouponList = (params: { used: boolean }) => {
 
   return {
     coupons,
+    totalCount: data.pages[0]?.data.pageInfo.totalCount ?? 0,
     fetchNextPage,
   };
 };

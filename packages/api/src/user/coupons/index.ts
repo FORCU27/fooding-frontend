@@ -1,7 +1,7 @@
 export * from './type';
 export * from './mock';
 
-import { GetMyCouponListParams, GetMyCouponListResponse } from './type';
+import { ApplyCouponBody, GetMyCouponListParams, GetMyCouponListResponse } from './type';
 import { api } from '../../shared';
 
 const ENDPOINT = '/user/coupons';
@@ -11,7 +11,7 @@ export const couponApi = {
     const response = await api.get(ENDPOINT, { params });
     return GetMyCouponListResponse.parse(response);
   },
-  applyCoupon: async (id: number) => {
-    await api.post(`${ENDPOINT}/${id}/request`);
+  applyCoupon: async ({ id, body }: { id: number; body: ApplyCouponBody }) => {
+    await api.post(`${ENDPOINT}/${id}/request`, body);
   },
 };

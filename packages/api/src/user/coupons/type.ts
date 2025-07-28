@@ -37,3 +37,7 @@ export const Coupon = z.object({
 
 export type GetMyCouponListResponse = z.infer<typeof GetMyCouponListResponse>;
 export const GetMyCouponListResponse = PageResponse(Coupon);
+
+export type ApplyCouponBody = {
+  tableNumber: string;
+};

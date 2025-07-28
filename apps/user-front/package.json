@@ -32,6 +32,7 @@
     "embla-carousel-react": "^8.6.0",
     "js-cookie": "^3.0.5",
     "next": "^15.3.0",
+    "overlay-kit": "^1.8.4",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "react-hook-form": "^7.55.0",
