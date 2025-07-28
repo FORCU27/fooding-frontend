@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 
 import { Coupon } from '@repo/api/user';
 import { Button, Dialog, EmptyState, Input, Tabs } from '@repo/design-system/components/b2c';
@@ -26,15 +26,17 @@ const couponListTabLabel: Record<CouponListType, string> = {
 };
 
 export const MyCouponListScreen: ActivityComponentType<'MyCouponListScreen'> = () => {
-  const [currentTab, setCurrentTab] = useState<string>(COUPONT_LIST_TYPES[0]);
+  const [tabs, setTabs] = useState<string>(COUPONT_LIST_TYPES[0]);
 
   const screenRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
+  const onTabsChange = (value: string) => {
+    setTabs(value);
+
     if (screenRef.current) {
       screenRef.current.scrollTo({ top: 0 });
     }
-  }, [currentTab]);
+  };
 
   return (
     <Screen
@@ -42,7 +44,7 @@ export const MyCouponListScreen: ActivityComponentType<'MyCouponListScreen'> = (
       className='bg-gray-1'
       header={<Header left={<Header.Back />} title='쿠폰함' />}
     >
-      <Tabs value={currentTab} onChange={setCurrentTab} className='flex-1 flex flex-col'>
+      <Tabs value={tabs} onChange={onTabsChange} className='flex-1 flex flex-col'>
         <Tabs.List className='sticky top-0' fullWidth>
           {COUPONT_LIST_TYPES.map((type, index) => (
             <Tabs.Trigger key={index} value={type}>
@@ -50,11 +52,20 @@ export const MyCouponListScreen: ActivityComponentType<'MyCouponListScreen'> = (
             </Tabs.Trigger>
           ))}
         </Tabs.List>
-        {COUPONT_LIST_TYPES.map((type, index) => (
-          <DefaultErrorBoundary key={index}>
+        {COUPONT_LIST_TYPES.map((listType) => (
+          <DefaultErrorBoundary key={listType}>
             <Suspense clientOnly>
-              <Tabs.Content value={type} className='flex-1 flex flex-col'>
-                <CouponList type={type} />
+              <Tabs.Content value={listType} className='flex-1 flex flex-col'>
+                {(() => {
+                  switch (listType) {
+                    case 'available':
+                      return <AvailableCouponList />;
+                    case 'used':
+                      return <UsedCouponList />;
+                    default:
+                      listType satisfies never;
+                  }
+                })()}
               </Tabs.Content>
             </Suspense>
           </DefaultErrorBoundary>
@@ -64,22 +75,13 @@ export const MyCouponListScreen: ActivityComponentType<'MyCouponListScreen'> = (
   );
 };
 
-type CouponListProps = {
-  type: CouponListType;
-};
-
-const CouponList = ({ type: listType }: CouponListProps) => {
+const AvailableCouponList = () => {
   const { coupons, totalCount, fetchNextPage } = useGetInfiniteMyCouponList({
-    used: listType === 'used',
+    used: false,
   });
 
-  const emptyTitle: Record<CouponListType, string> = {
-    available: '사용 가능한 쿠폰이 없어요.',
-    used: '사용한 쿠폰이 없어요.',
-  };
-
   if (coupons.length === 0) {
-    return <EmptyState className='flex-1' title={emptyTitle[listType]} />;
+    return <EmptyState className='flex-1' title='사용 가능한 쿠폰이 없어요.' />;
   }
 
   return (
@@ -90,30 +92,47 @@ const CouponList = ({ type: listType }: CouponListProps) => {
           <CouponCard
             key={coupon.id}
             coupon={coupon}
-            button={(() => {
-              switch (listType) {
-                case 'available':
-                  return (
-                    <Button
-                      onClick={() => {
-                        overlay.open(({ isOpen, close }) => (
-                          <ApplyCouponDialog
-                            isOpen={isOpen}
-                            onOpenChange={(open) => open === false && close()}
-                            coupon={coupon}
-                          />
-                        ));
-                      }}
-                    >
-                      사용하기
-                    </Button>
-                  );
-                case 'used':
-                  return <Button disabled>사용 완료</Button>;
-                default:
-                  listType satisfies never;
-              }
-            })()}
+            button={
+              <Button
+                onClick={() => {
+                  overlay.open(({ isOpen, close }) => (
+                    <ApplyCouponDialog
+                      isOpen={isOpen}
+                      onOpenChange={(open) => open === false && close()}
+                      coupon={coupon}
+                    />
+                  ));
+                }}
+              >
+                사용하기
+              </Button>
+            }
+          />
+        ))}
+        <IntersectionObserver onIntersect={fetchNextPage} />
+      </ul>
+    </div>
+  );
+};
+
+const UsedCouponList = () => {
+  const { coupons, totalCount, fetchNextPage } = useGetInfiniteMyCouponList({
+    used: true,
+  });
+
+  if (coupons.length === 0) {
+    return <EmptyState className='flex-1' title='사용한 쿠폰이 없어요.' />;
+  }
+
+  return (
+    <div className='px-grid-margin'>
+      <span className='mt-5 body-6 text-gray-5 flex'>쿠폰 {totalCount}장</span>
+      <ul className='mt-3 flex flex-col gap-5'>
+        {coupons.map((coupon) => (
+          <CouponCard
+            key={coupon.id}
+            coupon={coupon}
+            button={<Button disabled>사용 완료</Button>}
           />
         ))}
         <IntersectionObserver onIntersect={fetchNextPage} />
@@ -153,7 +172,6 @@ const CouponCard = ({ coupon, button }: CouponCardProps) => {
             </span>
           )}
         </div>
-        {/* TODO: 이미지 추가 */}
         <GiftBoxIcon />
       </div>
       {button}
