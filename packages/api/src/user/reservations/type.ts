@@ -54,5 +54,8 @@ export type GetReservationCompletedListResponse = z.infer<
 >;
 export const GetReservationCompletedListResponse = PageResponse(ReservationCompleted);
 
+export type GetReservationByIdResponse = z.infer<typeof GetReservationByIdResponse>;
+export const GetReservationByIdResponse = ApiResponse(Reservation);
+
 export type GetWaitingDetailResponse = z.infer<typeof GetWaitingDetailResponse>;
 export const GetWaitingDetailResponse = ApiResponse(Waiting);
