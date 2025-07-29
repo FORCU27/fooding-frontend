@@ -191,7 +191,7 @@ const CouponDetailDialog = ({ coupon, trigger }: CouponDetailDialogProps) => {
       <Dialog.Trigger asChild>{trigger}</Dialog.Trigger>
       <Dialog.Content className='p-1 w-[320px]'>
         <Dialog.Header>
-          <Dialog.Title className='body-7 text-gray-5'>계란김밥 증정 쿠폰</Dialog.Title>
+          <Dialog.Title className='body-7 text-gray-5'>{coupon.name}</Dialog.Title>
           <Dialog.Description className='sr-only'>쿠폰</Dialog.Description>
           <span className='subtitle-1'>사용 조건</span>
         </Dialog.Header>
