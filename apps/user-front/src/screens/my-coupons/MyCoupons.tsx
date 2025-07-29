@@ -18,8 +18,8 @@ import { useApplyCoupon } from '@/hooks/coupon/useApplyCoupon';
 import { useGetInfiniteMyCouponList } from '@/hooks/coupon/useGetMyCouponList';
 import { formatDashDateTime } from '@/utils/date';
 
-const COUPONT_LIST_TYPES = ['available', 'used'] as const;
-type CouponListType = (typeof COUPONT_LIST_TYPES)[number];
+const COUPON_LIST_TYPES = ['available', 'used'] as const;
+type CouponListType = (typeof COUPON_LIST_TYPES)[number];
 
 const couponListTabLabel: Record<CouponListType, string> = {
   available: '사용 가능 쿠폰',
@@ -27,7 +27,7 @@ const couponListTabLabel: Record<CouponListType, string> = {
 };
 
 export const MyCouponListScreen: ActivityComponentType<'MyCouponListScreen'> = () => {
-  const [tabs, setTabs] = useState<string>(COUPONT_LIST_TYPES[0]);
+  const [tabs, setTabs] = useState<string>(COUPON_LIST_TYPES[0]);
 
   const screenRef = useRef<HTMLDivElement>(null);
 
@@ -47,13 +47,13 @@ export const MyCouponListScreen: ActivityComponentType<'MyCouponListScreen'> = (
     >
       <Tabs value={tabs} onChange={onTabsChange} className='flex-1 flex flex-col'>
         <Tabs.List className='sticky top-0' fullWidth>
-          {COUPONT_LIST_TYPES.map((type, index) => (
+          {COUPON_LIST_TYPES.map((type, index) => (
             <Tabs.Trigger key={index} value={type}>
               {couponListTabLabel[type]}
             </Tabs.Trigger>
           ))}
         </Tabs.List>
-        {COUPONT_LIST_TYPES.map((listType) => (
+        {COUPON_LIST_TYPES.map((listType) => (
           <DefaultErrorBoundary key={listType}>
             <Suspense clientOnly>
               <Tabs.Content value={listType} className='flex-1 flex flex-col'>
