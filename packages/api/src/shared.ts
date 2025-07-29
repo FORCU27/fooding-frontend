@@ -141,6 +141,25 @@ export type PaginatedResponseType<T extends z.ZodTypeAny> = z.infer<
   ReturnType<typeof PaginatedResponse<T>>
 >;
 
+export const AuthErrorResponseSchema = z.object({
+  code: z.string(),
+  detailedErrors: z
+    .array(
+      z.object({
+        location: z.string(),
+        message: z.string(),
+      }),
+    )
+    .nullable(),
+  message: z.string(),
+  method: z.string(),
+  status: z.union([z.literal('OK'), z.number()]),
+  timestamp: z.string(),
+  url: z.string(),
+});
+
+export type AuthErrorResponse = z.infer<typeof AuthErrorResponseSchema>;
+
 export const SORT_TYPES = ['RECENT', 'AVERAGE_RATING', 'REVIEW', 'POPULARITY'] as const;
 export type SortType = (typeof SORT_TYPES)[number];
 
