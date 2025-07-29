@@ -2,12 +2,11 @@
 'use client';
 
 import Image from 'next/image';
-import { useRef, useState } from 'react';
+import { useState } from 'react';
 
 import { mockWaitingDetailResponse } from '@repo/api/user';
 import { Button, Skeleton } from '@repo/design-system/components/b2c';
 import {
-  ChevronDownIcon,
   ChevronUpIcon,
   ClockIcon,
   FoodingIcon,
@@ -26,10 +25,8 @@ import { useGetStoreDetail } from '@/hooks/store/useGetStoreDetail';
 import { formatDotDateTime } from '@/utils/date';
 
 export const WaitingDetailScreen: ActivityComponentType<'WaitingDetailScreen'> = ({ params }) => {
-  const screenRef = useRef<HTMLDivElement>(null);
-
   return (
-    <Screen ref={screenRef} header={<Header title='웨이팅 상세정보' left={<Header.Back />} />}>
+    <Screen header={<Header title='웨이팅 상세정보' left={<Header.Back />} />}>
       <DefaultErrorBoundary>
         <LoadingToggle fallback={<WaitingDetailLoadingFallback />}>
           <Suspense clientOnly fallback={<WaitingDetailLoadingFallback />}>
@@ -49,11 +46,14 @@ const WaitingDetail = ({ waitingId }: StoreDetailProps) => {
   //TODO: mock 데이터 제거
   const { data: waiting } = mockWaitingDetailResponse;
   const { data: storeInfo } = useGetStoreDetail(waiting.storeId);
-  const [isAlertClick, setIsAlertClick] = useState(false);
-  const [isParkingClick, setIsParkingClick] = useState(false);
-  const handleChevronClick = (category: 'alert' | 'parking') => {
-    if (category === 'alert') setIsAlertClick((prev) => !prev);
-    if (category === 'parking') setIsParkingClick((prev) => !prev);
+  const [isAlertAccordionOpen, setIsAlertAccordionOpen] = useState(false);
+  const [isParkingAccordionOpen, setIsParkingAccordionOpen] = useState(false);
+  const onParkingAccordionClick = () => {
+    setIsParkingAccordionOpen((prev) => !prev);
+  };
+
+  const onAlertAccordionClick = () => {
+    setIsAlertAccordionOpen((prev) => !prev);
   };
 
   return (
@@ -130,25 +130,23 @@ const WaitingDetail = ({ waitingId }: StoreDetailProps) => {
             <AlertCircleIcon />
             <p className='subtitle-3'>유의사항</p>
           </div>
-          <div onClick={() => handleChevronClick('alert')} className='flex'>
-            {isAlertClick ? (
-              <ChevronUpIcon className='text-gray-5' />
-            ) : (
-              <ChevronDownIcon className='text-gray-5' />
-            )}
+          <button type='button' onClick={onAlertAccordionClick}>
+            <ChevronUpIcon
+              className={`text-gray-5 transform transition-transform duration-200 ease-out ${isAlertAccordionOpen ? 'rotate-180 duration-200' : ''}`}
+            />
+          </button>
+        </div>
+        <div
+          className={`overflow-hidden transition-all duration-300 ease-in-out ${
+            isAlertAccordionOpen ? 'max-h-96 opacity-100 mt-6' : 'max-h-0 opacity-0 mt-0'
+          }`}
+        >
+          <p className='subtitle-4'>매장 유의사항</p>
+          <div className='flex flex-col bg-gray-1 rounded-xl p-4 mt-5 body-5'>
+            <p>알림 후 입장이 늦어질 경우 취소될 수 있어요</p>
+            <p>알림 후 입장이 늦어질 경우 취소될 수 있어요</p>
           </div>
         </div>
-        {isAlertClick ? (
-          <div className='flex flex-col mt-6'>
-            <p className='subtitle-4'>매장 유의사항</p>
-            <div className='flex flex-col bg-gray-1 rounded-xl p-4 mt-5 body-5'>
-              <p>알림 후 입장이 늦어질 경우 취소될 수 있어요</p>
-              <p>알림 후 입장이 늦어질 경우 취소될 수 있어요</p>
-            </div>
-          </div>
-        ) : (
-          ''
-        )}
       </div>
 
       <div className='flex flex-col p-5 mt-[10px] bg-white/80'>
@@ -184,23 +182,21 @@ const WaitingDetail = ({ waitingId }: StoreDetailProps) => {
             <CarIcon />
             <p className='subtitle-3'>주차 및 발렛 안내</p>
           </div>
-          <div onClick={() => handleChevronClick('parking')} className='flex'>
-            {isParkingClick ? (
-              <ChevronUpIcon className='text-gray-5' />
-            ) : (
-              <ChevronDownIcon className='text-gray-5' />
-            )}
+          <button type='button' onClick={onParkingAccordionClick}>
+            <ChevronUpIcon
+              className={`text-gray-5 transform transition-transform duration-200 ease-out ${isParkingAccordionOpen ? 'rotate-180 duration-200' : ''}`}
+            />
+          </button>
+        </div>
+        <div
+          className={`overflow-hidden transition-all duration-300 ease-in-out ${
+            isParkingAccordionOpen ? 'max-h-40 opacity-100 mt-5' : 'max-h-0 opacity-0 mt-0'
+          }`}
+        >
+          <div className='flex flex-col bg-gray-1 rounded-xl p-4 body-5'>
+            <p>{storeInfo.isParkingAvailable ? '주차가능' : '주차불가'}</p>
           </div>
         </div>
-        {isParkingClick ? (
-          <div className='flex flex-col'>
-            <div className='flex flex-col bg-gray-1 rounded-xl p-4 mt-5 body-5'>
-              <p>{storeInfo.isParkingAvailable ? '주차가능' : '주차불가'}</p>
-            </div>
-          </div>
-        ) : (
-          ''
-        )}
       </div>
       <div className='flex flex-col p-5 mt-[10px] bg-white/80'>
         <div className='flex gap-4 items-center'>
