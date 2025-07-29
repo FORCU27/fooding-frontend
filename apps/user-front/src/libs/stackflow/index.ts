@@ -7,6 +7,7 @@ import { stackflow } from '@stackflow/react/future';
 
 import { BookmarkListScreen } from '@/screens/bookmarks/Bookmarks';
 import { NotificationListScreen } from '@/screens/notifications/Notifications';
+import { ReservationDetailScreen } from '@/screens/reservation-detail/ReservationDetail';
 import { ReviewCreateScreen } from '@/screens/reviews/reviewCreate';
 import { NotificationSettingScreen } from '@/screens/settings/Notifications';
 import { SettingScreen } from '@/screens/settings/Settings';
@@ -32,6 +33,7 @@ declare module '@stackflow/config' {
     NotificationSettingScreen: object;
     ReviewCreateScreen: { reservationId: number };
     WaitingDetailScreen: { waitingId: number };
+    ReservationDetailScreen: { reservationId: number };
   }
 }
 
@@ -49,6 +51,7 @@ const config = defineConfig({
     { name: 'NotificationSettingScreen' },
     { name: 'ReviewCreateScreen' },
     { name: 'WaitingDetailScreen' },
+    { name: 'ReservationDetailScreen' },
   ],
 
   transitionDuration: 350,
@@ -70,6 +73,7 @@ export const { Stack } = stackflow({
     NotificationSettingScreen,
     ReviewCreateScreen,
     WaitingDetailScreen,
+    ReservationDetailScreen,
   },
   plugins: [
     basicRendererPlugin(),

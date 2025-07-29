@@ -15,9 +15,10 @@ export const ReservationCard = ({ reservation }: ReservationCardProps) => {
   const flow = useFlow();
 
   const handleReservationCardClick = (isWaiting: boolean, reservationId: number) => {
-    if (isWaiting === reservation.isWaiting)
-      return flow.push('WaitingDetailScreen', { waitingId: reservationId });
-    return;
+    // eslint-disable-next-line @typescript-eslint/no-unused-expressions
+    isWaiting
+      ? flow.push('WaitingDetailScreen', { waitingId: reservationId })
+      : flow.push('ReservationDetailScreen', { reservationId });
   };
   return (
     <div
