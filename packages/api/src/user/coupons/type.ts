@@ -33,6 +33,7 @@ export const Coupon = z.object({
   usedAt: z.iso.datetime({ local: true }).nullable(),
   expiredOn: z.iso.date().nullable(),
   createdDateAt: z.iso.datetime({ local: true }),
+  mainImage: z.string().nullable(),
 });
 
 export type GetMyCouponListResponse = z.infer<typeof GetMyCouponListResponse>;

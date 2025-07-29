@@ -1,10 +1,11 @@
 'use client';
 
+import Image from 'next/image';
 import { useRef, useState } from 'react';
 
 import { Coupon } from '@repo/api/user';
 import { Button, Dialog, EmptyState, Input, Tabs } from '@repo/design-system/components/b2c';
-import { CheckIcon, CloseIcon, InfoCircleIcon } from '@repo/design-system/icons';
+import { CheckIcon, CloseIcon, FoodingIcon, InfoCircleIcon } from '@repo/design-system/icons';
 import { ActivityComponentType } from '@stackflow/react/future';
 import { Suspense } from '@suspensive/react';
 import { overlay } from 'overlay-kit';
@@ -255,10 +256,10 @@ const ApplyCouponDialog = ({ isOpen, onOpenChange, coupon }: ApplyCouponDialogPr
               </Dialog.Header>
               <Dialog.Body>
                 <div className='flex items-center gap-4 mt-6'>
-                  <div className='size-[60px] rounded-[8px] bg-gray-2' />
+                  <CouponStoreThumbnail mainImage={coupon.mainImage} />
                   <div className='flex flex-col gap-2 justify-center'>
-                    <span className='subtitle-1'>계란김밥 증정 쿠폰</span>
-                    <span className='body-6 text-gray-5'>김가네 김밥</span>
+                    <span className='subtitle-1'>{coupon.name}</span>
+                    <span className='body-6 text-gray-5'>{coupon.storeName}</span>
                   </div>
                 </div>
                 <Input
@@ -297,10 +298,10 @@ const ApplyCouponDialog = ({ isOpen, onOpenChange, coupon }: ApplyCouponDialogPr
               </Dialog.Header>
               <Dialog.Body>
                 <div className='mt-5 bg-gray-1 rounded-[12px] flex gap-4 p-6'>
-                  <div className='size-[60px] rounded-[8px] bg-gray-2' />
+                  <CouponStoreThumbnail mainImage={coupon.mainImage} />
                   <div className='flex flex-col gap-2 justify-center'>
-                    <span className='subtitle-1'>계란김밥 증정 쿠폰</span>
-                    <span className='body-6 text-gray-5'>김가네 김밥</span>
+                    <span className='subtitle-1'>{coupon.name}</span>
+                    <span className='body-6 text-gray-5'>{coupon.storeName}</span>
                   </div>
                 </div>
               </Dialog.Body>
@@ -314,6 +315,24 @@ const ApplyCouponDialog = ({ isOpen, onOpenChange, coupon }: ApplyCouponDialogPr
         </>
       </Dialog.Content>
     </Dialog>
+  );
+};
+
+type CouponStoreThumbnailProps = {
+  mainImage: string | null;
+};
+
+const CouponStoreThumbnail = ({ mainImage }: CouponStoreThumbnailProps) => {
+  return (
+    <div className='size-[60px] relative rounded-[8px] overflow-hidden'>
+      {mainImage ? (
+        <Image fill src={mainImage} alt='쿠폰 이미지' />
+      ) : (
+        <div className='bg-gray-2 flex justify-center items-center text-[#111111]/10 w-full h-full'>
+          <FoodingIcon />
+        </div>
+      )}
+    </div>
   );
 };
 
