@@ -93,8 +93,8 @@ export const ReviewForm = ({ handleSubmit }: ReviewFormProps) => {
         accept='image/png, image/jpg, image/jpeg'
         multiple
         ref={fileInputRef}
-        style={{ display: 'none' }}
         onChange={handleFileChange}
+        className='hidden'
       />
       <Button variant='gray' type='button' onClick={handleImageClick}>
         <ImageIcon />
