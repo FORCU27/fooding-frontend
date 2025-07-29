@@ -17,6 +17,7 @@ export const mockMyCouponList: GetMyCouponListResponse = {
         createdDateAt: '2025-06-07T06:43:14.677312',
         conditions: null,
         status: 'AVAILABLE',
+        mainImage: null,
       },
     ],
     pageInfo: {
