@@ -8,17 +8,22 @@ import { createContext } from '../../utils/create-context';
 
 const chipTabsVariants = tv({
   base: cn(
-    'inline-flex items-center justify-center rounded-full border font-medium text-gray-5 border border-gray-2 whitespace-nowrap cursor-pointer',
+    'inline-flex items-center justify-center rounded-full border font-medium whitespace-nowrap cursor-pointer',
     'disabled:pointer-events-none disabled:opacity-50',
     'data-[state=active]:bg-gray-6 data-[state=active]:text-white data-[state=active]:border-transparent',
   ),
   variants: {
+    variant: {
+      outlined: 'text-gray-5 border border-gray-2',
+      secondary: 'text-gray-6 bg-gray-1 border-transparent',
+    },
     size: {
       medium: 'h-[33px] px-3 text-sm',
     },
   },
   defaultVariants: {
     size: 'medium',
+    variant: 'outlined',
   },
 });
 
@@ -50,11 +55,11 @@ const ChipTabs = ({
 type ChipTabsListProps = React.ComponentPropsWithRef<typeof TabsPrimitives.List> &
   VariantProps<typeof chipTabsVariants>;
 
-const ChipTabsList = ({ className, children, size, ...props }: ChipTabsListProps) => {
+const ChipTabsList = ({ className, children, size, variant, ...props }: ChipTabsListProps) => {
   const { scrollable } = useChipTabsContext();
 
   return (
-    <ChipTabsListContext value={{ size }}>
+    <ChipTabsListContext value={{ size, variant }}>
       <TabsPrimitives.List
         className={cn(
           'bg-white inline-flex items-center gap-2',
@@ -72,10 +77,13 @@ const ChipTabsList = ({ className, children, size, ...props }: ChipTabsListProps
 type ChipTabsTriggerProps = React.ComponentPropsWithRef<typeof TabsPrimitives.Trigger>;
 
 const ChipTabsTrigger = ({ className, children, ...props }: ChipTabsTriggerProps) => {
-  const { size } = useChipTabsListContext();
+  const { size, variant } = useChipTabsListContext();
 
   return (
-    <TabsPrimitives.Trigger className={cn(chipTabsVariants({ size, className }))} {...props}>
+    <TabsPrimitives.Trigger
+      className={cn(chipTabsVariants({ size, variant }), className)}
+      {...props}
+    >
       {children}
     </TabsPrimitives.Trigger>
   );
@@ -97,6 +105,7 @@ type ChipTabsContextValue = {
 
 type ChipTabsListContextValue = {
   size: VariantProps<typeof chipTabsVariants>['size'];
+  variant: VariantProps<typeof chipTabsVariants>['variant'];
 };
 
 const [ChipTabsListContext, useChipTabsListContext] =
