@@ -67,7 +67,7 @@ const CeoDialogContent = ({
       <Dialog.Overlay className='fixed inset-0 z-50 bg-black/80' />
       <Dialog.Content
         className={cn(
-          'fixed left-[50%] top-[50%] z-50 grid w-full max-w-lg translate-x-[-50%] translate-y-[-50%] gap-4 border bg-white p-6 shadow-lg rounded-[20px]',
+          'fixed left-[50%] top-[50%] z-50 w-full max-w-lg translate-x-[-50%] translate-y-[-50%] max-h-[85vh] border bg-white shadow-lg rounded-[20px] overflow-y-auto p-6',
           className,
         )}
       >
