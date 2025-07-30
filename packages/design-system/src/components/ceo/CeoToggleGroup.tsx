@@ -1,6 +1,6 @@
 'use client';
 
-import { type ComponentProps, createContext, forwardRef, useContext } from 'react';
+import { type ComponentProps, createContext, useContext } from 'react';
 
 import * as ToggleGroupPrimitive from '@radix-ui/react-toggle-group';
 import { tv, type VariantProps } from 'tailwind-variants';
@@ -25,10 +25,12 @@ const ToggleGroupContext = createContext<VariantProps<typeof toggleGroupItemVari
   variant: 'default',
 });
 
-const CeoToggleGroup = forwardRef<
-  React.ElementRef<typeof ToggleGroupPrimitive.Root>,
-  ComponentProps<typeof ToggleGroupPrimitive.Root> & VariantProps<typeof toggleGroupItemVariants>
->(({ className, variant, children, ...props }, ref) => (
+type CeoToggleGroupProps = ComponentProps<typeof ToggleGroupPrimitive.Root> & 
+  VariantProps<typeof toggleGroupItemVariants> & {
+  ref?: React.Ref<React.ElementRef<typeof ToggleGroupPrimitive.Root>>;
+};
+
+const CeoToggleGroup = ({ className, variant, children, ref, ...props }: CeoToggleGroupProps) => (
   <ToggleGroupPrimitive.Root
     ref={ref}
     className={cn('flex flex-wrap items-center justify-start gap-2', className)}
@@ -36,13 +38,13 @@ const CeoToggleGroup = forwardRef<
   >
     <ToggleGroupContext.Provider value={{ variant }}>{children}</ToggleGroupContext.Provider>
   </ToggleGroupPrimitive.Root>
-));
-CeoToggleGroup.displayName = ToggleGroupPrimitive.Root.displayName;
+);
 
-const CeoToggleGroupItem = forwardRef<
-  React.ElementRef<typeof ToggleGroupPrimitive.Item>,
-  ComponentProps<typeof ToggleGroupPrimitive.Item>
->(({ className, children, ...props }, ref) => {
+type CeoToggleGroupItemProps = ComponentProps<typeof ToggleGroupPrimitive.Item> & {
+  ref?: React.Ref<React.ElementRef<typeof ToggleGroupPrimitive.Item>>;
+};
+
+const CeoToggleGroupItem = ({ className, children, ref, ...props }: CeoToggleGroupItemProps) => {
   const { variant } = useContext(ToggleGroupContext);
   return (
     <ToggleGroupPrimitive.Item
@@ -53,7 +55,6 @@ const CeoToggleGroupItem = forwardRef<
       {children}
     </ToggleGroupPrimitive.Item>
   );
-});
-CeoToggleGroupItem.displayName = ToggleGroupPrimitive.Item.displayName;
+};
 
 export { CeoToggleGroup, CeoToggleGroupItem };

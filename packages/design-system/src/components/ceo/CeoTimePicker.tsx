@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useRef, useEffect, forwardRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 
 import * as Popover from '@radix-ui/react-popover';
 import { ChevronDownIcon } from 'lucide-react';
@@ -15,10 +15,10 @@ type CeoTimePickerProps = {
   onChange?: (value: string) => void;
   className?: string;
   disabled?: boolean;
+  ref?: React.Ref<HTMLButtonElement>;
 };
 
-const CeoTimePicker = forwardRef<HTMLButtonElement, CeoTimePickerProps>(
-  ({ value: controlledValue, onChange, className, disabled }, ref) => {
+const CeoTimePicker = ({ value: controlledValue, onChange, className, disabled, ref }: CeoTimePickerProps) => {
     const [isOpen, setIsOpen] = useState(false);
     const [internalValue, setInternalValue] = useState(controlledValue || '09:00');
 
@@ -111,9 +111,6 @@ const CeoTimePicker = forwardRef<HTMLButtonElement, CeoTimePickerProps>(
         </Popover.Portal>
       </Popover.Root>
     );
-  },
-);
-
-CeoTimePicker.displayName = 'CeoTimePicker';
+};
 
 export { CeoTimePicker };
