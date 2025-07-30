@@ -1,4 +1,9 @@
-import { GetReservationCompletedListResponse, GetReservationListResponse } from './type';
+import {
+  GetReservationCompletedListResponse,
+  GetReservationDetailResponse,
+  GetReservationListResponse,
+  GetWaitingDetailResponse,
+} from './type';
 
 export const mockReservationListResponse: GetReservationListResponse = {
   status: 'OK',
@@ -89,8 +94,46 @@ export const mockReservationCompletedListResponse: GetReservationCompletedListRe
         reviewRate: null,
         mainImgUrl:
           'https://img.freepik.com/free-photo/tasty-food-arrangement-top-view_23-2149182261.jpg',
-        createdAt: '2025-07-02T03:44:25.499Z',
+        createdAt: '2025-07-24T03:44:25.499Z',
       },
     ],
+  },
+};
+
+export const mockWaitingDetailResponse: GetWaitingDetailResponse = {
+  status: 'OK',
+  data: {
+    id: 1,
+    storeId: 1,
+    user: {
+      id: 1,
+      storeId: 1,
+      name: '홍길동',
+      phoneNumber: '01012345678',
+      count: 1,
+    },
+    callNumber: 1,
+    waitingNumber: 1,
+    channel: 'IN_PERSON',
+    infantChairCount: 1,
+    infantCount: 1,
+    adultCount: 1,
+    memo: '아이 1명, 어른 3명입니다. 창가 자리 부탁드립니다.',
+    createdAt: '2025-07-24T15:44:25.499Z',
+  },
+};
+
+export const mockReservationDetailResponse: GetReservationDetailResponse = {
+  status: 'OK',
+  data: {
+    id: 3,
+    storeId: 3,
+    name: '정육식당 흑돼지',
+    isWaiting: false,
+    adultCount: 2,
+    mainImgUrl:
+      'https://img.freepik.com/free-photo/tasty-food-arrangement-top-view_23-2149182261.jpg',
+    reservationDate: '2025-08-02T15:44:25.499Z',
+    createdAt: '2025-07-02T03:44:25.499Z',
   },
 };

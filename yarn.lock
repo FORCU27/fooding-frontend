@@ -1457,6 +1457,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@babel/runtime@npm:^7.22.15":
+  version: 7.28.2
+  resolution: "@babel/runtime@npm:7.28.2"
+  checksum: 10/a0965fbdd6aaa40709290923bbe05e1c4314021f0cef608eb1d69f04f717c41829e50a53d79c4a0f461512b4be9b3c0190dc19387b219bcdaacdd793b2fe1b8a
+  languageName: node
+  linkType: hard
+
 "@babel/template@npm:^7.25.0, @babel/template@npm:^7.27.1, @babel/template@npm:^7.27.2, @babel/template@npm:^7.3.3":
   version: 7.27.2
   resolution: "@babel/template@npm:7.27.2"
@@ -12117,6 +12124,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"kakao.maps.d.ts@npm:^0.1.39":
+  version: 0.1.40
+  resolution: "kakao.maps.d.ts@npm:0.1.40"
+  checksum: 10/ccf76e14166a93bb78b080532508f805e1ed9cdbcf8f9e17d2925d723c46789bd53902eda35817e4a7786bf1444df04c6263aca80cbeab368b596a34bfaee1bb
+  languageName: node
+  linkType: hard
+
 "keyv@npm:^4.0.0, keyv@npm:^4.5.4":
   version: 4.5.4
   resolution: "keyv@npm:4.5.4"
@@ -14519,6 +14533,19 @@ __metadata:
   languageName: node
   linkType: hard
 
+"react-kakao-maps-sdk@npm:^1.2.0":
+  version: 1.2.0
+  resolution: "react-kakao-maps-sdk@npm:1.2.0"
+  dependencies:
+    "@babel/runtime": "npm:^7.22.15"
+    kakao.maps.d.ts: "npm:^0.1.39"
+  peerDependencies:
+    react: ">=16.8"
+    react-dom: ">=16.8"
+  checksum: 10/aef77ce71316aeb408d559563c7de1bf68016e715c653997b54de8c0fd39cea9cbe99cd6d8d46c596658eb7413d61b90e8cb0debffff00c7c023e2cc2cd1b54a
+  languageName: node
+  linkType: hard
+
 "react-native-webview@npm:^13.13.5":
   version: 13.14.0
   resolution: "react-native-webview@npm:13.14.0"
@@ -16906,6 +16933,7 @@ __metadata:
     react: "npm:^19.1.0"
     react-dom: "npm:^19.1.0"
     react-hook-form: "npm:^7.55.0"
+    react-kakao-maps-sdk: "npm:^1.2.0"
     swiper: "npm:^11.2.6"
     tailwind-merge: "npm:^3.2.0"
     tailwindcss: "npm:^4.1.4"

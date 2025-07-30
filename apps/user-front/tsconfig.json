@@ -5,7 +5,7 @@
     "paths": {
       "@/*": ["./src/*"]
     },
-    "types": ["vitest/globals"],
+    "types": ["vitest/globals", "kakao.maps.d.ts"],
     "plugins": [
       {
         "name": "next"

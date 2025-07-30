@@ -30,5 +30,6 @@ export { default as ShareIcon } from './ShareIcon';
 export { default as HeartIcon } from './HeartIcon';
 export { default as MessageSquareIcon } from './MessageSquareIcon';
 export { default as InfoCircleIcon } from './InfoCircleIcon';
+export { default as ImageIcon } from './ImageIcon';
 export { default as EyeOffIcon } from './EyeOffIcon';
 export { default as EyeOnIcon } from './EyeOnIcon';

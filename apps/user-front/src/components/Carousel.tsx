@@ -1,13 +1,15 @@
 import { useEffect, useState } from 'react';
 
 import { createContext } from '@repo/design-system/utils';
-import useEmblaCarousel from 'embla-carousel-react';
+import useEmblaCarousel, { EmblaViewportRefType } from 'embla-carousel-react';
 
 import { cn } from '@/utils/cn';
 
-type CarouselProps = React.ComponentPropsWithRef<'div'>;
+type CarouselProps = {
+  children: React.ReactNode;
+};
 
-const Carousel = ({ className, children, ...props }: CarouselProps) => {
+const Carousel = ({ children }: CarouselProps) => {
   const [carouselRef, carousel] = useEmblaCarousel({
     loop: true,
   });
@@ -23,19 +25,25 @@ const Carousel = ({ className, children, ...props }: CarouselProps) => {
     });
   }, [carousel]);
 
+  return <CarouselContext value={{ currentPage, carouselRef }}>{children}</CarouselContext>;
+};
+
+type CarouselViewportProps = React.ComponentPropsWithRef<'div'>;
+
+const CarouselRegion = ({ className, children, ...props }: CarouselViewportProps) => {
+  const { carouselRef } = useCarouselContext();
+
   return (
-    <CarouselContext value={{ currentPage }}>
-      <div
-        className={cn('relative', className)}
-        role='region'
-        aria-roledescription='carousel'
-        {...props}
-      >
-        <div ref={carouselRef} className={cn('overflow-hidden')}>
-          {children}
-        </div>
+    <div
+      className={cn('relative', className)}
+      role='region'
+      aria-roledescription='carousel'
+      {...props}
+    >
+      <div ref={carouselRef} className={cn('overflow-hidden')}>
+        {children}
       </div>
-    </CarouselContext>
+    </div>
   );
 };
 
@@ -78,10 +86,12 @@ const CarouselPagination = ({ children }: CarouselPaginationProps) => {
 
 type CarouselContextValue = {
   currentPage: number | null;
+  carouselRef: EmblaViewportRefType;
 };
 
 const [CarouselContext, useCarouselContext] = createContext<CarouselContextValue>('Carousel');
 
+Carousel.Region = CarouselRegion;
 Carousel.List = CarouselList;
 Carousel.Item = CarouselItem;
 Carousel.Pagination = CarouselPagination;

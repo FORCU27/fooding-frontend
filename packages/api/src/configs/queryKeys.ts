@@ -29,6 +29,7 @@ export const queryKeys = {
       list: 'userStoreList',
       detail: 'userStoreDetail',
       menuList: 'userStoreMenuList',
+      review: 'userStoreReview',
       reviewList: 'userStoreReviewList',
       operatingHours: 'userStoreOperatingHours',
       additionalInfo: 'userStoreAdditionalInfo',
@@ -42,7 +43,7 @@ export const queryKeys = {
       infiniteList: 'userCouponInfiniteList',
     },
     bookmark: 'userBookmark',
-    reservation: { reservationList: 'userReservationList' },
+    reservation: { list: 'userReservationList', detail: 'userReservationDetail' },
   },
   me: {
     user: 'meUser',
