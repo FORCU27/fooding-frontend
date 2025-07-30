@@ -39,6 +39,9 @@ export const queryKeys = {
       list: 'userStorePostList',
       detail: 'userStorePostDetail',
     },
+    coupon: {
+      infiniteList: 'userCouponInfiniteList',
+    },
     bookmark: 'userBookmark',
     reservation: { list: 'userReservationList', detail: 'userReservationDetail' },
   },
