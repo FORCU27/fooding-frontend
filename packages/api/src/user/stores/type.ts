@@ -201,4 +201,5 @@ export type CreateStoreReviewBody = {
   taste: number;
   mood: number;
   service: number;
+  imageUrls: string[];
 };

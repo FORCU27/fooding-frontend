@@ -1,3 +1,4 @@
+import { couponHandlers } from './coupon';
 import { notificationHandlers } from './notification';
 import { storeHandlers } from './store';
 import { storePostHandlers } from './store-post';
@@ -7,6 +8,7 @@ export const mockHandlerGroups: MockHandlerGroup[] = [
   notificationHandlers,
   storeHandlers,
   storePostHandlers,
+  couponHandlers,
 ];
 
 export const handlers = mockHandlerGroups.flatMap((handler) =>

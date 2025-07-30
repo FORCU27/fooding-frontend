@@ -2,7 +2,8 @@
 
 import { Dialog as DialogPrimitives } from 'radix-ui';
 
-import { cn } from '../../utils';
+import { CheckIcon } from '../../icons';
+import { cn, createContext } from '../../utils';
 
 type BottomSheetProps = Omit<DialogPrimitives.DialogProps, 'open'> & {
   isOpen?: boolean;
@@ -101,6 +102,68 @@ const BottomSheetTrigger = ({ children, ...props }: BottomSheetTriggerProps) => 
   );
 };
 
+type BottomSheetSelectContextValue = {
+  value: string;
+  onChange: (value: string) => void;
+};
+
+const [BottomSheetSelectContext, useBottomSheetSelectContext] =
+  createContext<BottomSheetSelectContextValue>('BottomSheetSelect');
+
+type BottomSheetSelectGroupProps = Omit<React.ComponentPropsWithRef<'ul'>, 'value' | 'onChange'> & {
+  value: string;
+  onChange: (value: string) => void;
+};
+
+const BottomSheetSelectGroup = ({
+  className,
+  children,
+  value,
+  onChange,
+  ...props
+}: BottomSheetSelectGroupProps) => {
+  return (
+    <BottomSheetSelectContext value={{ value, onChange }}>
+      <ul className={cn('flex flex-col', className)} {...props}>
+        {children}
+      </ul>
+    </BottomSheetSelectContext>
+  );
+};
+
+type BottomSheetSelectItemProps = React.ComponentPropsWithRef<typeof DialogPrimitives.Close> & {
+  value: string;
+};
+
+const BottomSheetSelectItem = ({
+  className,
+  children,
+  value,
+  ...props
+}: BottomSheetSelectItemProps) => {
+  const { value: selectedValue, onChange } = useBottomSheetSelectContext();
+
+  const isSelected = selectedValue === value;
+
+  return (
+    <li className='flex'>
+      <DialogPrimitives.Close
+        className={cn(
+          'text-gray-5 h-[60px] -mx-5 flex flex-1 items-center justify-between text-start text-base',
+          'active:bg-gray-1 px-5',
+          isSelected && 'text-black font-semibold',
+          className,
+        )}
+        onClick={() => onChange(value)}
+        {...props}
+      >
+        {children}
+        {isSelected && <CheckIcon className='text-primary-pink size-6' />}
+      </DialogPrimitives.Close>
+    </li>
+  );
+};
+
 BottomSheet.Trigger = BottomSheetTrigger;
 BottomSheet.Close = DialogPrimitives.Close;
 BottomSheet.Title = DialogPrimitives.Title;
@@ -109,5 +172,7 @@ BottomSheet.Content = BottomSheetContent;
 BottomSheet.Header = BottomSheetHeader;
 BottomSheet.Body = BottomSheetBody;
 BottomSheet.Footer = BottomSheetFooter;
+BottomSheet.SelectGroup = BottomSheetSelectGroup;
+BottomSheet.SelectItem = BottomSheetSelectItem;
 
 export { BottomSheet };
