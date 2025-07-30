@@ -24,6 +24,8 @@ const CeoTimePicker = forwardRef<HTMLButtonElement, CeoTimePickerProps>(
 
     const hourRef = useRef<HTMLDivElement>(null);
     const minuteRef = useRef<HTMLDivElement>(null);
+    const hourButtonRefs = useRef<Map<string, HTMLButtonElement>>(new Map());
+    const minuteButtonRefs = useRef<Map<string, HTMLButtonElement>>(new Map());
 
     const [hour, minute] = internalValue.split(':');
 
@@ -34,16 +36,12 @@ const CeoTimePicker = forwardRef<HTMLButtonElement, CeoTimePickerProps>(
     }, [controlledValue]);
 
     useEffect(() => {
-      if (isOpen) {
-        const selectedHour = hourRef.current?.querySelector<HTMLButtonElement>(
-          `[data-hour="${hour}"]`,
-        );
-        selectedHour?.scrollIntoView({ block: 'center' });
+      if (isOpen && hour && minute) {
+        const selectedHourButton = hourButtonRefs.current.get(hour);
+        selectedHourButton?.scrollIntoView({ block: 'center' });
 
-        const selectedMinute = minuteRef.current?.querySelector<HTMLButtonElement>(
-          `[data-minute="${minute}"]`,
-        );
-        selectedMinute?.scrollIntoView({ block: 'center' });
+        const selectedMinuteButton = minuteButtonRefs.current.get(minute);
+        selectedMinuteButton?.scrollIntoView({ block: 'center' });
       }
     }, [isOpen, hour, minute]);
 
@@ -79,7 +77,9 @@ const CeoTimePicker = forwardRef<HTMLButtonElement, CeoTimePickerProps>(
               {hours.map((h) => (
                 <button
                   key={h}
-                  data-hour={h}
+                  ref={(el) => {
+                    if (el) hourButtonRefs.current.set(h, el);
+                  }}
                   onClick={() => handleTimeChange('hour', h)}
                   className={cn(
                     'w-full rounded-md p-2 text-center text-sm hover:bg-gray-100',
@@ -94,7 +94,9 @@ const CeoTimePicker = forwardRef<HTMLButtonElement, CeoTimePickerProps>(
               {minutes.map((m) => (
                 <button
                   key={m}
-                  data-minute={m}
+                  ref={(el) => {
+                    if (el) minuteButtonRefs.current.set(m, el);
+                  }}
                   onClick={() => handleTimeChange('minute', m)}
                   className={cn(
                     'w-full rounded-md p-2 text-center text-sm hover:bg-gray-100',
