@@ -1,13 +1,12 @@
 import type { ReactNode } from 'react';
 
-type CeoNameInputProps = {
+type CeoCardSubtitleProps = {
   label: string;
-  placeholder?: string;
   required?: boolean;
   children: ReactNode;
 };
 
-const CeoCardSubtitle = ({ label, required = false, children }: CeoNameInputProps) => {
+const CeoCardSubtitle = ({ label, required = false, children }: CeoCardSubtitleProps) => {
   return (
     <div className='grid w-full gap-[20px]'>
       <label htmlFor='name' className='subtitle-2'>
