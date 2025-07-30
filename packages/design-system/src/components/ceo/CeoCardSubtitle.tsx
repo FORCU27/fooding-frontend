@@ -7,7 +7,7 @@ type CeoNameInputProps = {
   children: ReactNode;
 };
 
-const CeoCarnSubtitle = ({ label, required = false, children }: CeoNameInputProps) => {
+const CeoCardSubtitle = ({ label, required = false, children }: CeoNameInputProps) => {
   return (
     <div className='grid w-full gap-[20px]'>
       <label htmlFor='name' className='subtitle-2'>
@@ -19,4 +19,4 @@ const CeoCarnSubtitle = ({ label, required = false, children }: CeoNameInputProp
   );
 };
 
-export { CeoCarnSubtitle };
+export { CeoCardSubtitle };

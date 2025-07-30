@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { CardForm } from './CardForm';
 import { CeoCard } from './CeoCard';
-import { CeoCarnSubtitle } from './CeoCarnSubtitle';
+import { CeoCardSubtitle } from './CeoCardSubtitle';
 import { CeoInput } from './CeoInput';
 import { CeoTextArea } from './CeoTextArea';
 import { CeoSelectBox } from './CeoSelectBox';
@@ -30,12 +30,12 @@ export const Default: Story = {
     <CardForm {...args} className='w-[800px]'>
       <div className='headline-2'>기본 정보</div>
       <CeoCard>
-        <CeoCarnSubtitle label='업체명' required>
+        <CeoCardSubtitle label='업체명' required>
           <CeoInput id='name' />
-        </CeoCarnSubtitle>
+        </CeoCardSubtitle>
       </CeoCard>
       <CeoCard>
-        <CeoCarnSubtitle label='업종' required>
+        <CeoCardSubtitle label='업종' required>
           <CeoSelectBox
             options={[
               { value: '1', label: '족발 보쌈@@@@@@@@@@@@@@' },
@@ -50,29 +50,29 @@ export const Default: Story = {
             ]}
             label='업종 선택'
           />
-        </CeoCarnSubtitle>
+        </CeoCardSubtitle>
       </CeoCard>
       <CeoCard>
-        <CeoCarnSubtitle label='매장소개' required>
+        <CeoCardSubtitle label='매장소개' required>
           <CeoTextArea id='name' maxLength={1000} />
-        </CeoCarnSubtitle>
+        </CeoCardSubtitle>
       </CeoCard>
       <CeoCard>
-        <CeoCarnSubtitle label='매장번호' required>
+        <CeoCardSubtitle label='매장번호' required>
           <CeoInput id='name' />
-        </CeoCarnSubtitle>
+        </CeoCardSubtitle>
       </CeoCard>
       <CeoCard>
-        <CeoCarnSubtitle label='주소' required>
+        <CeoCardSubtitle label='주소' required>
           <div>지도</div>
           <CeoInput id='name' inputType='search' />
           <CeoInput id='name' />
-        </CeoCarnSubtitle>
+        </CeoCardSubtitle>
       </CeoCard>
       <CeoCard>
-        <CeoCarnSubtitle label='찾아오시는길' required>
+        <CeoCardSubtitle label='찾아오시는길' required>
           <CeoTextArea id='name' maxLength={1000} />
-        </CeoCarnSubtitle>
+        </CeoCardSubtitle>
       </CeoCard>
       <div className='flex justify-center'>
         <CeoButton>저장</CeoButton>

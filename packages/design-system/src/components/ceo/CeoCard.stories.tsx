@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { CardForm } from './CardForm';
 import { CeoCard } from './CeoCard';
-import { CeoCarnSubtitle } from './CeoCarnSubtitle';
+import { CeoCardSubtitle } from './CeoCardSubtitle';
 import { CeoInput } from './CeoInput';
 import { CeoTextArea } from './CeoTextArea';
 import { CeoCheckBox } from './CeoCheckBox';
@@ -30,32 +30,32 @@ export const Default: Story = {
     <CardForm {...args} className='w-[800px] space-y-5'>
       <div className='headline-2'>기본 정보</div>
       <CeoCard>
-        <CeoCarnSubtitle label='업체명' required>
+        <CeoCardSubtitle label='업체명' required>
           <CeoInput id='name' />
-        </CeoCarnSubtitle>
+        </CeoCardSubtitle>
       </CeoCard>
       <CeoCard>
-        <CeoCarnSubtitle label='매장소개' required>
+        <CeoCardSubtitle label='매장소개' required>
           <CeoTextArea id='name' maxLength={1000} />
-        </CeoCarnSubtitle>
+        </CeoCardSubtitle>
       </CeoCard>
       <CeoCard>
-        <CeoCarnSubtitle label='카테고리 선택'>
+        <CeoCardSubtitle label='카테고리 선택'>
           <CeoSelectBox
             options={[
               { value: '1', label: '한식' },
               { value: '2', label: '중식' },
             ]}
           />
-        </CeoCarnSubtitle>
+        </CeoCardSubtitle>
       </CeoCard>
       <CeoCard>
-        <CeoCarnSubtitle label='옵션 선택'>
+        <CeoCardSubtitle label='옵션 선택'>
           <div className='flex gap-4'>
             <CeoCheckBox labelText='옵션 A' />
             <CeoCheckBox labelText='옵션 B' />
           </div>
-        </CeoCarnSubtitle>
+        </CeoCardSubtitle>
       </CeoCard>
     </CardForm>
   ),

@@ -9,7 +9,7 @@ import {
   CeoInput,
   CeoSelectBox,
   CeoTextArea,
-  CeoCarnSubtitle,
+  CeoCardSubtitle,
   CeoToggleGroup,
   CeoToggleGroupItem,
   CeoUrlLinkList,
@@ -70,12 +70,12 @@ const BasicInfoPage = () => {
     <CardForm className=''>
       <div className='headline-2'>기본 정보</div>
       <CeoCard>
-        <CeoCarnSubtitle label='업체명' required>
+        <CeoCardSubtitle label='업체명' required>
           <CeoInput id='name' />
-        </CeoCarnSubtitle>
+        </CeoCardSubtitle>
       </CeoCard>
       <CeoCard>
-        <CeoCarnSubtitle label='업종' required>
+        <CeoCardSubtitle label='업종' required>
           <CeoSelectBox
             options={[
               { value: '1', label: '족발 보쌈' },
@@ -84,15 +84,15 @@ const BasicInfoPage = () => {
             ]}
             placeholder='업종을 선택해주세요'
           />
-        </CeoCarnSubtitle>
+        </CeoCardSubtitle>
       </CeoCard>
       <CeoCard>
-        <CeoCarnSubtitle label='매장소개' required>
+        <CeoCardSubtitle label='매장소개' required>
           <CeoTextArea id='name' maxLength={1000} />
-        </CeoCarnSubtitle>
+        </CeoCardSubtitle>
       </CeoCard>
       <CeoCard>
-        <CeoCarnSubtitle label='주차 정보' required>
+        <CeoCardSubtitle label='주차 정보' required>
           <CeoToggleGroup
             type='single'
             defaultValue={parkingInfo}
@@ -113,15 +113,15 @@ const BasicInfoPage = () => {
               <CeoInput placeholder='주차 관련 안내사항을 입력하세요.' />
             </div>
           )}
-        </CeoCarnSubtitle>
+        </CeoCardSubtitle>
       </CeoCard>
       <CeoCard>
-        <CeoCarnSubtitle label='홈페이지 주소'>
+        <CeoCardSubtitle label='홈페이지 주소'>
           <CeoUrlLinkList />
-        </CeoCarnSubtitle>
+        </CeoCardSubtitle>
       </CeoCard>
       <CeoCard>
-        <CeoCarnSubtitle label='편의시설'>
+        <CeoCardSubtitle label='편의시설'>
           <CeoToggleGroup
             type='multiple'
             variant='chip'
@@ -140,21 +140,21 @@ const BasicInfoPage = () => {
             <CeoToggleGroupItem value='waiting'>대기공간</CeoToggleGroupItem>
             <CeoToggleGroupItem value='no-kids'>노키즈존</CeoToggleGroupItem>
           </CeoToggleGroup>
-        </CeoCarnSubtitle>
+        </CeoCardSubtitle>
       </CeoCard>
       <CeoCard>
-        <CeoCarnSubtitle label='영업시간을 알려주세요'>
+        <CeoCardSubtitle label='영업시간을 알려주세요'>
           <CeoBusinessHours />
-        </CeoCarnSubtitle>
+        </CeoCardSubtitle>
       </CeoCard>
       <CeoCard>
-        <CeoCarnSubtitle label='매장번호' required>
+        <CeoCardSubtitle label='매장번호' required>
           <CeoInput id='name' />
-        </CeoCarnSubtitle>
+        </CeoCardSubtitle>
       </CeoCard>
 
       <CeoCard>
-        <CeoCarnSubtitle label='주소' required>
+        <CeoCardSubtitle label='주소' required>
           <div className='w-full h-[180px] relative'>
             <KakaoMap
               mapContainerRef={mapContainerRef}
@@ -226,12 +226,12 @@ const BasicInfoPage = () => {
           </CeoDialog>
 
           <CeoInput id='name' />
-        </CeoCarnSubtitle>
+        </CeoCardSubtitle>
       </CeoCard>
       <CeoCard>
-        <CeoCarnSubtitle label='찾아오시는길' required>
+        <CeoCardSubtitle label='찾아오시는길' required>
           <CeoTextArea id='name' maxLength={1000} />
-        </CeoCarnSubtitle>
+        </CeoCardSubtitle>
       </CeoCard>
       <div className='flex justify-center mb-17'>
         <CeoButton>저장</CeoButton>

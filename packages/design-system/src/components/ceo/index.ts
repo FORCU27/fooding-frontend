@@ -4,7 +4,7 @@ export * from './CeoInput';
 export * from './CeoTextArea';
 export * from './CeoCheckBox';
 export * from './CeoSelectBox';
-export * from './CeoCarnSubtitle';
+export * from './CeoCardSubtitle';
 export * from './CeoButton';
 export * from './CeoToggleGroup';
 export * from './CeoUrlLinkList';
