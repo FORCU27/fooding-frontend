@@ -1,19 +1,19 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import * as Dialog from '@radix-ui/react-dialog';
+import * as RadixDialog from '@radix-ui/react-dialog';
 import {
-  CeoDialog,
-  CeoDialogTrigger,
-  CeoDialogContent,
-  CeoDialogHeader,
-  CeoDialogTitle,
-  CeoDialogDescription,
-  CeoDialogFooter,
-} from './CeoDialog';
-import { CeoButton } from './CeoButton';
+  Dialog,
+  DialogTrigger,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+} from './Dialog';
+import { Button } from './Button';
 
 const meta: any = {
   title: 'Components/ceo/CeoDialog',
-  component: CeoDialog,
+  component: Dialog,
   parameters: {
     layout: 'centered',
   },
@@ -30,71 +30,69 @@ type Story = StoryObj<typeof meta>;
 export const Default: Story = {
   args: {},
   render: (args) => (
-    <CeoDialog {...args}>
-      <CeoDialogTrigger asChild>
-        <CeoButton>다이얼로그 열기</CeoButton>
-      </CeoDialogTrigger>
-      <CeoDialogContent>
-        <CeoDialogHeader>
-          <CeoDialogTitle>다이얼로그 제목</CeoDialogTitle>
-          <CeoDialogDescription>
+    <Dialog {...args}>
+      <DialogTrigger asChild>
+        <Button>다이얼로그 열기</Button>
+      </DialogTrigger>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>다이얼로그 제목</DialogTitle>
+          <DialogDescription>
             이것은 다이얼로그의 설명입니다. 사용자에게 추가 정보를 제공합니다.
-          </CeoDialogDescription>
-        </CeoDialogHeader>
+          </DialogDescription>
+        </DialogHeader>
         <div className='py-4'>
           <p>다이얼로그 내용이 여기에 들어갑니다.</p>
         </div>
-        <CeoDialogFooter>
-          <Dialog.Close asChild>
-            <CeoButton variant='outline'>취소</CeoButton>
-          </Dialog.Close>
-          <CeoButton>확인</CeoButton>
-        </CeoDialogFooter>
-      </CeoDialogContent>
-    </CeoDialog>
+        <DialogFooter>
+          <RadixDialog.Close asChild>
+            <Button variant='outline'>취소</Button>
+          </RadixDialog.Close>
+          <Button>확인</Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   ),
 };
 
 export const WithoutCloseButton: Story = {
   args: {},
   render: (args) => (
-    <CeoDialog {...args}>
-      <CeoDialogTrigger asChild>
-        <CeoButton>닫기 버튼 없는 다이얼로그</CeoButton>
-      </CeoDialogTrigger>
-      <CeoDialogContent showCloseButton={false}>
-        <CeoDialogHeader>
-          <CeoDialogTitle>닫기 버튼이 없는 다이얼로그</CeoDialogTitle>
-          <CeoDialogDescription>
-            이 다이얼로그는 우측 상단에 X 버튼이 없습니다.
-          </CeoDialogDescription>
-        </CeoDialogHeader>
+    <Dialog {...args}>
+      <DialogTrigger asChild>
+        <Button>닫기 버튼 없는 다이얼로그</Button>
+      </DialogTrigger>
+      <DialogContent showCloseButton={false}>
+        <DialogHeader>
+          <DialogTitle>닫기 버튼이 없는 다이얼로그</DialogTitle>
+          <DialogDescription>이 다이얼로그는 우측 상단에 X 버튼이 없습니다.</DialogDescription>
+        </DialogHeader>
         <div className='py-4'>
           <p>ESC 키나 배경 클릭으로만 닫을 수 있습니다.</p>
         </div>
-        <CeoDialogFooter>
-          <Dialog.Close asChild>
-            <CeoButton variant='outline'>취소</CeoButton>
-          </Dialog.Close>
-          <CeoButton>확인</CeoButton>
-        </CeoDialogFooter>
-      </CeoDialogContent>
-    </CeoDialog>
+        <DialogFooter>
+          <RadixDialog.Close asChild>
+            <Button variant='outline'>취소</Button>
+          </RadixDialog.Close>
+          <Button>확인</Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   ),
 };
 
 export const LargeContent: Story = {
   args: {},
   render: (args) => (
-    <CeoDialog {...args}>
-      <CeoDialogTrigger asChild>
-        <CeoButton>긴 내용 다이얼로그</CeoButton>
-      </CeoDialogTrigger>
-      <CeoDialogContent className='max-w-2xl'>
-        <CeoDialogHeader>
-          <CeoDialogTitle>스크롤이 가능한 긴 내용 다이얼로그</CeoDialogTitle>
-          <CeoDialogDescription>내용이 길어지면 스크롤로 확인할 수 있습니다.</CeoDialogDescription>
-        </CeoDialogHeader>
+    <Dialog {...args}>
+      <DialogTrigger asChild>
+        <Button>긴 내용 다이얼로그</Button>
+      </DialogTrigger>
+      <DialogContent className='max-w-2xl'>
+        <DialogHeader>
+          <DialogTitle>스크롤이 가능한 긴 내용 다이얼로그</DialogTitle>
+          <DialogDescription>내용이 길어지면 스크롤로 확인할 수 있습니다.</DialogDescription>
+        </DialogHeader>
         <div className='py-4 space-y-6'>
           <section>
             <h3 className='text-lg font-semibold mb-3'>첫 번째 섹션</h3>
@@ -118,9 +116,10 @@ export const LargeContent: Story = {
               <div className='bg-white p-4 rounded border'>
                 <h4 className='font-medium mb-2'>항목 1</h4>
                 <p className='text-sm text-gray-600'>
-                  Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia
-                  consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro
-                  quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit.
+                  Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed
+                  quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque
+                  porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci
+                  velit.
                 </p>
               </div>
               <div className='bg-white p-4 rounded border'>
@@ -153,9 +152,9 @@ export const LargeContent: Story = {
                   <div>
                     <h4 className='font-medium mb-1'>목록 항목 {i + 1}</h4>
                     <p className='text-sm text-gray-600'>
-                      이것은 {i + 1}번째 항목입니다. 각 항목은 충분히 긴 설명을 포함하고 있어서
-                      전체 다이얼로그의 높이를 늘리는 역할을 합니다. 스크롤 기능을 테스트하기 위한
-                      더미 텍스트입니다.
+                      이것은 {i + 1}번째 항목입니다. 각 항목은 충분히 긴 설명을 포함하고 있어서 전체
+                      다이얼로그의 높이를 늘리는 역할을 합니다. 스크롤 기능을 테스트하기 위한 더미
+                      텍스트입니다.
                     </p>
                   </div>
                 </li>
@@ -194,38 +193,38 @@ export const LargeContent: Story = {
             </div>
           </section>
         </div>
-        <CeoDialogFooter>
-          <Dialog.Close asChild>
-            <CeoButton variant='outline'>취소</CeoButton>
-          </Dialog.Close>
-          <CeoButton>저장</CeoButton>
-        </CeoDialogFooter>
-      </CeoDialogContent>
-    </CeoDialog>
+        <DialogFooter>
+          <RadixDialog.Close asChild>
+            <Button variant='outline'>취소</Button>
+          </RadixDialog.Close>
+          <Button>저장</Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   ),
 };
 
 export const ConfirmationDialog: Story = {
   args: {},
   render: (args) => (
-    <CeoDialog {...args}>
-      <CeoDialogTrigger asChild>
-        <CeoButton variant='outline'>삭제</CeoButton>
-      </CeoDialogTrigger>
-      <CeoDialogContent>
-        <CeoDialogHeader>
-          <CeoDialogTitle>정말 삭제하시겠습니까?</CeoDialogTitle>
-          <CeoDialogDescription>
+    <Dialog {...args}>
+      <DialogTrigger asChild>
+        <Button variant='outline'>삭제</Button>
+      </DialogTrigger>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>정말 삭제하시겠습니까?</DialogTitle>
+          <DialogDescription>
             이 작업은 되돌릴 수 없습니다. 선택한 항목이 영구적으로 삭제됩니다.
-          </CeoDialogDescription>
-        </CeoDialogHeader>
-        <CeoDialogFooter>
-          <Dialog.Close asChild>
-            <CeoButton variant='outline'>취소</CeoButton>
-          </Dialog.Close>
-          <CeoButton variant='secondary'>삭제</CeoButton>
-        </CeoDialogFooter>
-      </CeoDialogContent>
-    </CeoDialog>
+          </DialogDescription>
+        </DialogHeader>
+        <DialogFooter>
+          <RadixDialog.Close asChild>
+            <Button variant='outline'>취소</Button>
+          </RadixDialog.Close>
+          <Button variant='secondary'>삭제</Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   ),
 };

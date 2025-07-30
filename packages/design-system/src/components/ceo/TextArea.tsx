@@ -4,9 +4,9 @@ import { type ComponentPropsWithRef, ChangeEvent } from 'react';
 
 import { cn } from '../../utils/cn';
 
-type CeoTextAreaProps = ComponentPropsWithRef<'textarea'>;
+type TextAreaProps = ComponentPropsWithRef<'textarea'>;
 
-const CeoTextArea = ({ className, maxLength, value, onChange, ...props }: CeoTextAreaProps) => {
+const TextArea = ({ className, maxLength, value, onChange, ...props }: TextAreaProps) => {
   const currentValue = value ?? props.defaultValue ?? '';
   const currentLength = currentValue.toString().length;
 
@@ -43,4 +43,4 @@ const CeoTextArea = ({ className, maxLength, value, onChange, ...props }: CeoTex
   );
 };
 
-export { CeoTextArea };
+export { TextArea };

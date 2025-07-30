@@ -1,9 +1,9 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import { CeoButton } from './CeoButton';
+import { Button } from './Button';
 
 const meta = {
-  title: 'Components/ceo/CeoButton',
-  component: CeoButton,
+  title: 'Components/ceo/Button',
+  component: Button,
   parameters: {
     layout: 'centered',
   },
@@ -18,7 +18,7 @@ const meta = {
       options: ['default', 'sm', 'lg', 'icon'],
     },
   },
-} satisfies Meta<typeof CeoButton>;
+} satisfies Meta<typeof Button>;
 
 export default meta;
 

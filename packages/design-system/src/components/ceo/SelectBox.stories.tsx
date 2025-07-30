@@ -1,9 +1,9 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import { CeoSelectBox } from './CeoSelectBox';
+import { SelectBox } from './SelectBox';
 
 const meta: any = {
-  title: 'Components/ceo/CeoSelectBox',
-  component: CeoSelectBox,
+  title: 'Components/ceo/SelectBox',
+  component: SelectBox,
   parameters: {
     layout: 'centered',
   },
@@ -18,7 +18,7 @@ const meta: any = {
 
 export default meta;
 
-type Story = StoryObj<typeof CeoSelectBox>;
+type Story = StoryObj<typeof SelectBox>;
 
 const sampleOptions = [
   { value: '1', label: '한식' },

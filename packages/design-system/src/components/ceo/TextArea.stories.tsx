@@ -1,9 +1,9 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import { CeoTextArea } from './CeoTextArea';
+import { TextArea } from './TextArea';
 
 const meta = {
-  title: 'Components/ceo/CeoTextArea',
-  component: CeoTextArea,
+  title: 'Components/ceo/TextArea',
+  component: TextArea,
   parameters: {
     layout: 'centered',
   },
@@ -11,7 +11,7 @@ const meta = {
   argTypes: {
     maxLength: { control: 'number' },
   },
-} satisfies Meta<typeof CeoTextArea>;
+} satisfies Meta<typeof TextArea>;
 
 export default meta;
 

@@ -1,12 +1,12 @@
 import type { ReactNode } from 'react';
 
-type CeoCardSubtitleProps = {
+type CardSubtitleProps = {
   label: string;
   required?: boolean;
   children: ReactNode;
 };
 
-const CeoCardSubtitle = ({ label, required = false, children }: CeoCardSubtitleProps) => {
+const CardSubtitle = ({ label, required = false, children }: CardSubtitleProps) => {
   return (
     <div className='grid w-full gap-[20px]'>
       <label htmlFor='name' className='subtitle-2'>
@@ -18,4 +18,4 @@ const CeoCardSubtitle = ({ label, required = false, children }: CeoCardSubtitleP
   );
 };
 
-export { CeoCardSubtitle };
+export { CardSubtitle };

@@ -1,14 +1,14 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import { CeoUrlLinkList } from './CeoUrlLinkList';
+import { UrlLinkList } from './UrlLinkList';
 
 const meta = {
-  title: 'Components/ceo/CeoUrlLinkList',
-  component: CeoUrlLinkList,
+  title: 'Components/ceo/UrlLinkList',
+  component: UrlLinkList,
   parameters: {
     layout: 'centered',
   },
   tags: ['autodocs'],
-} satisfies Meta<typeof CeoUrlLinkList>;
+} satisfies Meta<typeof UrlLinkList>;
 
 export default meta;
 

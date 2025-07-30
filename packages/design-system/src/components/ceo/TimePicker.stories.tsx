@@ -1,15 +1,15 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { useState } from 'react';
-import { CeoTimePicker } from './CeoTimePicker';
+import { TimePicker } from './TimePicker';
 
 const meta = {
-  title: 'Components/ceo/CeoTimePicker',
-  component: CeoTimePicker,
+  title: 'Components/ceo/TimePicker',
+  component: TimePicker,
   parameters: {
     layout: 'centered',
   },
   tags: ['autodocs'],
-} satisfies Meta<typeof CeoTimePicker>;
+} satisfies Meta<typeof TimePicker>;
 
 export default meta;
 
@@ -26,7 +26,7 @@ export const Controlled: Story = {
     const [time, setTime] = useState('09:00');
     return (
       <div className='space-y-4'>
-        <CeoTimePicker value={time} onChange={setTime} />
+        <TimePicker value={time} onChange={setTime} />
         <p className='text-sm'>선택된 시간: {time}</p>
       </div>
     );

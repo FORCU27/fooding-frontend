@@ -2,9 +2,9 @@
 
 import { useState } from 'react';
 
-import { CeoCheckBox } from './CeoCheckBox';
-import { CeoTimePicker } from './CeoTimePicker';
-import { CeoToggleGroup, CeoToggleGroupItem } from './CeoToggleGroup';
+import { CheckBox } from './CheckBox';
+import { TimePicker } from './TimePicker';
+import { ToggleGroup, ToggleGroupItem } from './ToggleGroup';
 
 type OperatingMode = 'everyday' | 'byday';
 type DayHours = { start: string; end: string; isClosed: boolean };
@@ -12,7 +12,7 @@ type HoursByDay = { [day: string]: DayHours };
 
 const daysOfWeek = ['월', '화', '수', '목', '금', '토', '일'];
 
-const CeoBusinessHours = () => {
+const BusinessHours = () => {
   const [mode, setMode] = useState<OperatingMode>('everyday');
   const [everydayHours, setEverydayHours] = useState({ start: '09:00', end: '22:00' });
   const [bydayHours, setBydayHours] = useState<HoursByDay>(() =>
@@ -37,26 +37,26 @@ const CeoBusinessHours = () => {
 
   return (
     <div className='w-full'>
-      <CeoToggleGroup
+      <ToggleGroup
         type='single'
         defaultValue={mode}
         onValueChange={(value: OperatingMode) => value && setMode(value)}
         variant='chip'
         className='w-auto'
       >
-        <CeoToggleGroupItem value='everyday'>매일 같아요</CeoToggleGroupItem>
-        <CeoToggleGroupItem value='byday'>요일마다 달라요</CeoToggleGroupItem>
-      </CeoToggleGroup>
+        <ToggleGroupItem value='everyday'>매일 같아요</ToggleGroupItem>
+        <ToggleGroupItem value='byday'>요일마다 달라요</ToggleGroupItem>
+      </ToggleGroup>
 
       <div className='mt-6'>
         {mode === 'everyday' && (
           <div className='flex items-center gap-4'>
-            <CeoTimePicker
+            <TimePicker
               value={everydayHours.start}
               onChange={(start) => setEverydayHours((prev) => ({ ...prev, start }))}
             />
             <span>~</span>
-            <CeoTimePicker
+            <TimePicker
               value={everydayHours.end}
               onChange={(end) => setEverydayHours((prev) => ({ ...prev, end }))}
             />
@@ -71,19 +71,19 @@ const CeoBusinessHours = () => {
               return (
                 <li key={day} className='flex items-center gap-6'>
                   <span className='w-8 font-medium'>{day}</span>
-                  <CeoCheckBox
+                  <CheckBox
                     labelText='휴무'
                     checked={dayInfo.isClosed}
                     onChange={() => handleDayOffToggle(day)}
                   />
                   <div className='flex flex-1 items-center gap-4'>
-                    <CeoTimePicker
+                    <TimePicker
                       value={dayInfo.start}
                       onChange={(newStart) => handleTimeChange(day, 'start', newStart)}
                       disabled={dayInfo.isClosed}
                     />
                     <span>~</span>
-                    <CeoTimePicker
+                    <TimePicker
                       value={dayInfo.end}
                       onChange={(newEnd) => handleTimeChange(day, 'end', newEnd)}
                       disabled={dayInfo.isClosed}
@@ -99,4 +99,4 @@ const CeoBusinessHours = () => {
   );
 };
 
-export { CeoBusinessHours };
+export { BusinessHours };

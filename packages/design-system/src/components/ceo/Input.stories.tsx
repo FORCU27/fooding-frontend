@@ -1,9 +1,9 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import { CeoInput } from './CeoInput';
+import { Input } from './Input';
 
 const meta = {
-  title: 'Components/ceo/CeoInput',
-  component: CeoInput,
+  title: 'Components/ceo/Input',
+  component: Input,
   parameters: {
     layout: 'centered',
   },
@@ -16,7 +16,7 @@ const meta = {
       },
     },
   },
-} satisfies Meta<typeof CeoInput>;
+} satisfies Meta<typeof Input>;
 
 export default meta;
 

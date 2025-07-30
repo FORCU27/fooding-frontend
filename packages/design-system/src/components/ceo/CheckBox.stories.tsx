@@ -1,10 +1,10 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { useState } from 'react';
-import { CeoCheckBox } from './CeoCheckBox';
+import { CheckBox } from './CheckBox';
 
 const meta = {
   title: 'Components/ceo/CeoCheckBox',
-  component: CeoCheckBox,
+  component: CheckBox,
   parameters: {
     layout: 'centered',
   },
@@ -12,7 +12,7 @@ const meta = {
   argTypes: {
     labelText: { control: 'text' },
   },
-} satisfies Meta<typeof CeoCheckBox>;
+} satisfies Meta<typeof CheckBox>;
 
 export default meta;
 
@@ -39,7 +39,7 @@ export const Controlled: Story = {
     const [checked, setChecked] = useState(false);
     return (
       <>
-        <CeoCheckBox
+        <CheckBox
           labelText='제어되는 체크박스'
           checked={checked}
           onChange={(e) => setChecked(e.target.checked)}

@@ -4,12 +4,12 @@ import { SearchIcon, LinkIcon } from 'lucide-react';
 
 import { cn } from '../../utils/cn';
 
-type CeoInputProps = ComponentPropsWithRef<'input'> & {
+type InputProps = ComponentPropsWithRef<'input'> & {
   inputType?: 'search' | 'url' | 'text';
   disabled?: boolean;
 };
 
-const CeoInput = ({ inputType = 'text', className, disabled = false, ...props }: CeoInputProps) => {
+const Input = ({ inputType = 'text', className, disabled = false, ...props }: InputProps) => {
   const renderIcon = () => {
     switch (inputType) {
       case 'search':
@@ -42,4 +42,4 @@ const CeoInput = ({ inputType = 'text', className, disabled = false, ...props }:
   );
 };
 
-export { CeoInput };
+export { Input };
