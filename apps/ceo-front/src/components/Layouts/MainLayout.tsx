@@ -32,10 +32,14 @@ const Layout = ({ children }: LayoutProps) => {
         isSidebarOpen={isOpen}
         onToggleSidebar={toggleSidebar}
       />
-      <div className='flex flex-row h-[calc(100dvh-64px)]'>
+      <div className='flex flex-row'>
         <SideLayout isOpen={isOpen} onClose={closeSidebar} />
-        <div className={`flex flex-col flex-1 bg-gray-7`}>
-          <main className={`flex h-full overflow-auto`}>{children}</main>
+        <div className={`flex flex-col flex-1 bg-gray-7 items-center`}>
+          <main className={`flex h-full overflow-auto mt-15 w-full`}>
+            <div className='w-full max-w-[727px] md:max-w-[959px] lg:max-w-[1080px]  mx-auto '>
+              <div className='min-w-[400px] md:min-w-[704px] mx-5 md:mx-8 lg:mx-10'>{children}</div>
+            </div>
+          </main>
           <FooterLayout />
         </div>
       </div>
