@@ -6,9 +6,10 @@ import { basicRendererPlugin } from '@stackflow/plugin-renderer-basic';
 import { stackflow } from '@stackflow/react/future';
 
 import { BookmarkListScreen } from '@/screens/bookmarks/Bookmarks';
+import { MyCouponListScreen } from '@/screens/my-coupons/MyCoupons';
 import { NotificationListScreen } from '@/screens/notifications/Notifications';
-import { ReviewCreateScreen } from '@/screens/reviews/reviewCreate';
 import { ReservationDetailScreen } from '@/screens/reservation-detail/ReservationDetail';
+import { ReviewCreateScreen } from '@/screens/reviews/reviewCreate';
 import { NotificationSettingScreen } from '@/screens/settings/Notifications';
 import { SettingScreen } from '@/screens/settings/Settings';
 import { StoreDetailScreen } from '@/screens/store-detail/StoreDetail';
@@ -28,6 +29,7 @@ declare module '@stackflow/config' {
     NotificationListScreen: object;
     StoreDetailScreen: { storeId: number };
     BookmarkListScreen: object;
+    MyCouponListScreen: object;
     StorePostDetailScreen: { storePostId: number; storeName: string };
     SettingScreen: object;
     NotificationSettingScreen: object;
@@ -45,6 +47,7 @@ const config = defineConfig({
     { name: 'MyPageTab' },
     { name: 'NotificationListScreen' },
     { name: 'BookmarkListScreen' },
+    { name: 'MyCouponListScreen' },
     { name: 'StorePostDetailScreen' },
     { name: 'StoreDetailScreen' },
     { name: 'SettingScreen' },
@@ -67,6 +70,7 @@ export const { Stack } = stackflow({
     MyPageTab,
     NotificationListScreen,
     BookmarkListScreen,
+    MyCouponListScreen,
     StorePostDetailScreen,
     StoreDetailScreen,
     SettingScreen,
