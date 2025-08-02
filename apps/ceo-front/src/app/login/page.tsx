@@ -4,7 +4,6 @@ import { useState } from 'react';
 
 import LoginForm from './components/LoginForm';
 import RegisterForm from './components/RegisterForm';
-import FooterLayout from '@/components/Layouts/FooterLayout';
 import { useAuth } from '@/components/Provider/AuthProvider';
 import { useLoginForm } from '@/hooks/useLoginForm';
 
@@ -60,7 +59,6 @@ export default function LoginPage() {
           </div>
         </div>
       </div>
-      <FooterLayout />
     </div>
   );
 }

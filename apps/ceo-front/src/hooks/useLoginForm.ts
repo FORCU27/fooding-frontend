@@ -30,6 +30,7 @@ export function useLoginForm(loginFn: (credentials: AuthLoginBody) => Promise<vo
       }
 
       router.replace('/');
+
     } catch (error: unknown) {
       const axiosError = error as AxiosError<AuthErrorResponse>;
       const status = axiosError.response?.status;
