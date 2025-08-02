@@ -11,3 +11,5 @@ export * from './UrlLinkList';
 export * from './BusinessHours';
 export * from './TimePicker';
 export * from './Dialog';
+export * from './Coupon';
+export * from './CoinProduct';
