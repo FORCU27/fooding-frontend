@@ -5,14 +5,14 @@ import { ChevronDownIcon, ChevronUpIcon } from 'lucide-react';
 
 import { cn } from '../../utils/cn';
 
-type CeoSelectBoxProps = Select.SelectProps & {
+type SelectBoxProps = Select.SelectProps & {
   options: { value: string; label: string }[];
   placeholder?: string;
   label?: string;
   className?: string;
 };
 
-const CeoSelectBox = ({ className, options, placeholder, label, ...props }: CeoSelectBoxProps) => {
+const SelectBox = ({ className, options, placeholder, label, ...props }: SelectBoxProps) => {
   return (
     <Select.Root {...props}>
       <Select.Trigger
@@ -59,4 +59,4 @@ const CeoSelectBox = ({ className, options, placeholder, label, ...props }: CeoS
   );
 };
 
-export { CeoSelectBox };
+export { SelectBox };

@@ -1,14 +1,14 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import { CeoTimePicker } from './CeoTimePicker';
+import { UrlLinkList } from './UrlLinkList';
 
 const meta = {
-  title: 'Components/ceo/CeoTimePicker',
-  component: CeoTimePicker,
+  title: 'Components/ceo/UrlLinkList',
+  component: UrlLinkList,
   parameters: {
     layout: 'centered',
   },
   tags: ['autodocs'],
-} satisfies Meta<typeof CeoTimePicker>;
+} satisfies Meta<typeof UrlLinkList>;
 
 export default meta;
 
@@ -16,6 +16,6 @@ type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
   args: {
-    value: '10:30',
+    initialUrls: ['https://www.naver.com/', 'https://www.google.com/'],
   },
 };

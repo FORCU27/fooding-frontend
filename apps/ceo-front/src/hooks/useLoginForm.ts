@@ -2,6 +2,9 @@ import { useRouter } from 'next/navigation';
 import { useState, useEffect } from 'react';
 
 import { AuthLoginBody } from '@repo/api/auth';
+import { AxiosError } from 'axios';
+
+import { AuthErrorResponse } from '../../../../packages/api/src/shared';
 
 export function useLoginForm(loginFn: (credentials: AuthLoginBody) => Promise<void>) {
   const [email, setEmail] = useState('');
@@ -27,17 +30,20 @@ export function useLoginForm(loginFn: (credentials: AuthLoginBody) => Promise<vo
       }
 
       router.replace('/');
-    } catch (err: any) {
-      // TODO any 타입 fix
-      const status = err?.response?.status;
-      const message = err?.response?.data?.message;
+
+    } catch (error: unknown) {
+      const axiosError = error as AxiosError<AuthErrorResponse>;
+      const status = axiosError.response?.status;
+      const data = axiosError.response?.data;
 
       if (status === 400) {
-        setErrorMessage('비밀번호가 일치하지 않습니다.\n입력한 내용을 다시 확인해주세요');
+        setErrorMessage('이메일 또는 비밀번호를 입력한 내용을 다시 확인해주세요');
       } else if (status === 401 || status === 404) {
-        setErrorMessage('존재하지 않는 계정입니다.\n이메일을 다시 확인해주세요');
+        setErrorMessage(
+          '이메일 혹은 비밀번호가 일치하지 않습니다\n입력한 내용을 다시 확인해주세요',
+        );
       } else {
-        setErrorMessage(message ?? '로그인에 실패했습니다.\n다시 시도해주세요');
+        setErrorMessage(data?.message ?? '로그인에 실패했습니다.\n다시 시도해주세요');
       }
     }
   };

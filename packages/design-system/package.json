@@ -13,6 +13,7 @@
   "exports": {
     "./components/ceo": "./src/components/ceo/index.ts",
     "./components/b2c": "./src/components/b2c/index.ts",
+    "./components/b2b": "./src/components/b2b/index.ts",
     "./components": "./src/components/index.ts",
     "./font": "./src/font/index.ts",
     "./icons": "./src/icons/index.ts",
@@ -22,6 +23,7 @@
     "./styles/b2b.css": "./src/styles/b2b.css"
   },
   "dependencies": {
+    "@radix-ui/react-dialog": "^1.1.14",
     "@radix-ui/react-popover": "^1.1.14",
     "@radix-ui/react-select": "^2.2.5",
     "@radix-ui/react-tabs": "^1.1.12",

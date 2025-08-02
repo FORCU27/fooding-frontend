@@ -1,15 +1,15 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { CardForm } from './CardForm';
-import { CeoCard } from './CeoCard';
-import { CeoCarnSubtitle } from './CeoCarnSubtitle';
-import { CeoInput } from './CeoInput';
-import { CeoTextArea } from './CeoTextArea';
-import { CeoSelectBox } from './CeoSelectBox';
-import { CeoButton } from './CeoButton';
+import { Card } from './Card';
+import { CardSubtitle } from './CardSubtitle';
+import { Input } from './Input';
+import { TextArea } from './TextArea';
+import { SelectBox } from './SelectBox';
+import { Button } from './Button';
 
 const meta = {
   title: 'Components/ceo/Page',
-  component: CeoCard,
+  component: Card,
   parameters: {
     layout: 'centered',
   },
@@ -19,7 +19,7 @@ const meta = {
       control: false,
     },
   },
-} satisfies Meta<typeof CeoCard>;
+} satisfies Meta<typeof Card>;
 
 export default meta;
 
@@ -29,14 +29,14 @@ export const Default: Story = {
   render: (args) => (
     <CardForm {...args} className='w-[800px]'>
       <div className='headline-2'>기본 정보</div>
-      <CeoCard>
-        <CeoCarnSubtitle label='업체명' required>
-          <CeoInput id='name' />
-        </CeoCarnSubtitle>
-      </CeoCard>
-      <CeoCard>
-        <CeoCarnSubtitle label='업종' required>
-          <CeoSelectBox
+      <Card>
+        <CardSubtitle label='업체명' required>
+          <Input id='name' />
+        </CardSubtitle>
+      </Card>
+      <Card>
+        <CardSubtitle label='업종' required>
+          <SelectBox
             options={[
               { value: '1', label: '족발 보쌈@@@@@@@@@@@@@@' },
               { value: '2', label: '고기' },
@@ -50,32 +50,32 @@ export const Default: Story = {
             ]}
             label='업종 선택'
           />
-        </CeoCarnSubtitle>
-      </CeoCard>
-      <CeoCard>
-        <CeoCarnSubtitle label='매장소개' required>
-          <CeoTextArea id='name' maxLength={1000} />
-        </CeoCarnSubtitle>
-      </CeoCard>
-      <CeoCard>
-        <CeoCarnSubtitle label='매장번호' required>
-          <CeoInput id='name' />
-        </CeoCarnSubtitle>
-      </CeoCard>
-      <CeoCard>
-        <CeoCarnSubtitle label='주소' required>
+        </CardSubtitle>
+      </Card>
+      <Card>
+        <CardSubtitle label='매장소개' required>
+          <TextArea id='name' maxLength={1000} />
+        </CardSubtitle>
+      </Card>
+      <Card>
+        <CardSubtitle label='매장번호' required>
+          <Input id='name' />
+        </CardSubtitle>
+      </Card>
+      <Card>
+        <CardSubtitle label='주소' required>
           <div>지도</div>
-          <CeoInput id='name' inputType='search' />
-          <CeoInput id='name' />
-        </CeoCarnSubtitle>
-      </CeoCard>
-      <CeoCard>
-        <CeoCarnSubtitle label='찾아오시는길' required>
-          <CeoTextArea id='name' maxLength={1000} />
-        </CeoCarnSubtitle>
-      </CeoCard>
+          <Input id='name' inputType='search' />
+          <Input id='name' />
+        </CardSubtitle>
+      </Card>
+      <Card>
+        <CardSubtitle label='찾아오시는길' required>
+          <TextArea id='name' maxLength={1000} />
+        </CardSubtitle>
+      </Card>
       <div className='flex justify-center'>
-        <CeoButton>저장</CeoButton>
+        <Button>저장</Button>
       </div>
     </CardForm>
   ),

@@ -1,14 +1,14 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import { CeoBusinessHours } from './CeoBusinessHours';
+import { BusinessHours } from './BusinessHours';
 
 const meta = {
-  title: 'Components/ceo/CeoBusinessHours',
-  component: CeoBusinessHours,
+  title: 'Components/ceo/BusinessHours',
+  component: BusinessHours,
   parameters: {
     layout: 'centered',
   },
   tags: ['autodocs'],
-} satisfies Meta<typeof CeoBusinessHours>;
+} satisfies Meta<typeof BusinessHours>;
 
 export default meta;
 

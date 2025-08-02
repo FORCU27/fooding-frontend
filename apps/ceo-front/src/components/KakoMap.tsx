@@ -7,7 +7,7 @@ import React from 'react';
 type KakaoMapProps = {
   mapContainerRef: React.RefObject<HTMLDivElement | null>; // mapContainer에서 mapContainerRef로 이름 변경 (ref임을 명확히)
   isMapInitialized: boolean; // isInitialized에서 isMapInitialized로 이름 변경 (명확성)
-  onMapClick?: (e: any) => void; // 지도 클릭 이벤트 핸들러
+  onMapClick?: (e: React.MouseEvent<HTMLDivElement>) => void; // 지도 클릭 이벤트 핸들러
   onScriptLoad: () => void; // 스크립트 로딩 완료 콜백 추가
 };
 

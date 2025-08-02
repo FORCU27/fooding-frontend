@@ -1,16 +1,18 @@
 'use client';
 
 import { useState } from 'react';
-import { CeoInput } from './CeoInput';
-import { LinkIcon, Trash2Icon } from 'lucide-react';
-import { CeoButton } from './CeoButton';
 
-type CeoUrlLinkListProps = {
+import { LinkIcon, Trash2Icon } from 'lucide-react';
+
+import { Button } from './Button';
+import { Input } from './Input';
+
+type UrlLinkListProps = {
   initialUrls?: string[];
   maxLinks?: number;
 };
 
-const CeoUrlLinkList = ({ initialUrls = [], maxLinks = 5 }: CeoUrlLinkListProps) => {
+const UrlLinkList = ({ initialUrls = [], maxLinks = 5 }: UrlLinkListProps) => {
   const [urls, setUrls] = useState<string[]>(initialUrls);
   const [inputValue, setInputValue] = useState('');
 
@@ -20,7 +22,7 @@ const CeoUrlLinkList = ({ initialUrls = [], maxLinks = 5 }: CeoUrlLinkListProps)
         new URL(inputValue); // Validate URL format
         setUrls([...urls, inputValue]);
         setInputValue('');
-      } catch (error) {
+      } catch {
         alert('올바른 URL 형식이 아닙니다.');
       }
     }
@@ -33,20 +35,20 @@ const CeoUrlLinkList = ({ initialUrls = [], maxLinks = 5 }: CeoUrlLinkListProps)
   return (
     <div className='w-full'>
       <div className='relative'>
-        <CeoInput
+        <Input
           value={inputValue}
           onChange={(e) => setInputValue(e.target.value)}
           onKeyDown={(e) => e.key === 'Enter' && (e.preventDefault(), handleAddUrl())}
           placeholder='https://example.com'
         />
-        <CeoButton
+        <Button
           size='icon'
           variant='ghost'
           className='absolute right-1 top-1/2 -translate-y-1/2'
           onClick={handleAddUrl}
         >
           <LinkIcon className='h-5 w-5 text-gray-500' />
-        </CeoButton>
+        </Button>
       </div>
 
       <div className='mt-2 flex justify-end'>
@@ -63,9 +65,9 @@ const CeoUrlLinkList = ({ initialUrls = [], maxLinks = 5 }: CeoUrlLinkListProps)
               <LinkIcon className='h-5 w-5 text-gray-700' />
               <span className='text-base text-gray-900'>{url}</span>
             </div>
-            <CeoButton size='icon' variant='ghost' onClick={() => handleRemoveUrl(index)}>
+            <Button size='icon' variant='ghost' onClick={() => handleRemoveUrl(index)}>
               <Trash2Icon className='h-5 w-5 text-gray-500' />
-            </CeoButton>
+            </Button>
           </li>
         ))}
       </ul>
@@ -73,4 +75,4 @@ const CeoUrlLinkList = ({ initialUrls = [], maxLinks = 5 }: CeoUrlLinkListProps)
   );
 };
 
-export { CeoUrlLinkList };
+export { UrlLinkList };

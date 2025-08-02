@@ -9,11 +9,10 @@ interface StarRatingProps {
 }
 
 export const StarRating = ({ score, starSize = 18, onChange }: StarRatingProps) => {
-  const [hoverValue, setHoverValue] = useState<number | null>(null);
   const [selectedValue, setSelectedValue] = useState<number | null>(score ?? null);
 
   const isEditable = score === undefined;
-  const displayScore = hoverValue ?? selectedValue ?? 0;
+  const displayScore = selectedValue ?? 0;
   const totalStars = 5;
 
   const handleClick = (value: number) => {
@@ -35,16 +34,13 @@ export const StarRating = ({ score, starSize = 18, onChange }: StarRatingProps) 
           <div
             key={index}
             className={`relative w-[${starSize}] h-[${starSize}] ${isEditable ? 'cursor-pointer' : 'cursor-default'}`}
-            onMouseLeave={() => isEditable && setHoverValue(null)}
           >
             <div
               className='absolute left-0 top-0 w-[50%] h-full z-10'
-              onMouseEnter={() => isEditable && setHoverValue(leftValue)}
               onClick={() => handleClick(leftValue)}
             />
             <div
               className='absolute right-0 top-0 w-[50%] h-full z-10'
-              onMouseEnter={() => isEditable && setHoverValue(fullValue)}
               onClick={() => handleClick(fullValue)}
             />
 

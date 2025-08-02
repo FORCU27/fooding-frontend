@@ -24,7 +24,6 @@ interface LoginFormProps {
   setEmail: (v: string) => void;
   setPassword: (v: string) => void;
   setIsRememberId: React.Dispatch<React.SetStateAction<boolean>>;
-  setErrorMessage: (v: string) => void;
   handleLogin: () => void;
 }
 
@@ -43,7 +42,6 @@ export default function LoginForm({
   setEmail,
   setPassword,
   setIsRememberId,
-  setErrorMessage,
   handleLogin,
 }: LoginFormProps) {
   const [showPassword, setShowPassword] = useState(false);
@@ -67,7 +65,7 @@ export default function LoginForm({
       <form>
         <div className='flex flex-col gap-[20px]'>
           <div className='flex flex-col gap-[8px]'>
-            <p className='subtitle-3'>아이디</p>
+            <label className='subtitle-3'>아이디</label>
             <Input
               required
               autoFocus
@@ -75,13 +73,12 @@ export default function LoginForm({
               value={email}
               onChange={(e) => {
                 setEmail(e.target.value);
-                setErrorMessage('');
               }}
-              className={`px-[20px] py-[18px] body-2 h-[58px] ${errorMessage ? 'border-red-500 text-red-500' : ''}`}
+              className={`text-start px-[20px] py-[18px] body-2 h-[58px] ${errorMessage ? 'border-red-500 text-red-500' : ''}`}
             />
           </div>
           <div className='flex flex-col gap-[8px]'>
-            <p className='subtitle-3'>비밀번호</p>
+            <label className='subtitle-3'>비밀번호</label>
             <div className='relative'>
               <Input
                 required
@@ -89,9 +86,8 @@ export default function LoginForm({
                 value={password}
                 onChange={(e) => {
                   setPassword(e.target.value);
-                  setErrorMessage('');
                 }}
-                className={`px-[20px] py-[18px] body-2 h-[58px] ${errorMessage ? 'border-red-500 text-red-500' : ''}`}
+                className={`text-start px-[20px] py-[18px] body-2 h-[58px] ${errorMessage ? 'border-red-500 text-red-500' : ''}`}
               />
               <button
                 type='button'
@@ -112,9 +108,9 @@ export default function LoginForm({
               checked={isRememberId}
               onChange={(checked) => setIsRememberId(Boolean(checked))}
             />
-            <p onClick={() => setIsRememberId((prev) => !prev)}>아이디 저장</p>
+            <label onClick={() => setIsRememberId((prev) => !prev)}>아이디 저장</label>
           </div>
-          <p className='body-6 text-gray-5'>아이디/비밀번호를 잊으셨나요?</p>
+          <label className='body-6 text-gray-5'>아이디/비밀번호를 잊으셨나요?</label>
         </div>
 
         {errorMessage.length > 0 && (
@@ -123,7 +119,11 @@ export default function LoginForm({
 
         <div className='h-[68px]' />
         <Button
-          onClick={handleLogin}
+          type='submit'
+          onClick={(e) => {
+            e.preventDefault();
+            handleLogin();
+          }}
           disabled={email.length === 0 || password.length === 0}
           className='py-[17px] rounded-full subtitle-1'
         >

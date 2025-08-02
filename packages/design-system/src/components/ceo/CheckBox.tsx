@@ -4,18 +4,18 @@ import { type ComponentPropsWithRef, useState, useId } from 'react';
 
 import { cn } from '../../utils/cn';
 
-type CeoCheckBoxProps = Omit<ComponentPropsWithRef<'input'>, 'type'> & {
+type CheckBoxProps = Omit<ComponentPropsWithRef<'input'>, 'type'> & {
   labelText: string;
 };
 
-const CeoCheckBox = ({
+const CheckBox = ({
   className,
   labelText,
   checked: controlledChecked,
   defaultChecked,
   onChange,
   ...props
-}: CeoCheckBoxProps) => {
+}: CheckBoxProps) => {
   const id = useId();
   const [uncontrolledChecked, setUncontrolledChecked] = useState(defaultChecked || false);
 
@@ -46,4 +46,4 @@ const CeoCheckBox = ({
   );
 };
 
-export { CeoCheckBox };
+export { CheckBox };

@@ -1,28 +1,61 @@
 import { useEffect, useRef, useState, useCallback } from 'react';
 
-// 카카오맵 SDK의 타입 정의 (이전과 동일)
+// 카카오맵 관련 타입 정의
+interface KakaoLatLng {
+  getLat(): number;
+  getLng(): number;
+}
+
+interface KakaoMouseEvent {
+  latLng: KakaoLatLng;
+}
+
+interface KakaoMapOptions {
+  center: KakaoLatLng;
+  level: number;
+}
+
+interface KakaoMap {
+  // 필요한 메서드들 추가 가능
+  setCenter: (center: KakaoLatLng) => void;
+}
+
+interface KakaoMarker {
+  // 필요한 메서드들 추가 가능
+  setPosition: (position: KakaoLatLng) => void;
+}
+
+// 카카오맵 SDK의 타입 정의
 declare global {
   interface Window {
     kakao: {
       maps: {
         load: (callback: () => void) => void;
-        LatLng: new (lat: number, lng: number) => any;
-        Map: new (container: HTMLElement, options: any) => any;
-        Marker: new (options: any) => any;
+        LatLng: new (lat: number, lng: number) => KakaoLatLng;
+        Map: new (container: HTMLElement, options: KakaoMapOptions) => KakaoMap;
+        Marker: new (options: { position: KakaoLatLng; map: KakaoMap }) => KakaoMarker;
         event: {
-          addListener: (target: any, type: string, handler: (e: any) => void) => void;
-          removeListener: (target: any, type: string, handler: (e: any) => void) => void;
+          addListener: (
+            target: KakaoMap,
+            type: string,
+            handler: (e: KakaoMouseEvent) => void,
+          ) => void;
+          removeListener: (
+            target: KakaoMap,
+            type: string,
+            handler: (e: KakaoMouseEvent) => void,
+          ) => void;
         };
       };
     };
   }
 }
 
-// 카카오맵 옵션 타입 정의 (이전과 동일)
-type KakaoMapOptions = {
+// 카카오맵 훅 옵션 타입 정의
+type UseKakaoMapOptions = {
   center?: { lat: number; lng: number };
   level?: number;
-  onMapClick?: (e: any) => void;
+  onMapClick?: (e: KakaoMouseEvent) => void;
 };
 
 /**
@@ -31,9 +64,9 @@ type KakaoMapOptions = {
  * @param options - 지도 설정 옵션 (중심점, 확대레벨, 클릭 이벤트 등)
  * @returns 지도 컨테이너 ref, 지도 인스턴스, 초기화 상태, 스크립트 로드 핸들러
  */
-export const useKakaoMap = (options: KakaoMapOptions = {}) => {
+export const useKakaoMap = (options: UseKakaoMapOptions = {}) => {
   const mapContainerRef = useRef<HTMLDivElement>(null); // Ref 이름 변경
-  const [map, setMap] = useState<any>(null);
+  const [map, setMap] = useState<KakaoMap | null>(null);
   const [isSdkLoaded, setIsSdkLoaded] = useState(false); // kakaoLoaded에서 isSdkLoaded로 이름 변경
   const [isMapInitialized, setIsMapInitialized] = useState(false); // isInitialized에서 isMapInitialized로 이름 변경
 
@@ -83,7 +116,7 @@ export const useKakaoMap = (options: KakaoMapOptions = {}) => {
   useEffect(() => {
     if (map && options.onMapClick) {
       console.log('Adding click event listener to Kakao Map.');
-      const clickHandler = (e: any) => {
+      const clickHandler = (e: KakaoMouseEvent) => {
         // console.log('Map clicked:', e); // 디버깅용
         options.onMapClick!(e); // 전달받은 onMapClick 콜백 호출
       };
