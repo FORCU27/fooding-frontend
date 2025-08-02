@@ -52,7 +52,11 @@ export default function LoginPage() {
               </button>
             </div>
             <div className='h-[45px]' />
-            {isSignUp ? <RegisterForm /> : <LoginForm {...loginForm} />}
+            {isSignUp ? (
+              <RegisterForm onSignupSuccess={() => setIsSignUp(false)} />
+            ) : (
+              <LoginForm {...loginForm} />
+            )}
           </div>
         </div>
       </div>

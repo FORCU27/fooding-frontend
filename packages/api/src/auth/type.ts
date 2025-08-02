@@ -49,7 +49,7 @@ export type AuthRegisterBody = {
   description?: string;
   phoneNumber: string;
   referralCode?: string;
-  marketingConsent?: string;
+  marketingConsent?: boolean;
 };
 
 export const AuthResponseSchema = z.object({
