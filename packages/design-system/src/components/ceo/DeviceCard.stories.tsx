@@ -3,7 +3,7 @@ import type { Meta, StoryObj } from '@storybook/react';
 import { DeviceCard } from './DeviceCard';
 
 const meta: Meta<typeof DeviceCard> = {
-  title: 'CEO/DeviceCard',
+  title: 'Components/ceo/DeviceCard',
   component: DeviceCard,
   parameters: {
     layout: 'centered',
@@ -59,24 +59,24 @@ export const ActiveDevice: Story = {
 
 export const MultipleDevices: Story = {
   render: () => (
-    <div className="space-y-4">
+    <div className='space-y-4'>
       <DeviceCard
-        deviceName="웨이팅 - 관리"
-        deviceId="Device-R21322232"
-        deviceModel="Galaxy Book5"
-        deviceType="android"
-        osVersion="1.2.1"
-        lastAccessDate="2025-02-01 23:12:02"
-        createdDate="2025-02-01 23:12:02"
+        deviceName='웨이팅 - 관리'
+        deviceId='Device-R21322232'
+        deviceModel='Galaxy Book5'
+        deviceType='android'
+        osVersion='1.2.1'
+        lastAccessDate='2025-02-01 23:12:02'
+        createdDate='2025-02-01 23:12:02'
       />
       <DeviceCard
-        deviceName="주문 관리 - iPad"
-        deviceId="Device-IP15293847"
-        deviceModel="iPad Pro"
-        deviceType="ios"
-        osVersion="17.2"
-        lastAccessDate="2025-02-02 10:30:15"
-        createdDate="2025-01-15 14:22:30"
+        deviceName='주문 관리 - iPad'
+        deviceId='Device-IP15293847'
+        deviceModel='iPad Pro'
+        deviceType='ios'
+        osVersion='17.2'
+        lastAccessDate='2025-02-02 10:30:15'
+        createdDate='2025-01-15 14:22:30'
         isActive
       />
     </div>

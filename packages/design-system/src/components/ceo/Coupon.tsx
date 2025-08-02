@@ -84,7 +84,7 @@ const Coupon = ({
         </div>
 
         {details && (
-          <div className='bg-[#6366F10D] rounded-4 p-4 w-full mt-[18px] flex flex-row gap-1'>
+          <div className='bg-[#6366F10D] rounded-[16px] p-4 w-full mt-[18px] flex flex-row gap-1'>
             <div className='text-base text-gray-5'>이용안내</div>
             <div className='text-base text-gray-5'>{details}</div>
           </div>

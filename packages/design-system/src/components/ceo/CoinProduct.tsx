@@ -84,7 +84,7 @@ const CoinProduct = ({
               </div>
             </div>
           </div>
-          <div className='flex flex-row mt-[18px] justify-between bg-[#6366F10D] rounded-4 p-4 w-full'>
+          <div className='flex flex-row mt-[18px] justify-between bg-[#6366F10D] rounded-[16px] p-4 w-full'>
             <p className='text-base text-gray-5'>교환 포인트 {exchangePoint} P</p>
             {onOrderClick && (
               <button

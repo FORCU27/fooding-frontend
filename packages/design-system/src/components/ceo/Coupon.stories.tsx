@@ -3,7 +3,7 @@ import type { Meta, StoryObj } from '@storybook/react';
 import { Coupon } from './Coupon';
 
 const meta: Meta<typeof Coupon> = {
-  title: 'CEO/Coupon',
+  title: 'Components/ceo/Coupon',
   component: Coupon,
   parameters: {
     layout: 'centered',
