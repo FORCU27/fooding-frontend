@@ -74,7 +74,7 @@ export default function LoginForm({
               onChange={(e) => {
                 setEmail(e.target.value);
               }}
-              className={`px-[20px] py-[18px] body-2 h-[58px] ${errorMessage ? 'border-red-500 text-red-500' : ''}`}
+              className={`text-start px-[20px] py-[18px] body-2 h-[58px] ${errorMessage ? 'border-red-500 text-red-500' : ''}`}
             />
           </div>
           <div className='flex flex-col gap-[8px]'>
@@ -87,7 +87,7 @@ export default function LoginForm({
                 onChange={(e) => {
                   setPassword(e.target.value);
                 }}
-                className={`px-[20px] py-[18px] body-2 h-[58px] ${errorMessage ? 'border-red-500 text-red-500' : ''}`}
+                className={`text-start px-[20px] py-[18px] body-2 h-[58px] ${errorMessage ? 'border-red-500 text-red-500' : ''}`}
               />
               <button
                 type='button'

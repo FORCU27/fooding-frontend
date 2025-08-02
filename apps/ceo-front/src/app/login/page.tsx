@@ -18,7 +18,7 @@ export default function LoginPage() {
     <div className='flex flex-col'>
       <div className='flex w-screen'>
         {/* 왼쪽 일러스트 영역 (1380px 이상일 때만 보이도록) */}
-        <div className='hidden md:flex flex-1 bg-[#F9F9F9] custom-hide:block overflow-hidden relative'>
+        <div className='hidden md:flex flex-1 custom-hide:block overflow-hidden relative'>
           <Image
             src='/images/login-illust.png'
             alt='login illust'
@@ -39,11 +39,11 @@ export default function LoginPage() {
           <div className='absolute top-[50px] right-[60px]'>
             <Image src='/images/fooding-ceo-logo.svg' alt='logo' width={153} height={24} />
           </div>
-          <div className='w-[450px] h-[678px]'>
+          <div className='w-[450px]'>
             <h1 className='headline-2'>{isSignUp ? '회원가입' : '로그인'}</h1>
             <div className='h-[12px]' />
             <div className='flex flex-col gap-[4px]'>
-              <p className='body-3'>사장님을 위한 전용 공간에 오신 걸 환영합니다.</p>
+              {!isSignUp && <p className='body-3'>사장님을 위한 전용 공간에 오신 걸 환영합니다.</p>}
               <button
                 onClick={() => setIsSignUp((prev) => !prev)}
                 className='flex body-6 text-blue-500 cursor-pointer'

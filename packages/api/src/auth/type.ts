@@ -40,6 +40,18 @@ export type AuthLoginBody = {
   role: UserRole;
 };
 
+export type AuthRegisterBody = {
+  email: string;
+  nickname: string;
+  password: string;
+  role: UserRole;
+  name: string;
+  description?: string;
+  phoneNumber: string;
+  referralCode?: string;
+  marketingConsent?: string;
+};
+
 export const AuthResponseSchema = z.object({
   accessToken: z.string(),
   expiredIn: z.number(),
