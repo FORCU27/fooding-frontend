@@ -14,3 +14,4 @@ export * from './Dialog';
 export * from './Coupon';
 export * from './CoinProduct';
 export * from './DeviceCard';
+export * from './ToolTip';
