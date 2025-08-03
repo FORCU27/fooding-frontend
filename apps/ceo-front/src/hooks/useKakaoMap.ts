@@ -20,12 +20,18 @@ interface KakaoMap {
   // 필요한 메서드들 추가 가능
   setCenter: (center: KakaoLatLng) => void;
   getCenter: () => KakaoLatLng;
+  getLevel: () => number;
+  setLevel: (level: number) => void;
   relayout?: () => void;
 }
 
 interface KakaoMarker {
   // 필요한 메서드들 추가 가능
   setPosition: (position: KakaoLatLng) => void;
+}
+
+interface KakaoMarkerImage {
+  // 마커 이미지 관련 메서드들
 }
 
 // 카카오맵 SDK의 타입 정의
@@ -36,10 +42,25 @@ declare global {
         load: (callback: () => void) => void;
         LatLng: new (lat: number, lng: number) => KakaoLatLng;
         Map: new (container: HTMLElement, options: KakaoMapOptions) => KakaoMap;
-        Marker: new (options: { position: KakaoLatLng; map: KakaoMap }) => KakaoMarker;
+        Marker: new (options: {
+          position: KakaoLatLng;
+          map: KakaoMap;
+          image?: KakaoMarkerImage;
+        }) => KakaoMarker;
+        MarkerImage: new (
+          src: string,
+          size: { width: number; height: number },
+          options?: { offset?: { x: number; y: number } },
+        ) => KakaoMarkerImage;
+        Size: new (width: number, height: number) => { width: number; height: number };
+        Point: new (x: number, y: number) => { x: number; y: number };
         services: {
           Geocoder: new () => {
-            coord2Address: (lng: number, lat: number, callback: (result: any, status: any) => void) => void;
+            coord2Address: (
+              lng: number,
+              lat: number,
+              callback: (result: any, status: any) => void,
+            ) => void;
           };
           Status: {
             OK: string;
@@ -82,10 +103,10 @@ export const useKakaoMap = (options: UseKakaoMapOptions = {}) => {
   const [map, setMap] = useState<KakaoMap | null>(null);
   const [isMapInitialized, setIsMapInitialized] = useState(false); // isInitialized에서 isMapInitialized로 이름 변경
   const centerMarkerRef = useRef<KakaoMarker | null>(null); // 중앙 핀 참조
-  
+
   // 전역 SDK 로드 상태 사용
   const { isSdkLoaded, handleScriptLoad } = useKakaoMapScript();
-  
+
   // 지도 재초기화를 위한 함수
   const reinitializeMap = useCallback(() => {
     console.log('[useKakaoMap] Reinitializing map');
@@ -137,15 +158,51 @@ export const useKakaoMap = (options: UseKakaoMapOptions = {}) => {
 
       console.log('[useKakaoMap] Creating map with options:', defaultOptions);
       const newMap = new window.kakao.maps.Map(container, defaultOptions);
-      
+
       // 중앙 핀 생성 (showCenterPin이 true인 경우)
       if (options.showCenterPin) {
+        // 커스텀 마커 이미지 생성
+        const imageSrc =
+          'data:image/svg+xml;base64,' +
+          btoa(`
+          <svg width="30" height="35" viewBox="0 0 30 35" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <g filter="url(#filter0_dd_2942_20602)">
+          <path fill-rule="evenodd" clip-rule="evenodd" d="M24.6986 14.3454C24.6986 21.8875 15.0017 28.3521 15.0017 28.3521C15.0017 28.3521 5.30469 21.8875 5.30469 14.3454C5.30469 8.98992 9.64617 4.64844 15.0017 4.64844C20.3571 4.64844 24.6986 8.98992 24.6986 14.3454Z" fill="#2A2A2A" stroke="#2A2A2A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          <path fill-rule="evenodd" clip-rule="evenodd" d="M15.0019 17.574C16.787 17.574 18.2342 16.1269 18.2342 14.3417C18.2342 12.5565 16.787 11.1094 15.0019 11.1094C13.2167 11.1094 11.7695 12.5565 11.7695 14.3417C11.7695 16.1269 13.2167 17.574 15.0019 17.574Z" fill="white" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </g>
+          <defs>
+          <filter id="filter0_dd_2942_20602" x="1.30469" y="0.648438" width="27.3945" height="33.7031" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+          <feFlood flood-opacity="0" result="BackgroundImageFix"/>
+          <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
+          <feOffset/>
+          <feGaussianBlur stdDeviation="1.5"/>
+          <feComposite in2="hardAlpha" operator="out"/>
+          <feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.15 0"/>
+          <feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_2942_20602"/>
+          <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
+          <feOffset dy="2"/>
+          <feGaussianBlur stdDeviation="1.5"/>
+          <feComposite in2="hardAlpha" operator="out"/>
+          <feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.05 0"/>
+          <feBlend mode="normal" in2="effect1_dropShadow_2942_20602" result="effect2_dropShadow_2942_20602"/>
+          <feBlend mode="normal" in="SourceGraphic" in2="effect2_dropShadow_2942_20602" result="shape"/>
+          </filter>
+          </defs>
+          </svg>
+        `);
+
+        const imageSize = new window.kakao.maps.Size(40, 50);
+        const imageOption = { offset: new window.kakao.maps.Point(20, 50) };
+
+        const markerImage = new window.kakao.maps.MarkerImage(imageSrc, imageSize, imageOption);
+
         const centerMarker = new window.kakao.maps.Marker({
           position: defaultOptions.center,
           map: newMap,
+          image: markerImage,
         });
         centerMarkerRef.current = centerMarker;
-        console.log('[useKakaoMap] Center pin created');
+        console.log('[useKakaoMap] Center pin created with custom image');
       }
 
       // 지도 중심좌표 변경 이벤트 리스너 추가
@@ -163,16 +220,16 @@ export const useKakaoMap = (options: UseKakaoMapOptions = {}) => {
             lat: center.getLat(),
             lng: center.getLng(),
           };
-          
+
           // 중앙 핀이 있다면 위치 업데이트
           if (centerMarkerRef.current) {
             centerMarkerRef.current.setPosition(center);
           }
-          
+
           options.onCenterChanged!(centerCoords);
         });
       }
-      
+
       // 지도 초기화 후 relayout 호출
       setTimeout(() => {
         if (newMap.relayout) {
@@ -180,7 +237,7 @@ export const useKakaoMap = (options: UseKakaoMapOptions = {}) => {
           newMap.relayout();
         }
       }, 100);
-      
+
       setMap(newMap);
       setIsMapInitialized(true);
       console.log('[useKakaoMap] Kakao Map initialized successfully');
@@ -200,7 +257,7 @@ export const useKakaoMap = (options: UseKakaoMapOptions = {}) => {
     if (isSdkLoaded && !isMapInitialized) {
       // 즉시 시도
       checkContainerAndInitialize();
-      
+
       // 컨테이너가 아직 준비되지 않았다면 약간의 지연 후 다시 시도
       const timeoutId = setTimeout(() => {
         checkContainerAndInitialize();
