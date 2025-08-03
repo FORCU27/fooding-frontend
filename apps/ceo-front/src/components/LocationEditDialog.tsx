@@ -68,7 +68,8 @@ export default function LocationEditDialog({ isOpen, onOpenChange }: LocationEdi
 
     geocoder.coord2Address(coord.getLng(), coord.getLat(), (result: any, status: any) => {
       if (status === window.kakao.maps.services.Status.OK) {
-        const address = result[0]?.address;
+        const address = result[0]?.road_address;
+        console.log('[LocationEditDialog] address:', result[0]);
         if (address) {
           setAddressInfo({
             address: address.address_name || '',
