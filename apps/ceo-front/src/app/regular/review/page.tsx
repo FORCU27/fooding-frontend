@@ -1,10 +1,35 @@
 'use client';
 
+import { useState } from 'react';
+
+import {
+  CardForm,
+  Button,
+  Card,
+  Input,
+  SelectBox,
+  TextArea,
+  CardSubtitle,
+  ToggleGroup,
+  ToggleGroupItem,
+  UrlLinkList,
+  BusinessHours,
+  Dialog,
+  DialogTrigger,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from '@repo/design-system/components/ceo';
+
 const ReviewPage = () => {
+  const [isPossible, setIsPossible] = useState(false);
+  const [isFree, setIsFree] = useState(false);
+
   return (
-    <div className='flex flex-col h-full w-full justify-center items-center bg-white'>
-      <h1 className='text-3xl font-bold text-gray-800 mb-4'>리뷰</h1>
-    </div>
+    <CardForm className=''>
+      <div className='headline-2'>리뷰</div>
+    </CardForm>
   );
 };
 

@@ -130,7 +130,7 @@ const MenuItemComponent = memo(
                 className={`body-2 cursor-pointer pt-[9px] pb-[12px] pl-[60px] hover:bg-primary-pink/5 rounded transition-colors 
     ${pathname === subMenu.path ? 'text-black font-medium' : 'text-gray-5'}`}
               >
-                - {subMenu.text}
+                {subMenu.text}
               </li>
             ))}
           </ul>
