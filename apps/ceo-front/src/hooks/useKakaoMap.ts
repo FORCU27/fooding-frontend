@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState, useCallback } from 'react';
+import { useKakaoMapScript } from './useKakaoMapScript';
 
 // 카카오맵 관련 타입 정의
 interface KakaoLatLng {
@@ -18,6 +19,8 @@ interface KakaoMapOptions {
 interface KakaoMap {
   // 필요한 메서드들 추가 가능
   setCenter: (center: KakaoLatLng) => void;
+  getCenter: () => KakaoLatLng;
+  relayout?: () => void;
 }
 
 interface KakaoMarker {
@@ -34,6 +37,14 @@ declare global {
         LatLng: new (lat: number, lng: number) => KakaoLatLng;
         Map: new (container: HTMLElement, options: KakaoMapOptions) => KakaoMap;
         Marker: new (options: { position: KakaoLatLng; map: KakaoMap }) => KakaoMarker;
+        services: {
+          Geocoder: new () => {
+            coord2Address: (lng: number, lat: number, callback: (result: any, status: any) => void) => void;
+          };
+          Status: {
+            OK: string;
+          };
+        };
         event: {
           addListener: (
             target: KakaoMap,
@@ -56,6 +67,8 @@ type UseKakaoMapOptions = {
   center?: { lat: number; lng: number };
   level?: number;
   onMapClick?: (e: KakaoMouseEvent) => void;
+  onCenterChanged?: (center: { lat: number; lng: number }) => void;
+  showCenterPin?: boolean;
 };
 
 /**
@@ -67,50 +80,143 @@ type UseKakaoMapOptions = {
 export const useKakaoMap = (options: UseKakaoMapOptions = {}) => {
   const mapContainerRef = useRef<HTMLDivElement>(null); // Ref 이름 변경
   const [map, setMap] = useState<KakaoMap | null>(null);
-  const [isSdkLoaded, setIsSdkLoaded] = useState(false); // kakaoLoaded에서 isSdkLoaded로 이름 변경
   const [isMapInitialized, setIsMapInitialized] = useState(false); // isInitialized에서 isMapInitialized로 이름 변경
-
-  // 카카오맵 스크립트가 로드되었을 때 호출될 콜백
-  // KakaoMap 컴포넌트의 <Script onLoad={handleScriptLoad} />와 연결
-  const handleScriptLoad = useCallback(() => {
-    console.log('Kakao Maps script file successfully loaded by Next.js Script component.');
-    // 스크립트 파일이 로드되었으니, window.kakao.maps.load()를 사용하여 SDK 내부 모듈 로드 대기
-    window.kakao.maps.load(() => {
-      console.log('Kakao Maps SDK internal modules fully loaded and ready.');
-      setIsSdkLoaded(true); // SDK 내부 모듈까지 완전히 준비되었음을 알림
-    });
+  const centerMarkerRef = useRef<KakaoMarker | null>(null); // 중앙 핀 참조
+  
+  // 전역 SDK 로드 상태 사용
+  const { isSdkLoaded, handleScriptLoad } = useKakaoMapScript();
+  
+  // 지도 재초기화를 위한 함수
+  const reinitializeMap = useCallback(() => {
+    console.log('[useKakaoMap] Reinitializing map');
+    setIsMapInitialized(false);
+    setMap(null);
+    centerMarkerRef.current = null;
   }, []);
+
+  // 컨테이너 가용성을 체크하는 함수
+  const checkContainerAndInitialize = useCallback(() => {
+    if (!isSdkLoaded || isMapInitialized) {
+      return;
+    }
+
+    // 컨테이너가 DOM에 실제로 렌더링되었는지 확인
+    const container = mapContainerRef.current;
+    if (!container) {
+      console.log('[useKakaoMap] Container ref not available yet');
+      return;
+    }
+
+    // 컨테이너가 실제로 화면에 보이는지 확인 (Dialog의 경우 중요)
+    const rect = container.getBoundingClientRect();
+    if (rect.width === 0 || rect.height === 0) {
+      console.log('[useKakaoMap] Container not visible yet, dimensions:', rect);
+      return;
+    }
+
+    console.log('[useKakaoMap] Container is ready, initializing map:', {
+      width: rect.width,
+      height: rect.height,
+      container: container,
+    });
+
+    try {
+      // SDK가 완전히 로드되었는지 다시 확인
+      if (!window.kakao || !window.kakao.maps || !window.kakao.maps.LatLng) {
+        console.error('[useKakaoMap] Kakao Maps SDK not fully loaded');
+        return;
+      }
+
+      const defaultOptions = {
+        center: new window.kakao.maps.LatLng(
+          options.center?.lat ?? 37.5665,
+          options.center?.lng ?? 126.978,
+        ),
+        level: options.level ?? 3,
+      };
+
+      console.log('[useKakaoMap] Creating map with options:', defaultOptions);
+      const newMap = new window.kakao.maps.Map(container, defaultOptions);
+      
+      // 중앙 핀 생성 (showCenterPin이 true인 경우)
+      if (options.showCenterPin) {
+        const centerMarker = new window.kakao.maps.Marker({
+          position: defaultOptions.center,
+          map: newMap,
+        });
+        centerMarkerRef.current = centerMarker;
+        console.log('[useKakaoMap] Center pin created');
+      }
+
+      // 지도 중심좌표 변경 이벤트 리스너 추가
+      if (options.onCenterChanged) {
+        // 초기 중앙 좌표 설정
+        const initialCenter = {
+          lat: defaultOptions.center.getLat(),
+          lng: defaultOptions.center.getLng(),
+        };
+        options.onCenterChanged(initialCenter);
+
+        window.kakao.maps.event.addListener(newMap, 'center_changed', () => {
+          const center = newMap.getCenter();
+          const centerCoords = {
+            lat: center.getLat(),
+            lng: center.getLng(),
+          };
+          
+          // 중앙 핀이 있다면 위치 업데이트
+          if (centerMarkerRef.current) {
+            centerMarkerRef.current.setPosition(center);
+          }
+          
+          options.onCenterChanged!(centerCoords);
+        });
+      }
+      
+      // 지도 초기화 후 relayout 호출
+      setTimeout(() => {
+        if (newMap.relayout) {
+          console.log('[useKakaoMap] Calling relayout for proper sizing');
+          newMap.relayout();
+        }
+      }, 100);
+      
+      setMap(newMap);
+      setIsMapInitialized(true);
+      console.log('[useKakaoMap] Kakao Map initialized successfully');
+    } catch (error) {
+      console.error('[useKakaoMap] Error creating Kakao Map instance:', error);
+    }
+  }, [isSdkLoaded, isMapInitialized, options]);
 
   // SDK 로딩 완료 후 지도를 초기화하는 useEffect
   useEffect(() => {
-    console.log('Map initialization effect triggered:', {
+    console.log('[useKakaoMap] Map initialization effect triggered:', {
       isSdkLoaded,
       hasContainerRef: !!mapContainerRef.current,
       isMapInitialized,
     });
 
-    // SDK가 로드되었고, 컨테이너가 존재하며, 아직 지도가 초기화되지 않은 경우에만 실행
-    if (isSdkLoaded && mapContainerRef.current && !isMapInitialized) {
-      console.log('Attempting to initialize Kakao Map...');
+    if (isSdkLoaded && !isMapInitialized) {
+      // 즉시 시도
+      checkContainerAndInitialize();
+      
+      // 컨테이너가 아직 준비되지 않았다면 약간의 지연 후 다시 시도
+      const timeoutId = setTimeout(() => {
+        checkContainerAndInitialize();
+      }, 50);
 
-      const defaultOptions = {
-        center: new window.kakao.maps.LatLng(
-          options.center?.lat ?? 37.5665, // 기본값: 서울시청 위도
-          options.center?.lng ?? 126.978, // 기본값: 서울시청 경도
-        ),
-        level: options.level ?? 3, // 기본 확대레벨: 3
+      // 더 긴 지연으로 한 번 더 시도 (Dialog 렌더링 완료 대기)
+      const timeoutId2 = setTimeout(() => {
+        checkContainerAndInitialize();
+      }, 200);
+
+      return () => {
+        clearTimeout(timeoutId);
+        clearTimeout(timeoutId2);
       };
-
-      try {
-        const newMap = new window.kakao.maps.Map(mapContainerRef.current!, defaultOptions);
-        setMap(newMap);
-        setIsMapInitialized(true); // 지도 초기화 완료 상태 설정
-        console.log('Kakao Map initialized successfully.');
-      } catch (error) {
-        console.error('Error creating Kakao Map instance:', error);
-      }
     }
-  }, [isSdkLoaded, isMapInitialized, options]); // 의존성 배열에 mapContainerRef는 넣지 않아도 됨 (렌더링 시점에 이미 존재)
+  }, [isSdkLoaded, isMapInitialized, checkContainerAndInitialize]);
 
   // 지도 클릭 이벤트 리스너 추가/제거 (map과 onMapClick이 변경될 때마다)
   useEffect(() => {
@@ -140,5 +246,6 @@ export const useKakaoMap = (options: UseKakaoMapOptions = {}) => {
     map, // 생성된 지도 인스턴스
     isMapInitialized, // 지도 초기화 완료 상태
     handleScriptLoad, // KakaoMap 컴포넌트에 전달할 스크립트 로딩 핸들러
+    reinitializeMap, // 지도 재초기화 함수
   };
 };
