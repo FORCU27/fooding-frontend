@@ -11,6 +11,7 @@ export type SocialPlatform = (typeof socialPlatforms)[number];
 export const AuthLoginUserSchema = z.object({
   id: z.number(),
   email: z.string(),
+  name: z.string().nullable(),
   nickname: z.string().nullable(),
   phoneNumber: z.string().nullable(),
   description: z.string().nullable(),
@@ -66,6 +67,7 @@ export type AuthNotificationStatusBody = {
 };
 
 export type AuthUpdateUserBody = {
+  name: string | null;
   nickname: string | null;
   phoneNumber: string | null;
   referralCode: string | null;
