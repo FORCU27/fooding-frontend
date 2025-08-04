@@ -5,6 +5,7 @@ type SelectProps<TValue extends string> = Omit<
   React.ComponentPropsWithRef<'select'>,
   'onChange' | 'value'
 > & {
+  label?: string;
   placeholder?: string;
   value?: TValue;
   onChange?: (value: TValue) => void;
@@ -15,6 +16,7 @@ const Select = <TValue extends string>({
   children,
   placeholder,
   value,
+  label,
   onChange = noop,
   ...props
 }: SelectProps<TValue>) => {
@@ -23,7 +25,10 @@ const Select = <TValue extends string>({
   };
 
   return (
-    <div className='relative'>
+    <div className='relative w-full'>
+      {label && (
+        <label className={cn('mb-3 flex items-center subtitle-6', className)}>{label}</label>
+      )}
       <select
         className={cn(
           'peer has-[option[disabled]:checked]:text-gray-4 w-full flex h-[56px] justify-between border border-gray-2 rounded-[12px] appearance-none pl-5 pr-13 outline-hidden',
@@ -36,7 +41,7 @@ const Select = <TValue extends string>({
         {...props}
       >
         {placeholder && (
-          <option value='' disabled selected>
+          <option value='' disabled hidden>
             {placeholder}
           </option>
         )}
