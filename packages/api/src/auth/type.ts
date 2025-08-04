@@ -13,6 +13,7 @@ export const AuthLoginUserSchema = z.object({
   email: z.string(),
   nickname: z.string().nullable(),
   phoneNumber: z.string().nullable(),
+  description: z.string().nullable(),
   referralCode: z.string().nullable(),
   profileImage: z.string().nullable(),
   loginCount: z.number(),
@@ -47,13 +48,21 @@ export const AuthResponseSchema = z.object({
   refreshExpiredIn: z.number(),
 });
 
+export type AuthNotificationStatusBody = {
+  marketingConsent: boolean;
+  pushAgreed: boolean;
+};
+
 export type AuthUpdateUserBody = {
-  nickname?: string;
-  phoneNumber?: string;
-  gender?: string;
-  referralCode?: string;
-  marketingConsent?: boolean;
-  pushAgreed?: boolean;
+  nickname: string | null;
+  phoneNumber: string | null;
+  referralCode: string | null;
+  description: string | null;
+  gender: string;
+};
+
+export type AuthUpdateUserProfileImageBody = {
+  imageId: string;
 };
 
 export type GetAuthResponse = z.infer<typeof AuthResponseSchema>;

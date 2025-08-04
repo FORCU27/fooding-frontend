@@ -3,8 +3,10 @@ export * from './type';
 import { api } from '../shared';
 import {
   AuthLoginBody,
+  AuthNotificationStatusBody,
   AuthSocialLoginBody,
   AuthUpdateUserBody,
+  AuthUpdateUserProfileImageBody,
   GetLoginResponseSchema,
   GetUserResponseSchema,
   UpdateUserInfoResponseSchema,
@@ -27,7 +29,16 @@ export const authApi = {
   },
 
   updateInfo: async (body: AuthUpdateUserBody) => {
-    const response = await api.put('/auth/me', { ...body });
+    const response = await api.patch('/auth/me', { ...body });
+    return UpdateUserInfoResponseSchema.parse(response);
+  },
+
+  updateNotificationStatus: async (body: AuthNotificationStatusBody) => {
+    const response = await api.patch('/auth/me', { ...body });
+    return UpdateUserInfoResponseSchema.parse(response);
+  },
+  updateProfileImage: async (body: AuthUpdateUserProfileImageBody) => {
+    const response = await api.patch('/auth/me/profile-image', { ...body });
     return UpdateUserInfoResponseSchema.parse(response);
   },
 };
