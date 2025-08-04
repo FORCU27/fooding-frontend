@@ -148,7 +148,7 @@ const TextFieldLabel = ({
   return (
     <label
       htmlFor={textFieldId}
-      className={cn('mb-3 flex items-center text-sm font-semibold text-gray-5', className)}
+      className={cn('mb-3 flex items-center subtitle-6', className)}
       {...props}
     >
       {children}
