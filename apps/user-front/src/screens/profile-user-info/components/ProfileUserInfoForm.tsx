@@ -4,7 +4,6 @@ import { ChangeEvent, PropsWithoutRef, useState } from 'react';
 
 import { AuthUpdateUserBody, AuthUpdateUserProfileImageBody } from '@repo/api/auth';
 import { BottomSheetSelect, Button, TextField } from '@repo/design-system/components/b2c';
-import { useFlow } from '@stackflow/react/future';
 import { Controller, useForm } from 'react-hook-form';
 
 import { Header } from '@/components/Layout/Header';
@@ -20,7 +19,6 @@ export const ProfileUserInfoForm = ({
   handleSubmit,
 }: PropsWithoutRef<ProfileFormProps>) => {
   const { user } = useAuth();
-  const flow = useFlow();
 
   const [nickname, setNickname] = useState(editOriginValue?.nickname ?? '');
   const [phoneNumber, setPhoneNumber] = useState(editOriginValue?.phoneNumber ?? '');
