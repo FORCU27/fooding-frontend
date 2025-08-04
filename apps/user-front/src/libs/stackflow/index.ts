@@ -8,8 +8,8 @@ import { stackflow } from '@stackflow/react/future';
 import { BookmarkListScreen } from '@/screens/bookmarks/Bookmarks';
 import { MyCouponListScreen } from '@/screens/my-coupons/MyCoupons';
 import { NotificationListScreen } from '@/screens/notifications/Notifications';
-import { ReservationDetailScreen } from '@/screens/reservation-detail/ReservationDetail';
-import { ReviewCreateScreen } from '@/screens/reviews/reviewCreate';
+import { PlanDetailScreen } from '@/screens/plan-detail/PlanDetail';
+import { ReviewCreateScreen } from '@/screens/reviews/ReviewCreate';
 import { NotificationSettingScreen } from '@/screens/settings/Notifications';
 import { SettingScreen } from '@/screens/settings/Settings';
 import { StoreDetailScreen } from '@/screens/store-detail/StoreDetail';
@@ -17,14 +17,14 @@ import { StorePostDetailScreen } from '@/screens/store-post-detail/StorePostDeta
 import { WaitingDetailScreen } from '@/screens/waiting-detail/WaitingDetail';
 import { HomeTab } from '@/tabs/home/Home';
 import { MyPageTab } from '@/tabs/my-page/MyPage';
-import { ReservationTab } from '@/tabs/reservation/Reservation';
+import { PlanTab } from '@/tabs/plan/Plan';
 import { SearchTab } from '@/tabs/search/Search';
 
 declare module '@stackflow/config' {
   interface Register {
     HomeTab: object;
     SearchTab: object;
-    ReservationTab: object;
+    PlanTab: object;
     MyPageTab: object;
     NotificationListScreen: object;
     StoreDetailScreen: { storeId: number };
@@ -33,9 +33,9 @@ declare module '@stackflow/config' {
     StorePostDetailScreen: { storePostId: number; storeName: string };
     SettingScreen: object;
     NotificationSettingScreen: object;
-    ReviewCreateScreen: { reservationId: number };
+    ReviewCreateScreen: { planId: number };
     WaitingDetailScreen: { waitingId: number };
-    ReservationDetailScreen: { reservationId: number };
+    PlanDetailScreen: { planId: number };
   }
 }
 
@@ -43,7 +43,7 @@ const config = defineConfig({
   activities: [
     { name: 'HomeTab' },
     { name: 'SearchTab' },
-    { name: 'ReservationTab' },
+    { name: 'PlanTab' },
     { name: 'MyPageTab' },
     { name: 'NotificationListScreen' },
     { name: 'BookmarkListScreen' },
@@ -54,7 +54,7 @@ const config = defineConfig({
     { name: 'NotificationSettingScreen' },
     { name: 'ReviewCreateScreen' },
     { name: 'WaitingDetailScreen' },
-    { name: 'ReservationDetailScreen' },
+    { name: 'PlanDetailScreen' },
   ],
 
   transitionDuration: 350,
@@ -66,7 +66,7 @@ export const { Stack } = stackflow({
   components: {
     HomeTab,
     SearchTab,
-    ReservationTab,
+    PlanTab,
     MyPageTab,
     NotificationListScreen,
     BookmarkListScreen,
@@ -77,7 +77,7 @@ export const { Stack } = stackflow({
     NotificationSettingScreen,
     ReviewCreateScreen,
     WaitingDetailScreen,
-    ReservationDetailScreen,
+    PlanDetailScreen,
   },
   plugins: [
     basicRendererPlugin(),
