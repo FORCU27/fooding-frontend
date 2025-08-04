@@ -34,6 +34,7 @@ export const ProfileModifyScreen: ActivityComponentType<'ProfileModifyScreen'> =
 
     try {
       const profileInfo: AuthUpdateUserBody = {
+        name: formData.name === '' ? null : formData.name,
         nickname: formData.nickname === '' ? null : formData.nickname,
         phoneNumber: formData.phoneNumber === '' ? null : formData.phoneNumber,
         description: formData.description === '' ? null : formData.description,
@@ -65,6 +66,7 @@ export const ProfileModifyScreen: ActivityComponentType<'ProfileModifyScreen'> =
   };
 
   const editOriginValue: AuthUpdateUserBody & AuthUpdateUserProfileImageBody = {
+    name: user?.name ?? '',
     nickname: user?.nickname ?? '',
     description: user?.description ?? '',
     phoneNumber: user?.phoneNumber ?? '',

@@ -1,18 +1,21 @@
 'use client';
 
-import { ChangeEvent, PropsWithoutRef, useState } from 'react';
+import { PropsWithoutRef } from 'react';
 
 import { AuthUpdateUserBody, AuthUpdateUserProfileImageBody } from '@repo/api/auth';
 import { BottomSheetSelect, Button, TextField } from '@repo/design-system/components/b2c';
 import { useFlow } from '@stackflow/react/future';
-import { Controller, useForm } from 'react-hook-form';
+import { Controller, useForm, UseFormSetError } from 'react-hook-form';
 
 import { Header } from '@/components/Layout/Header';
 import { useAuth } from '@/components/Provider/AuthProvider';
 
 export interface ProfileFormProps {
   editOriginValue?: AuthUpdateUserBody & AuthUpdateUserProfileImageBody;
-  handleSubmit: (data: AuthUpdateUserBody & { imageFile?: File | null }) => void;
+  handleSubmit: (
+    data: AuthUpdateUserBody & { imageFile?: File | null },
+    utils: { setError: UseFormSetError<any> },
+  ) => void;
 }
 
 export const ProfileUserInfoForm = ({
@@ -22,9 +25,6 @@ export const ProfileUserInfoForm = ({
   const { user } = useAuth();
   const flow = useFlow();
 
-  const [nickname, setNickname] = useState(editOriginValue?.nickname ?? '');
-  const [phoneNumber, setPhoneNumber] = useState(editOriginValue?.phoneNumber ?? '');
-
   const GENDER = [
     { value: 'MALE', label: '남성' },
     { value: 'FEMALE', label: '여성' },
@@ -32,11 +32,14 @@ export const ProfileUserInfoForm = ({
   ] as const;
 
   const {
+    watch,
     register,
     control,
     formState: { errors },
+    setError,
     handleSubmit: onSubmit,
   } = useForm<{
+    name: string;
     nickname: string;
     description: string;
     phoneNumber: string;
@@ -46,6 +49,7 @@ export const ProfileUserInfoForm = ({
   }>({
     mode: 'onSubmit',
     defaultValues: {
+      name: editOriginValue?.name || '',
       nickname: editOriginValue?.nickname || '',
       description: editOriginValue?.description ?? '',
       phoneNumber: editOriginValue?.phoneNumber || '',
@@ -54,15 +58,11 @@ export const ProfileUserInfoForm = ({
     },
   });
 
-  const handleNicknameChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setNickname(e.target.value);
-  };
-
-  const handlePhoneNumberChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setPhoneNumber(e.target.value);
-  };
+  const name = watch('name');
+  const phoneNumber = watch('phoneNumber');
 
   const onFormSubmit = (data: {
+    name: string;
     nickname: string;
     description: string;
     phoneNumber: string;
@@ -70,16 +70,19 @@ export const ProfileUserInfoForm = ({
     referralCode: string;
     imageId: string;
   }) => {
-    handleSubmit({
-      ...data,
-    });
+    handleSubmit(
+      {
+        ...data,
+      },
+      { setError },
+    );
   };
 
   return (
     <div className='flex flex-col p-grid-margin min-h-screen'>
       <Header
         left={<Header.Back />}
-        title={`내 정보 ${user?.phoneNumber !== null ? '수정 ' : '입력 '}`}
+        title={`내 정보 ${user?.name === null || user?.phoneNumber === null ? '입력' : '수정'}`}
       />
       <div className='flex flex-col mt-[60px]'>
         <p className='mt-8 body-1'>리워드, 웨이팅, 예약에 사용될</p>
@@ -90,9 +93,11 @@ export const ProfileUserInfoForm = ({
           <div className='flex flex-col gap-4'>
             <TextField label={<TextField.Label>이름</TextField.Label>}>
               <TextField.Input
-                {...register('nickname')} //TODO: DB 수정 후 name으로 변경
-                value={nickname}
-                onChange={handleNicknameChange}
+                {...register('name')}
+                value={name}
+                onChange={(e) => {
+                  register('name').onChange(e);
+                }}
               />
             </TextField>
             <TextField
@@ -116,7 +121,9 @@ export const ProfileUserInfoForm = ({
                   validate: (value) => !/\s/.test(value) || '공백 없이 입력해주세요.',
                 })}
                 value={phoneNumber}
-                onChange={handlePhoneNumberChange}
+                onChange={(e) => {
+                  register('phoneNumber').onChange(e);
+                }}
               />
             </TextField>
             <Controller
@@ -134,9 +141,7 @@ export const ProfileUserInfoForm = ({
             />
           </div>
           <div>
-            {user?.phoneNumber !== null ? (
-              <Button type='submit'>저장</Button>
-            ) : (
+            {user?.name === null || user?.phoneNumber === null ? (
               <div className='w-full flex flex-col justify-between items-center h-[88px]'>
                 <a
                   onClick={() => flow.push('HomeTab', {})}
@@ -144,6 +149,8 @@ export const ProfileUserInfoForm = ({
                 >{`다음에 할게요:)`}</a>
                 <Button type='submit'>다음</Button>
               </div>
+            ) : (
+              <Button type='submit'>저장</Button>
             )}
           </div>
         </div>

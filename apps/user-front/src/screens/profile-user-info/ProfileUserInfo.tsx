@@ -8,6 +8,7 @@ import { ActivityComponentType } from '@stackflow/react';
 import { useFlow } from '@stackflow/react/future';
 import { ErrorBoundary, ErrorBoundaryFallbackProps } from '@suspensive/react';
 import { QueryErrorResetBoundary } from '@tanstack/react-query';
+import { UseFormSetError } from 'react-hook-form';
 
 import { ProfileUserInfoForm } from './components/ProfileUserInfoForm';
 import { Screen } from '@/components/Layout/Screen';
@@ -24,9 +25,13 @@ export const ProfileUserInfoScreen: ActivityComponentType<'ProfileUserInfoScreen
   const { mutateAsync: uploadImageFile } = useUploadFile();
   const { mutateAsync: updateUserProfileImage } = useUpdateUserProfileImage();
 
-  const handleFormSubmit = async (formData: AuthUpdateUserBody & { imageFile?: File | null }) => {
+  const handleFormSubmit = async (
+    formData: AuthUpdateUserBody & { imageFile?: File | null },
+    utils: { setError: UseFormSetError<any> },
+  ) => {
     try {
       const profileInfo: AuthUpdateUserBody = {
+        name: formData.name === '' ? null : formData.name,
         nickname: formData.nickname === '' ? null : formData.nickname,
         phoneNumber: formData.phoneNumber === '' ? null : formData.phoneNumber,
         description: formData.description === '' ? null : formData.description,
@@ -42,7 +47,6 @@ export const ProfileUserInfoScreen: ActivityComponentType<'ProfileUserInfoScreen
 
         try {
           const uploadResult = await uploadImageFile(formDataToUpload);
-          console.log('uploadResult', uploadResult);
           await updateUserProfileImage({
             imageId: uploadResult.data[0]?.id ? uploadResult.data[0]?.id : '',
           });
@@ -51,15 +55,22 @@ export const ProfileUserInfoScreen: ActivityComponentType<'ProfileUserInfoScreen
         }
       }
 
-      if (user?.phoneNumber === null) return flow.push('ProfileCompleteScreen', {});
+      if (user?.phoneNumber || user?.name === null) return flow.push('ProfileCompleteScreen', {});
 
       return flow.pop();
-    } catch (error) {
+    } catch (error: any) {
       console.error('프로필 수정 실패:', error);
+      if (error?.response?.data?.code === '1004') {
+        utils.setError('phoneNumber', {
+          type: 'server',
+          message: '이미 가입된 전화번호입니다.',
+        });
+      }
     }
   };
 
   const editOriginValue: AuthUpdateUserBody & AuthUpdateUserProfileImageBody = {
+    name: user?.name ?? '',
     nickname: user?.nickname ?? '',
     description: user?.description ?? '',
     phoneNumber: user?.phoneNumber ?? '',

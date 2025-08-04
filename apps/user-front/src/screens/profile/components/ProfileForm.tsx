@@ -39,6 +39,7 @@ export const ProfileForm = ({
     register,
     handleSubmit: onSubmit,
   } = useForm<{
+    name: string;
     nickname: string;
     description: string;
     phoneNumber: string;
@@ -48,6 +49,7 @@ export const ProfileForm = ({
   }>({
     mode: 'onSubmit',
     defaultValues: {
+      name: editOriginValue?.name || '',
       nickname: editOriginValue?.nickname || '',
       description: editOriginValue?.description ?? '',
       phoneNumber: editOriginValue?.phoneNumber || '',
@@ -68,6 +70,7 @@ export const ProfileForm = ({
   };
 
   const onFormSubmit = (data: {
+    name: string;
     nickname: string;
     description: string;
     phoneNumber: string;
