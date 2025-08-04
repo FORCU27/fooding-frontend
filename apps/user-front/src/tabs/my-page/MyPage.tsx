@@ -1,5 +1,7 @@
 'use client';
 
+import Image from 'next/image';
+
 import { Bookmark } from '@repo/api/user';
 import { Button, ErrorFallback, Skeleton } from '@repo/design-system/components/b2c';
 import {
@@ -70,9 +72,15 @@ const Content = () => {
       <div className='flex-col bg-white/80 pb-5 py-grid-margin'>
         <div className='flex justify-between px-grid-margin'>
           <div className='flex justify-center items-center'>
-            <div className='flex justify-center items-center w-[64px] h-[64px] bg-gray-1 rounded-full'>
-              <FoodingIcon fillOpacity={0.1} />
-            </div>
+            {user?.profileImage ? (
+              <div className='flex justify-center items-center w-[64px] h-[64px] bg-gray-1 rounded-full'>
+                <Image src={user.profileImage} height={64} width={64} alt='user-profile' />
+              </div>
+            ) : (
+              <div className='flex justify-center items-center w-[64px] h-[64px] bg-gray-1 rounded-full'>
+                <FoodingIcon fillOpacity={0.1} />
+              </div>
+            )}
             <div className='flex flex-col mx-5 justify-center w-[100px]'>
               <p className='subtitle-4 mb-2'>{user?.nickname ? user?.nickname : user?.email}</p>
               <div className='flex justify-between w-full'>
@@ -83,7 +91,12 @@ const Content = () => {
             </div>
           </div>
           <div className='flex justify-center items-center'>
-            <Button size='small' variant='outlined' className='w-[96px]'>
+            <Button
+              size='small'
+              variant='outlined'
+              className='w-[96px]'
+              onClick={() => flow.push('ProfileModifyScreen', {})}
+            >
               프로필 수정
             </Button>
           </div>
