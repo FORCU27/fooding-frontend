@@ -24,10 +24,7 @@ const GENDER = [
   { value: 'NONE', label: '선택안함' },
 ] as const;
 
-const genderValues = GENDER.map((g) => g.value);
-type Gender = (typeof genderValues)[number];
-
-const genderOptions = [...GENDER];
+type Gender = (typeof GENDER)[number]['value'];
 
 export const Default: Story = {
   render: () => {
@@ -35,10 +32,10 @@ export const Default: Story = {
 
     return (
       <div className='w-[400px]'>
-        <BottomSheetSelect
+        <BottomSheetSelect<Gender>
           label='성별'
           placeholder='성별을 선택해주세요.'
-          options={genderOptions}
+          options={GENDER}
           value={selectedGender}
           onChange={(value) => setSelectedGender(value as Gender)}
         />
@@ -48,7 +45,7 @@ export const Default: Story = {
 };
 
 const formSchema = z.object({
-  select: z.enum(GENDER.map((g) => g.value) as [Gender, ...Gender[]]),
+  select: z.enum(['MALE', 'FEMALE', 'NONE']),
 });
 
 export const WithForm: Story = {

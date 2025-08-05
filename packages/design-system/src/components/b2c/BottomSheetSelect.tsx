@@ -1,32 +1,38 @@
-import { useState } from 'react';
+import { useId, useState } from 'react';
 
 import { BottomSheet } from './BottomSheet';
 import { ChevronDownIcon } from '../../icons';
 import { cn } from '../../utils';
 
-export interface BottomSheetSelectProps {
-  options: { value: string; label: string }[];
-  value: string;
-  onChange: (value: string) => void;
+export interface BottomSheetSelectProps<TValue extends string> {
+  options: { value: TValue; label: string }[] | readonly { value: TValue; label: string }[];
+  value: TValue;
+  onChange: (value: TValue) => void;
   placeholder?: string;
   label?: string;
   className?: string;
 }
 
-export const BottomSheetSelect = ({
+export const BottomSheetSelect = <TValue extends string>({
   options,
   value,
   onChange,
   placeholder,
   label,
   className,
-}: BottomSheetSelectProps) => {
+}: BottomSheetSelectProps<TValue>) => {
   const [isOpen, setIsOpen] = useState(false);
+
+  const titleId = useId();
+
   const selectedLabel = options.find((opt) => opt.value === value)?.label || placeholder;
 
   return (
     <div>
-      <label className={cn('mb-3 flex items-center subtitle-6', className)}>{label}</label>
+      {label && (
+        <label className={cn('mb-3 flex items-center subtitle-6', className)}>{label}</label>
+      )}
+
       <button
         type='button'
         onClick={() => setIsOpen(true)}
@@ -41,18 +47,18 @@ export const BottomSheetSelect = ({
       </button>
 
       <BottomSheet isOpen={isOpen} onOpenChange={setIsOpen}>
-        <BottomSheet.Content>
+        <BottomSheet.Content aria-labelledby={titleId}>
           <BottomSheet.Header>
-            <BottomSheet.Title className='font-bold text-[24px]'>
+            <BottomSheet.Title id={titleId} className='font-bold text-[24px]'>
               {label || placeholder}
             </BottomSheet.Title>
           </BottomSheet.Header>
+
           <BottomSheet.Body>
             <BottomSheet.SelectGroup
               value={value}
               onChange={(val) => {
-                onChange(val);
-                setIsOpen(false);
+                onChange(val as TValue);
               }}
             >
               {options.map((opt) => (

@@ -13,6 +13,8 @@ type TextFieldProps = Omit<React.ComponentPropsWithRef<'div'>, 'onChange' | 'val
   description?: React.ReactNode;
   error?: boolean;
   errorMessage?: React.ReactNode;
+  success?: boolean;
+  successMessage?: React.ReactNode;
   required?: boolean;
 };
 
@@ -27,6 +29,8 @@ const TextField = ({
   required,
   error,
   errorMessage,
+  success,
+  successMessage,
   ...props
 }: TextFieldProps) => {
   const [internalValue, setInternalValue] = useState(defaultValue ?? '');
@@ -37,9 +41,13 @@ const TextField = ({
   const textFieldId = useId();
   const descriptionId = useId();
   const errorMessageId = useId();
+  const successMessageId = useId();
 
   const [descriptionElement, setDescriptionElement] = useState<HTMLParagraphElement | null>(null);
   const [errorMessageElement, setErrorMessageElement] = useState<HTMLParagraphElement | null>(null);
+  const [successMessageElement, setSuccessMessageElement] = useState<HTMLParagraphElement | null>(
+    null,
+  );
 
   const contextValue = {
     value,
@@ -47,13 +55,17 @@ const TextField = ({
     defaultValue,
     required,
     error,
+    success,
     textFieldId,
     descriptionId,
     errorMessageId,
+    successMessageId,
     descriptionElement,
     errorMessageElement,
+    successMessageElement,
     setDescriptionElement,
     setErrorMessageElement,
+    setSuccessMessageElement,
   };
 
   return (
@@ -62,19 +74,27 @@ const TextField = ({
         {label}
         <div
           className={cn(
-            'border-gray-2 bg-white flex rounded-[12px] border',
-            'focus-within:border-gray-5',
-            'has-data-invalid:focus-within:border-error-red has-data-invalid:border-error-red',
+            'bg-white flex rounded-[12px] border',
+            error
+              ? 'border-error-red focus-within:border-error-red'
+              : success
+                ? 'border-success-green focus-within:border-success-green'
+                : 'border-gray-2 focus-within:border-gray-5',
             'has-data-disabled:opacity-50 has-data-disabled:pointer-events-none',
           )}
         >
           {children}
         </div>
-        {(description || (error && errorMessage)) && (
+        {(description || errorMessage || successMessage) && (
           <div className='mt-1 flex justify-end gap-3'>
             <div className='flex-1'>
-              {description && description}
-              {error && errorMessage}
+              {description && <TextField.Description>{description}</TextField.Description>}
+              {error && errorMessage && (
+                <TextField.ErrorMessage>{errorMessage}</TextField.ErrorMessage>
+              )}
+              {success && successMessage && (
+                <TextField.SuccessMessage>{successMessage}</TextField.SuccessMessage>
+              )}
             </div>
           </div>
         )}
@@ -199,14 +219,44 @@ const TextFieldErrorMessage = ({ className, children, ...props }: TextFieldError
   };
 
   return (
-    <p
+    <div
       id={errorMessageId}
       ref={refCallback}
       className={cn('text-error-red mt-1 flex-1 text-sm font-medium', className)}
       {...props}
     >
       {children}
-    </p>
+    </div>
+  );
+};
+
+type TextFieldSuccessMessageProps = React.ComponentPropsWithRef<'p'>;
+
+const TextFieldSuccessMessage = ({
+  className,
+  children,
+  ...props
+}: TextFieldSuccessMessageProps) => {
+  const { successMessageId, setSuccessMessageElement } = useTextFieldContext();
+
+  const refCallback = (node: HTMLParagraphElement | null) => {
+    if (node) {
+      setSuccessMessageElement(node);
+    }
+    return () => {
+      setSuccessMessageElement(null);
+    };
+  };
+
+  return (
+    <div
+      id={successMessageId}
+      ref={refCallback}
+      className={cn('text-success-green mt-1 flex-1 text-sm font-medium', className)}
+      {...props}
+    >
+      {children}
+    </div>
   );
 };
 
@@ -216,13 +266,17 @@ type TextFieldContextValue = {
   defaultValue?: string;
   required?: boolean;
   error?: boolean;
+  success?: boolean;
   textFieldId: string;
   errorMessageId: string;
+  successMessageId: string;
   descriptionId: string;
   descriptionElement: HTMLParagraphElement | null;
   errorMessageElement: HTMLParagraphElement | null;
+  successMessageElement: HTMLParagraphElement | null;
   setDescriptionElement: (element: HTMLParagraphElement | null) => void;
   setErrorMessageElement: (element: HTMLParagraphElement | null) => void;
+  setSuccessMessageElement: (element: HTMLParagraphElement | null) => void;
 };
 
 const [TextFieldContext, useTextFieldContext] = createContext<TextFieldContextValue>('');
@@ -235,7 +289,9 @@ const useRegisterTextField = () => {
     error,
     descriptionElement,
     errorMessageElement,
+    successMessageElement,
     errorMessageId,
+    successMessageId,
     descriptionId,
   } = useTextFieldContext();
 
@@ -252,6 +308,7 @@ const useRegisterTextField = () => {
     'aria-describedby': cn(
       descriptionElement && descriptionId,
       errorMessageElement && errorMessageId,
+      successMessageElement && successMessageId,
     ),
   };
 
@@ -265,5 +322,6 @@ TextField.Suffix = TextFieldSuffix;
 TextField.Label = TextFieldLabel;
 TextField.Description = TextFieldDescription;
 TextField.ErrorMessage = TextFieldErrorMessage;
+TextField.SuccessMessage = TextFieldSuccessMessage;
 
 export { TextField };
