@@ -11,14 +11,16 @@ import { Header } from '@/components/Layout/Header';
 import { Screen } from '@/components/Layout/Screen';
 import { useAuth } from '@/components/Provider/AuthProvider';
 
-export const ProfileCompleteScreen: ActivityComponentType<'ProfileCompleteScreen'> = () => {
+export const ProfileCompleteScreen: ActivityComponentType<'ProfileCompleteScreen'> = ({
+  params,
+}) => {
   return (
     <Screen header={<Header title='회원가입 완료' />}>
       <QueryErrorResetBoundary>
         {({ reset }) => (
           <ErrorBoundary fallback={ProfileCompleteErrorFallback} onReset={reset}>
             <Suspense>
-              <ProfileCompleteContent />
+              <ProfileCompleteContent userName={params.userName} />
             </Suspense>
           </ErrorBoundary>
         )}
@@ -27,9 +29,19 @@ export const ProfileCompleteScreen: ActivityComponentType<'ProfileCompleteScreen
   );
 };
 
-const ProfileCompleteContent = () => {
-  const { user } = useAuth();
+interface ProfileCompleteContentProps {
+  userName?: string;
+}
+
+const ProfileCompleteContent = ({ userName }: ProfileCompleteContentProps) => {
   const flow = useFlow();
+  const { user } = useAuth();
+
+  if (!user) {
+    throw new Error('로그인이 필요합니다.');
+  }
+
+  const displayName = userName || user.name || '회원';
 
   return (
     <div className='flex flex-col p-grid-margin'>
@@ -45,7 +57,7 @@ const ProfileCompleteContent = () => {
             className='mb-10'
           />
           <div className='flex flex-col h-[65px] justify-between text-center'>
-            <p className='headline-3'>{user?.nickname}님, 환영합니다!</p>
+            <p className='headline-3'>{displayName}님, 환영합니다!</p>
             <p className='body-1'>푸딩과 함께 특별한 한 끼를 시작해요!</p>
           </div>
         </div>

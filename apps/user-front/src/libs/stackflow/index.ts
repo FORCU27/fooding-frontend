@@ -46,9 +46,9 @@ declare module '@stackflow/config' {
       description: string | null;
       phoneNumber: string | null;
       referralCode: string | null;
-      imageId?: string | null;
+      imageFile: File | null;
     };
-    ProfileCompleteScreen: object;
+    ProfileCompleteScreen: { userName: string };
   }
 }
 
