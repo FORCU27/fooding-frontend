@@ -8,6 +8,7 @@ import {
   AuthUpdateUserBody,
   AuthUpdateUserProfileImageBody,
   GetLoginResponseSchema,
+  GetUserNicknameCheckResponseSchema,
   GetUserResponseSchema,
   UpdateUserInfoResponseSchema,
 } from './type';
@@ -40,5 +41,9 @@ export const authApi = {
   updateProfileImage: async (body: AuthUpdateUserProfileImageBody) => {
     const response = await api.patch('/auth/me/profile-image', { ...body });
     return UpdateUserInfoResponseSchema.parse(response);
+  },
+  nicknameCheck: async (nickname: string) => {
+    const response = await api.get(`/auth/nickname/check?nickname=${nickname}`);
+    return GetUserNicknameCheckResponseSchema.parse(response);
   },
 };

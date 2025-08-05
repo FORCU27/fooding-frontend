@@ -42,13 +42,6 @@ export type AuthLoginBody = {
   role: UserRole;
 };
 
-export const AuthResponseSchema = z.object({
-  accessToken: z.string(),
-  expiredIn: z.number(),
-  refreshToken: z.string(),
-  refreshExpiredIn: z.number(),
-});
-
 export type AuthNotificationStatusBody = {
   marketingConsent: boolean;
   pushAgreed: boolean;
@@ -67,6 +60,29 @@ export type AuthUpdateUserProfileImageBody = {
   imageId: string;
 };
 
+export type UpdateProfileErrorResponse = {
+  code: string;
+  message?: string;
+};
+
+export const UpdateProfileErrorCode = {
+  PHONE_NUMBER_ALREADY_EXISTS: '1004',
+} as const;
+
+export type UpdateProfileErrorCode =
+  (typeof UpdateProfileErrorCode)[keyof typeof UpdateProfileErrorCode];
+
+export const UpdateProfileErrorMessages: Record<UpdateProfileErrorCode, string> = {
+  [UpdateProfileErrorCode.PHONE_NUMBER_ALREADY_EXISTS]: '이미 가입된 전화번호입니다.',
+};
+
+export const AuthResponseSchema = z.object({
+  accessToken: z.string(),
+  expiredIn: z.number(),
+  refreshToken: z.string(),
+  refreshExpiredIn: z.number(),
+});
+
 export type GetAuthResponse = z.infer<typeof AuthResponseSchema>;
 
 export const GetLoginResponseSchema = ApiResponse(AuthResponseSchema);
@@ -76,3 +92,9 @@ export const GetUserResponseSchema = ApiResponse(AuthLoginUserSchema);
 export type GetUserResponse = z.infer<typeof GetUserResponseSchema>;
 
 export const UpdateUserInfoResponseSchema = ApiResponse(z.null());
+
+export const GetUserNicknameCheckResponseSchema = ApiResponse(
+  z.object({
+    isDuplicated: z.boolean(),
+  }),
+);
