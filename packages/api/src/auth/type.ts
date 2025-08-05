@@ -54,13 +54,6 @@ export type AuthRegisterBody = {
   marketingConsent?: boolean;
 };
 
-export const AuthResponseSchema = z.object({
-  accessToken: z.string(),
-  expiredIn: z.number(),
-  refreshToken: z.string(),
-  refreshExpiredIn: z.number(),
-});
-
 export type AuthNotificationStatusBody = {
   marketingConsent: boolean;
   pushAgreed: boolean;
@@ -100,11 +93,6 @@ export const AuthResponseSchema = z.object({
   expiredIn: z.number(),
   refreshToken: z.string(),
   refreshExpiredIn: z.number(),
-});
-
-export const GetUserUpdateResponseSchema = z.object({
-  status: z.string(),
-  data: z.null(),
 });
 
 export type GetAuthResponse = z.infer<typeof AuthResponseSchema>;
