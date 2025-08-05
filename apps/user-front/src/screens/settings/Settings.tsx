@@ -37,6 +37,7 @@ export const SettingScreen: ActivityComponentType<'SettingScreen'> = () => {
                 description: user?.description || null,
                 phoneNumber: user?.phoneNumber || null,
                 referralCode: user?.referralCode || null,
+                imageFile: null,
               })
             }
           >
