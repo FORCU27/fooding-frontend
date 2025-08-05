@@ -3,12 +3,18 @@
 
 import { Suspense } from 'react';
 
-import { AuthUpdateUserBody, AuthUpdateUserProfileImageBody } from '@repo/api/auth';
+import {
+  AuthUpdateUserBody,
+  UpdateProfileErrorCode,
+  UpdateProfileErrorMessages,
+  UpdateProfileErrorResponse,
+} from '@repo/api/auth';
 import { ErrorFallback } from '@repo/design-system/components/b2c';
 import { ActivityComponentType } from '@stackflow/react';
 import { useFlow } from '@stackflow/react/future';
 import { ErrorBoundary, ErrorBoundaryFallbackProps } from '@suspensive/react';
 import { QueryErrorResetBoundary } from '@tanstack/react-query';
+import { isAxiosError } from 'axios';
 import { UseFormSetError } from 'react-hook-form';
 
 import { ProfileUserInfoForm } from './components/ProfileUserInfoForm';
@@ -18,9 +24,17 @@ import { useUpdateUserInfo } from '@/hooks/auth/useUpdateUserInfo';
 import { useUpdateUserProfileImage } from '@/hooks/auth/useUpdateUserProfileImage';
 import { useUploadFile } from '@/hooks/file/useUploadFile';
 
-export const ProfileUserInfoScreen: ActivityComponentType<'ProfileUserInfoScreen'> = () => {
-  const { user } = useAuth();
+export const ProfileUserInfoScreen: ActivityComponentType<'ProfileUserInfoScreen'> = ({
+  params,
+}: {
+  params: any; //TODO: 추후 타입 수정
+}) => {
   const flow = useFlow();
+
+  const { user } = useAuth();
+  if (!user) {
+    throw new Error('로그인이 필요합니다.');
+  }
 
   const { mutateAsync: updateUserInfo } = useUpdateUserInfo();
   const { mutateAsync: uploadImageFile } = useUploadFile();
@@ -33,51 +47,55 @@ export const ProfileUserInfoScreen: ActivityComponentType<'ProfileUserInfoScreen
     try {
       const profileInfo: AuthUpdateUserBody = {
         name: formData.name === '' ? null : formData.name,
-        nickname: formData.nickname === '' ? null : formData.nickname,
+        nickname: params.nickname === '' ? null : params.nickname,
         phoneNumber: formData.phoneNumber === '' ? null : formData.phoneNumber,
-        description: formData.description === '' ? null : formData.description,
+        description: params.description === '' ? null : params.description,
         gender: formData.gender === '' ? 'NONE' : formData.gender,
         referralCode: formData.referralCode === '' ? null : formData.referralCode,
       };
 
       await updateUserInfo(profileInfo);
 
-      if (formData.imageFile) {
+      if (params.imageFile) {
         const formDataToUpload = new FormData();
-        formDataToUpload.append('files', formData.imageFile);
+        formDataToUpload.append('files', params.imageFile);
 
         try {
           const uploadResult = await uploadImageFile(formDataToUpload);
+
           await updateUserProfileImage({
-            imageId: uploadResult.data[0]?.id ? uploadResult.data[0]?.id : '',
+            imageId: uploadResult.data[0]?.id || '',
           });
         } catch (error) {
           console.error('uploadImageFile 에러:', error);
         }
       }
 
-      if (user?.phoneNumber || user?.name === null) return flow.push('ProfileCompleteScreen', {});
+      if (user.phoneNumber || user.name === null)
+        return flow.push('ProfileCompleteScreen', { userName: formData.name || '' });
 
       return flow.pop();
-    } catch (error: any) {
+    } catch (error) {
       console.error('프로필 수정 실패:', error);
-      if (error?.response?.data?.code === '1004') {
-        utils.setError('phoneNumber', {
-          type: 'server',
-          message: '이미 가입된 전화번호입니다.',
-        });
+
+      if (isAxiosError<UpdateProfileErrorResponse>(error)) {
+        if (error.response?.data.code === UpdateProfileErrorCode.PHONE_NUMBER_ALREADY_EXISTS) {
+          utils.setError('phoneNumber', {
+            type: 'server',
+            message: UpdateProfileErrorMessages[error.response.data.code],
+          });
+        }
       }
     }
   };
 
-  const editOriginValue: AuthUpdateUserBody & AuthUpdateUserProfileImageBody = {
-    name: user?.name ?? '',
-    nickname: user?.nickname ?? '',
-    description: user?.description ?? '',
-    phoneNumber: user?.phoneNumber ?? '',
-    gender: user?.gender ?? '',
-    referralCode: user?.referralCode ?? '',
-    imageId: user?.profileImage ?? '',
+  const editOriginValue: AuthUpdateUserBody = {
+    name: user.name ?? '',
+    nickname: user.nickname ?? '',
+    description: user.description ?? '',
+    phoneNumber: user.phoneNumber ?? '',
+    gender: user.gender ?? '',
+    referralCode: user.referralCode ?? '',
   };
 
   return (

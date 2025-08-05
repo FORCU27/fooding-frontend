@@ -3,84 +3,115 @@
 import Image from 'next/image';
 import { ChangeEvent, PropsWithoutRef, useMemo, useState } from 'react';
 
+import { zodResolver } from '@hookform/resolvers/zod';
 import { AuthUpdateUserBody, AuthUpdateUserProfileImageBody } from '@repo/api/auth';
 import { Button, TextField } from '@repo/design-system/components/b2c';
 import { FoodingIcon } from '@repo/design-system/icons';
 import { useFlow } from '@stackflow/react/future';
-import { useForm } from 'react-hook-form';
+import { Controller, useForm } from 'react-hook-form';
+import z, { isValid } from 'zod';
 
 import { Header } from '@/components/Layout/Header';
 import { useAuth } from '@/components/Provider/AuthProvider';
+import { useGetUserNicknameCheck } from '@/hooks/auth/useGetUserNicknameCheck';
+
+const formSchema = z.object({
+  nickname: z.string().min(1, '닉네임을 입력해주세요.').regex(/^\S+$/, '공백 없이 입력해주세요.'),
+  description: z.string().max(150, '최대 150자까지 입력 가능합니다.'),
+  imageId: z.string(),
+  imageFile: z.instanceof(File).nullable().optional(),
+  isNicknameChecked: z.boolean().refine((val) => val, '닉네임 중복 확인이 필요합니다.'),
+});
+
+type FormSchemaType = z.infer<typeof formSchema>;
 
 export interface ProfileFormProps {
-  editOriginValue?: AuthUpdateUserBody & AuthUpdateUserProfileImageBody;
-  handleSubmit: (data: AuthUpdateUserBody & { imageFile?: File | null }) => void;
+  editOriginValue: AuthUpdateUserBody & AuthUpdateUserProfileImageBody;
+  handleSubmit: (data: AuthUpdateUserBody & { imageFile: File | null }) => void;
 }
 
 export const ProfileForm = ({
   editOriginValue,
   handleSubmit,
 }: PropsWithoutRef<ProfileFormProps>) => {
-  const flow = useFlow();
   const { user } = useAuth();
-  const isUpdateMode = useMemo(
-    () => !!user && !(user.loginCount === 0 || user.phoneNumber == null),
-    [user],
-  );
+  const flow = useFlow();
+
+  if (!user) {
+    throw new Error('로그인이 필요합니다.');
+  }
 
   const [previewImage, setPreviewImage] = useState<string | null>(
-    user?.profileImage ?? editOriginValue?.imageId ?? null,
+    user.profileImage ?? editOriginValue.imageId ?? null,
   );
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [nicknameToCheck, setNicknameToCheck] = useState(editOriginValue.nickname || '');
+  const [hasNicknameCheckClicked, setHasNicknameCheckClicked] = useState(false);
+  const [isNicknameChanged, setIsNicknameChanged] = useState(false);
+
+  const { data: nicknameCheckData, refetch: checkNickname } =
+    useGetUserNicknameCheck(nicknameToCheck);
+
+  const isUpdateMode = useMemo(() => user.loginCount > 0 && !!user.phoneNumber, [user]);
+
   const maxLength = 150;
 
   const {
-    watch,
-    register,
+    control,
+    setValue,
+    getValues,
     handleSubmit: onSubmit,
-  } = useForm<{
-    name: string;
-    nickname: string;
-    description: string;
-    phoneNumber: string;
-    gender: string;
-    referralCode: string;
-    imageId: string;
-  }>({
+    formState: { errors },
+  } = useForm<FormSchemaType>({
     mode: 'onSubmit',
+    resolver: zodResolver(formSchema),
     defaultValues: {
-      name: editOriginValue?.name || '',
-      nickname: editOriginValue?.nickname || '',
-      description: editOriginValue?.description ?? '',
-      phoneNumber: editOriginValue?.phoneNumber || '',
-      gender: editOriginValue?.gender || '',
-      referralCode: editOriginValue?.referralCode || '',
+      nickname: editOriginValue.nickname || '',
+      description: editOriginValue.description || '',
+      isNicknameChecked: editOriginValue.nickname === user.nickname,
+      imageId: editOriginValue.imageId || '',
     },
   });
-
-  const nickname = watch('nickname');
-  const description = watch('description');
 
   const handleImageChange = (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0] ?? null;
     setSelectedFile(file);
     setPreviewImage(
-      file ? URL.createObjectURL(file) : (user?.profileImage ?? editOriginValue?.imageId ?? null),
+      file ? URL.createObjectURL(file) : (user.profileImage ?? editOriginValue.imageId ?? null),
     );
   };
 
-  const onFormSubmit = (data: {
-    name: string;
-    nickname: string;
-    description: string;
-    phoneNumber: string;
-    gender: string;
-    referralCode: string;
-    imageId: string;
-  }) => {
+  const handleNicknameChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const newNickname = e.target.value;
+    setNicknameToCheck(newNickname);
+    setIsNicknameChanged(newNickname !== user.nickname);
+    setHasNicknameCheckClicked(false);
+    setValue('isNicknameChecked', newNickname === user.nickname);
+  };
+
+  const handleNicknameCheck = async () => {
+    setHasNicknameCheckClicked(true);
+
+    const nickname = getValues('nickname');
+    if (!nickname || nickname === user.nickname) {
+      setValue('isNicknameChecked', true);
+      return;
+    }
+
+    const { data } = await checkNickname();
+    const isAvailable = !data?.isDuplicated;
+
+    setValue('isNicknameChecked', isAvailable);
+  };
+
+  const onFormSubmit = (data: FormSchemaType) => {
     handleSubmit({
       ...data,
       imageFile: selectedFile,
+      name: editOriginValue.name ? editOriginValue.name : null,
+      phoneNumber: editOriginValue.phoneNumber ? editOriginValue.phoneNumber : null,
+      referralCode: editOriginValue.referralCode ? editOriginValue.referralCode : null,
+      gender: editOriginValue.gender ? editOriginValue.gender : 'NONE',
     });
   };
 
@@ -93,8 +124,8 @@ export const ProfileForm = ({
           <div className='flex flex-col gap-4'>
             <div className='flex justify-center'>
               <div className='relative'>
-                <div className='size-[120px] rounded-full overflow-hidden flex'>
-                  <div className='bg-gray-2 flex justify-center items-center text-[#111111]/10 w-full h-full'>
+                <div className='size-[120px] rounded-full overflow-hidden'>
+                  <div className='w-full h-full'>
                     {previewImage ? (
                       <Image
                         src={previewImage}
@@ -104,7 +135,9 @@ export const ProfileForm = ({
                         height={120}
                       />
                     ) : (
-                      <FoodingIcon />
+                      <div className='bg-gray-2 flex justify-center items-center text-[#111111]/10'>
+                        <FoodingIcon />
+                      </div>
                     )}
                   </div>
                 </div>
@@ -119,50 +152,126 @@ export const ProfileForm = ({
                 </div>
               </div>
             </div>
+            <div className='flex justify-between gap-3'>
+              <Controller
+                name='nickname'
+                control={control}
+                render={({ field }) => {
+                  const isError =
+                    !!errors.nickname ||
+                    (hasNicknameCheckClicked &&
+                      nicknameCheckData?.isDuplicated &&
+                      nicknameToCheck !== user.nickname);
 
-            <TextField label={<TextField.Label>닉네임</TextField.Label>}>
-              <TextField.Input
-                {...register('nickname')}
-                value={nickname}
-                onChange={(e) => {
-                  register('nickname').onChange(e);
+                  const isSuccess =
+                    hasNicknameCheckClicked &&
+                    nicknameCheckData &&
+                    !nicknameCheckData.isDuplicated &&
+                    nicknameToCheck !== user.nickname;
+
+                  return (
+                    <div className='flex flex-col w-full'>
+                      <TextField
+                        label={<TextField.Label className='text-gray-500'>닉네임</TextField.Label>}
+                        error={isError}
+                        errorMessage={
+                          <TextField.ErrorMessage>
+                            {errors.nickname?.message || '이미 사용 중인 닉네임입니다.'}
+                          </TextField.ErrorMessage>
+                        }
+                        success={isSuccess}
+                        successMessage={
+                          <TextField.SuccessMessage>
+                            사용 가능한 닉네임입니다.
+                          </TextField.SuccessMessage>
+                        }
+                      >
+                        <TextField.Input
+                          {...field}
+                          onChange={(e) => {
+                            field.onChange(e);
+                            handleNicknameChange(e);
+                          }}
+                          placeholder='닉네임을 입력하세요'
+                        />
+                      </TextField>
+                    </div>
+                  );
                 }}
               />
-            </TextField>
-            <TextField label={<TextField.Label>자신을 소개해주세요.</TextField.Label>}>
-              <div className='relative w-full p-3'>
-                <TextField.Textarea
-                  {...register('description')}
-                  value={description}
-                  onChange={(e) => {
-                    register('description').onChange(e);
-                  }}
-                  maxLength={maxLength}
-                  placeholder='사람들에게 나를 간단하게 소개해보세요!'
-                  className='resize-none'
-                />
-                <div className='text-right text-gray-5 text-sm mt-2'>
-                  {description?.length ?? 0} / {maxLength}
+              <Button
+                size='large'
+                className='w-1/4 mt-7'
+                onClick={handleNicknameCheck}
+                disabled={!isNicknameChanged}
+              >
+                중복확인
+              </Button>
+            </div>
+
+            <Controller
+              name='description'
+              control={control}
+              render={({ field }) => (
+                <div className='relative w-full mt-4'>
+                  <TextField
+                    label={
+                      <TextField.Label className='text-gray-500'>
+                        자신을 소개해주세요.
+                      </TextField.Label>
+                    }
+                    error={!!errors.description}
+                    errorMessage={errors.description?.message}
+                  >
+                    <TextField.Textarea
+                      {...field}
+                      maxLength={maxLength}
+                      placeholder='사람들에게 나를 간단하게 소개해보세요!'
+                      className='resize-none'
+                    />
+                  </TextField>
+                  <div className='text-right text-gray-500 text-sm mt-2'>
+                    {field.value?.length || 0}/150
+                  </div>
                 </div>
-              </div>
-            </TextField>
+              )}
+            />
           </div>
-          <div>
-            {user && editOriginValue?.nickname ? (
-              <Button type='submit'>저장</Button>
+
+          <div className='mt-4'>
+            {isUpdateMode ? (
+              <Button
+                type='submit'
+                disabled={
+                  !isValid ||
+                  (isNicknameChanged &&
+                    (!hasNicknameCheckClicked || nicknameCheckData?.isDuplicated))
+                }
+              >
+                저장
+              </Button>
             ) : (
               <Button
                 type='button'
-                onClick={() =>
-                  flow.push('ProfileUserInfoScreen', {
-                    nickname,
-                    description,
-                    imageId: editOriginValue?.imageId ?? user?.profileImage,
-                    gender: user?.gender || 'NONE',
-                    phoneNumber: null,
-                    referralCode: null,
-                  })
+                disabled={
+                  !!errors.nickname ||
+                  !!errors.description ||
+                  (isNicknameChanged &&
+                    (nicknameCheckData?.isDuplicated || !hasNicknameCheckClicked))
                 }
+                onClick={() => {
+                  const formValues = getValues();
+                  flow.push('ProfileUserInfoScreen', {
+                    nickname: formValues.nickname,
+                    description: formValues.description,
+                    imageFile: selectedFile,
+                    gender: editOriginValue.gender ? editOriginValue.gender : 'NONE',
+                    phoneNumber: editOriginValue.phoneNumber ? editOriginValue.phoneNumber : null,
+                    referralCode: editOriginValue.referralCode
+                      ? editOriginValue.referralCode
+                      : null,
+                  });
+                }}
               >
                 다음
               </Button>

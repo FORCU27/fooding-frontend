@@ -17,15 +17,19 @@ import { useUpdateUserProfileImage } from '@/hooks/auth/useUpdateUserProfileImag
 import { useUploadFile } from '@/hooks/file/useUploadFile';
 
 export const ProfileModifyScreen: ActivityComponentType<'ProfileModifyScreen'> = () => {
-  const { user } = useAuth();
   const flow = useFlow();
+
+  const { user } = useAuth();
+  if (!user) {
+    throw new Error('로그인이 필요합니다.');
+  }
 
   const { mutateAsync: updateUserInfo } = useUpdateUserInfo();
   const { mutateAsync: uploadImageFile } = useUploadFile();
   const { mutateAsync: updateUserProfileImage } = useUpdateUserProfileImage();
 
-  const handleFormSubmit = async (formData: AuthUpdateUserBody & { imageFile?: File | null }) => {
-    const isFirstProfile = user?.nickname === null;
+  const handleFormSubmit = async (formData: AuthUpdateUserBody & { imageFile: File | null }) => {
+    const isFirstProfile = user.nickname === null;
 
     if (isFirstProfile) {
       flow.push('ProfileUserInfoScreen', { ...formData });
@@ -50,7 +54,6 @@ export const ProfileModifyScreen: ActivityComponentType<'ProfileModifyScreen'> =
 
         try {
           const uploadResult = await uploadImageFile(formDataToUpload);
-          console.log('uploadResult', uploadResult);
           await updateUserProfileImage({
             imageId: uploadResult.data[0]?.id ? uploadResult.data[0]?.id : '',
           });
@@ -66,13 +69,13 @@ export const ProfileModifyScreen: ActivityComponentType<'ProfileModifyScreen'> =
   };
 
   const editOriginValue: AuthUpdateUserBody & AuthUpdateUserProfileImageBody = {
-    name: user?.name ?? '',
-    nickname: user?.nickname ?? '',
-    description: user?.description ?? '',
-    phoneNumber: user?.phoneNumber ?? '',
-    gender: user?.gender ?? '',
-    referralCode: user?.referralCode ?? '',
-    imageId: user?.profileImage ?? '',
+    name: user.name ?? '',
+    nickname: user.nickname ?? '',
+    description: user.description ?? '',
+    phoneNumber: user.phoneNumber ?? '',
+    gender: user.gender ?? '',
+    referralCode: user.referralCode ?? '',
+    imageId: user.profileImage ?? '',
   };
 
   return (
