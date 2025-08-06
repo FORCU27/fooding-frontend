@@ -73,8 +73,14 @@ const Content = () => {
         <div className='flex justify-between px-grid-margin'>
           <div className='flex justify-center items-center'>
             {user?.profileImage ? (
-              <div className='flex justify-center items-center w-[64px] h-[64px] bg-gray-1 rounded-full'>
-                <Image src={user.profileImage} height={64} width={64} alt='user-profile' />
+              <div className='flex justify-center items-center w-[64px] h-[64px]'>
+                <Image
+                  src={user.profileImage}
+                  height={64}
+                  width={64}
+                  alt='user-profile'
+                  className='w-full h-full object-cover rounded-full'
+                />
               </div>
             ) : (
               <div className='flex justify-center items-center w-[64px] h-[64px] bg-gray-1 rounded-full'>
