@@ -1,7 +1,11 @@
 import type { StoryObj } from '@storybook/react';
+import { Controller, useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from 'zod';
 
 import { Select } from './Select';
 import { useState } from 'react';
+import { Button } from '.';
 
 const meta = {
   title: 'components/b2c/Select',
@@ -84,6 +88,48 @@ export const Controlled: Story = {
         <Select.Option value='2'>여성</Select.Option>
         <Select.Option value='3'>선택안함</Select.Option>
       </Select>
+    );
+  },
+};
+
+export const WithForm: Story = {
+  render: () => {
+    const formSchema = z.object({
+      select: z.enum(GENDER),
+    });
+
+    const form = useForm({
+      resolver: zodResolver(formSchema),
+      defaultValues: {
+        select: GENDER[0],
+      },
+    });
+
+    return (
+      <div className='w-[400px]'>
+        <form
+          onSubmit={form.handleSubmit((data) => {
+            console.log('Form Submit', data);
+          })}
+        >
+          <Controller
+            name='select'
+            control={form.control}
+            render={({ field }) => (
+              <Select {...field} label='성별'>
+                {GENDER.map((genderOption) => (
+                  <Select.Option key={genderOption} value={genderOption}>
+                    {genderOption}
+                  </Select.Option>
+                ))}
+              </Select>
+            )}
+          />
+          <Button type='submit' className='mt-4'>
+            제출
+          </Button>
+        </form>
+      </div>
     );
   },
 };

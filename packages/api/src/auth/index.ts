@@ -3,10 +3,13 @@ export * from './type';
 import { api } from '../shared';
 import {
   AuthLoginBody,
+  AuthNotificationStatusBody,
   AuthSocialLoginBody,
   AuthRegisterBody,
   AuthUpdateUserBody,
+  AuthUpdateUserProfileImageBody,
   GetLoginResponseSchema,
+  GetUserNicknameCheckResponseSchema,
   GetUserResponseSchema,
   UpdateUserInfoResponseSchema,
 } from './type';
@@ -32,7 +35,20 @@ export const authApi = {
   },
 
   updateInfo: async (body: AuthUpdateUserBody) => {
-    const response = await api.put('/auth/me', { ...body });
+    const response = await api.patch('/auth/me', { ...body });
     return UpdateUserInfoResponseSchema.parse(response);
+  },
+
+  updateNotificationStatus: async (body: AuthNotificationStatusBody) => {
+    const response = await api.patch('/auth/me', { ...body });
+    return UpdateUserInfoResponseSchema.parse(response);
+  },
+  updateProfileImage: async (body: AuthUpdateUserProfileImageBody) => {
+    const response = await api.patch('/auth/me/profile-image', { ...body });
+    return UpdateUserInfoResponseSchema.parse(response);
+  },
+  nicknameCheck: async (nickname: string) => {
+    const response = await api.get(`/auth/nickname/check?nickname=${nickname}`);
+    return GetUserNicknameCheckResponseSchema.parse(response);
   },
 };

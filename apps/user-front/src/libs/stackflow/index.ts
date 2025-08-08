@@ -8,8 +8,11 @@ import { stackflow } from '@stackflow/react/future';
 import { BookmarkListScreen } from '@/screens/bookmarks/Bookmarks';
 import { MyCouponListScreen } from '@/screens/my-coupons/MyCoupons';
 import { NotificationListScreen } from '@/screens/notifications/Notifications';
+import { ProfileModifyScreen } from '@/screens/profile/ProfileModify';
+import { ProfileCompleteScreen } from '@/screens/profile-user-info/ProfileCompleteScreen';
+import { ProfileUserInfoScreen } from '@/screens/profile-user-info/ProfileUserInfo';
 import { ReservationDetailScreen } from '@/screens/reservation-detail/ReservationDetail';
-import { ReviewCreateScreen } from '@/screens/reviews/reviewCreate';
+import { ReviewCreateScreen } from '@/screens/reviews/ReviewCreate';
 import { NotificationSettingScreen } from '@/screens/settings/Notifications';
 import { SettingScreen } from '@/screens/settings/Settings';
 import { StoreDetailScreen } from '@/screens/store-detail/StoreDetail';
@@ -36,6 +39,16 @@ declare module '@stackflow/config' {
     ReviewCreateScreen: { reservationId: number };
     WaitingDetailScreen: { waitingId: number };
     ReservationDetailScreen: { reservationId: number };
+    ProfileModifyScreen: object;
+    ProfileUserInfoScreen: {
+      gender: string;
+      nickname: string | null;
+      description: string | null;
+      phoneNumber: string | null;
+      referralCode: string | null;
+      imageFile: File | null;
+    };
+    ProfileCompleteScreen: { userName: string };
   }
 }
 
@@ -55,6 +68,9 @@ const config = defineConfig({
     { name: 'ReviewCreateScreen' },
     { name: 'WaitingDetailScreen' },
     { name: 'ReservationDetailScreen' },
+    { name: 'ProfileModifyScreen' },
+    { name: 'ProfileUserInfoScreen' },
+    { name: 'ProfileCompleteScreen' },
   ],
 
   transitionDuration: 350,
@@ -78,6 +94,9 @@ export const { Stack } = stackflow({
     ReviewCreateScreen,
     WaitingDetailScreen,
     ReservationDetailScreen,
+    ProfileModifyScreen,
+    ProfileUserInfoScreen,
+    ProfileCompleteScreen,
   },
   plugins: [
     basicRendererPlugin(),

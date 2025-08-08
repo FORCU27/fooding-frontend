@@ -10,7 +10,7 @@ import { DefaultErrorBoundary } from '@/components/Layout/DefaultErrorBoundary';
 import { Header } from '@/components/Layout/Header';
 import { Screen } from '@/components/Layout/Screen';
 import { useGetUserInfo } from '@/hooks/auth/useGetUserInfo';
-import { useUpdateUserInfo } from '@/hooks/auth/useUpdateUserInfo';
+import { useUpdateUserNotificationStatus } from '@/hooks/auth/useUpdateUserNotificationStatus';
 
 export const NotificationSettingScreen: ActivityComponentType<'NotificationSettingScreen'> = () => {
   return (
@@ -22,7 +22,7 @@ export const NotificationSettingScreen: ActivityComponentType<'NotificationSetti
 
 const NotificationSettingScreenContent = () => {
   const { data: user } = useGetUserInfo();
-  const updateUserInfo = useUpdateUserInfo();
+  const updateNotificationStatus = useUpdateUserNotificationStatus();
 
   const [marketingAgreeChecked, setMarketingAgreeChecked] = useState(user.marketingConsent);
   const [pushAgreeChecked, setPushAgreeChecked] = useState(user.pushAgreed);
@@ -30,12 +30,10 @@ const NotificationSettingScreenContent = () => {
   const onMarketingConsentChange = (value: boolean) => {
     setMarketingAgreeChecked(value);
 
-    updateUserInfo.mutate(
+    updateNotificationStatus.mutate(
       {
         marketingConsent: value,
         pushAgreed: user.pushAgreed,
-        nickname: user.nickname ?? undefined,
-        gender: user.gender ?? undefined,
       },
       {
         onError: () => {
@@ -48,12 +46,10 @@ const NotificationSettingScreenContent = () => {
   const onPushAgreeChange = (value: boolean) => {
     setPushAgreeChecked(value);
 
-    updateUserInfo.mutate(
+    updateNotificationStatus.mutate(
       {
         marketingConsent: user.marketingConsent,
         pushAgreed: value,
-        nickname: user.nickname ?? undefined,
-        gender: user.gender ?? undefined,
       },
       {
         onError: () => {

@@ -82,6 +82,23 @@ export const Invalid: Story = {
   },
 };
 
+export const Success: Story = {
+  render: () => {
+    return (
+      <TextField
+        label={<TextField.Label>닉네임</TextField.Label>}
+        success
+        successMessage={
+          <TextField.SuccessMessage>사용가능한 닉네임입니다.</TextField.SuccessMessage>
+        }
+        defaultValue='test'
+      >
+        <TextField.Input placeholder='닉네임을 입력하세요' />
+      </TextField>
+    );
+  },
+};
+
 export const Controlled: Story = {
   render: () => {
     const [value, setValue] = useState('');
