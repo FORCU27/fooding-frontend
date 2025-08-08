@@ -42,7 +42,7 @@ export default function LoginPage() {
             <h1 className='headline-2'>{isSignUp ? '회원가입' : '로그인'}</h1>
             <div className='h-[12px]' />
             <div className='flex flex-col gap-[4px]'>
-              {!isSignUp && <p className='body-3'>사장님을 위한 전용 공간에 오신 걸 환영합니다.</p>}
+              {!isSignUp && <p className='body-b'>사장님을 위한 전용 공간에 오신 걸 환영합니다.</p>}
               <button
                 onClick={() => setIsSignUp((prev) => !prev)}
                 className='flex body-6 text-blue-500 cursor-pointer'

@@ -65,7 +65,7 @@ export default function LoginForm({
       <form>
         <div className='flex flex-col gap-[20px]'>
           <div className='flex flex-col gap-[8px]'>
-            <label className='subtitle-3'>아이디</label>
+            <label className='body-b'>아이디</label>
             <Input
               required
               autoFocus
@@ -78,7 +78,7 @@ export default function LoginForm({
             />
           </div>
           <div className='flex flex-col gap-[8px]'>
-            <label className='subtitle-3'>비밀번호</label>
+            <label className='body-b'>비밀번호</label>
             <div className='relative'>
               <Input
                 required

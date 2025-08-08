@@ -83,7 +83,7 @@ export default function RegisterForm({ onSignupSuccess }: RegisterFormProps) {
         <div className='flex flex-col gap-[20px]'>
           {/* 아이디 */}
           <div className='flex flex-col gap-[8px]'>
-            <label className='subtitle-3'>아이디</label>
+            <label className='body-b'>아이디</label>
             <Input
               required
               autoFocus
@@ -97,7 +97,7 @@ export default function RegisterForm({ onSignupSuccess }: RegisterFormProps) {
           </div>
           {/* 비밀번호 */}
           <div className='flex flex-col gap-[8px]'>
-            <label className='subtitle-3'>비밀번호</label>
+            <label className='body-b'>비밀번호</label>
             <div className='relative'>
               <Input
                 required
@@ -120,7 +120,7 @@ export default function RegisterForm({ onSignupSuccess }: RegisterFormProps) {
           </div>
           {/* 비밀번호 확인 */}
           <div className='flex flex-col gap-[8px]'>
-            <label className='subtitle-3'>비밀번호 확인</label>
+            <label className='body-b'>비밀번호 확인</label>
             <div className='relative'>
               <Input
                 required
@@ -143,7 +143,7 @@ export default function RegisterForm({ onSignupSuccess }: RegisterFormProps) {
           </div>
           {/* 이름 */}
           <div className='flex flex-col gap-[8px]'>
-            <label className='subtitle-3'>이름</label>
+            <label className='body-b'>이름</label>
             <Input
               required
               value={name}
@@ -153,7 +153,7 @@ export default function RegisterForm({ onSignupSuccess }: RegisterFormProps) {
           </div>
           {/* 휴대폰 번호 */}
           <div className='flex flex-col gap-[8px]'>
-            <label className='subtitle-3'>휴대폰 번호</label>
+            <label className='body-b'>휴대폰 번호</label>
             <Input
               required
               value={phoneNumber}
@@ -163,7 +163,7 @@ export default function RegisterForm({ onSignupSuccess }: RegisterFormProps) {
           </div>
           {/* 추천인 코드 (선택) */}
           <div className='flex flex-col gap-[8px]'>
-            <span className='flex gap-[4px] subtitle-3'>
+            <span className='flex gap-[4px] body-b'>
               <label>추천인 코드</label>
               <label className='text-gray-5'>(선택)</label>
             </span>
