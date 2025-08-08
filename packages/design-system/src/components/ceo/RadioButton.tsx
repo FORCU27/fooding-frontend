@@ -1,4 +1,4 @@
-import { useCallback, useId } from 'react';
+import { useId } from 'react';
 
 type RadioButtonProps = {
   label: string;
@@ -17,14 +17,11 @@ const RadioButton = ({
   name,
   className = '',
 }: RadioButtonProps) => {
-  const handleChange = useCallback(
-    (e: React.ChangeEvent<HTMLInputElement>) => {
-      onChange(e.target.value);
-    },
-    [onChange],
-  );
-
   const radioBtnId = useId();
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    onChange(e.target.value);
+  };
 
   return (
     <label
@@ -51,7 +48,7 @@ const RadioButton = ({
           transition-colors
           checked:border-fooding-purple
           checked:bg-white
-          before:content-[]
+          before:content-[""]
           before:absolute
           before:top-1/2
           before:left-1/2

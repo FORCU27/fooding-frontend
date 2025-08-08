@@ -14,3 +14,4 @@ export * from './Dialog';
 export * from './DatePicker';
 export * from './RadioButton';
 export * from './RadioButtonGroup';
+export * from './RecurringDatePicker';

@@ -18,6 +18,7 @@ const RadioButtonGroup = ({
   if (!options.length) {
     return <p>옵션이 없습니다.</p>;
   }
+
   return (
     <fieldset className={`flex gap-4 ${className}`} role='radiogroup' aria-label={name}>
       <legend className='sr-only'>{name}</legend>
