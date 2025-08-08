@@ -20,6 +20,8 @@
   --fs-body-6: 14px;
   --fs-body-7: 12px;
   --fs-body-8: 12px;
+  --fs-body-a: 28px;
+  --fs-body-b: 18px;
 
   /* font weights */
   --fw-regular: 400;
@@ -34,6 +36,9 @@
 
   /* spacings */
   --spacing-grid-margin: 20px;
+
+  /* letter spacing */
+  --ls-tight: -0.025em;
 }
 
 @layer utilities {
@@ -144,5 +149,17 @@
     font-size: var(--fs-body-8);
     font-weight: var(--fw-regular);
     line-height: var(--lh-loose);
+  }
+  .body-a {
+    font-size: var(--fs-body-a);
+    font-weight: var(--fw-regular);
+    line-height: var(--lh-tight);
+    letter-spacing: var(--ls-tight);
+  }
+  .body-b {
+    font-size: var(--fs-body-b);
+    font-weight: var(--fw-regular);
+    line-height: var(--lh-tight);
+    letter-spacing: var(--ls-tight);
   }
 }
