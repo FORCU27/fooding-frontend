@@ -5,6 +5,7 @@ import {
   AuthLoginBody,
   AuthNotificationStatusBody,
   AuthSocialLoginBody,
+  AuthRegisterBody,
   AuthUpdateUserBody,
   AuthUpdateUserProfileImageBody,
   GetLoginResponseSchema,
@@ -14,6 +15,10 @@ import {
 } from './type';
 
 export const authApi = {
+  register: async (body: AuthRegisterBody) => {
+    return await api.post('/auth/register', body);
+  },
+
   login: async (body: AuthLoginBody) => {
     const response = await api.post('/auth/login', body);
     return GetLoginResponseSchema.parse(response);
