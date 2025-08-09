@@ -1,11 +1,7 @@
 'use client';
 
 import { UploadFile } from '@repo/api/file';
-import {
-  CreateStoreReviewBody,
-  mockReservationDetailResponse,
-  mockStoreReviewListResponse,
-} from '@repo/api/user';
+import { CreateStoreReviewBody, mockReservationDetailResponse } from '@repo/api/user';
 import { ActivityComponentType, useFlow } from '@stackflow/react/future';
 
 import { ReviewForm } from './components/ReviewForm';
@@ -28,9 +24,8 @@ export const ReviewCreateScreen: ActivityComponentType<'ReviewCreateScreen'> = (
 }) => {
   //TODO: 예약 API 나오는대로 수정
   const { data: reservation } = mockReservationDetailResponse;
-  const { data: reviews } = mockStoreReviewListResponse;
-  const { user } = useAuth();
   console.log(reservationId);
+  const { user } = useAuth();
   const flow = useFlow();
 
   const { mutateAsync: createReview } = useCreateStoreReview();
