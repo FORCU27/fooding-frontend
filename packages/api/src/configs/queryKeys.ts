@@ -52,4 +52,7 @@ export const queryKeys = {
   file: {
     upload: 'fileUpload',
   },
+  file: {
+    upload: 'fileUpload',
+  },
 };
