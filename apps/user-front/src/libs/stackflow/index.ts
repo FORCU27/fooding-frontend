@@ -27,7 +27,7 @@ declare module '@stackflow/config' {
     ReservationTab: object;
     MyPageTab: object;
     NotificationListScreen: object;
-    StoreDetailScreen: { storeId: number };
+    StoreDetailScreen: { storeId: number; tab?: string };
     BookmarkListScreen: object;
     MyCouponListScreen: object;
     StorePostDetailScreen: { storePostId: number; storeName: string };

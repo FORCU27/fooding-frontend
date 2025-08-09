@@ -1,10 +1,10 @@
 'use client';
 
+import { UploadFile } from '@repo/api/file';
 import {
   CreateStoreReviewBody,
   mockReservationDetailResponse,
   mockStoreReviewListResponse,
-  VisitPurpose,
 } from '@repo/api/user';
 import { ActivityComponentType, useFlow } from '@stackflow/react/future';
 
@@ -14,6 +14,7 @@ import BottomTab from '@/components/Layout/BottomTab';
 import { Header } from '@/components/Layout/Header';
 import { Screen } from '@/components/Layout/Screen';
 import { useAuth } from '@/components/Provider/AuthProvider';
+import { useUploadFile } from '@/hooks/file/useUploadFile';
 import { useCreateStoreReview } from '@/hooks/store/useCreateStoreReview';
 
 type ReviewCreateProps = {
@@ -32,21 +33,44 @@ export const ReviewCreateScreen: ActivityComponentType<'ReviewCreateScreen'> = (
   console.log(reservationId);
   const flow = useFlow();
 
-  const { mutate: createReview } = useCreateStoreReview();
+  const { mutateAsync: createReview } = useCreateStoreReview();
+  const { mutateAsync: uploadImageFile } = useUploadFile();
 
-  const handleFormSubmit = (formData: CreateStoreReviewBody) => {
+  if (!user) return;
+
+  const handleFormSubmit = async (formData: CreateStoreReviewBody & { imageFiles: File[] }) => {
     try {
-      createReview({
-        ...formData,
-        userId: user?.id || 1,
-        storeId: 1,
-        visitPurpose: reviews.list[0]?.purpose as VisitPurpose,
-      });
-    } catch (error) {
-      console.log(error);
-    }
+      let uploadedImageIds: string[] = [];
 
-    return flow.pop();
+      if (formData.imageFiles && formData.imageFiles.length > 0) {
+        const formDataToUpload = new FormData();
+        formData.imageFiles.forEach((file) => {
+          formDataToUpload.append('files', file);
+        });
+
+        const uploadResult = await uploadImageFile(formDataToUpload);
+        uploadedImageIds = uploadResult.data.map((item: UploadFile) => item.url);
+      }
+
+      const totalScore = Math.round((formData.taste + formData.mood + formData.service) / 3);
+
+      // 리뷰 생성 API 호출 예시
+      await createReview({
+        content: formData.content,
+        taste: formData.taste,
+        mood: formData.mood,
+        service: formData.service,
+        userId: user.id,
+        storeId: 17, //TODO: 추후 수정
+        visitPurpose: 'DATE', //TODO: 추후 수정
+        imageUrls: uploadedImageIds,
+        total: totalScore,
+      });
+
+      flow.pop();
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   return (

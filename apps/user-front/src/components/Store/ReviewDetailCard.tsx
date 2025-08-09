@@ -1,7 +1,7 @@
 import Image from 'next/image';
 
 import { Review } from '@repo/api/user';
-import { FoodingIcon, HeartIcon, MessageSquareIcon } from '@repo/design-system/icons';
+import { FoodingIcon } from '@repo/design-system/icons';
 
 import { StarRating } from './StarRating';
 import { formatDotDate } from '@/utils/date';
@@ -19,15 +19,17 @@ export const ReviewDetailCard = ({ review }: ReviewCardProps) => {
         <div className='flex'>
           <div className='flex mr-3'>
             {review.profileUrl ? (
-              <Image
-                style={{ objectFit: 'cover', borderRadius: '50%' }}
-                src={review.profileUrl}
-                alt='프로필 이미지'
-                width={40}
-                height={40}
-              />
+              <div className='flex justify-center items-center w-10 h-10'>
+                <Image
+                  src={review.profileUrl}
+                  alt='프로필 이미지'
+                  width={40}
+                  height={40}
+                  className='w-full h-full object-cover rounded-full'
+                />
+              </div>
             ) : (
-              <div className='flex bg-gray-1 justify-center items-center rounded-[50%] w-[40px] h-[40px]'>
+              <div className='flex bg-gray-1 justify-center items-center rounded-full w-10 h-10'>
                 <FoodingIcon width={25} height={28} color='rgba(17, 17, 17, 0.1)' />
               </div>
             )}
@@ -53,34 +55,23 @@ export const ReviewDetailCard = ({ review }: ReviewCardProps) => {
 
       <div className='flex flex-col'>
         <p className='text-gray-5 body-8 my-4'>{review.content}</p>
-        {imageUrls && imageUrls.length > 0 && (
-          <div className='flex h-[140px] justify-between overflow-x-auto scrollbar-hide gap-3'>
-            {imageUrls.length > 1 ? (
-              imageUrls.map((image, idx) => (
-                <Image
-                  key={idx}
-                  width={140}
-                  height={140}
-                  src={image}
-                  alt={`리뷰이미지_${idx}`}
-                  className='rounded-2xl shrink-0'
-                  style={{ objectFit: 'cover' }}
-                />
-              ))
-            ) : imageUrls[0] ? (
+        {imageUrls.length > 0 && (
+          <div className='flex h-[140px] overflow-x-auto scrollbar-hide gap-3'>
+            {imageUrls.map((url, idx) => (
               <Image
+                key={idx}
                 width={140}
                 height={140}
-                src={imageUrls[0]}
-                alt='리뷰이미지'
-                className='rounded-2xl'
+                src={url}
+                alt={`리뷰이미지_${idx}`}
+                className='rounded-2xl shrink-0'
                 style={{ objectFit: 'cover' }}
               />
-            ) : null}
+            ))}
           </div>
         )}
       </div>
-      <div className='flex mt-2 gap-5'>
+      {/* <div className='flex mt-2 gap-5'>
         <div className='flex gap-2'>
           <HeartIcon size={12} />
           <span className='body-7 color-gray-6'>3</span>
@@ -89,7 +80,9 @@ export const ReviewDetailCard = ({ review }: ReviewCardProps) => {
           <MessageSquareIcon size={12} />
           <span className='body-7 color-gray-6'>1</span>
         </div>
-      </div>
+      </div> */}
+
+      {/* TODO: 추후 수정 */}
     </div>
   );
 };
