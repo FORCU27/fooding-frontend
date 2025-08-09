@@ -2,18 +2,27 @@
 import Image from 'next/image';
 import { ChangeEvent } from 'react';
 
+import { Store } from '@repo/api/ceo';
 import { Input, Button } from '@repo/design-system/components/b2c';
+
+import StoreList from './StoreList';
 
 type StoreSetupCardProps = {
   storeName: string;
   onChangeStoreName: (value: string) => void;
   onCreateStore: () => void;
+  stores: Store[];
+  selectedStoreId: number | null;
+  onSelectStore: (id: number) => void;
 };
 
 export default function StoreSetupCard({
   storeName,
   onChangeStoreName,
   onCreateStore,
+  stores,
+  selectedStoreId,
+  onSelectStore,
 }: StoreSetupCardProps) {
   return (
     <div className='bg-white rounded-2xl shadow-lg w-[571px] p-[60px] text-center flex flex-col items-center'>
@@ -24,7 +33,15 @@ export default function StoreSetupCard({
 
       <div className='py-[32px] flex flex-col items-center w-full'>
         <hr className='w-full border-gray-5' />
-        <p className='text-gray-5 body-2 min-h-[182px] flex items-center'>관리할 매장이 없습니다</p>
+        {stores?.length > 0 ? (
+          <div className='w-full py-[32px]'>
+            <StoreList stores={stores} selectedStoreId={selectedStoreId} onSelect={onSelectStore} />
+          </div>
+        ) : (
+          <p className='text-gray-5 body-2 min-h-[182px] flex items-center'>
+            관리할 매장이 없습니다
+          </p>
+        )}
         <hr className='w-full border-gray-5' />
       </div>
 

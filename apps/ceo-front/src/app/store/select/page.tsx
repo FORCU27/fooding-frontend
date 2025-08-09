@@ -1,18 +1,32 @@
 'use client';
 import Image from 'next/image';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
-// import { storeApi } from '@repo/api/ceo';
+import { Store, storeApi } from '@repo/api/ceo';
 
 import StoreSetupCard from './components/StoreSetupCard';
 
 export default function StoreSelectPage() {
   const [storeName, setStoreName] = useState('');
+  const [stores, setStores] = useState<Store[]>([]);
+  const [selectedStoreId, setSelectedStoreId] = useState<number | null>(null);
 
-  const handleCreateStore = () => {
-    // storeApi.createStore({ name: storeName }); // TODO api 500 error 문의 후 연동 예정
-    console.log('매장 생성', storeName);
+  const handleCreateStore = async () => {
+    if (!storeName.trim()) return;
+    // TODO api 500 error 문의 후 연동 예정
   };
+
+  useEffect(() => {
+    const fetchStores = async () => {
+      const res = await storeApi.getStores(); // 실제 API
+      setStores(res.data);
+      // const list = res.data;
+      // setStores(
+      //   list?.length ? list : (mockStoreListResponse.data.list ?? mockStoreListResponse.data),
+      // );
+    };
+    fetchStores();
+  }, []);
 
   return (
     <div className='flex flex-col min-h-screen relative'>
@@ -30,6 +44,9 @@ export default function StoreSelectPage() {
           storeName={storeName}
           onChangeStoreName={setStoreName}
           onCreateStore={handleCreateStore}
+          stores={stores}
+          selectedStoreId={selectedStoreId}
+          onSelectStore={setSelectedStoreId}
         />
       </main>
     </div>
