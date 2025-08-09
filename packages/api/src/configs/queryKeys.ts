@@ -48,4 +48,7 @@ export const queryKeys = {
   me: {
     user: 'meUser',
   },
+  file: {
+    upload: 'fileUpload',
+  },
 };

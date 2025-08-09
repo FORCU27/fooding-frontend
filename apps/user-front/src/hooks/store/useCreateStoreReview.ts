@@ -8,8 +8,8 @@ export const useCreateStoreReview = () => {
   return useMutation({
     mutationFn: storeApi.createStoreReview,
     mutationKey: [queryKeys.user.store.review, 'create'],
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: [queryKeys.user.store.review] });
+    onSuccess: (_, variables) => {
+      queryClient.invalidateQueries({ queryKey: [queryKeys.user.store.review, variables.storeId] });
     },
   });
 };

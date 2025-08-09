@@ -5,7 +5,7 @@ const nextConfig: NextConfig = {
     ignoreDuringBuilds: true,
   },
   images: {
-    domains: ['img.freepik.com'],
+    domains: ['img.freepik.com', 'd27gz6v6wvae1d.cloudfront.net'],
   },
 };
 
