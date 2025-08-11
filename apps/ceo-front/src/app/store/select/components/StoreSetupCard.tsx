@@ -10,10 +10,11 @@ import StoreList from './StoreList';
 type StoreSetupCardProps = {
   storeName: string;
   onChangeStoreName: (value: string) => void;
-  onCreateStore: () => void;
+  onCreateStore: () => Promise<void>;
   stores: Store[];
   selectedStoreId: number | null;
   onSelectStore: (id: number) => void;
+  isLoading: boolean;
 };
 
 export default function StoreSetupCard({
@@ -23,6 +24,7 @@ export default function StoreSetupCard({
   stores,
   selectedStoreId,
   onSelectStore,
+  isLoading,
 }: StoreSetupCardProps) {
   return (
     <div className='bg-white rounded-2xl shadow-lg w-[571px] p-[60px] text-center flex flex-col items-center'>
@@ -33,14 +35,16 @@ export default function StoreSetupCard({
 
       <div className='py-[32px] flex flex-col items-center w-full'>
         <hr className='w-full border-gray-5' />
-        {stores?.length > 0 ? (
-          <div className='w-full py-[32px]'>
-            <StoreList stores={stores} selectedStoreId={selectedStoreId} onSelect={onSelectStore} />
-          </div>
-        ) : (
+        {isLoading ? (
+          <p className='text-gray-5 body-2 min-h-[182px] flex items-center'>loading ...</p>
+        ) : stores.length == 0 ? (
           <p className='text-gray-5 body-2 min-h-[182px] flex items-center'>
             관리할 매장이 없습니다
           </p>
+        ) : (
+          <div className='w-full py-[32px]'>
+            <StoreList stores={stores} selectedStoreId={selectedStoreId} onSelect={onSelectStore} />
+          </div>
         )}
         <hr className='w-full border-gray-5' />
       </div>

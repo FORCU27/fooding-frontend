@@ -1,32 +1,40 @@
 'use client';
 import Image from 'next/image';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 
 import { Store, storeApi } from '@repo/api/ceo';
+import { useQuery, useQueryClient, useMutation } from '@tanstack/react-query';
 
 import StoreSetupCard from './components/StoreSetupCard';
 
+async function fetchStores(): Promise<Store[]> {
+  const res = await storeApi.getStores();
+  return res.data;
+}
+
 export default function StoreSelectPage() {
-  const [storeName, setStoreName] = useState('');
-  const [stores, setStores] = useState<Store[]>([]);
+  const [storeName, setStoreName] = useState<string>('');
   const [selectedStoreId, setSelectedStoreId] = useState<number | null>(null);
+
+  const qc = useQueryClient();
+  const {
+    data: stores = [],
+    isPending,
+    isFetching,
+  } = useQuery({ queryKey: ['stores'], queryFn: fetchStores });
+
+  const createStore = useMutation({
+    mutationFn: (name: string) => storeApi.createStore({ name }),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['stores'] });
+    },
+  });
 
   const handleCreateStore = async () => {
     if (!storeName.trim()) return;
-    // TODO api 500 error 문의 후 연동 예정
+    createStore.mutateAsync(storeName.trim());
+    setStoreName('');
   };
-
-  useEffect(() => {
-    const fetchStores = async () => {
-      const res = await storeApi.getStores(); // 실제 API
-      setStores(res.data);
-      // const list = res.data;
-      // setStores(
-      //   list?.length ? list : (mockStoreListResponse.data.list ?? mockStoreListResponse.data),
-      // );
-    };
-    fetchStores();
-  }, []);
 
   return (
     <div className='flex flex-col min-h-screen relative'>
@@ -47,6 +55,7 @@ export default function StoreSelectPage() {
           stores={stores}
           selectedStoreId={selectedStoreId}
           onSelectStore={setSelectedStoreId}
+          isLoading={isPending || isFetching}
         />
       </main>
     </div>
