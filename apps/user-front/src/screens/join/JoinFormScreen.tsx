@@ -9,14 +9,14 @@ import { useFlow } from '@stackflow/react/future';
 import { ErrorBoundary, ErrorBoundaryFallbackProps } from '@suspensive/react';
 import { QueryErrorResetBoundary } from '@tanstack/react-query';
 
-import { ProfileForm } from './components/ProfileForm';
+import { ProfileForm } from '../profile/components/ProfileForm';
 import { Screen } from '@/components/Layout/Screen';
 import { useAuth } from '@/components/Provider/AuthProvider';
 import { useUpdateUserInfo } from '@/hooks/auth/useUpdateUserInfo';
 import { useUpdateUserProfileImage } from '@/hooks/auth/useUpdateUserProfileImage';
 import { useUploadFile } from '@/hooks/file/useUploadFile';
 
-export const ProfileModifyScreen: ActivityComponentType<'ProfileModifyScreen'> = () => {
+export const JoinFormScreen: ActivityComponentType<'JoinFormScreen'> = () => {
   const flow = useFlow();
 
   const { user } = useAuth();
@@ -32,7 +32,7 @@ export const ProfileModifyScreen: ActivityComponentType<'ProfileModifyScreen'> =
     const isFirstProfile = user.nickname === null;
 
     if (isFirstProfile) {
-      flow.push('ProfileUserInfoScreen', { ...formData, isUpdateMode: true });
+      flow.push('ProfileUserInfoScreen', { ...formData, isUpdateMode: false });
       return;
     }
 
@@ -64,7 +64,7 @@ export const ProfileModifyScreen: ActivityComponentType<'ProfileModifyScreen'> =
 
       flow.pop();
     } catch (error) {
-      console.error('프로필 수정 실패:', error);
+      console.error('프로필 입력 실패:', error);
     }
   };
 
@@ -87,7 +87,7 @@ export const ProfileModifyScreen: ActivityComponentType<'ProfileModifyScreen'> =
               <ProfileForm
                 handleSubmit={handleFormSubmit}
                 editOriginValue={editOriginValue}
-                isUpdateMode={true}
+                isUpdateMode={false}
               />
             </Suspense>
           </ErrorBoundary>

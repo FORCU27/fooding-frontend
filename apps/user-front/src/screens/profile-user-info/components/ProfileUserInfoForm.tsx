@@ -36,6 +36,7 @@ const formSchema = z.object({
 
 type FormSchemaType = z.infer<typeof formSchema>;
 export interface ProfileFormProps {
+  isUpdateMode: boolean;
   editOriginValue: AuthUpdateUserBody;
   handleSubmit: (
     data: AuthUpdateUserBody & { imageFile?: File | null },
@@ -46,6 +47,7 @@ export interface ProfileFormProps {
 export const ProfileUserInfoForm = ({
   editOriginValue,
   handleSubmit,
+  isUpdateMode,
 }: PropsWithoutRef<ProfileFormProps>) => {
   const [isBottomSheetOpen, setIsBottomSheetOpen] = useState(false);
   const { user } = useAuth();
@@ -104,10 +106,7 @@ export const ProfileUserInfoForm = ({
 
   return (
     <div className='flex flex-col p-grid-margin min-h-screen'>
-      <Header
-        left={<Header.Back />}
-        title={`내 정보 ${user.name === null || user.phoneNumber === null ? '입력' : '수정'}`}
-      />
+      <Header left={<Header.Back />} title={`내 정보 ${isUpdateMode ? '수정' : '입력'}`} />
       <div className='flex flex-col mt-[60px]'>
         <p className='mt-8 body-1'>리워드, 웨이팅, 예약에 사용될</p>
         <p className='body-1'>정보를 알려주세요!</p>
@@ -170,7 +169,15 @@ export const ProfileUserInfoForm = ({
             />
           </div>
           <div>
-            {user.name === null || user.phoneNumber === null ? (
+            {isUpdateMode ? (
+              <Button
+                type='button'
+                disabled={!!errors.name || !!errors.phoneNumber}
+                onClick={handleSaveClick}
+              >
+                저장
+              </Button>
+            ) : (
               <div className='w-full flex flex-col justify-between items-center h-[88px]'>
                 <a onClick={() => flow.push('HomeTab', {})} className='text-gray-5 body-6'>
                   {`다음에 할게요  :)`}
@@ -183,14 +190,6 @@ export const ProfileUserInfoForm = ({
                   다음
                 </Button>
               </div>
-            ) : (
-              <Button
-                type='button'
-                disabled={!!errors.name || !!errors.phoneNumber}
-                onClick={handleSaveClick}
-              >
-                저장
-              </Button>
             )}
             <BottomSheet isOpen={isBottomSheetOpen} onOpenChange={setIsBottomSheetOpen}>
               <BottomSheet.Content>
@@ -203,7 +202,11 @@ export const ProfileUserInfoForm = ({
                     <span>
                       {errors.phoneNumber
                         ? errors.phoneNumber.message
-                        : user.phoneNumber && formatPhoneNumber(watch('phoneNumber') || '')}
+                        : watch('phoneNumber')
+                          ? formatPhoneNumber(watch('phoneNumber'))
+                          : user.phoneNumber
+                            ? formatPhoneNumber(user.phoneNumber)
+                            : null}
                     </span>
                   </BottomSheet.Description>
                 </BottomSheet.Header>

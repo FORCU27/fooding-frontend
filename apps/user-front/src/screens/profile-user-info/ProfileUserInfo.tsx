@@ -26,16 +26,12 @@ import { useUploadFile } from '@/hooks/file/useUploadFile';
 
 export const ProfileUserInfoScreen: ActivityComponentType<'ProfileUserInfoScreen'> = ({
   params,
-}: {
-  params: any; //TODO: 추후 타입 수정
-}) => {
+}: any) => {
   const flow = useFlow();
-
   const { user } = useAuth();
   if (!user) {
     throw new Error('로그인이 필요합니다.');
   }
-
   const { mutateAsync: updateUserInfo } = useUpdateUserInfo();
   const { mutateAsync: uploadImageFile } = useUploadFile();
   const { mutateAsync: updateUserProfileImage } = useUpdateUserProfileImage();
@@ -71,12 +67,10 @@ export const ProfileUserInfoScreen: ActivityComponentType<'ProfileUserInfoScreen
         }
       }
 
-      if (user.phoneNumber || user.name === null)
+      if (!params.isUpdateMode)
         return flow.push('ProfileCompleteScreen', { userName: formData.name || '' });
-
-      return flow.pop();
     } catch (error) {
-      console.error('프로필 수정 실패:', error);
+      console.error('내 정보 수정 실패:', error);
 
       if (isAxiosError<UpdateProfileErrorResponse>(error)) {
         if (error.response?.data.code === UpdateProfileErrorCode.PHONE_NUMBER_ALREADY_EXISTS) {
@@ -105,6 +99,7 @@ export const ProfileUserInfoScreen: ActivityComponentType<'ProfileUserInfoScreen
           <ErrorBoundary fallback={ProfileErrorFallback} onReset={reset}>
             <Suspense>
               <ProfileUserInfoForm
+                isUpdateMode={params.isUpdateMode}
                 handleSubmit={handleFormSubmit}
                 editOriginValue={editOriginValue}
               />
