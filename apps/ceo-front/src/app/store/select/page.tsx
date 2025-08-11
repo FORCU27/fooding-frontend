@@ -1,5 +1,6 @@
 'use client';
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
 import { Store, storeApi } from '@repo/api/ceo';
@@ -13,6 +14,8 @@ async function fetchStores(): Promise<Store[]> {
 }
 
 export default function StoreSelectPage() {
+  const router = useRouter();
+
   const [storeName, setStoreName] = useState<string>('');
   const [selectedStoreId, setSelectedStoreId] = useState<number | null>(null);
 
@@ -36,6 +39,21 @@ export default function StoreSelectPage() {
     setStoreName('');
   };
 
+  const handleConfirmStore = async (id: number) => {
+    console.log('handleConfirmStore', selectedStoreId);
+    const res = await fetch('/api/store/select', {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({ storeId: id }),
+    });
+
+    if (!res.ok) {
+      console.error('');
+      return;
+    }
+    router.push('/');
+  };
+
   return (
     <div className='flex flex-col min-h-screen relative'>
       <div className='absolute inset-0 -z-10'>
@@ -52,6 +70,7 @@ export default function StoreSelectPage() {
           storeName={storeName}
           onChangeStoreName={setStoreName}
           onCreateStore={handleCreateStore}
+          onConfirm={handleConfirmStore}
           stores={stores}
           selectedStoreId={selectedStoreId}
           onSelectStore={setSelectedStoreId}

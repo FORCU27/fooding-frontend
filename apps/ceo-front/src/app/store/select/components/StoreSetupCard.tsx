@@ -11,6 +11,7 @@ type StoreSetupCardProps = {
   storeName: string;
   onChangeStoreName: (value: string) => void;
   onCreateStore: () => Promise<void>;
+  onConfirm: (id: number) => Promise<void>;
   stores: Store[];
   selectedStoreId: number | null;
   onSelectStore: (id: number) => void;
@@ -21,6 +22,7 @@ export default function StoreSetupCard({
   storeName,
   onChangeStoreName,
   onCreateStore,
+  onConfirm,
   stores,
   selectedStoreId,
   onSelectStore,
@@ -43,7 +45,12 @@ export default function StoreSetupCard({
           </p>
         ) : (
           <div className='w-full py-[32px]'>
-            <StoreList stores={stores} selectedStoreId={selectedStoreId} onSelect={onSelectStore} />
+            <StoreList
+              stores={stores}
+              selectedStoreId={selectedStoreId}
+              onSelect={onSelectStore}
+              onConfirm={onConfirm}
+            />
           </div>
         )}
         <hr className='w-full border-gray-5' />
