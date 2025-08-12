@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import RadioButton from './RadioButton';
+import { RadioButton } from './RadioButton';
 import type { Meta, StoryObj } from '@storybook/react';
 
 const meta = {
