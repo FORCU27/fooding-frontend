@@ -5,8 +5,10 @@ type StoreListProps = {
   stores: Store[];
   selectedStoreId: number | null;
   onSelect: (id: number) => void;
+  onConfirm?: (id: number) => void;
 };
 
+// TODO 디자인시스템 radiogroup 활용
 function CheckedIcon() {
   return (
     <svg width='24' height='24' viewBox='0 0 24 24' fill='none' aria-hidden='true'>
@@ -26,7 +28,12 @@ function UncheckedIcon() {
   );
 }
 
-export default function StoreList({ stores, selectedStoreId, onSelect }: StoreListProps) {
+export default function StoreList({
+  stores,
+  selectedStoreId,
+  onSelect,
+  onConfirm,
+}: StoreListProps) {
   return (
     <div className='w-full flex flex-col gap-[16px]' role='radiogroup'>
       {stores.map((store) => {
@@ -37,6 +44,7 @@ export default function StoreList({ stores, selectedStoreId, onSelect }: StoreLi
             key={store.id}
             type='button'
             onClick={() => onSelect(store.id)}
+            onDoubleClick={() => onConfirm?.(store.id)}
             className={`w-full text-left rounded-[16px] px-[20px] py-[22px] transition flex items-center gap-[12px]
               ${checked ? 'border-2 border-red-400 bg-red-50' : 'border border-gray-200 bg-white'}`}
             role='radio'
