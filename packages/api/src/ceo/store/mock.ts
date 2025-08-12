@@ -22,7 +22,7 @@ export const mockStoreListResponse: GetStoreList = {
       visitCount: 1000,
       reviewCount: 246,
       bookmarkCount: 100,
-      stations: '홍대입구역 2호선',
+      stations: [{id: 1, name: '개봉역', line: '3호선', address: '서울특별시 개봉동'}],
       parkingAvailable: true,
       newOpen: true,
       takeOut: true,
@@ -49,7 +49,8 @@ export const mockStoreListResponse: GetStoreList = {
       visitCount: 500,
       reviewCount: 120,
       bookmarkCount: 55,
-      stations: '홍대입구역 2호선',
+      stations: [{id: 1, name: '개봉역', line: '3호선', address: '서울특별시 개봉동'}],
+
       parkingAvailable: false,
       newOpen: false,
       takeOut: true,
