@@ -11,9 +11,9 @@ export enum AuthType {
 
 // 각 경로별 접근 권한 설정
 export const pathConfig: Record<string, AuthType> = {
-  '/': AuthType.PUBLIC, // fix: PRIVATE 지정
+  '/': AuthType.PRIVATE,
   '/login': AuthType.GUEST,
-  '/store/select': AuthType.PUBLIC, // fix: PRIVATE 지정
+  '/store/select': AuthType.PRIVATE,
 };
 
 export async function middleware(request: NextRequest) {
