@@ -27,13 +27,20 @@ import KakaoMap from '@/components/KakoMap';
 import LocationEditDialog from '@/components/LocationEditDialog';
 import { useKakaoMap } from '@/hooks/useKakaoMap';
 import { useGetStore } from '@/hooks/store/useGetStore';
+import { usePutStore } from '@/hooks/store/usePutStore';
+import { PutStoreBody } from '@repo/api/ceo';
 
 const BasicInfoPage = () => {
   const [parkingInfo, setParkingInfo] = useState('possible');
   const [amenities, setAmenities] = useState<string[]>(['reception', 'reservation', 'waiting']);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [isAddressDialogOpen, setIsAddressDialogOpen] = useState(false);
+  const [selectedAddress, setSelectedAddress] = useState('');
+  const [isInitialized, setIsInitialized] = useState(false);
+  const [mapMarker, setMapMarker] = useState<any>(null);
 
   const { data: store, isLoading, error, isError } = useGetStore(15);
+  const putStoreMutation = usePutStore();
 
   // 폼 상태 관리
   const [formData, setFormData] = useState({
@@ -43,11 +50,13 @@ const BasicInfoPage = () => {
     address: '',
     direction: '',
     information: '',
+    latitude: 0,
+    longitude: 0,
   });
 
-  // store 데이터로 폼 초기화
+  // store 데이터로 폼 초기화 (초기 로드 시 한 번만)
   useEffect(() => {
-    if (store) {
+    if (store && !isInitialized) {
       console.log('Initializing form with store data:', store);
       setFormData({
         name: store.name || '',
@@ -56,18 +65,23 @@ const BasicInfoPage = () => {
         address: store.address || '',
         direction: store.direction || '',
         information: store.information || '',
+        latitude: store.latitude || 0,
+        longitude: store.longitude || 0,
       });
+      setIsInitialized(true);
     }
-  }, [store]);
+  }, [store, isInitialized]);
 
   console.log('store', store);
   console.log('isLoading', isLoading);
   console.log('error', error);
 
-  // 메인 지도용 훅
+  // 메인 지도용 훅 - store 데이터가 있으면 해당 위치로, 없으면 기본값
   const { mapContainerRef, map, isMapInitialized, handleScriptLoad, reinitializeMap } = useKakaoMap(
     {
-      center: { lat: 33.450701, lng: 126.570667 },
+      center: store 
+        ? { lat: store.latitude, lng: store.longitude }
+        : { lat: 33.450701, lng: 126.570667 },
       level: 3,
     },
   );
@@ -81,6 +95,26 @@ const BasicInfoPage = () => {
     }
   }, []); // 마운트 시 한 번만 실행
 
+  // store 데이터가 로드되고 지도가 초기화되면 중심점 업데이트
+  useEffect(() => {
+    if (store && map && isMapInitialized) {
+      const newCenter = new window.kakao.maps.LatLng(store.latitude, store.longitude);
+      map.setCenter(newCenter);
+      
+      // 기존 마커 제거
+      if (mapMarker) {
+        mapMarker.setMap(null);
+      }
+      
+      // 새 마커 추가
+      const marker = new window.kakao.maps.Marker({
+        position: newCenter,
+        map: map
+      });
+      setMapMarker(marker);
+    }
+  }, [store, map, isMapInitialized]);
+
   interface PostcodeData {
     address: string;
     addressType: string;
@@ -91,10 +125,114 @@ const BasicInfoPage = () => {
 
   const onCompletePost = (data: PostcodeData) => {
     console.log(data);
+    // 도로명 주소 또는 지번 주소를 선택하면 바로 input에 반영
+    const fullAddress = data.address;
+    
+    // 카카오맵 Geocoder로 주소를 좌표로 변환
+    if (window.kakao && window.kakao.maps && window.kakao.maps.services) {
+      const geocoder = new window.kakao.maps.services.Geocoder();
+      
+      geocoder.addressSearch(fullAddress, (result: any, status: any) => {
+        if (status === window.kakao.maps.services.Status.OK) {
+          const lat = parseFloat(result[0].y);
+          const lng = parseFloat(result[0].x);
+          
+          console.log('Address converted to coords:', { address: fullAddress, lat, lng });
+          
+          // 주소와 좌표를 함께 업데이트
+          setFormData((prev) => ({ 
+            ...prev, 
+            address: fullAddress,
+            latitude: lat,
+            longitude: lng
+          }));
+          
+          // 메인 지도도 새 위치로 이동
+          if (map && isMapInitialized) {
+            const newCenter = new window.kakao.maps.LatLng(lat, lng);
+            map.setCenter(newCenter);
+            
+            // 기존 마커 제거
+            if (mapMarker) {
+              mapMarker.setMap(null);
+            }
+            
+            // 새 마커 추가
+            const marker = new window.kakao.maps.Marker({
+              position: newCenter,
+              map: map
+            });
+            setMapMarker(marker);
+          }
+        } else {
+          console.error('주소 변환 실패:', status);
+          // 좌표 변환 실패 시 주소만 업데이트
+          setFormData((prev) => ({ ...prev, address: fullAddress }));
+        }
+      });
+    } else {
+      // Kakao Maps API가 없으면 주소만 업데이트
+      setFormData((prev) => ({ ...prev, address: fullAddress }));
+    }
+    
+    setIsAddressDialogOpen(false); // 다이얼로그 자동 닫기
+  };
+
+  const handleSave = () => {
+    if (!store) return;
+
+    // 빈 문자열이나 undefined 값을 필터링
+    const putBody: PutStoreBody = {
+      name: formData.name || undefined,
+      category: formData.category || undefined,
+      contactNumber: formData.contactNumber || undefined,
+      address: formData.address || undefined,
+      direction: formData.direction || undefined,
+      information: formData.information || undefined,
+      // 추가 필드들 (필요한 경우)
+      regionId: store.regionId || undefined,
+      city: store.city || undefined,
+      description: store.description || undefined,
+      priceCategory: store.priceCategory || undefined,
+      eventDescription: store.eventDescription || undefined,
+      isParkingAvailable: store.isParkingAvailable,
+      isNewOpen: store.isNewOpen,
+      isTakeOut: store.isTakeOut,
+      // 위도 경도는 formData에서 가져옴 (수정된 경우 반영)
+      latitude: formData.latitude || store.latitude,
+      longitude: formData.longitude || store.longitude,
+    };
+
+    // undefined 값을 제거
+    const cleanedBody = Object.fromEntries(
+      Object.entries(putBody).filter(([_, value]) => value !== undefined),
+    ) as PutStoreBody;
+
+    console.log('PUT request body:', JSON.stringify(cleanedBody, null, 2));
+    console.log('Checking for special characters:', {
+      hasSpecialChars: Object.entries(cleanedBody).map(([key, value]) => {
+        if (typeof value === 'string') {
+          return { [key]: value, hasSpecial: /[^\w\s가-힣ㄱ-ㅎㅏ-ㅣ0-9~.,\-()]/.test(value) };
+        }
+        return null;
+      }).filter(Boolean)
+    });
+
+    putStoreMutation.mutate(
+      { id: 15, body: cleanedBody },
+      {
+        onSuccess: () => {
+          // alert('저장되었습니다.');
+        },
+        onError: (error: any) => {
+          // alert('저장에 실패했습니다.');
+        },
+      },
+    );
   };
 
   return (
-    <CardForm className=''>
+    <CardForm className='' onSubmit={(e) => e.preventDefault()}>
       <div className='headline-2'>기본 정보</div>
       <Card>
         <CardSubtitle label='업체명' required>
@@ -162,20 +300,15 @@ const BasicInfoPage = () => {
               위치 수정
             </button>
           </div>
-          <Dialog>
+          <Dialog open={isAddressDialogOpen} onOpenChange={setIsAddressDialogOpen}>
             <DialogTrigger asChild>
               <Input
                 id='address'
                 inputType='search'
                 value={formData.address}
                 onChange={(e) => setFormData((prev) => ({ ...prev, address: e.target.value }))}
+                onClick={() => setIsAddressDialogOpen(true)}
               />
-              {/* <button
-                className='w-full h-[58px] bg-white rounded-md p-2 shadow-md hover:bg-gray-50 transition-colors cursor-pointer'
-                type='button'
-              >
-                위치 수정
-              </button> */}
             </DialogTrigger>
             <DialogContent>
               <DialogHeader>
@@ -188,8 +321,9 @@ const BasicInfoPage = () => {
                 ></DaumPostcode>
               </div>
               <DialogFooter>
-                <Button variant='outline'>취소</Button>
-                <Button>위치 저장</Button>
+                <Button variant='outline' onClick={() => setIsAddressDialogOpen(false)}>
+                  닫기
+                </Button>
               </DialogFooter>
             </DialogContent>
           </Dialog>
@@ -212,11 +346,44 @@ const BasicInfoPage = () => {
         </CardSubtitle>
       </Card>
       <div className='flex justify-center mb-17'>
-        <Button>저장</Button>
+        <Button type='button' onClick={handleSave} disabled={putStoreMutation.isPending}>
+          {putStoreMutation.isPending ? '저장 중...' : '저장'}
+        </Button>
       </div>
 
       {/* 위치 수정 Dialog */}
-      <LocationEditDialog isOpen={isDialogOpen} onOpenChange={setIsDialogOpen} />
+      <LocationEditDialog
+        isOpen={isDialogOpen}
+        onOpenChange={setIsDialogOpen}
+        initialCenter={store ? { lat: store.latitude, lng: store.longitude } : undefined}
+        onSaveLocation={(address, lat, lng) => {
+          console.log('Location saved:', address, lat, lng);
+          setFormData((prev) => ({
+            ...prev,
+            address: address,
+            latitude: lat,
+            longitude: lng,
+          }));
+          
+          // 메인 지도도 새 위치로 이동
+          if (map && isMapInitialized) {
+            const newCenter = new window.kakao.maps.LatLng(lat, lng);
+            map.setCenter(newCenter);
+            
+            // 기존 마커 제거
+            if (mapMarker) {
+              mapMarker.setMap(null);
+            }
+            
+            // 새 마커 추가
+            const marker = new window.kakao.maps.Marker({
+              position: newCenter,
+              map: map
+            });
+            setMapMarker(marker);
+          }
+        }}
+      />
     </CardForm>
   );
 };

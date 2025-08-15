@@ -22,7 +22,14 @@ export const GetStoreResponse = z.object({
   visitCount: z.number(),
   reviewCount: z.number(),
   bookmarkCount: z.number(),
-  stations: z.array(z.string()),
+  stations: z.array(
+    z.object({
+      id: z.number(),
+      name: z.string(),
+      line: z.string(),
+      address: z.string(),
+    })
+  ),
   parkingAvailable: z.boolean(),
   newOpen: z.boolean(),
   takeOut: z.boolean(),

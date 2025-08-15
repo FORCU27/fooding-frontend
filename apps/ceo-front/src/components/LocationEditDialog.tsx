@@ -15,9 +15,11 @@ import { useKakaoMap } from '@/hooks/useKakaoMap';
 type LocationEditDialogProps = {
   isOpen: boolean;
   onOpenChange: (open: boolean) => void;
+  onSaveLocation?: (address: string, lat: number, lng: number) => void;
+  initialCenter?: { lat: number; lng: number };
 };
 
-export default function LocationEditDialog({ isOpen, onOpenChange }: LocationEditDialogProps) {
+export default function LocationEditDialog({ isOpen, onOpenChange, onSaveLocation, initialCenter }: LocationEditDialogProps) {
   const [centerCoords, setCenterCoords] = useState<{ lat: number; lng: number } | null>(null);
   const [addressInfo, setAddressInfo] = useState<{ address: string; zonecode: string } | null>(
     null,
@@ -25,10 +27,10 @@ export default function LocationEditDialog({ isOpen, onOpenChange }: LocationEdi
   const [showTooltip, setShowTooltip] = useState(false);
   const [isInitialLoad, setIsInitialLoad] = useState(true);
 
-  // Dialog 전용 지도 훅
+  // Dialog 전용 지도 훅 - initialCenter가 있으면 사용, 없으면 기본값
   const { mapContainerRef, map, isMapInitialized, handleScriptLoad, reinitializeMap } = useKakaoMap(
     {
-      center: { lat: 33.450701, lng: 126.570667 },
+      center: initialCenter || { lat: 33.450701, lng: 126.570667 },
       level: 3,
       showCenterPin: true,
       onCenterChanged: (center) => {
@@ -197,7 +199,16 @@ export default function LocationEditDialog({ isOpen, onOpenChange }: LocationEdi
           <Button variant='outline' onClick={() => onOpenChange(false)}>
             취소
           </Button>
-          <Button>위치 저장</Button>
+          <Button 
+            onClick={() => {
+              if (addressInfo && centerCoords && onSaveLocation) {
+                onSaveLocation(addressInfo.address, centerCoords.lat, centerCoords.lng);
+                onOpenChange(false);
+              }
+            }}
+          >
+            위치 저장
+          </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>

@@ -12,12 +12,20 @@ export const apiClient = axios.create({
 
 // 요청 인터셉터 설정
 apiClient.interceptors.request.use(
-  async (response) => {
+  async (config) => {
     const accessToken = Cookies.get(STORAGE_KEYS.ACCESS_TOKEN);
     if (accessToken) {
-      response.headers['Authorization'] = `Bearer ${accessToken}`;
+      config.headers['Authorization'] = `Bearer ${accessToken}`;
     }
-    return response;
+    // PUT 요청 디버깅
+    if (config.method === 'put') {
+      console.log('PUT request config:', {
+        url: config.url,
+        data: config.data,
+        headers: config.headers
+      });
+    }
+    return config;
   },
   (error) => {
     return Promise.reject(error);
@@ -28,6 +36,13 @@ apiClient.interceptors.request.use(
 apiClient.interceptors.response.use(
   (response) => response,
   (error) => {
+    if (error.response) {
+      console.error('API Error Response:', {
+        status: error.response.status,
+        data: error.response.data,
+        url: error.config?.url
+      });
+    }
     return Promise.reject(error);
   },
 );
