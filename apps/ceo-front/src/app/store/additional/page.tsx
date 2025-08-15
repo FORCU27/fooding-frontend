@@ -13,17 +13,10 @@ import {
   ToggleGroup,
   ToggleGroupItem,
   UrlLinkList,
-  BusinessHours,
-  Dialog,
-  DialogTrigger,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogFooter,
   ToolTip,
 } from '@repo/design-system/components/ceo';
 
-const NewsPage = () => {
+const AdditionalPage = () => {
   const [isPossible, setIsPossible] = useState(false);
   const [isFree, setIsFree] = useState(false);
 
@@ -101,4 +94,4 @@ const NewsPage = () => {
   );
 };
 
-export default NewsPage;
+export default AdditionalPage;
