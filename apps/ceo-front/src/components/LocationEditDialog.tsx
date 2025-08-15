@@ -69,7 +69,6 @@ export default function LocationEditDialog({ isOpen, onOpenChange }: LocationEdi
     geocoder.coord2Address(coord.getLng(), coord.getLat(), (result: any, status: any) => {
       if (status === window.kakao.maps.services.Status.OK) {
         const address = result[0]?.road_address;
-        console.log('[LocationEditDialog] address:', result[0]);
         if (address) {
           setAddressInfo({
             address: address.address_name || '',
@@ -92,7 +91,6 @@ export default function LocationEditDialog({ isOpen, onOpenChange }: LocationEdi
       setIsInitialLoad(true); // 다음 열기를 위해 초기 로드 상태 리셋
     } else {
       // Dialog가 열렸을 때 지도 재초기화 시도
-      console.log('[LocationEditDialog] Dialog opened, attempting map reinitialization');
       setTimeout(() => {
         reinitializeMap();
       }, 100);
@@ -112,12 +110,6 @@ export default function LocationEditDialog({ isOpen, onOpenChange }: LocationEdi
       return () => clearTimeout(tooltipTimer);
     }
   }, [isMapInitialized, isOpen, isInitialLoad]);
-
-  console.log('[LocationEditDialog] Render:', {
-    isOpen,
-    isMapInitialized,
-    hasMapRef: !!mapContainerRef.current,
-  });
 
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
