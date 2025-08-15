@@ -26,11 +26,43 @@ import DaumPostcode from 'react-daum-postcode';
 import KakaoMap from '@/components/KakoMap';
 import LocationEditDialog from '@/components/LocationEditDialog';
 import { useKakaoMap } from '@/hooks/useKakaoMap';
+import { useGetStore } from '@/hooks/store/useGetStore';
 
 const BasicInfoPage = () => {
   const [parkingInfo, setParkingInfo] = useState('possible');
   const [amenities, setAmenities] = useState<string[]>(['reception', 'reservation', 'waiting']);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+
+  const { data: store, isLoading, error, isError } = useGetStore(15);
+
+  // 폼 상태 관리
+  const [formData, setFormData] = useState({
+    name: '',
+    category: '',
+    contactNumber: '',
+    address: '',
+    direction: '',
+    information: '',
+  });
+
+  // store 데이터로 폼 초기화
+  useEffect(() => {
+    if (store) {
+      console.log('Initializing form with store data:', store);
+      setFormData({
+        name: store.name || '',
+        category: store.category || '',
+        contactNumber: store.contactNumber || '',
+        address: store.address || '',
+        direction: store.direction || '',
+        information: store.information || '',
+      });
+    }
+  }, [store]);
+
+  console.log('store', store);
+  console.log('isLoading', isLoading);
+  console.log('error', error);
 
   // 메인 지도용 훅
   const { mapContainerRef, map, isMapInitialized, handleScriptLoad, reinitializeMap } = useKakaoMap(
@@ -49,7 +81,6 @@ const BasicInfoPage = () => {
     }
   }, []); // 마운트 시 한 번만 실행
 
-
   interface PostcodeData {
     address: string;
     addressType: string;
@@ -67,17 +98,38 @@ const BasicInfoPage = () => {
       <div className='headline-2'>기본 정보</div>
       <Card>
         <CardSubtitle label='업체명' required>
-          <Input id='name' />
+          <Input
+            id='name'
+            value={formData.name}
+            onChange={(e) => setFormData((prev) => ({ ...prev, name: e.target.value }))}
+          />
         </CardSubtitle>
       </Card>
       <Card>
         <CardSubtitle label='업종' required>
           <SelectBox
             options={[
-              { value: '1', label: '족발 보쌈' },
-              { value: '2', label: '고기' },
-              { value: '3', label: '패스트푸드' },
+              { value: '한식', label: '한식' },
+              { value: '중식', label: '중식' },
+              { value: '양식', label: '양식' },
+              { value: '일식', label: '일식' },
+              { value: '아시안', label: '아시안' },
+              { value: '분식', label: '분식' },
+              { value: '카페', label: '카페' },
+              { value: '패스트푸드', label: '패스트푸드' },
+              { value: '치킨', label: '치킨' },
             ]}
+            label='업종 선택'
+            value={formData.category}
+            onValueChange={(value) => {
+              console.log('SelectBox value changed:', value);
+              console.log('Previous formData:', formData);
+              setFormData((prev) => {
+                const newData = { ...prev, category: value };
+                console.log('New formData:', newData);
+                return newData;
+              });
+            }}
             placeholder='업종을 선택해주세요'
           />
         </CardSubtitle>
@@ -85,7 +137,11 @@ const BasicInfoPage = () => {
 
       <Card>
         <CardSubtitle label='매장번호' required>
-          <Input id='name' />
+          <Input
+            id='contactNumber'
+            value={formData.contactNumber}
+            onChange={(e) => setFormData((prev) => ({ ...prev, contactNumber: e.target.value }))}
+          />
         </CardSubtitle>
       </Card>
 
@@ -108,7 +164,12 @@ const BasicInfoPage = () => {
           </div>
           <Dialog>
             <DialogTrigger asChild>
-              <Input id='name' inputType='search' />
+              <Input
+                id='address'
+                inputType='search'
+                value={formData.address}
+                onChange={(e) => setFormData((prev) => ({ ...prev, address: e.target.value }))}
+              />
               {/* <button
                 className='w-full h-[58px] bg-white rounded-md p-2 shadow-md hover:bg-gray-50 transition-colors cursor-pointer'
                 type='button'
@@ -133,18 +194,27 @@ const BasicInfoPage = () => {
             </DialogContent>
           </Dialog>
 
-          <Input id='name' />
+          <Input
+            id='direction'
+            value={formData.direction}
+            onChange={(e) => setFormData((prev) => ({ ...prev, direction: e.target.value }))}
+          />
         </CardSubtitle>
       </Card>
       <Card>
         <CardSubtitle label='찾아오시는길' required>
-          <TextArea id='name' maxLength={1000} />
+          <TextArea
+            id='information'
+            maxLength={1000}
+            value={formData.information}
+            onChange={(e) => setFormData((prev) => ({ ...prev, information: e.target.value }))}
+          />
         </CardSubtitle>
       </Card>
       <div className='flex justify-center mb-17'>
         <Button>저장</Button>
       </div>
-      
+
       {/* 위치 수정 Dialog */}
       <LocationEditDialog isOpen={isDialogOpen} onOpenChange={setIsDialogOpen} />
     </CardForm>
