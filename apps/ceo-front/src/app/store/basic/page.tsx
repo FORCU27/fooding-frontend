@@ -122,12 +122,7 @@ const BasicInfoPage = () => {
       </Card>
       <Card>
         <CardSubtitle label='편의시설'>
-          <ToggleGroup
-            type='multiple'
-            variant='chip'
-            value={amenities}
-            onValueChange={setAmenities}
-          >
+          <ToggleGroup type='multiple' value={amenities} onValueChange={setAmenities}>
             <ToggleGroupItem value='group'>단체이용 가능</ToggleGroupItem>
             <ToggleGroupItem value='takeout'>포장</ToggleGroupItem>
             <ToggleGroupItem value='delivery'>배달</ToggleGroupItem>
