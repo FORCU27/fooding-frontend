@@ -1,7 +1,7 @@
 'use client';
 
 import Image from 'next/image';
-import { ChangeEvent, PropsWithoutRef, useMemo, useState } from 'react';
+import { ChangeEvent, PropsWithoutRef, useState } from 'react';
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import { AuthUpdateUserBody, AuthUpdateUserProfileImageBody } from '@repo/api/auth';
@@ -26,6 +26,7 @@ const formSchema = z.object({
 type FormSchemaType = z.infer<typeof formSchema>;
 
 export interface ProfileFormProps {
+  isUpdateMode: boolean;
   editOriginValue: AuthUpdateUserBody & AuthUpdateUserProfileImageBody;
   handleSubmit: (data: AuthUpdateUserBody & { imageFile: File | null }) => void;
 }
@@ -33,6 +34,7 @@ export interface ProfileFormProps {
 export const ProfileForm = ({
   editOriginValue,
   handleSubmit,
+  isUpdateMode,
 }: PropsWithoutRef<ProfileFormProps>) => {
   const { user } = useAuth();
   const flow = useFlow();
@@ -51,8 +53,6 @@ export const ProfileForm = ({
 
   const { data: nicknameCheckData, refetch: checkNickname } =
     useGetUserNicknameCheck(nicknameToCheck);
-
-  const isUpdateMode = useMemo(() => user.loginCount > 0 && !!user.phoneNumber, [user]);
 
   const maxLength = 150;
 
@@ -135,7 +135,7 @@ export const ProfileForm = ({
                         height={120}
                       />
                     ) : (
-                      <div className='bg-gray-2 flex justify-center items-center text-[#111111]/10'>
+                      <div className='size-[120px] bg-gray-2 flex justify-center items-center text-[#111111]/10'>
                         <FoodingIcon />
                       </div>
                     )}
@@ -262,6 +262,7 @@ export const ProfileForm = ({
                 onClick={() => {
                   const formValues = getValues();
                   flow.push('ProfileUserInfoScreen', {
+                    isUpdateMode: isUpdateMode,
                     nickname: formValues.nickname,
                     description: formValues.description,
                     imageFile: selectedFile,

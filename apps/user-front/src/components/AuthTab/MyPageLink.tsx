@@ -20,14 +20,20 @@ export const MyPageLink = ({ BottomTabItem, BottomTabLabel, isActive }: MyPageLi
 
   const isLoggedIn = !!user;
   const [clicked, setClicked] = useState(false);
+  const isFirstUser = user?.loginCount === 1;
 
   useEffect(() => {
     if (clicked && isLoggedIn) {
-      flow.push('MyPageTab', {});
+      if (!isFirstUser) {
+        flow.push('MyPageTab', {});
+      }
+      if (isFirstUser) {
+        flow.push('JoinFormScreen', {});
+      }
       loginBottomSheet.close();
       setClicked(false);
     }
-  }, [clicked, isLoggedIn, flow, loginBottomSheet]);
+  }, [clicked, isLoggedIn, flow, loginBottomSheet, isFirstUser]);
 
   const handleClick = (e: React.MouseEvent) => {
     if (isActive) e.preventDefault();

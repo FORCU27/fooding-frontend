@@ -32,6 +32,7 @@ export const SettingScreen: ActivityComponentType<'SettingScreen'> = () => {
           <MenuItem
             onClick={() =>
               flow.push('ProfileUserInfoScreen', {
+                isUpdateMode: true,
                 gender: user?.gender || 'NONE',
                 nickname: user?.nickname || null,
                 description: user?.description || null,

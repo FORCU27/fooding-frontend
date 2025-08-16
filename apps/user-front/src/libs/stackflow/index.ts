@@ -6,6 +6,7 @@ import { basicRendererPlugin } from '@stackflow/plugin-renderer-basic';
 import { stackflow } from '@stackflow/react/future';
 
 import { BookmarkListScreen } from '@/screens/bookmarks/Bookmarks';
+import { JoinFormScreen } from '@/screens/join/JoinFormScreen';
 import { MyCouponListScreen } from '@/screens/my-coupons/MyCoupons';
 import { NotificationListScreen } from '@/screens/notifications/Notifications';
 import { ProfileModifyScreen } from '@/screens/profile/ProfileModify';
@@ -41,6 +42,7 @@ declare module '@stackflow/config' {
     ReservationDetailScreen: { reservationId: number };
     ProfileModifyScreen: object;
     ProfileUserInfoScreen: {
+      isUpdateMode: boolean;
       gender: string;
       nickname: string | null;
       description: string | null;
@@ -49,6 +51,7 @@ declare module '@stackflow/config' {
       imageFile: File | null;
     };
     ProfileCompleteScreen: { userName: string };
+    JoinFormScreen: object;
   }
 }
 
@@ -71,6 +74,7 @@ const config = defineConfig({
     { name: 'ProfileModifyScreen' },
     { name: 'ProfileUserInfoScreen' },
     { name: 'ProfileCompleteScreen' },
+    { name: 'JoinFormScreen' },
   ],
 
   transitionDuration: 350,
@@ -97,6 +101,7 @@ export const { Stack } = stackflow({
     ProfileModifyScreen,
     ProfileUserInfoScreen,
     ProfileCompleteScreen,
+    JoinFormScreen,
   },
   plugins: [
     basicRendererPlugin(),
