@@ -38,11 +38,8 @@ export const GetStoreResponseV2 = z.object({
   isTakeOut: z.boolean(),
 });
 
-export type GetStoreApiResponse = z.infer<typeof GetStoreApiResponse>;
-export const GetStoreApiResponse = ApiResponse(GetStoreResponseV2);
-
-export type GetStoreListResponse = z.infer<typeof GetStoreListResponse>;
-export const GetStoreListResponse = ApiResponse(GetStoreResponseV2);
+export type GetStoreV2ApiResponse = z.infer<typeof GetStoreV2ApiResponse>;
+export const GetStoreV2ApiResponse = ApiResponse(GetStoreResponseV2);
 
 export type PutStoreBody = z.infer<typeof PutStoreBody>;
 export const PutStoreBody = z

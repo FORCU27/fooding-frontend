@@ -1,2 +1,2 @@
 export * from './devices';
-export * from './store/index2';
+export * from './storeV2';

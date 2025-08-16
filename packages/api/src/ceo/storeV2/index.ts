@@ -1,6 +1,6 @@
-export * from './type2';
+export * from './type';
 
-import { PutStoreBody, GetStoreApiResponse, GetStoreResponseV2 } from './type2';
+import { PutStoreBody, GetStoreV2ApiResponse, GetStoreResponseV2 } from './type';
 
 import { api } from '../../shared';
 
@@ -15,7 +15,7 @@ export const storeApiV2 = {
       throw new Error('Empty response from server');
     }
 
-    const parsed = GetStoreApiResponse.parse(response);
+    const parsed = GetStoreV2ApiResponse.parse(response);
     return parsed.data;
   },
   putStore: async ({ id, body }: { id: number; body: PutStoreBody }) => {
