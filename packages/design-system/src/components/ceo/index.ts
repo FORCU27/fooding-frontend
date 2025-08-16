@@ -16,3 +16,6 @@ export * from './CoinProduct';
 export * from './DeviceCard';
 export * from './ToolTip';
 export * from './RadioButton';
+
+// Re-export commonly used icons from lucide-react
+export { Calendar, ChevronLeft, ChevronRight, Check } from 'lucide-react';

@@ -1,13 +1,13 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+
+import { PutStoreBody } from '@repo/api/ceo';
 import {
   CardForm,
   Button,
   Card,
   Input,
-  SelectBox,
-  TextArea,
   CardSubtitle,
   ToggleGroup,
   ToggleGroupItem,
@@ -18,10 +18,9 @@ import {
 
 import { useGetStore } from '@/hooks/store/useGetStore';
 import { usePutStore } from '@/hooks/store/usePutStore';
-import { PutStoreBody } from '@repo/api/ceo';
 
 const AdditionalPage = () => {
-  const { data: store, isLoading, error } = useGetStore(15);
+  const { data: store, isLoading } = useGetStore(15);
   const putStoreMutation = usePutStore();
 
   const [isInitialized, setIsInitialized] = useState(false);
@@ -94,7 +93,7 @@ const AdditionalPage = () => {
 
     // undefined 값 제거
     const cleanedBody = Object.fromEntries(
-      Object.entries(putBody).filter(([_, value]) => value !== undefined),
+      Object.entries(putBody).filter(([, value]) => value !== undefined),
     ) as PutStoreBody;
 
     console.log('PUT request body (additional):', JSON.stringify(cleanedBody, null, 2));
@@ -106,8 +105,7 @@ const AdditionalPage = () => {
           console.log('Additional info updated successfully');
           alert('저장되었습니다.');
         },
-        onError: (error: any) => {
-          console.error('Failed to update additional info:', error);
+        onError: () => {
           alert('저장에 실패했습니다.');
         },
       },

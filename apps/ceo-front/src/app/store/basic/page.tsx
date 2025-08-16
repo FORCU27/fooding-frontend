@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 
+import { PutStoreBody } from '@repo/api/ceo';
 import {
   CardForm,
   Button,
@@ -10,10 +11,6 @@ import {
   SelectBox,
   TextArea,
   CardSubtitle,
-  ToggleGroup,
-  ToggleGroupItem,
-  UrlLinkList,
-  BusinessHours,
   Dialog,
   DialogTrigger,
   DialogContent,
@@ -25,21 +22,17 @@ import DaumPostcode from 'react-daum-postcode';
 
 import KakaoMap from '@/components/KakoMap';
 import LocationEditDialog from '@/components/LocationEditDialog';
-import { useKakaoMap } from '@/hooks/useKakaoMap';
 import { useGetStore } from '@/hooks/store/useGetStore';
 import { usePutStore } from '@/hooks/store/usePutStore';
-import { PutStoreBody } from '@repo/api/ceo';
+import { useKakaoMap } from '@/hooks/useKakaoMap';
 
 const BasicInfoPage = () => {
-  const [parkingInfo, setParkingInfo] = useState('possible');
-  const [amenities, setAmenities] = useState<string[]>(['reception', 'reservation', 'waiting']);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isAddressDialogOpen, setIsAddressDialogOpen] = useState(false);
-  const [selectedAddress, setSelectedAddress] = useState('');
   const [isInitialized, setIsInitialized] = useState(false);
-  const [mapMarker, setMapMarker] = useState<any>(null);
+  const [mapMarker, setMapMarker] = useState<kakao.maps.Marker | null>(null);
 
-  const { data: store, isLoading, error, isError } = useGetStore(15);
+  const { data: store } = useGetStore(15);
   const putStoreMutation = usePutStore();
 
   // 폼 상태 관리
@@ -72,14 +65,10 @@ const BasicInfoPage = () => {
     }
   }, [store, isInitialized]);
 
-  console.log('store', store);
-  console.log('isLoading', isLoading);
-  console.log('error', error);
-
   // 메인 지도용 훅 - store 데이터가 있으면 해당 위치로, 없으면 기본값
   const { mapContainerRef, map, isMapInitialized, handleScriptLoad, reinitializeMap } = useKakaoMap(
     {
-      center: store 
+      center: store
         ? { lat: store.latitude, lng: store.longitude }
         : { lat: 33.450701, lng: 126.570667 },
       level: 3,
@@ -93,26 +82,27 @@ const BasicInfoPage = () => {
       console.log('[BasicInfoPage] Page mounted with SDK loaded, reinitializing map2');
       reinitializeMap();
     }
-  }, []); // 마운트 시 한 번만 실행
+  }, [isMapInitialized, reinitializeMap]); // 마운트 시 한 번만 실행
 
   // store 데이터가 로드되고 지도가 초기화되면 중심점 업데이트
   useEffect(() => {
     if (store && map && isMapInitialized) {
       const newCenter = new window.kakao.maps.LatLng(store.latitude, store.longitude);
       map.setCenter(newCenter);
-      
+
       // 기존 마커 제거
       if (mapMarker) {
         mapMarker.setMap(null);
       }
-      
+
       // 새 마커 추가
       const marker = new window.kakao.maps.Marker({
         position: newCenter,
-        map: map
+        map: map,
       });
       setMapMarker(marker);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [store, map, isMapInitialized]);
 
   interface PostcodeData {
@@ -127,54 +117,57 @@ const BasicInfoPage = () => {
     console.log(data);
     // 도로명 주소 또는 지번 주소를 선택하면 바로 input에 반영
     const fullAddress = data.address;
-    
+
     // 카카오맵 Geocoder로 주소를 좌표로 변환
     if (window.kakao && window.kakao.maps && window.kakao.maps.services) {
       const geocoder = new window.kakao.maps.services.Geocoder();
-      
-      geocoder.addressSearch(fullAddress, (result: any, status: any) => {
-        if (status === window.kakao.maps.services.Status.OK) {
-          const lat = parseFloat(result[0].y);
-          const lng = parseFloat(result[0].x);
-          
-          console.log('Address converted to coords:', { address: fullAddress, lat, lng });
-          
-          // 주소와 좌표를 함께 업데이트
-          setFormData((prev) => ({ 
-            ...prev, 
-            address: fullAddress,
-            latitude: lat,
-            longitude: lng
-          }));
-          
-          // 메인 지도도 새 위치로 이동
-          if (map && isMapInitialized) {
-            const newCenter = new window.kakao.maps.LatLng(lat, lng);
-            map.setCenter(newCenter);
-            
-            // 기존 마커 제거
-            if (mapMarker) {
-              mapMarker.setMap(null);
+
+      geocoder.addressSearch(
+        fullAddress,
+        (result: kakao.maps.services.GeocoderResult[], status: kakao.maps.services.Status) => {
+          if (status === window.kakao.maps.services.Status.OK && result[0]) {
+            const lat = parseFloat(result[0].y);
+            const lng = parseFloat(result[0].x);
+
+            console.log('Address converted to coords:', { address: fullAddress, lat, lng });
+
+            // 주소와 좌표를 함께 업데이트
+            setFormData((prev) => ({
+              ...prev,
+              address: fullAddress,
+              latitude: lat,
+              longitude: lng,
+            }));
+
+            // 메인 지도도 새 위치로 이동
+            if (map && isMapInitialized) {
+              const newCenter = new window.kakao.maps.LatLng(lat, lng);
+              map.setCenter(newCenter);
+
+              // 기존 마커 제거
+              if (mapMarker) {
+                mapMarker.setMap(null);
+              }
+
+              // 새 마커 추가
+              const marker = new window.kakao.maps.Marker({
+                position: newCenter,
+                map: map,
+              });
+              setMapMarker(marker);
             }
-            
-            // 새 마커 추가
-            const marker = new window.kakao.maps.Marker({
-              position: newCenter,
-              map: map
-            });
-            setMapMarker(marker);
+          } else {
+            console.error('주소 변환 실패:', status);
+            // 좌표 변환 실패 시 주소만 업데이트
+            setFormData((prev) => ({ ...prev, address: fullAddress }));
           }
-        } else {
-          console.error('주소 변환 실패:', status);
-          // 좌표 변환 실패 시 주소만 업데이트
-          setFormData((prev) => ({ ...prev, address: fullAddress }));
-        }
-      });
+        },
+      );
     } else {
       // Kakao Maps API가 없으면 주소만 업데이트
       setFormData((prev) => ({ ...prev, address: fullAddress }));
     }
-    
+
     setIsAddressDialogOpen(false); // 다이얼로그 자동 닫기
   };
 
@@ -205,17 +198,19 @@ const BasicInfoPage = () => {
 
     // undefined 값을 제거
     const cleanedBody = Object.fromEntries(
-      Object.entries(putBody).filter(([_, value]) => value !== undefined),
+      Object.entries(putBody).filter(([, value]) => value !== undefined),
     ) as PutStoreBody;
 
     console.log('PUT request body:', JSON.stringify(cleanedBody, null, 2));
     console.log('Checking for special characters:', {
-      hasSpecialChars: Object.entries(cleanedBody).map(([key, value]) => {
-        if (typeof value === 'string') {
-          return { [key]: value, hasSpecial: /[^\w\s가-힣ㄱ-ㅎㅏ-ㅣ0-9~.,\-()]/.test(value) };
-        }
-        return null;
-      }).filter(Boolean)
+      hasSpecialChars: Object.entries(cleanedBody)
+        .map(([key, value]) => {
+          if (typeof value === 'string') {
+            return { [key]: value, hasSpecial: /[^\w\s가-힣ㄱ-ㅎㅏ-ㅣ0-9~.,\-()]/.test(value) };
+          }
+          return null;
+        })
+        .filter(Boolean),
     });
 
     putStoreMutation.mutate(
@@ -224,7 +219,7 @@ const BasicInfoPage = () => {
         onSuccess: () => {
           // alert('저장되었습니다.');
         },
-        onError: (error: any) => {
+        onError: () => {
           // alert('저장에 실패했습니다.');
         },
       },
@@ -364,21 +359,21 @@ const BasicInfoPage = () => {
             latitude: lat,
             longitude: lng,
           }));
-          
+
           // 메인 지도도 새 위치로 이동
           if (map && isMapInitialized) {
             const newCenter = new window.kakao.maps.LatLng(lat, lng);
             map.setCenter(newCenter);
-            
+
             // 기존 마커 제거
             if (mapMarker) {
               mapMarker.setMap(null);
             }
-            
+
             // 새 마커 추가
             const marker = new window.kakao.maps.Marker({
               position: newCenter,
-              map: map
+              map: map,
             });
             setMapMarker(marker);
           }

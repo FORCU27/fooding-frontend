@@ -1,7 +1,7 @@
 'use client';
 
-import { useState, useEffect } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
+import { useState } from 'react';
 
 import {
   B2BCeoSidebarStoreIcon,

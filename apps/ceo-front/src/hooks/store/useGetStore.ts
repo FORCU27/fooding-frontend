@@ -1,5 +1,5 @@
-import { queryKeys } from '@repo/api/configs/query-keys';
 import { storeApi } from '@repo/api/ceo';
+import { queryKeys } from '@repo/api/configs/query-keys';
 import { useQuery } from '@tanstack/react-query';
 
 export const useGetStore = (id: number) => {

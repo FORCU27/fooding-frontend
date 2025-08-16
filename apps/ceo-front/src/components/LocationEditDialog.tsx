@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+
 import {
   Dialog,
   DialogContent,
@@ -9,6 +10,7 @@ import {
   DialogFooter,
   Button,
 } from '@repo/design-system/components/ceo';
+
 import KakaoMap from './KakoMap';
 import { useKakaoMap } from '@/hooks/useKakaoMap';
 
@@ -19,7 +21,12 @@ type LocationEditDialogProps = {
   initialCenter?: { lat: number; lng: number };
 };
 
-export default function LocationEditDialog({ isOpen, onOpenChange, onSaveLocation, initialCenter }: LocationEditDialogProps) {
+export default function LocationEditDialog({
+  isOpen,
+  onOpenChange,
+  onSaveLocation,
+  initialCenter,
+}: LocationEditDialogProps) {
   const [centerCoords, setCenterCoords] = useState<{ lat: number; lng: number } | null>(null);
   const [addressInfo, setAddressInfo] = useState<{ address: string; zonecode: string } | null>(
     null,
@@ -68,20 +75,24 @@ export default function LocationEditDialog({ isOpen, onOpenChange, onSaveLocatio
     const geocoder = new window.kakao.maps.services.Geocoder();
     const coord = new window.kakao.maps.LatLng(lat, lng);
 
-    geocoder.coord2Address(coord.getLng(), coord.getLat(), (result: any, status: any) => {
-      if (status === window.kakao.maps.services.Status.OK) {
-        const address = result[0]?.road_address;
-        if (address) {
-          setAddressInfo({
-            address: address.address_name || '',
-            zonecode: address.zip_code || '',
-          });
+    geocoder.coord2Address(
+      coord.getLng(),
+      coord.getLat(),
+      (result: kakao.maps.services.RegionCode[], status: kakao.maps.services.Status) => {
+        if (status === window.kakao.maps.services.Status.OK) {
+          const address = result[0]?.road_address;
+          if (address) {
+            setAddressInfo({
+              address: address.address_name || '',
+              zonecode: address.zone_no || '',
+            });
+          }
+        } else {
+          console.error('주소 변환 실패:', status);
+          setAddressInfo(null);
         }
-      } else {
-        console.error('주소 변환 실패:', status);
-        setAddressInfo(null);
-      }
-    });
+      },
+    );
   };
 
   // Dialog이 열릴 때와 닫힐 때 상태 관리
@@ -199,7 +210,7 @@ export default function LocationEditDialog({ isOpen, onOpenChange, onSaveLocatio
           <Button variant='outline' onClick={() => onOpenChange(false)}>
             취소
           </Button>
-          <Button 
+          <Button
             onClick={() => {
               if (addressInfo && centerCoords && onSaveLocation) {
                 onSaveLocation(addressInfo.address, centerCoords.lat, centerCoords.lng);
