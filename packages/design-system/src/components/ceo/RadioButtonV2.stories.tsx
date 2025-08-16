@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { useState } from 'react';
-import { RadioButton, RadioGroup } from './RadioButton';
+import { RadioButton, RadioGroup } from './RadioButtonV2';
 
 const meta: Meta<typeof RadioButton> = {
   title: 'Components/ceo/RadioButton',

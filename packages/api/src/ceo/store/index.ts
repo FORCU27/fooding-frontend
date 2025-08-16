@@ -1,12 +1,12 @@
 export * from './type';
 
-import { PutStoreBody, GetStoreApiResponse, GetStoreResponse } from './type';
+import { PutStoreBody, GetStoreApiResponse, GetStoreResponseV2 } from './type';
 import { api } from '../../shared';
 
 const ENDPOINT = '/ceo/stores';
 
 export const storeApi = {
-  getStore: async (id: number): Promise<GetStoreResponse> => {
+  getStoreV2: async (id: number): Promise<GetStoreResponseV2> => {
     const response = await api.get(`${ENDPOINT}/${id}`);
 
     // 빈 객체 체크
