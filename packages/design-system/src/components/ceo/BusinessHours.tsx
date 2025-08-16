@@ -3,17 +3,17 @@
 import { useState } from 'react';
 
 import { CheckBox } from './CheckBox';
+import RadioButtonGroup from './RadioButtonGroup';
 import { TimePicker } from './TimePicker';
-import { ToggleGroup, ToggleGroupItem } from './ToggleGroup';
 
-type OperatingMode = 'everyday' | 'byday';
+type OperatingMode = 'same_everyday' | 'different_by_day' | 'open_24h';
 type DayHours = { start: string; end: string; isClosed: boolean };
 type HoursByDay = { [day: string]: DayHours };
 
 const daysOfWeek = ['월', '화', '수', '목', '금', '토', '일'];
 
 const BusinessHours = () => {
-  const [mode, setMode] = useState<OperatingMode>('everyday');
+  const [mode, setMode] = useState<OperatingMode>('same_everyday');
   const [everydayHours, setEverydayHours] = useState({ start: '09:00', end: '22:00' });
   const [bydayHours, setBydayHours] = useState<HoursByDay>(() =>
     Object.fromEntries(
@@ -35,21 +35,23 @@ const BusinessHours = () => {
     }));
   };
 
+  const businessHourOption = [
+    { label: '매일 같아요', value: 'same_everyday' },
+    { label: '요일마다 달라요', value: 'different_by_day' },
+    { label: '24시간 영업', value: 'open_24h' },
+  ];
+
   return (
     <div className='w-full'>
-      <ToggleGroup
-        type='single'
-        defaultValue={mode}
-        onValueChange={(value: OperatingMode) => value && setMode(value)}
-        variant='chip'
-        className='w-auto'
-      >
-        <ToggleGroupItem value='everyday'>매일 같아요</ToggleGroupItem>
-        <ToggleGroupItem value='byday'>요일마다 달라요</ToggleGroupItem>
-      </ToggleGroup>
+      <RadioButtonGroup
+        options={businessHourOption}
+        name='business-hours'
+        selectedValue={mode}
+        onChange={(val) => setMode(val as OperatingMode)}
+      />
 
       <div className='mt-6'>
-        {mode === 'everyday' && (
+        {mode === 'same_everyday' && (
           <div className='flex items-center gap-4'>
             <TimePicker
               value={everydayHours.start}
@@ -62,7 +64,7 @@ const BusinessHours = () => {
             />
           </div>
         )}
-        {mode === 'byday' && (
+        {mode === 'different_by_day' && (
           <ul className='space-y-4'>
             {daysOfWeek.map((day) => {
               const dayInfo = bydayHours[day];
@@ -70,7 +72,7 @@ const BusinessHours = () => {
 
               return (
                 <li key={day} className='flex items-center gap-6'>
-                  <span className='w-8 font-medium'>{day}</span>
+                  <div className=' border-gray-3 border p-5 rounded-lg'>{day}</div>
                   <CheckBox
                     labelText='휴무'
                     checked={dayInfo.isClosed}
@@ -93,6 +95,13 @@ const BusinessHours = () => {
               );
             })}
           </ul>
+        )}
+        {mode === 'open_24h' && (
+          <div className='flex items-center gap-4'>
+            <TimePicker value='00:00' onChange={() => {}} />
+            <span>~</span>
+            <TimePicker value='24:00' onChange={() => {}} />
+          </div>
         )}
       </div>
     </div>
