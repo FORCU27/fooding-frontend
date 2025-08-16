@@ -41,7 +41,6 @@ const BusinessHours = () => {
         type='single'
         defaultValue={mode}
         onValueChange={(value: OperatingMode) => value && setMode(value)}
-        variant='selectedChip'
         className='w-auto'
       >
         <ToggleGroupItem value='everyday'>매일 같아요</ToggleGroupItem>
