@@ -1,11 +1,11 @@
-export * from './type';
+export * from './type2';
 
-import { PutStoreBody, GetStoreApiResponse, GetStoreResponseV2 } from './type';
+import { PutStoreBody, GetStoreApiResponse, GetStoreResponseV2 } from './type2';
 import { api } from '../../shared';
 
 const ENDPOINT = '/ceo/stores';
 
-export const storeApi = {
+export const storeApiV2 = {
   getStoreV2: async (id: number): Promise<GetStoreResponseV2> => {
     const response = await api.get(`${ENDPOINT}/${id}`);
 
