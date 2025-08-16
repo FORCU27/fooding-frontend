@@ -1,8 +1,8 @@
-import type { Meta, StoryObj } from '@storybook/react';
+import type { StoryObj } from '@storybook/react';
 import { ToggleGroup, ToggleGroupItem } from './ToggleGroup';
 
 const meta: any = {
-  title: 'Components/ceo/CeoToggleGroup',
+  title: 'Components/ceo/ToggleGroup',
   component: ToggleGroup,
   parameters: {
     layout: 'centered',
