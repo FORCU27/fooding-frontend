@@ -8,5 +8,6 @@ export async function POST() {
 
   // 쿠키 삭제
   cookieStore.delete(STORAGE_KEYS.ACCESS_TOKEN);
+  cookieStore.delete(STORAGE_KEYS.SELECTED_STORE_ID);
   return NextResponse.json({ success: true });
 }
