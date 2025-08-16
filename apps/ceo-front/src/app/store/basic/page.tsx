@@ -50,7 +50,6 @@ const BasicInfoPage = () => {
   // store 데이터로 폼 초기화 (초기 로드 시 한 번만)
   useEffect(() => {
     if (store && !isInitialized) {
-      console.log('Initializing form with store data:', store);
       setFormData({
         name: store.name || '',
         category: store.category || '',
@@ -79,7 +78,6 @@ const BasicInfoPage = () => {
   useEffect(() => {
     // 페이지 진입 시 SDK가 이미 로드되어 있으면 재초기화
     if (window.kakao && window.kakao.maps && !isMapInitialized) {
-      console.log('[BasicInfoPage] Page mounted with SDK loaded, reinitializing map2');
       reinitializeMap();
     }
   }, [isMapInitialized, reinitializeMap]); // 마운트 시 한 번만 실행
@@ -114,7 +112,6 @@ const BasicInfoPage = () => {
   }
 
   const onCompletePost = (data: PostcodeData) => {
-    console.log(data);
     // 도로명 주소 또는 지번 주소를 선택하면 바로 input에 반영
     const fullAddress = data.address;
 
@@ -128,8 +125,6 @@ const BasicInfoPage = () => {
           if (status === window.kakao.maps.services.Status.OK && result[0]) {
             const lat = parseFloat(result[0].y);
             const lng = parseFloat(result[0].x);
-
-            console.log('Address converted to coords:', { address: fullAddress, lat, lng });
 
             // 주소와 좌표를 함께 업데이트
             setFormData((prev) => ({
@@ -157,7 +152,6 @@ const BasicInfoPage = () => {
               setMapMarker(marker);
             }
           } else {
-            console.error('주소 변환 실패:', status);
             // 좌표 변환 실패 시 주소만 업데이트
             setFormData((prev) => ({ ...prev, address: fullAddress }));
           }
@@ -201,18 +195,6 @@ const BasicInfoPage = () => {
       Object.entries(putBody).filter(([, value]) => value !== undefined),
     ) as PutStoreBody;
 
-    console.log('PUT request body:', JSON.stringify(cleanedBody, null, 2));
-    console.log('Checking for special characters:', {
-      hasSpecialChars: Object.entries(cleanedBody)
-        .map(([key, value]) => {
-          if (typeof value === 'string') {
-            return { [key]: value, hasSpecial: /[^\w\s가-힣ㄱ-ㅎㅏ-ㅣ0-9~.,\-()]/.test(value) };
-          }
-          return null;
-        })
-        .filter(Boolean),
-    });
-
     putStoreMutation.mutate(
       { id: 15, body: cleanedBody },
       {
@@ -255,13 +237,7 @@ const BasicInfoPage = () => {
             label='업종 선택'
             value={formData.category}
             onValueChange={(value) => {
-              console.log('SelectBox value changed:', value);
-              console.log('Previous formData:', formData);
-              setFormData((prev) => {
-                const newData = { ...prev, category: value };
-                console.log('New formData:', newData);
-                return newData;
-              });
+              setFormData((prev) => ({ ...prev, category: value }));
             }}
             placeholder='업종을 선택해주세요'
           />
@@ -352,7 +328,6 @@ const BasicInfoPage = () => {
         onOpenChange={setIsDialogOpen}
         initialCenter={store ? { lat: store.latitude, lng: store.longitude } : undefined}
         onSaveLocation={(address, lat, lng) => {
-          console.log('Location saved:', address, lat, lng);
           setFormData((prev) => ({
             ...prev,
             address: address,

@@ -10,7 +10,6 @@ export const usePutStore = () => {
       return storeApi.putStore({ id, body });
     },
     onSuccess: (_, variables) => {
-      console.log('PUT success, invalidating query for store:', variables.id);
       // 성공 시 해당 store 데이터 무효화하여 재조회
       queryClient.invalidateQueries({
         queryKey: [queryKeys.ceo.store.getStore, variables.id],

@@ -53,8 +53,6 @@ const AdditionalPage = () => {
   // store 데이터로 폼 초기화
   useEffect(() => {
     if (store && !isInitialized) {
-      console.log('Initializing additional info with store data:', store);
-
       // TODO: 실제 store 데이터 구조에 맞게 매핑 필요
       setFormData((prev) => ({
         ...prev, // 기존 초기값 유지
@@ -96,13 +94,10 @@ const AdditionalPage = () => {
       Object.entries(putBody).filter(([, value]) => value !== undefined),
     ) as PutStoreBody;
 
-    console.log('PUT request body (additional):', JSON.stringify(cleanedBody, null, 2));
-
     putStoreMutation.mutate(
       { id: 15, body: cleanedBody },
       {
         onSuccess: () => {
-          console.log('Additional info updated successfully');
           alert('저장되었습니다.');
         },
         onError: () => {
