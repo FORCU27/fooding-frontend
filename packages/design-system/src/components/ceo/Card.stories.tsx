@@ -8,7 +8,7 @@ import { CheckBox } from './CheckBox';
 import { SelectBox } from './SelectBox';
 
 const meta = {
-  title: 'Components/ceo/CeoCard',
+  title: 'Components/ceo/Card',
   component: Card,
   parameters: {
     layout: 'centered',

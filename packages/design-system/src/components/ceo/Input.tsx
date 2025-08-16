@@ -7,9 +7,16 @@ import { cn } from '../../utils/cn';
 type InputProps = ComponentPropsWithRef<'input'> & {
   inputType?: 'search' | 'url' | 'text';
   disabled?: boolean;
+  suffix?: string;
 };
 
-const Input = ({ inputType = 'text', className, disabled = false, ...props }: InputProps) => {
+const Input = ({
+  inputType = 'text',
+  className,
+  disabled = false,
+  suffix,
+  ...props
+}: InputProps) => {
   const renderIcon = () => {
     switch (inputType) {
       case 'search':
@@ -30,7 +37,8 @@ const Input = ({ inputType = 'text', className, disabled = false, ...props }: In
       <input
         className={cn(
           'flex h-[58px] w-full rounded-[8px] border border-gray-3 bg-white px-[10px] py-[16px] text-[20px] font-bold text-black placeholder:text-gray-5 placeholder:font-normal',
-          { 'pr-10': inputType },
+          { 'pr-10': inputType && !suffix },
+          { 'pl-6 pr-8': suffix }, // suffix가 있을 때 오른쪽 패딩 추가
           className,
           { 'opacity-50 cursor-pointer bg-gray-1 text-gray-5': disabled },
         )}
@@ -38,6 +46,11 @@ const Input = ({ inputType = 'text', className, disabled = false, ...props }: In
         disabled={disabled}
       />
       {renderIcon()}
+      {suffix && (
+        <span className='absolute right-4 top-1/2 -translate-y-1/2 text-[16px] font-medium text-gray-600 pointer-events-none'>
+          {suffix}
+        </span>
+      )}
     </div>
   );
 };

@@ -6,6 +6,7 @@ import { ReactNode, Suspense } from 'react';
 import { Metadata } from 'next';
 
 import Analytics from '@/components/GA/Analytics';
+import KakaoMapScript from '@/components/KakaoMapScript';
 import MainLayout from '@/components/Layouts/MainLayout';
 import { AuthProvider } from '@/components/Provider/AuthProvider';
 import { ReactQueryProvider } from '@/components/Provider/ReactQueryProvider';
@@ -21,6 +22,9 @@ export default function RootLayout({ children }: { children: ReactNode }) {
     <html lang='en'>
       <head />
       <body>
+        {/* 카카오맵 SDK 로드 - 모든 페이지에서 사용 가능하도록 */}
+        <KakaoMapScript />
+
         {process.env.NODE_ENV === 'production' && (
           <>
             <Script
