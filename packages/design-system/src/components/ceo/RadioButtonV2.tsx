@@ -1,6 +1,6 @@
 import React from 'react';
 
-interface RadioButtonProps {
+interface RadioButtonV2Props {
   id: string;
   name?: string;
   value: string;
@@ -11,7 +11,7 @@ interface RadioButtonProps {
   disabled?: boolean;
 }
 
-export const RadioButton: React.FC<RadioButtonProps> = ({
+export const RadioButtonV2: React.FC<RadioButtonV2Props> = ({
   id,
   name,
   value,
@@ -59,7 +59,7 @@ export const RadioButton: React.FC<RadioButtonProps> = ({
 };
 
 // 라디오 버튼 그룹 컴포넌트
-interface RadioGroupProps {
+interface RadioGroupV2Props {
   name: string;
   value: string;
   onChange: (value: string) => void;
@@ -68,7 +68,7 @@ interface RadioGroupProps {
   direction?: 'horizontal' | 'vertical';
 }
 
-export const RadioGroup: React.FC<RadioGroupProps> = ({
+export const RadioGroupV2: React.FC<RadioGroupV2Props> = ({
   name,
   value,
   onChange,
@@ -83,8 +83,8 @@ export const RadioGroup: React.FC<RadioGroupProps> = ({
       } ${className}`}
     >
       {React.Children.map(children, (child) => {
-        if (React.isValidElement(child) && child.type === RadioButton) {
-          const radioButtonChild = child as React.ReactElement<RadioButtonProps>;
+        if (React.isValidElement(child) && child.type === RadioButtonV2) {
+          const radioButtonChild = child as React.ReactElement<RadioButtonV2Props>;
           return React.cloneElement(radioButtonChild, {
             name,
             checked: radioButtonChild.props.value === value,

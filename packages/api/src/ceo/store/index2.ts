@@ -1,6 +1,7 @@
 export * from './type2';
 
 import { PutStoreBody, GetStoreApiResponse, GetStoreResponseV2 } from './type2';
+
 import { api } from '../../shared';
 
 const ENDPOINT = '/ceo/stores';
