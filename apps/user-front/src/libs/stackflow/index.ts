@@ -6,9 +6,13 @@ import { basicRendererPlugin } from '@stackflow/plugin-renderer-basic';
 import { stackflow } from '@stackflow/react/future';
 
 import { BookmarkListScreen } from '@/screens/bookmarks/Bookmarks';
+import { JoinFormScreen } from '@/screens/join/JoinFormScreen';
 import { MyCouponListScreen } from '@/screens/my-coupons/MyCoupons';
 import { NotificationListScreen } from '@/screens/notifications/Notifications';
 import { PlanDetailScreen } from '@/screens/plan-detail/PlanDetail';
+import { ProfileModifyScreen } from '@/screens/profile/ProfileModify';
+import { ProfileCompleteScreen } from '@/screens/profile-user-info/ProfileCompleteScreen';
+import { ProfileUserInfoScreen } from '@/screens/profile-user-info/ProfileUserInfo';
 import { ReviewCreateScreen } from '@/screens/reviews/ReviewCreate';
 import { NotificationSettingScreen } from '@/screens/settings/Notifications';
 import { SettingScreen } from '@/screens/settings/Settings';
@@ -27,7 +31,7 @@ declare module '@stackflow/config' {
     PlanTab: object;
     MyPageTab: object;
     NotificationListScreen: object;
-    StoreDetailScreen: { storeId: number };
+    StoreDetailScreen: { storeId: number; tab?: string };
     BookmarkListScreen: object;
     MyCouponListScreen: object;
     StorePostDetailScreen: { storePostId: number; storeName: string };
@@ -36,6 +40,18 @@ declare module '@stackflow/config' {
     ReviewCreateScreen: { planId: number };
     WaitingDetailScreen: { waitingId: number };
     PlanDetailScreen: { planId: number };
+    ProfileModifyScreen: object;
+    ProfileUserInfoScreen: {
+      isUpdateMode: boolean;
+      gender: string;
+      nickname: string | null;
+      description: string | null;
+      phoneNumber: string | null;
+      referralCode: string | null;
+      imageFile: File | null;
+    };
+    ProfileCompleteScreen: { userName: string };
+    JoinFormScreen: object;
   }
 }
 
@@ -55,6 +71,10 @@ const config = defineConfig({
     { name: 'ReviewCreateScreen' },
     { name: 'WaitingDetailScreen' },
     { name: 'PlanDetailScreen' },
+    { name: 'ProfileModifyScreen' },
+    { name: 'ProfileUserInfoScreen' },
+    { name: 'ProfileCompleteScreen' },
+    { name: 'JoinFormScreen' },
   ],
 
   transitionDuration: 350,
@@ -78,6 +98,10 @@ export const { Stack } = stackflow({
     ReviewCreateScreen,
     WaitingDetailScreen,
     PlanDetailScreen,
+    ProfileModifyScreen,
+    ProfileUserInfoScreen,
+    ProfileCompleteScreen,
+    JoinFormScreen,
   },
   plugins: [
     basicRendererPlugin(),

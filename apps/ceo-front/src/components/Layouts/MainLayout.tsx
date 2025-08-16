@@ -14,6 +14,7 @@ interface LayoutProps {
 const Layout = ({ children }: LayoutProps) => {
   const pathname = usePathname();
   const isLoginPage = pathname === '/login';
+  const isStoreSelectPage = pathname === '/store/select';
 
   // 초기값을 함수로 설정
   const [isOpen, setIsOpen] = useState(() => false);
@@ -21,8 +22,13 @@ const Layout = ({ children }: LayoutProps) => {
   const toggleSidebar = () => setIsOpen(!isOpen);
   const closeSidebar = () => setIsOpen(false);
 
-  if (isLoginPage) {
-    return <div className='min-h-screen'>{children}</div>;
+  if (isLoginPage || isStoreSelectPage) {
+    return (
+      <div className='flex flex-col min-h-screen'>
+        {children}
+        <FooterLayout />
+      </div>
+    );
   }
 
   return (
