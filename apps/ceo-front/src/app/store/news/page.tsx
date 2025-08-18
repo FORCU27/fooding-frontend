@@ -7,19 +7,10 @@ import {
   Button,
   Card,
   Input,
-  SelectBox,
-  TextArea,
   CardSubtitle,
   ToggleGroup,
   ToggleGroupItem,
   UrlLinkList,
-  BusinessHours,
-  Dialog,
-  DialogTrigger,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogFooter,
   ToolTip,
 } from '@repo/design-system/components/ceo';
 
@@ -64,7 +55,7 @@ const NewsPage = () => {
       </Card>
       <Card>
         <CardSubtitle label='시설/서비스 정보' required>
-          <ToggleGroup type='multiple' variant='chip' className='w-full '>
+          <ToggleGroup type='multiple' className='w-full '>
             <ToggleGroupItem value='group'>단체이용 가능</ToggleGroupItem>
             <ToggleGroupItem value='takeout'>포장</ToggleGroupItem>
             <ToggleGroupItem value='delivery'>배달</ToggleGroupItem>
@@ -85,7 +76,7 @@ const NewsPage = () => {
             네이버,카카오페이,페이코,애플페이 등 QR코드결제 또는 바코드 결제가 가능한 경우
             간편결제를 선택해주세요
           </ToolTip>
-          <ToggleGroup type='multiple' variant='chip' className='w-full '>
+          <ToggleGroup type='multiple' className='w-full '>
             <ToggleGroupItem value='card'>지역화폐 (지류형)</ToggleGroupItem>
             <ToggleGroupItem value='cash'>지역화폐 (카드형)</ToggleGroupItem>
             <ToggleGroupItem value='point'>지역화폐 (모바일형)</ToggleGroupItem>

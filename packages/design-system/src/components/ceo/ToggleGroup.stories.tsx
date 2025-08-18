@@ -29,7 +29,7 @@ export const Default: Story = {
 
 export const Chip: Story = {
   render: (args: any) => (
-    <ToggleGroup {...args} type='multiple' variant='chip' className='w-[600px]'>
+    <ToggleGroup {...args} type='multiple' className='w-[600px]'>
       <ToggleGroupItem value='group'>단체이용 가능</ToggleGroupItem>
       <ToggleGroupItem value='takeout'>포장</ToggleGroupItem>
       <ToggleGroupItem value='delivery'>배달</ToggleGroupItem>

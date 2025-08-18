@@ -49,7 +49,6 @@ const BasicInfoPage = () => {
     }
   }, []); // 마운트 시 한 번만 실행
 
-
   interface PostcodeData {
     address: string;
     addressType: string;
@@ -82,7 +81,62 @@ const BasicInfoPage = () => {
           />
         </CardSubtitle>
       </Card>
-
+      <Card>
+        <CardSubtitle label='매장소개' required>
+          <TextArea id='name' maxLength={1000} />
+        </CardSubtitle>
+      </Card>
+      <Card>
+        <CardSubtitle label='주차 정보' required>
+          <ToggleGroup
+            type='single'
+            defaultValue={parkingInfo}
+            onValueChange={(value) => {
+              if (value) setParkingInfo(value);
+            }}
+            className='w-full'
+          >
+            <ToggleGroupItem value='possible' className='flex-1'>
+              주차 가능
+            </ToggleGroupItem>
+            <ToggleGroupItem value='impossible' className='flex-1'>
+              주차 불가능
+            </ToggleGroupItem>
+          </ToggleGroup>
+          {parkingInfo === 'possible' && (
+            <div className='mt-4'>
+              <Input placeholder='주차 관련 안내사항을 입력하세요.' />
+            </div>
+          )}
+        </CardSubtitle>
+      </Card>
+      <Card>
+        <CardSubtitle label='홈페이지 주소'>
+          <UrlLinkList />
+        </CardSubtitle>
+      </Card>
+      <Card>
+        <CardSubtitle label='편의시설'>
+          <ToggleGroup type='multiple' value={amenities} onValueChange={setAmenities}>
+            <ToggleGroupItem value='group'>단체이용 가능</ToggleGroupItem>
+            <ToggleGroupItem value='takeout'>포장</ToggleGroupItem>
+            <ToggleGroupItem value='delivery'>배달</ToggleGroupItem>
+            <ToggleGroupItem value='reception'>방문접수/출장</ToggleGroupItem>
+            <ToggleGroupItem value='reservation'>예약</ToggleGroupItem>
+            <ToggleGroupItem value='wifi'>무선인터넷</ToggleGroupItem>
+            <ToggleGroupItem value='kids'>유아시설/놀이방</ToggleGroupItem>
+            <ToggleGroupItem value='toilet'>남/녀 화장실 구분</ToggleGroupItem>
+            <ToggleGroupItem value='chair'>유아의자</ToggleGroupItem>
+            <ToggleGroupItem value='waiting'>대기공간</ToggleGroupItem>
+            <ToggleGroupItem value='no-kids'>노키즈존</ToggleGroupItem>
+          </ToggleGroup>
+        </CardSubtitle>
+      </Card>
+      <Card>
+        <CardSubtitle label='영업시간을 알려주세요'>
+          <BusinessHours />
+        </CardSubtitle>
+      </Card>
       <Card>
         <CardSubtitle label='매장번호' required>
           <Input id='name' />
@@ -144,7 +198,7 @@ const BasicInfoPage = () => {
       <div className='flex justify-center mb-17'>
         <Button>저장</Button>
       </div>
-      
+
       {/* 위치 수정 Dialog */}
       <LocationEditDialog isOpen={isDialogOpen} onOpenChange={setIsDialogOpen} />
     </CardForm>
