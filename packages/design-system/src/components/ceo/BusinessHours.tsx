@@ -1,25 +1,53 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, Dispatch, SetStateAction } from 'react';
 
 import { CheckBox } from './CheckBox';
 import RadioButtonGroup from './RadioButtonGroup';
 import { TimePicker } from './TimePicker';
 
-type OperatingMode = 'same_everyday' | 'different_by_day' | 'open_24h';
-type DayHours = { start: string; end: string; isClosed: boolean };
-type HoursByDay = { [day: string]: DayHours };
+export type OperatingMode = 'same_everyday' | 'different_by_day' | 'open_24h';
+export type DayHours = { start: string; end: string; isClosed: boolean };
+export type HoursByDay = { [day: string]: DayHours };
 
 const daysOfWeek = ['월', '화', '수', '목', '금', '토', '일'];
 
-const BusinessHours = () => {
-  const [mode, setMode] = useState<OperatingMode>('same_everyday');
-  const [everydayHours, setEverydayHours] = useState({ start: '09:00', end: '22:00' });
-  const [bydayHours, setBydayHours] = useState<HoursByDay>(() =>
+export interface BusinessHoursProps {
+  mode?: OperatingMode;
+  everydayHours?: { start: string; end: string };
+  bydayHours?: HoursByDay;
+  onModeChange?: Dispatch<SetStateAction<OperatingMode>>;
+  onEverydayHoursChange?: Dispatch<SetStateAction<{ start: string; end: string }>>;
+  onBydayHoursChange?: Dispatch<SetStateAction<HoursByDay>>;
+}
+
+export const BusinessHours = ({
+  mode: externalMode,
+  everydayHours: externalEverydayHours,
+  bydayHours: externalBydayHours,
+  onModeChange,
+  onEverydayHoursChange,
+  onBydayHoursChange,
+}: BusinessHoursProps) => {
+  // 내부 상태: 외부 prop이 없으면 내부 디폴트 상태 사용
+  const [defaultMode, setDefaultMode] = useState<OperatingMode>('same_everyday');
+  const [defaultEverydayHours, setDefaultEverydayHours] = useState({
+    start: '09:00',
+    end: '22:00',
+  });
+  const [defaultBydayHours, setDefaultBydayHours] = useState<HoursByDay>(() =>
     Object.fromEntries(
       daysOfWeek.map((day) => [day, { start: '09:00', end: '22:00', isClosed: false }]),
     ),
   );
+
+  // 외부 상태 우선, 없으면 내부 디폴트 상태 사용
+  const mode = externalMode ?? defaultMode;
+  const everydayHours = externalEverydayHours ?? defaultEverydayHours;
+  const bydayHours = externalBydayHours ?? defaultBydayHours;
+  const setMode = onModeChange ?? setDefaultMode;
+  const setEverydayHours = onEverydayHoursChange ?? setDefaultEverydayHours;
+  const setBydayHours = onBydayHoursChange ?? setDefaultBydayHours;
 
   const handleDayOffToggle = (day: string) => {
     setBydayHours((prev) => ({
@@ -72,7 +100,7 @@ const BusinessHours = () => {
 
               return (
                 <li key={day} className='flex items-center gap-6'>
-                  <div className=' border-gray-3 border p-5 rounded-lg'>{day}</div>
+                  <div className='border-gray-3 border p-5 rounded-lg'>{day}</div>
                   <CheckBox
                     labelText='휴무'
                     checked={dayInfo.isClosed}
@@ -107,5 +135,3 @@ const BusinessHours = () => {
     </div>
   );
 };
-
-export { BusinessHours };
