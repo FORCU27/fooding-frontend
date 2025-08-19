@@ -17,13 +17,39 @@ export type Province = {
 export const formatProvinces = (list: Region[] | undefined): Province[] => {
   if (!list) return [];
 
-  return list
-    .filter((region) => region.level === 1)
-    .map((province) => ({
-      label: province.name.replace(/특별시|광역시|도$/, ''),
-      id: province.id,
-      districts: list
-        .filter((r) => r.parentRegionId === province.id && r.level === 2)
-        .map((d) => d.name.replace(/^.*\s/, '')),
-    }));
+  // 시/도(레벨 1) 먼저 필터링
+  const provinces = list.filter((region) => region.level === 1);
+
+  return provinces.map((province) => ({
+    label: province.name.replace(/특별시|광역시$/, ''),
+    id: province.id,
+    districts: list
+      .filter((r) => r.parentRegionId === province.id)
+      .map((d) => d.name.replace(new RegExp(`^${province.name}\\s`), '')),
+  }));
+};
+
+export type ProvinceMap = Record<string, string[]>;
+
+/**
+ * @description 지역 리스트를 "시/도": ["구1", "구2", ...] 형태로 변환
+ */
+export const formatProvinceMap = (list: Region[] | undefined): ProvinceMap => {
+  if (!list) return {};
+
+  const provinces = list.filter((region) => region.level === 1);
+
+  const result: ProvinceMap = {};
+
+  provinces.forEach((province) => {
+    const label = province.name.replace(/특별시|광역시|도$/, '');
+
+    const districts = list
+      .filter((r) => r.parentRegionId === province.id)
+      .map((d) => d.name.replace(new RegExp(`^${province.name}\\s`), ''));
+
+    result[label] = districts;
+  });
+
+  return result;
 };

@@ -18,6 +18,8 @@ export type GetRegionListParams = {
   searchString?: string;
   pageNum?: number;
   pageSize?: number;
+  level?: number;
+  parentRegionId?: string | null;
 };
 
 export type GetRegionListResponse = z.infer<typeof GetRegionListResponse>;

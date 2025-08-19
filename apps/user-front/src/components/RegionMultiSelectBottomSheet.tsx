@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 import { BottomSheet, Button, DismissibleChipButton } from '@repo/design-system/components/b2c';
 import { CheckIcon } from '@repo/design-system/icons';
@@ -6,6 +6,12 @@ import { CheckIcon } from '@repo/design-system/icons';
 import { useGetRegionList } from '@/hooks/regions/useGetRegionList';
 import { cn } from '@/utils/cn';
 import { formatProvinces } from '@/utils/region';
+
+type Province = {
+  label: string;
+  id: string;
+  districts: string[];
+};
 
 type RegionMultiSelectBottomSheetProps = {
   isOpen?: boolean;
@@ -28,36 +34,43 @@ const RegionMultiSelectBottomSheet = (props: RegionMultiSelectBottomSheetProps) 
   );
 };
 
-type ContentProps = RegionMultiSelectBottomSheetProps;
-
-const Content = ({ value: initialValue, onChange }: ContentProps) => {
+const Content = ({ value: initialValue, onChange }: RegionMultiSelectBottomSheetProps) => {
   const [value, setValue] = useState<string[]>(initialValue);
-  const { data } = useGetRegionList();
 
-  const provinces = formatProvinces(data.list);
-  const [selectedProvince, setSelectedProvince] = useState(provinces[0]);
+  // 시/도 리스트
+  const { data: provinceData } = useGetRegionList({ level: 1 });
+  const provinces = formatProvinces(provinceData?.list);
 
-  const onResetButtonClick = () => {
-    setValue([]);
-  };
+  const [selectedProvince, setSelectedProvince] = useState<Province | null>(null);
 
-  const onConfirmButtonClick = () => {
-    onChange(value);
-  };
+  // 선택된 시/도 하위 구 리스트
+  const { data: districtData } = useGetRegionList({
+    level: 2,
+    parentRegionId: selectedProvince?.id,
+  });
+
+  const districts = districtData?.list.map((d) => d.name.replace(/^.*\s/, '')) ?? [];
+
+  // 시/도 리스트 초기 선택
+  useEffect(() => {
+    if (!selectedProvince && provinces.length > 0) {
+      if (!provinces[0]) return;
+      setSelectedProvince(provinces[0]);
+    }
+  }, [provinces, selectedProvince]);
 
   const toggleDistrict = (district: string) => {
-    setValue((prev) => {
-      if (prev.includes(district)) {
-        return prev.filter((v) => v !== district);
-      } else {
-        return [...prev, district];
-      }
-    });
+    setValue((prev) =>
+      prev.includes(district) ? prev.filter((v) => v !== district) : [...prev, district],
+    );
   };
 
   const removeDistrict = (district: string) => {
     setValue((prev) => prev.filter((v) => v !== district));
   };
+
+  const onResetButtonClick = () => setValue([]);
+  const onConfirmButtonClick = () => onChange(value);
 
   return (
     <>
@@ -71,29 +84,31 @@ const Content = ({ value: initialValue, onChange }: ContentProps) => {
           ))}
         </div>
       </BottomSheet.Header>
+
       <div className='border-y border-gray-3 overflow-hidden max-h-[452px] flex'>
         <div className='w-[162px] flex flex-col overflow-y-auto scrollbar-hide bg-gray-1'>
           {provinces.map((province) => (
             <button
+              key={province.id}
               className={cn(
                 'h-[47px] px-5 flex items-center text-gray-5 shrink-0 cursor-pointer',
                 selectedProvince?.id === province.id && 'bg-white font-semibold text-black',
               )}
-              key={province.id}
               onClick={() => setSelectedProvince(province)}
             >
               {province.label}
             </button>
           ))}
         </div>
+
         <div className='flex flex-col overflow-y-auto scrollbar-hide flex-1'>
-          {selectedProvince?.districts.map((district) => (
+          {districts.map((district) => (
             <button
+              key={district}
               className={cn(
                 'h-[47px] px-4 flex items-center shrink-0 text-gray-5 cursor-pointer',
                 value.includes(district) && 'bg-primary-pink/10 text-primary-pink font-semibold',
               )}
-              key={district}
               onClick={() => toggleDistrict(district)}
             >
               <span className='flex-1 text-start'>{district}</span>
@@ -102,6 +117,7 @@ const Content = ({ value: initialValue, onChange }: ContentProps) => {
           ))}
         </div>
       </div>
+
       <BottomSheet.Footer className='gap-[10px]'>
         <Button className='w-[136px]' variant='outlined' onClick={onResetButtonClick}>
           초기화
