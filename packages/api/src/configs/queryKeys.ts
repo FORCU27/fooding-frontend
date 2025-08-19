@@ -44,6 +44,7 @@ export const queryKeys = {
     },
     bookmark: 'userBookmark',
     reservation: { list: 'userReservationList', detail: 'userReservationDetail' },
+    region: { list: 'userRegionList' },
   },
   me: {
     user: 'meUser',
