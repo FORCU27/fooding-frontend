@@ -25,6 +25,9 @@ export const DAY_OF_WEEK = [
 ] as const;
 export type DayOfWeek = (typeof DAY_OF_WEEK)[number];
 
+export const PROVIDE_TYPES = ['ALL', 'REGULAR_CUSTOMER'] as const;
+export type ProvideType = (typeof PROVIDE_TYPES)[number];
+
 export type Store = z.infer<typeof Store>;
 export const Store = z.object({
   id: z.number(),
@@ -202,3 +205,24 @@ export type CreateStoreReviewBody = {
   service: number;
   imageUrls: string[];
 };
+
+export type Reward = z.infer<typeof Reward>;
+export const Reward = z.object({
+  id: z.number(),
+  name: z.string(),
+  point: z.number(),
+  provideType: z.enum(PROVIDE_TYPES),
+  conditions: z.string().nullable(),
+  quantity: z.number().nullable(),
+});
+
+export const RewardListResponse = <TListItem extends z.ZodType>(listItem: TListItem) =>
+  ApiResponse(
+    z.object({
+      point: z.number(),
+      pointShopItems: z.array(listItem),
+    }),
+  );
+
+export type GetStoreRewardListResponse = z.infer<typeof GetStoreRewardListResponse>;
+export const GetStoreRewardListResponse = RewardListResponse(Reward);
