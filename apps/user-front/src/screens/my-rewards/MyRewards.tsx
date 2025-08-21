@@ -1,6 +1,8 @@
+import { useState } from 'react';
+
 import { mockUserRewardLogResponse } from '@repo/api/user';
 import { Button } from '@repo/design-system/components/b2c';
-import { GiftIcon } from '@repo/design-system/icons';
+import { ChevronDownIcon, ChevronUpIcon, GiftIcon } from '@repo/design-system/icons';
 import { ActivityComponentType, useFlow } from '@stackflow/react/future';
 
 import { Header } from '@/components/Layout/Header';
@@ -10,19 +12,24 @@ import { formatMonthDayTime, formatYearMonth } from '@/utils/date';
 export const MyRewardListScreen: ActivityComponentType<'MyRewardListScreen'> = () => {
   const { data: rewards } = mockUserRewardLogResponse;
   const flow = useFlow();
+  const [isOpen, setIsOpen] = useState(false);
 
   const handleStoreRewardClick = (storeId: number) => {
     flow.push('StoreDetailScreen', { storeId });
   };
+
   const sortedRewards = [...rewards.list].sort(
     (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
   );
 
-  const recentRewards = sortedRewards.filter((r) => !r.used).slice(0, 4);
+  const visibleRewards =
+    sortedRewards.length > 4 && !isOpen ? sortedRewards.slice(0, 4) : sortedRewards;
 
   const groupedRewards = sortedRewards.reduce<Record<string, typeof sortedRewards>>(
     (acc, reward) => {
-      const ym = `${new Date(reward.createdAt).getFullYear()}-${String(new Date(reward.createdAt).getMonth() + 1).padStart(2, '0')}`;
+      const ym = `${new Date(reward.createdAt).getFullYear()}-${String(
+        new Date(reward.createdAt).getMonth() + 1,
+      ).padStart(2, '0')}`;
       (acc[ym] ||= []).push(reward);
       return acc;
     },
@@ -32,13 +39,12 @@ export const MyRewardListScreen: ActivityComponentType<'MyRewardListScreen'> = (
   return (
     <Screen header={<Header left={<Header.Back />} title='리워드 목록' />}>
       <div className='flex flex-col gap-3 bg-gray-1 p-5'>
-        {recentRewards.map((reward) => (
+        {visibleRewards.map((reward) => (
           <div key={reward.id} className='flex p-5 bg-white rounded-xl justify-between'>
             <div
-              className='flex justify-center items-center'
-              onClick={() => flow.push('MyRewardDetailScreen', { rewardId: 7 })}
+              className='flex justify-center items-center cursor-pointer'
+              onClick={() => flow.push('MyRewardDetailScreen', { rewardId: reward.id })}
             >
-              {/* TODO: 추후 수정 */}
               <div className='flex justify-between items-center w-10 h-10'>
                 <GiftIcon className='text-gray-5' />
               </div>
@@ -57,6 +63,22 @@ export const MyRewardListScreen: ActivityComponentType<'MyRewardListScreen'> = (
             </Button>
           </div>
         ))}
+
+        {sortedRewards.length > 4 && (
+          <Button variant='outlined' onClick={() => setIsOpen(!isOpen)}>
+            {isOpen ? (
+              <>
+                <p>접기</p>
+                <ChevronUpIcon />
+              </>
+            ) : (
+              <>
+                <p>더보기</p>
+                <ChevronDownIcon className='text-gray-5' />
+              </>
+            )}
+          </Button>
+        )}
 
         <div className='flex gap-2 mt-3 justify-end'>
           <select className='flex border border-none text-gray-5 body-5 p-1'>
@@ -84,7 +106,9 @@ export const MyRewardListScreen: ActivityComponentType<'MyRewardListScreen'> = (
                 </div>
                 <div>
                   <p
-                    className={`subtitle-5 ${reward.used ? 'text-primary-pink' : 'text-fooding-green'}`}
+                    className={`subtitle-5 ${
+                      reward.used ? 'text-primary-pink' : 'text-fooding-green'
+                    }`}
                   >
                     {reward.used ? `-${reward.point}` : reward.point} 포인트
                   </p>
