@@ -1,4 +1,4 @@
-import { GetBookmarkStoreListResponse } from './type';
+import { GetBookmarkStoreListResponse, GetUserRewardLogResponse } from './type';
 
 export const mockBookmarkStoreListResponse: GetBookmarkStoreListResponse = {
   status: 'OK',
@@ -76,5 +76,105 @@ export const mockBookmarkStoreListResponse: GetBookmarkStoreListResponse = {
         storeId: 5,
       },
     ],
+  },
+};
+
+export const mockUserRewardLogResponse: GetUserRewardLogResponse = {
+  status: 'OK',
+  data: {
+    pageInfo: {
+      pageNum: 1,
+      pageSize: 10,
+      totalPages: 1,
+      totalCount: 7,
+    },
+    list: [
+      {
+        id: 1,
+        storeName: '강샤브샤브',
+        storeId: 5,
+        point: 10,
+        avaliablePoint: 10,
+        used: false,
+        type: 'VISIT',
+        createdAt: '2025-08-20T03:44:25.499Z',
+      },
+      {
+        id: 2,
+        storeName: '강샤브샤브',
+        storeId: 5,
+        point: 20,
+        avaliablePoint: 30,
+        used: false,
+        type: 'VISIT',
+        createdAt: '2025-08-19T03:44:25.499Z',
+      },
+      {
+        id: 3,
+        storeName: '강샤브샤브',
+        storeId: 5,
+        point: 20,
+        avaliablePoint: 50,
+        used: false,
+        type: 'VISIT',
+        createdAt: '2025-05-20T07:44:25.499Z',
+      },
+      {
+        id: 4,
+        storeName: '강샤브샤브',
+        storeId: 5,
+        point: 10,
+        avaliablePoint: 40,
+        used: true,
+        type: 'VISIT',
+        createdAt: '2025-05-03T10:44:25.499Z',
+      },
+      {
+        id: 5,
+        storeName: '798화로 홍대본점',
+        storeId: 26,
+        point: 10,
+        avaliablePoint: 40,
+        used: true,
+        type: 'VISIT',
+        createdAt: '2025-04-10T10:44:25.499Z',
+      },
+      {
+        id: 6,
+        storeName: '798화로 홍대본점',
+        storeId: 26,
+        point: 20,
+        avaliablePoint: 50,
+        used: false,
+        type: 'VISIT',
+        createdAt: '2025-03-27T06:44:25.499Z',
+      },
+      {
+        id: 7,
+        storeName: '798화로 홍대본점',
+        storeId: 26,
+        point: 10,
+        avaliablePoint: 30,
+        used: true,
+        type: 'VISIT',
+        createdAt: '2025-03-21T02:44:25.499Z',
+      },
+    ],
+  },
+};
+
+//TODO: 추후 수정
+
+export const mockUserRewardDetailResponse = {
+  status: 'OK',
+  data: {
+    id: 7,
+    storeName: '798화로 홍대본점',
+    storeId: 26,
+    point: 10,
+    avaliablePoint: 30,
+    used: true,
+    type: 'VISIT',
+    createdAt: '2025-03-21T02:44:25.499Z',
   },
 };
