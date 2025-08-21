@@ -16,6 +16,7 @@ type StoreRewardListTabProps = {
 };
 
 export const StoreRewardListTab = ({ storeId }: StoreRewardListTabProps) => {
+  const flow = useFlow();
   const { data: rewards } = useGetStoreRewardList(storeId);
   const { data: store } = useGetStoreDetail(storeId);
 
@@ -40,7 +41,11 @@ export const StoreRewardListTab = ({ storeId }: StoreRewardListTabProps) => {
               <p className='subtitle-6 text-gray-5'>{rewards.point} 포인트</p>
             </div>
           </div>
-          <Button variant='outlined' size='small'>
+          <Button
+            variant='outlined'
+            size='small'
+            onClick={() => flow.push('MyRewardListScreen', {})}
+          >
             적립내역
           </Button>
         </div>
