@@ -37,3 +37,22 @@ export const DeleteBookmarkResponse = z.object({
   status: z.string(),
   data: z.null(),
 });
+
+//TODO: 추후 수정
+export const RewardType = z.enum(['EVENT', 'VISIT']);
+export type RewardType = z.infer<typeof RewardType>;
+
+export type RewardLog = z.infer<typeof RewardLog>;
+export const RewardLog = z.object({
+  id: z.number(),
+  storeName: z.string(),
+  storeId: z.number(),
+  point: z.number(),
+  avaliablePoint: z.number(),
+  used: z.boolean(),
+  type: RewardType,
+  createdAt: z.string(),
+});
+
+export type GetUserRewardLogResponse = z.infer<typeof GetUserRewardLogResponse>;
+export const GetUserRewardLogResponse = PageResponse(RewardLog);
