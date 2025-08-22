@@ -50,6 +50,8 @@ export const StoreDetailScreen: ActivityComponentType<'StoreDetailScreen'> = ({ 
     ref: screenRef,
   });
 
+  const initialTab = params.tab ?? 'home';
+
   return (
     <Screen ref={screenRef}>
       <DefaultErrorBoundary>
@@ -58,7 +60,7 @@ export const StoreDetailScreen: ActivityComponentType<'StoreDetailScreen'> = ({ 
         </NavButton>
         <LoadingToggle fallback={<StoreDetailLoadingFallback />}>
           <Suspense clientOnly fallback={<StoreDetailLoadingFallback />}>
-            <StoreDetail storeId={params.storeId} showHeader={showHeader} />
+            <StoreDetail storeId={params.storeId} showHeader={showHeader} initialTab={initialTab} />
           </Suspense>
         </LoadingToggle>
       </DefaultErrorBoundary>
@@ -69,9 +71,10 @@ export const StoreDetailScreen: ActivityComponentType<'StoreDetailScreen'> = ({ 
 type StoreDetailProps = {
   storeId: number;
   showHeader: boolean;
+  initialTab?: string;
 };
 
-const StoreDetail = ({ storeId, showHeader }: StoreDetailProps) => {
+const StoreDetail = ({ storeId, showHeader, initialTab = 'home' }: StoreDetailProps) => {
   const { user } = useAuth();
   const { data: store } = useGetStoreDetail(storeId);
   const loginBottomSheet = useLoginBottomSheet();
@@ -149,8 +152,8 @@ const StoreDetail = ({ storeId, showHeader }: StoreDetailProps) => {
           <span className='subtitle-6 text-black'>{store.estimatedWaitingTimeMinutes ?? 0}분</span>
         </div>
       </Section>
-      <Section className='mt-[10px] py-[14px] pb-[120px]'>
-        <ChipTabs defaultValue='home' scrollable>
+      <Section className='mt-[10px] py-[14px]'>
+        <ChipTabs defaultValue={initialTab} scrollable>
           <ChipTabs.List>
             <ChipTabs.Trigger value='home'>홈</ChipTabs.Trigger>
             <ChipTabs.Trigger value='news'>소식</ChipTabs.Trigger>
@@ -189,7 +192,7 @@ const StoreDetail = ({ storeId, showHeader }: StoreDetailProps) => {
             fill={isBookmarked ? 'var(--color-primary-pink)' : 'none'}
             onClick={handleBookmarkClick}
           />
-          <span className='subtitle-4 text-black h-[19px]'>{mock.bookmarkCount}</span>
+          <span className='subtitle-4 text-black h-[19px]'>{store.bookmarkCount}</span>
         </button>
         {/* TODO: 줄서기 기능 추가 */}
         <Button>줄서기</Button>

@@ -1,5 +1,7 @@
 'use client';
 
+import { useId } from 'react';
+
 import { Dialog as DialogPrimitives } from 'radix-ui';
 
 import { CheckIcon } from '../../icons';
@@ -38,9 +40,18 @@ const BottomSheetOverlay = ({ className, children, ...props }: BottomSheetOverla
 type DialogContentProps = React.ComponentPropsWithRef<typeof DialogPrimitives.Content>;
 
 const BottomSheetContent = ({ className, children, ...props }: DialogContentProps) => {
+  const titleId = useId();
+  const descriptionId = useId();
+
   return (
     <DialogPrimitives.Portal>
       <BottomSheetOverlay />
+      <DialogPrimitives.Title aria-labelledby={titleId} className='sr-only'>
+        Title
+      </DialogPrimitives.Title>
+      <DialogPrimitives.Description aria-describedby={descriptionId} className='sr-only'>
+        Description
+      </DialogPrimitives.Description>
       <DialogPrimitives.Content
         className={cn(
           'fixed bottom-0 left-0 right-0 z-50',
