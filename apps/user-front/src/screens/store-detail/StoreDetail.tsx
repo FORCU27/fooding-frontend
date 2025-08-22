@@ -152,7 +152,7 @@ const StoreDetail = ({ storeId, showHeader, initialTab = 'home' }: StoreDetailPr
           <span className='subtitle-6 text-black'>{store.estimatedWaitingTimeMinutes ?? 0}분</span>
         </div>
       </Section>
-      <Section className='mt-[10px] py-[14px]'>
+      <Section className='mt-[10px] pt-[14px] pb-[100px]'>
         <ChipTabs defaultValue={initialTab} scrollable>
           <ChipTabs.List>
             <ChipTabs.Trigger value='home'>홈</ChipTabs.Trigger>

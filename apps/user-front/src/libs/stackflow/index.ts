@@ -7,6 +7,7 @@ import { stackflow } from '@stackflow/react/future';
 
 import { BookmarkListScreen } from '@/screens/bookmarks/Bookmarks';
 import { JoinFormScreen } from '@/screens/join/JoinFormScreen';
+import { MenuDetailScreen, MenuDetailScreenProps } from '@/screens/menu-detail/MenuDetail';
 import { MyCouponListScreen } from '@/screens/my-coupons/MyCoupons';
 import { NotificationListScreen } from '@/screens/notifications/Notifications';
 import { ProfileModifyScreen } from '@/screens/profile/ProfileModify';
@@ -52,6 +53,7 @@ declare module '@stackflow/config' {
     };
     ProfileCompleteScreen: { userName: string };
     JoinFormScreen: object;
+    MenuDetailScreen: MenuDetailScreenProps;
   }
 }
 
@@ -75,6 +77,7 @@ const config = defineConfig({
     { name: 'ProfileUserInfoScreen' },
     { name: 'ProfileCompleteScreen' },
     { name: 'JoinFormScreen' },
+    { name: 'MenuDetailScreen' },
   ],
 
   transitionDuration: 350,
@@ -102,6 +105,7 @@ export const { Stack } = stackflow({
     ProfileUserInfoScreen,
     ProfileCompleteScreen,
     JoinFormScreen,
+    MenuDetailScreen,
   },
   plugins: [
     basicRendererPlugin(),
