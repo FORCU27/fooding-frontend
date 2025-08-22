@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 
-import { CheckBox } from './CheckBox';
+import { Checkbox } from './Checkbox';
 import { TimePicker } from './TimePicker';
 import { ToggleGroup, ToggleGroupItem } from './ToggleGroup';
 
@@ -71,7 +71,7 @@ const BusinessHours = () => {
               return (
                 <li key={day} className='flex items-center gap-6'>
                   <span className='w-8 font-medium'>{day}</span>
-                  <CheckBox
+                  <Checkbox
                     labelText='휴무'
                     checked={dayInfo.isClosed}
                     onChange={() => handleDayOffToggle(day)}

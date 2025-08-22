@@ -1,6 +1,6 @@
 import { IconProps } from '../type';
 
-export default function B2BCheckBoxIcon({
+export default function B2BCheckboxIcon({
   size = 25,
   fill = 'var(--color-gray-5)',
   ...props

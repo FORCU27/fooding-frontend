@@ -13,7 +13,7 @@ import {
   ToggleGroupItem,
   UrlLinkList,
   ToolTip,
-  CheckBox,
+  Checkbox,
 } from '@repo/design-system/components/ceo';
 
 import { useGetStore } from '@/hooks/store/useGetStore';
@@ -265,7 +265,7 @@ const AdditionalPage = () => {
                       </div>
 
                       <div className='ml-22'>
-                        <CheckBox
+                        <Checkbox
                           labelText='무료'
                           // checked={checked}
                           // onChange={(e) => setChecked(e.target.checked)}

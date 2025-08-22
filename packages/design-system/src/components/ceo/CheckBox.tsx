@@ -6,18 +6,18 @@ import { Check } from 'lucide-react';
 
 import { cn } from '../../utils/cn';
 
-type CheckBoxProps = Omit<ComponentPropsWithRef<'input'>, 'type'> & {
+type CheckboxProps = Omit<ComponentPropsWithRef<'input'>, 'type'> & {
   labelText: string;
 };
 
-const CheckBox = ({
+const Checkbox = ({
   className,
   labelText,
   checked: controlledChecked,
   defaultChecked,
   onChange,
   ...props
-}: CheckBoxProps) => {
+}: CheckboxProps) => {
   const id = useId();
   const [uncontrolledChecked, setUncontrolledChecked] = useState(defaultChecked || false);
 
@@ -60,4 +60,4 @@ const CheckBox = ({
   );
 };
 
-export { CheckBox };
+export { Checkbox };

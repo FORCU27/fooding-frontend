@@ -12,7 +12,7 @@ import {
   CardSubtitle,
   ToggleGroup,
   ToggleGroupItem,
-  CheckBox,
+  Checkbox,
   ToolTip,
   Calendar,
   ChevronLeft,
@@ -306,7 +306,7 @@ const SeatGuidePage = () => {
             {/* 공휴일 휴무 */}
             <Card>
               <CardSubtitle label='공휴일중 휴무일이 있나요?'>
-                <CheckBox
+                <Checkbox
                   labelText='전체 선택'
                   checked={formData.holidayClosedOptions.length === 11}
                   onChange={(e) => {

@@ -2,7 +2,7 @@ export * from './Card';
 export * from './CardForm';
 export * from './Input';
 export * from './TextArea';
-export * from './CheckBox';
+export * from './Checkbox';
 export * from './SelectBox';
 export * from './CardSubtitle';
 export * from './Button';
