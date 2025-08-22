@@ -68,8 +68,7 @@ const MenuItem = ({ menu, storeName }: MenuItemProps) => {
           height={120}
           src={menu.imageUrl}
           alt={menu.name}
-          objectFit='cover'
-          className='rounded-[12px]'
+          className='rounded-[12px] object-cover'
         />
       )}
     </li>
