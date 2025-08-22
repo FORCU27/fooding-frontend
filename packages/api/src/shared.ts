@@ -17,14 +17,7 @@ apiClient.interceptors.request.use(
     if (accessToken) {
       config.headers['Authorization'] = `Bearer ${accessToken}`;
     }
-    // PUT 요청 디버깅
-    if (config.method === 'put') {
-      console.log('PUT request config:', {
-        url: config.url,
-        data: config.data,
-        headers: config.headers
-      });
-    }
+
     return config;
   },
   (error) => {
@@ -40,7 +33,7 @@ apiClient.interceptors.response.use(
       console.error('API Error Response:', {
         status: error.response.status,
         data: error.response.data,
-        url: error.config?.url
+        url: error.config?.url,
       });
     }
     return Promise.reject(error);

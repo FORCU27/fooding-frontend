@@ -45,7 +45,7 @@ const CheckBox = ({
         <label
           htmlFor={id}
           className={cn(
-            'flex h-5 w-5 items-center justify-center rounded-[4px] cursor-pointer transition-colors',
+            'flex h-5 w-5 items-center justify-center rounded-[4px] cursor-pointer transition-colors disabled:pointer-events-none',
             isChecked ? 'bg-[#6366F1]' : 'bg-gray-200',
             className,
           )}
