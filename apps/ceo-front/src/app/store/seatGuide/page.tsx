@@ -284,7 +284,7 @@ const SeatGuidePage = () => {
               <CardSubtitle label='정기 휴무일이 있나요?'>
                 <ToggleGroup
                   type='multiple'
-                  variant='chip'
+                  // variant='chip'
                   value={formData.regularClosedDays}
                   onValueChange={(values) =>
                     setFormData((prev) => ({ ...prev, regularClosedDays: values }))
@@ -335,7 +335,7 @@ const SeatGuidePage = () => {
 
                 <ToggleGroup
                   type='multiple'
-                  variant='chip'
+                  // variant='chip'
                   value={formData.holidayClosedOptions}
                   onValueChange={(values) =>
                     setFormData((prev) => ({ ...prev, holidayClosedOptions: values }))

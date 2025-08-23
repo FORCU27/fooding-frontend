@@ -24,9 +24,9 @@ import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { MoreVertical } from 'lucide-react';
 
+import { MenuBadgeList, type BadgeType } from './MenuBadge';
 import { ChevronsLeftRightIcon, ChevronsUpDownIcon } from '../../icons';
 import { cn } from '../../utils/cn';
-import { MenuBadgeList, type BadgeType } from './MenuBadge';
 
 // Use a default placeholder image URL instead of importing PNG
 const menuItemImg = '/images/menu-item-placeholder.png';

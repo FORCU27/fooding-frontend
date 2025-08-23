@@ -352,7 +352,7 @@ const AdditionalPage = () => {
         <CardSubtitle label='시설/서비스 정보' required>
           <ToggleGroup
             type='multiple'
-            variant='chip'
+            // variant='chip'
             value={formData.facilities}
             onValueChange={handleFacilitiesChange}
             className='w-full'
@@ -380,7 +380,7 @@ const AdditionalPage = () => {
           </ToolTip>
           <ToggleGroup
             type='multiple'
-            variant='chip'
+            // variant='chip'
             value={formData.paymentMethods}
             onValueChange={handlePaymentMethodsChange}
             className='w-full'
