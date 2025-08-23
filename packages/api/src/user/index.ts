@@ -5,3 +5,4 @@ export * from './coupons';
 export * from './users';
 export * from './plans';
 export * from './store-waitings';
+export * from './regions';

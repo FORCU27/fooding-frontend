@@ -38,6 +38,11 @@ export const StoreDetailHomeTab = ({ store }: StoreDetailHomeTabProps) => {
   const { data: reviews } = useGetStoreReviewList(store.id);
   const { data: stores } = useGetStoreList({ sortType: 'RECENT' });
 
+  const getKakaoMapDirectionUrl = (latitude: number, longitude: number, name?: string) => {
+    const encodedName = encodeURIComponent(name ?? '목적지');
+    return `https://map.kakao.com/link/to/${encodedName},${latitude},${longitude}`;
+  };
+
   return (
     <div className='flex flex-col'>
       <Section className='mt-[10px] py-[20px] gap-[6px]'>
@@ -121,7 +126,15 @@ export const StoreDetailHomeTab = ({ store }: StoreDetailHomeTabProps) => {
             {store.direction}
           </span>
         </div>
-        <Button className='mt-5' variant='gray'>
+
+        <Button
+          className='mt-5'
+          variant='gray'
+          onClick={() => {
+            const url = getKakaoMapDirectionUrl(store.latitude, store.longitude, store.name);
+            window.open(url, '_blank');
+          }}
+        >
           <CompassIcon className='mr-1 size-[18px]' />
           길찾기
         </Button>

@@ -55,6 +55,11 @@ const PlanDetail = ({ planId }: StoreDetailProps) => {
     setIsAlertAccordionOpen((prev) => !prev);
   };
 
+  const getKakaoMapDirectionUrl = (latitude: number, longitude: number, name?: string) => {
+    const encodedName = encodeURIComponent(name ?? '목적지');
+    return `https://map.kakao.com/link/to/${encodedName},${latitude},${longitude}`;
+  };
+
   return (
     <div className='flex flex-col bg-gray-1'>
       <div className='flex flex-col p-5 bg-white/80'>
@@ -137,7 +142,18 @@ const PlanDetail = ({ planId }: StoreDetailProps) => {
           </div>
         </div>
 
-        <Button variant='gray' size='large'>
+        <Button
+          variant='gray'
+          size='large'
+          onClick={() => {
+            const url = getKakaoMapDirectionUrl(
+              storeInfo.latitude,
+              storeInfo.longitude,
+              storeInfo.name,
+            );
+            window.open(url, '_blank');
+          }}
+        >
           <CompassIcon />
           <span className='ml-1'>길찾기</span>
         </Button>
