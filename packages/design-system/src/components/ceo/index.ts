@@ -24,3 +24,4 @@ export * from './RadioButton';
 export * from './RadioButtonGroup';
 export * from './RecurringDatePicker';
 export * from './MenuBoard';
+export * from './MenuBadge';

@@ -26,6 +26,7 @@ import { MoreVertical } from 'lucide-react';
 
 import { ChevronsLeftRightIcon, ChevronsUpDownIcon } from '../../icons';
 import { cn } from '../../utils/cn';
+import { MenuBadgeList, type BadgeType } from './MenuBadge';
 
 // Use a default placeholder image URL instead of importing PNG
 const menuItemImg = '/images/menu-item-placeholder.png';
@@ -36,7 +37,7 @@ export type MenuItem = {
   description: string;
   price: number;
   image?: string;
-  badges?: Array<'대표' | '추천' | '신규'>;
+  badges?: BadgeType[];
 };
 
 export type Category = {
@@ -151,7 +152,10 @@ const SortableMenuItems = ({
                   className='w-16 h-16 rounded object-cover'
                 />
                 <div>
-                  <div className='font-medium'>{activeItem.name}</div>
+                  <div className='flex items-center gap-2'>
+                    <span className='font-medium'>{activeItem.name}</span>
+                    <MenuBadgeList badges={activeItem.badges} />
+                  </div>
                   <div className='text-sm text-gray-500'>{activeItem.description}</div>
                 </div>
               </div>
@@ -196,19 +200,7 @@ const SortableMenuItem = ({ item }: { item: MenuItem }) => {
       <div className='flex-1'>
         <div className='flex items-center gap-2'>
           <span className='font-medium'>{item.name}</span>
-          {item.badges?.map((badge) => (
-            <span
-              key={badge}
-              className={cn(
-                'text-xs px-2 py-0.5 rounded',
-                badge === '대표' && 'bg-orange-100 text-orange-600',
-                badge === '추천' && 'bg-blue-100 text-blue-600',
-                badge === '신규' && 'bg-green-100 text-green-600',
-              )}
-            >
-              {badge}
-            </span>
-          ))}
+          <MenuBadgeList badges={item.badges} />
         </div>
         <div className='text-sm text-gray-500'>{item.description}</div>
       </div>
