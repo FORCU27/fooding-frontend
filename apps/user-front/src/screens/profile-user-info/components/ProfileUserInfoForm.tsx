@@ -83,6 +83,8 @@ export const ProfileUserInfoForm = ({
   });
 
   const onFormSubmit = (data: FormSchemaType) => {
+    alert('본인인증이 완료되었습니다.');
+
     handleSubmit(
       {
         ...data,

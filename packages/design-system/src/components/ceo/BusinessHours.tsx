@@ -1,25 +1,52 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, Dispatch, SetStateAction } from 'react';
 
 import { Checkbox } from './Checkbox';
 import { TimePicker } from './TimePicker';
-import { ToggleGroup, ToggleGroupItem } from './ToggleGroup';
 
-type OperatingMode = 'everyday' | 'byday';
-type DayHours = { start: string; end: string; isClosed: boolean };
-type HoursByDay = { [day: string]: DayHours };
+export type OperatingMode = 'same_everyday' | 'different_by_day' | 'open_24h';
+export type DayHours = { start: string; end: string; isClosed: boolean };
+export type HoursByDay = { [day: string]: DayHours };
 
 const daysOfWeek = ['월', '화', '수', '목', '금', '토', '일'];
 
-const BusinessHours = () => {
-  const [mode, setMode] = useState<OperatingMode>('everyday');
-  const [everydayHours, setEverydayHours] = useState({ start: '09:00', end: '22:00' });
-  const [bydayHours, setBydayHours] = useState<HoursByDay>(() =>
+export interface BusinessHoursProps {
+  mode?: OperatingMode;
+  everydayHours?: { start: string; end: string };
+  bydayHours?: HoursByDay;
+  onModeChange?: Dispatch<SetStateAction<OperatingMode>>;
+  onEverydayHoursChange?: Dispatch<SetStateAction<{ start: string; end: string }>>;
+  onBydayHoursChange?: Dispatch<SetStateAction<HoursByDay>>;
+}
+
+export const BusinessHours = ({
+  mode: externalMode,
+  everydayHours: externalEverydayHours,
+  bydayHours: externalBydayHours,
+  onModeChange,
+  onEverydayHoursChange,
+  onBydayHoursChange,
+}: BusinessHoursProps) => {
+  // 내부 상태: 외부 prop이 없으면 내부 디폴트 상태 사용
+  const [defaultMode, setDefaultMode] = useState<OperatingMode>('same_everyday');
+  const [defaultEverydayHours, setDefaultEverydayHours] = useState({
+    start: '09:00',
+    end: '22:00',
+  });
+  const [defaultBydayHours, setDefaultBydayHours] = useState<HoursByDay>(() =>
     Object.fromEntries(
       daysOfWeek.map((day) => [day, { start: '09:00', end: '22:00', isClosed: false }]),
     ),
   );
+
+  // 외부 상태 우선, 없으면 내부 디폴트 상태 사용
+  const mode = externalMode ?? defaultMode;
+  const everydayHours = externalEverydayHours ?? defaultEverydayHours;
+  const bydayHours = externalBydayHours ?? defaultBydayHours;
+  const setMode = onModeChange ?? setDefaultMode;
+  const setEverydayHours = onEverydayHoursChange ?? setDefaultEverydayHours;
+  const setBydayHours = onBydayHoursChange ?? setDefaultBydayHours;
 
   const handleDayOffToggle = (day: string) => {
     setBydayHours((prev) => ({
@@ -35,21 +62,23 @@ const BusinessHours = () => {
     }));
   };
 
+  const businessHourOption = [
+    { label: '매일 같아요', value: 'same_everyday' },
+    { label: '요일마다 달라요', value: 'different_by_day' },
+    { label: '24시간 영업', value: 'open_24h' },
+  ];
+
   return (
     <div className='w-full'>
-      <ToggleGroup
-        type='single'
-        defaultValue={mode}
-        onValueChange={(value: OperatingMode) => value && setMode(value)}
-        variant='chip'
-        className='w-auto'
-      >
-        <ToggleGroupItem value='everyday'>매일 같아요</ToggleGroupItem>
-        <ToggleGroupItem value='byday'>요일마다 달라요</ToggleGroupItem>
-      </ToggleGroup>
+      <RadioButtonGroup
+        options={businessHourOption}
+        name='business-hours'
+        selectedValue={mode}
+        onChange={(val) => setMode(val as OperatingMode)}
+      />
 
       <div className='mt-6'>
-        {mode === 'everyday' && (
+        {mode === 'same_everyday' && (
           <div className='flex items-center gap-4'>
             <TimePicker
               value={everydayHours.start}
@@ -62,7 +91,7 @@ const BusinessHours = () => {
             />
           </div>
         )}
-        {mode === 'byday' && (
+        {mode === 'different_by_day' && (
           <ul className='space-y-4'>
             {daysOfWeek.map((day) => {
               const dayInfo = bydayHours[day];
@@ -94,9 +123,14 @@ const BusinessHours = () => {
             })}
           </ul>
         )}
+        {mode === 'open_24h' && (
+          <div className='flex items-center gap-4'>
+            <TimePicker value='00:00' onChange={() => {}} />
+            <span>~</span>
+            <TimePicker value='24:00' onChange={() => {}} />
+          </div>
+        )}
       </div>
     </div>
   );
 };
-
-export { BusinessHours };

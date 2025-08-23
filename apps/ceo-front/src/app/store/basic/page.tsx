@@ -243,7 +243,6 @@ const BasicInfoPage = () => {
           />
         </CardSubtitle>
       </Card>
-
       <Card>
         <CardSubtitle label='매장번호' required>
           <Input

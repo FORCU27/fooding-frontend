@@ -37,6 +37,8 @@ export const queryKeys = {
       operatingHours: 'userStoreOperatingHours',
       additionalInfo: 'userStoreAdditionalInfo',
       immediateEntryList: 'userStoreImmediateEntryList',
+      reward: 'userStoreReward',
+      rewardList: 'userStoreRewardList',
     },
     storePost: {
       list: 'userStorePostList',
@@ -47,6 +49,7 @@ export const queryKeys = {
     },
     bookmark: 'userBookmark',
     reservation: { list: 'userReservationList', detail: 'userReservationDetail' },
+    region: { list: 'userRegionList' },
   },
   me: {
     user: 'meUser',

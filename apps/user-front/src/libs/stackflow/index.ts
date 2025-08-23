@@ -8,6 +8,8 @@ import { stackflow } from '@stackflow/react/future';
 import { BookmarkListScreen } from '@/screens/bookmarks/Bookmarks';
 import { JoinFormScreen } from '@/screens/join/JoinFormScreen';
 import { MyCouponListScreen } from '@/screens/my-coupons/MyCoupons';
+import { MyRewardDetailScreen } from '@/screens/my-reward-detail/MyRewardDetail';
+import { MyRewardListScreen } from '@/screens/my-rewards/MyRewards';
 import { NotificationListScreen } from '@/screens/notifications/Notifications';
 import { ProfileModifyScreen } from '@/screens/profile/ProfileModify';
 import { ProfileCompleteScreen } from '@/screens/profile-user-info/ProfileCompleteScreen';
@@ -52,6 +54,8 @@ declare module '@stackflow/config' {
     };
     ProfileCompleteScreen: { userName: string };
     JoinFormScreen: object;
+    MyRewardListScreen: object;
+    MyRewardDetailScreen: { rewardId: number };
   }
 }
 
@@ -75,6 +79,8 @@ const config = defineConfig({
     { name: 'ProfileUserInfoScreen' },
     { name: 'ProfileCompleteScreen' },
     { name: 'JoinFormScreen' },
+    { name: 'MyRewardListScreen' },
+    { name: 'MyRewardDetailScreen' },
   ],
 
   transitionDuration: 350,
@@ -102,6 +108,8 @@ export const { Stack } = stackflow({
     ProfileUserInfoScreen,
     ProfileCompleteScreen,
     JoinFormScreen,
+    MyRewardListScreen,
+    MyRewardDetailScreen,
   },
   plugins: [
     basicRendererPlugin(),
