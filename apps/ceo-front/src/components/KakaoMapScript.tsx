@@ -16,10 +16,8 @@ export default function KakaoMapScript() {
       src={`//dapi.kakao.com/v2/maps/sdk.js?appkey=${process.env.NEXT_PUBLIC_KAKAO_JS_KEY}&autoload=false&libraries=services`}
       strategy='afterInteractive'
       onLoad={() => {
-        console.log('[KakaoMapScript] Kakao Maps SDK script loaded');
         if (window.kakao && window.kakao.maps) {
           window.kakao.maps.load(() => {
-            console.log('[KakaoMapScript] Kakao Maps SDK fully initialized');
             // 전역 이벤트 발생시켜 다른 컴포넌트에 알림
             window.dispatchEvent(new Event('kakaoMapSdkLoaded'));
           });

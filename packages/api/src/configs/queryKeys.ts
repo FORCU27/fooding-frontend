@@ -18,6 +18,9 @@ export const queryKeys = {
   },
   ceo: {
     devices: 'ceoDevices',
+    store: {
+      getStore: 'ceoStoreGetStore',
+    },
   },
   pos: {},
   user: {

@@ -23,34 +23,26 @@ const KakaoMap = ({
   onScriptLoad,
   mapId,
 }: KakaoMapProps) => {
-  console.log('[KakaoMap] Component render:', {
-    mapId,
-    hasRef: !!mapContainerRef,
-    refCurrent: mapContainerRef?.current,
-    isMapInitialized,
-  });
-
   // Script는 layout.tsx에서 로드되므로 onScriptLoad 호출
   useEffect(() => {
     if (window.kakao && window.kakao.maps) {
-      console.log('[KakaoMap] SDK already loaded, calling onScriptLoad');
       onScriptLoad();
     }
   }, [onScriptLoad]);
 
   return (
     <div
-        ref={mapContainerRef} // 외부 훅에서 전달받은 ref를 연결
-        id={mapId} // props로 전달받은 ID 사용
-        style={{
-          width: '100%',
-          height: '100%',
-          // 지도 초기화 전에는 회색 배경, 초기화 후에는 투명 (UX 개선)
-          backgroundColor: isMapInitialized ? 'transparent' : '#f5f5f5',
-          border: '1px solid #ddd', // 디버깅용 테두리
-        }}
-        onClick={onMapClick} // 지도 클릭 이벤트 핸들러 (props로 전달된 경우)
-      />
+      ref={mapContainerRef} // 외부 훅에서 전달받은 ref를 연결
+      id={mapId} // props로 전달받은 ID 사용
+      style={{
+        width: '100%',
+        height: '100%',
+        // 지도 초기화 전에는 회색 배경, 초기화 후에는 투명 (UX 개선)
+        backgroundColor: isMapInitialized ? 'transparent' : '#f5f5f5',
+        border: '1px solid #ddd', // 디버깅용 테두리
+      }}
+      onClick={onMapClick} // 지도 클릭 이벤트 핸들러 (props로 전달된 경우)
+    />
   );
 };
 

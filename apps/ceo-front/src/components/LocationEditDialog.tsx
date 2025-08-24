@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+
 import {
   Dialog,
   DialogContent,
@@ -9,15 +10,23 @@ import {
   DialogFooter,
   Button,
 } from '@repo/design-system/components/ceo';
+
 import KakaoMap from './KakoMap';
 import { useKakaoMap } from '@/hooks/useKakaoMap';
 
 type LocationEditDialogProps = {
   isOpen: boolean;
   onOpenChange: (open: boolean) => void;
+  onSaveLocation?: (address: string, lat: number, lng: number) => void;
+  initialCenter?: { lat: number; lng: number };
 };
 
-export default function LocationEditDialog({ isOpen, onOpenChange }: LocationEditDialogProps) {
+export default function LocationEditDialog({
+  isOpen,
+  onOpenChange,
+  onSaveLocation,
+  initialCenter,
+}: LocationEditDialogProps) {
   const [centerCoords, setCenterCoords] = useState<{ lat: number; lng: number } | null>(null);
   const [addressInfo, setAddressInfo] = useState<{ address: string; zonecode: string } | null>(
     null,
@@ -25,10 +34,10 @@ export default function LocationEditDialog({ isOpen, onOpenChange }: LocationEdi
   const [showTooltip, setShowTooltip] = useState(false);
   const [isInitialLoad, setIsInitialLoad] = useState(true);
 
-  // Dialog 전용 지도 훅
+  // Dialog 전용 지도 훅 - initialCenter가 있으면 사용, 없으면 기본값
   const { mapContainerRef, map, isMapInitialized, handleScriptLoad, reinitializeMap } = useKakaoMap(
     {
-      center: { lat: 33.450701, lng: 126.570667 },
+      center: initialCenter || { lat: 33.450701, lng: 126.570667 },
       level: 3,
       showCenterPin: true,
       onCenterChanged: (center) => {
@@ -66,21 +75,24 @@ export default function LocationEditDialog({ isOpen, onOpenChange }: LocationEdi
     const geocoder = new window.kakao.maps.services.Geocoder();
     const coord = new window.kakao.maps.LatLng(lat, lng);
 
-    geocoder.coord2Address(coord.getLng(), coord.getLat(), (result: any, status: any) => {
-      if (status === window.kakao.maps.services.Status.OK) {
-        const address = result[0]?.road_address;
-        console.log('[LocationEditDialog] address:', result[0]);
-        if (address) {
-          setAddressInfo({
-            address: address.address_name || '',
-            zonecode: address.zip_code || '',
-          });
+    geocoder.coord2Address(
+      coord.getLng(),
+      coord.getLat(),
+      (result: kakao.maps.services.RegionCode[], status: kakao.maps.services.Status) => {
+        if (status === window.kakao.maps.services.Status.OK) {
+          const address = result[0]?.road_address;
+          if (address) {
+            setAddressInfo({
+              address: address.address_name || '',
+              zonecode: address.zone_no || '',
+            });
+          }
+        } else {
+          console.error('주소 변환 실패:', status);
+          setAddressInfo(null);
         }
-      } else {
-        console.error('주소 변환 실패:', status);
-        setAddressInfo(null);
-      }
-    });
+      },
+    );
   };
 
   // Dialog이 열릴 때와 닫힐 때 상태 관리
@@ -92,7 +104,6 @@ export default function LocationEditDialog({ isOpen, onOpenChange }: LocationEdi
       setIsInitialLoad(true); // 다음 열기를 위해 초기 로드 상태 리셋
     } else {
       // Dialog가 열렸을 때 지도 재초기화 시도
-      console.log('[LocationEditDialog] Dialog opened, attempting map reinitialization');
       setTimeout(() => {
         reinitializeMap();
       }, 100);
@@ -112,12 +123,6 @@ export default function LocationEditDialog({ isOpen, onOpenChange }: LocationEdi
       return () => clearTimeout(tooltipTimer);
     }
   }, [isMapInitialized, isOpen, isInitialLoad]);
-
-  console.log('[LocationEditDialog] Render:', {
-    isOpen,
-    isMapInitialized,
-    hasMapRef: !!mapContainerRef.current,
-  });
 
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
@@ -205,7 +210,16 @@ export default function LocationEditDialog({ isOpen, onOpenChange }: LocationEdi
           <Button variant='outline' onClick={() => onOpenChange(false)}>
             취소
           </Button>
-          <Button>위치 저장</Button>
+          <Button
+            onClick={() => {
+              if (addressInfo && centerCoords && onSaveLocation) {
+                onSaveLocation(addressInfo.address, centerCoords.lat, centerCoords.lng);
+                onOpenChange(false);
+              }
+            }}
+          >
+            위치 저장
+          </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>

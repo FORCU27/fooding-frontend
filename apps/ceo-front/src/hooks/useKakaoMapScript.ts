@@ -6,19 +6,16 @@ const sdkLoadedCallbacks: (() => void)[] = [];
 
 // SDK가 로드되면 모든 대기 중인 콜백 실행
 const notifySdkLoaded = () => {
-  console.log('[useKakaoMapScript] Notifying all callbacks, SDK loaded');
   globalSdkLoaded = true;
-  sdkLoadedCallbacks.forEach(callback => callback());
+  sdkLoadedCallbacks.forEach((callback) => callback());
   sdkLoadedCallbacks.length = 0;
 };
 
 // SDK 로드 대기 콜백 등록
 const onSdkLoaded = (callback: () => void) => {
   if (globalSdkLoaded) {
-    console.log('[useKakaoMapScript] SDK already loaded, calling callback immediately');
     callback();
   } else {
-    console.log('[useKakaoMapScript] SDK not loaded, adding to callback queue');
     sdkLoadedCallbacks.push(callback);
   }
 };
@@ -39,7 +36,6 @@ export const useKakaoMapScript = () => {
 
     // SDK 로드 대기
     const handleSdkLoaded = () => {
-      console.log('[useKakaoMapScript] SDK loaded callback triggered');
       setIsSdkLoaded(true);
     };
 
@@ -47,7 +43,6 @@ export const useKakaoMapScript = () => {
 
     // 전역 이벤트 리스너 등록
     const handleKakaoMapSdkLoaded = () => {
-      console.log('[useKakaoMapScript] kakaoMapSdkLoaded event received');
       notifySdkLoaded();
     };
 
@@ -55,7 +50,6 @@ export const useKakaoMapScript = () => {
 
     // 컴포넌트 마운트 시 SDK 상태 확인
     if (window.kakao && window.kakao.maps && window.kakao.maps.LatLng) {
-      console.log('[useKakaoMapScript] SDK already fully loaded');
       notifySdkLoaded();
     }
 
@@ -65,18 +59,13 @@ export const useKakaoMapScript = () => {
   }, []);
 
   const handleScriptLoad = () => {
-    console.log('[useKakaoMapScript] Script onLoad triggered');
-    
     if (window.kakao && window.kakao.maps && window.kakao.maps.LatLng) {
-      console.log('[useKakaoMapScript] SDK already fully loaded');
       notifySdkLoaded();
       return;
     }
 
     if (window.kakao && window.kakao.maps && window.kakao.maps.load) {
-      console.log('[useKakaoMapScript] Loading SDK internal modules');
       window.kakao.maps.load(() => {
-        console.log('[useKakaoMapScript] SDK internal modules loaded');
         notifySdkLoaded();
       });
     }
