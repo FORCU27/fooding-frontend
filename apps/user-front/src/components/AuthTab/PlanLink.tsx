@@ -7,17 +7,13 @@ import { useFlow } from '@stackflow/react/future';
 import { useLoginBottomSheet } from '../Auth/LoginBottomSheet';
 import { useAuth } from '../Provider/AuthProvider';
 
-type ReservationLinkProps = {
+type PlanLinkProps = {
   BottomTabItem: (props: { children: React.ReactNode; isActive: boolean }) => JSX.Element;
   BottomTabLabel: (props: { children: React.ReactNode }) => JSX.Element;
   isActive: boolean;
 };
 
-export const ReservationLink = ({
-  BottomTabItem,
-  BottomTabLabel,
-  isActive,
-}: ReservationLinkProps) => {
+export const PlanLink = ({ BottomTabItem, BottomTabLabel, isActive }: PlanLinkProps) => {
   const loginBottomSheet = useLoginBottomSheet();
   const { user } = useAuth();
   const flow = useFlow();
@@ -27,7 +23,7 @@ export const ReservationLink = ({
 
   useEffect(() => {
     if (clicked && isLoggedIn) {
-      flow.push('ReservationTab', {});
+      flow.push('PlanTab', {});
       loginBottomSheet.close();
       setClicked(false);
     }
@@ -46,7 +42,7 @@ export const ReservationLink = ({
   return (
     <BottomTabItem isActive={isActive}>
       <Link
-        activityName='ReservationTab'
+        activityName='PlanTab'
         activityParams={{}}
         replace
         animate={false}

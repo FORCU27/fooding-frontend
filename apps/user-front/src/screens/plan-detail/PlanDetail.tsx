@@ -1,10 +1,8 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 'use client';
 
 import Image from 'next/image';
 import { useState } from 'react';
 
-import { mockReservationDetailResponse } from '@repo/api/user';
 import { Button, Skeleton } from '@repo/design-system/components/b2c';
 import {
   ChevronUpIcon,
@@ -21,18 +19,17 @@ import { LoadingToggle } from '@/components/Devtool/LoadingToggle';
 import { DefaultErrorBoundary } from '@/components/Layout/DefaultErrorBoundary';
 import { Header } from '@/components/Layout/Header';
 import { Screen } from '@/components/Layout/Screen';
+import { useGetPlanList } from '@/hooks/plan/useGetPlanList';
 import { useGetStoreDetail } from '@/hooks/store/useGetStoreDetail';
 import { formatDotDateTime } from '@/utils/date';
 
-export const ReservationDetailScreen: ActivityComponentType<'ReservationDetailScreen'> = ({
-  params,
-}) => {
+export const PlanDetailScreen: ActivityComponentType<'PlanDetailScreen'> = ({ params }) => {
   return (
     <Screen header={<Header title='예약 상세정보' left={<Header.Back />} />}>
       <DefaultErrorBoundary>
-        <LoadingToggle fallback={<ReservationDetailLoadingFallback />}>
-          <Suspense clientOnly fallback={<ReservationDetailLoadingFallback />}>
-            <ReservationDetail reservationId={params.reservationId} />
+        <LoadingToggle fallback={<PlanDetailLoadingFallback />}>
+          <Suspense clientOnly fallback={<PlanDetailLoadingFallback />}>
+            <PlanDetail planId={params.planId} />
           </Suspense>
         </LoadingToggle>
       </DefaultErrorBoundary>
@@ -41,13 +38,13 @@ export const ReservationDetailScreen: ActivityComponentType<'ReservationDetailSc
 };
 
 type StoreDetailProps = {
-  reservationId: number;
+  planId: number;
 };
 
-const ReservationDetail = ({ reservationId }: StoreDetailProps) => {
-  //TODO: mock 데이터 제거
-  const { data: reservation } = mockReservationDetailResponse;
-  const { data: storeInfo } = useGetStoreDetail(reservation.storeId);
+const PlanDetail = ({ planId }: StoreDetailProps) => {
+  const { data: plans } = useGetPlanList();
+  const plan = plans.list[0];
+  const { data: storeInfo } = useGetStoreDetail(planId); //TODO: 예약상세 API -> 수정
   const [isAlertAccordionOpen, setIsAlertAccordionOpen] = useState(false);
   const [isParkingAccordionOpen, setIsParkingAccordionOpen] = useState(false);
   const onParkingAccordionClick = () => {
@@ -91,10 +88,8 @@ const ReservationDetail = ({ reservationId }: StoreDetailProps) => {
         <div className='flex flex-col my-6 gap-6'>
           <p className='subtitle-3'>예약정보</p>
           <p className='body-5 text-gray-5'>
-            <span>
-              {reservation.reservationDate && formatDotDateTime(reservation.reservationDate)}
-            </span>
-            <span> {reservation.adultCount}명</span>
+            <span>{plan?.reservationTime && formatDotDateTime(plan.reservationTime)}</span>
+            <span> {plan?.adultCount}명</span>
           </p>
         </div>
       </div>
@@ -218,7 +213,7 @@ const ReservationDetail = ({ reservationId }: StoreDetailProps) => {
   );
 };
 
-const ReservationDetailLoadingFallback = () => {
+const PlanDetailLoadingFallback = () => {
   return (
     <div className='flex flex-col'>
       <Skeleton shape='square' height={280} />
