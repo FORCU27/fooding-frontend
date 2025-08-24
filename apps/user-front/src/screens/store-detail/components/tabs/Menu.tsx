@@ -15,7 +15,7 @@ export const StoreDetailMenuTab = ({ store }: StoreDetailMenuTabProps) => {
   const { data: storeMenuCategories } = useGetStoreMenuList(store.id);
 
   if (!isNonEmptyArray(storeMenuCategories)) {
-    return <EmptyState className='my-16' title='동록된 메뉴가 없어요.' />;
+    return <EmptyState className='my-16' title='등록된 메뉴가 없어요.' />;
   }
 
   return (
