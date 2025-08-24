@@ -2,7 +2,7 @@
 
 import { useState, Dispatch, SetStateAction } from 'react';
 
-import { CheckBox } from './CheckBox';
+import { Checkbox } from './Checkbox';
 import RadioButtonGroup from './RadioButtonGroup';
 import { TimePicker } from './TimePicker';
 
@@ -100,8 +100,8 @@ export const BusinessHours = ({
 
               return (
                 <li key={day} className='flex items-center gap-6'>
-                  <div className='border-gray-3 border p-5 rounded-lg'>{day}</div>
-                  <CheckBox
+                  <span className='w-8 font-medium'>{day}</span>
+                  <Checkbox
                     labelText='휴무'
                     checked={dayInfo.isClosed}
                     onChange={() => handleDayOffToggle(day)}
