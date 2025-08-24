@@ -11,11 +11,15 @@ const meta: Meta<typeof PhotoCard> = {
   args: {
     src: IMG,
     alt: '맛있는 음식 사진',
-    isVideo: false,
-    isRepresentative: false,
-    onSetRepresentative: () => console.log('대표사진 지정'),
-    onPlayVideo: () => console.log('동영상 재생'),
-    onDelete: () => console.log('삭제'),
+    flags: {
+      isVideo: false,
+      isRepresentative: false,
+    },
+    actions: {
+      onSetRepresentative: () => console.log('대표사진 지정'),
+      onPlayVideo: () => console.log('동영상 재생'),
+      onDelete: () => console.log('삭제'),
+    },
   },
   parameters: {
     layout: 'padded',
@@ -35,16 +39,18 @@ type Story = StoryObj<typeof PhotoCard>;
 export const Default: Story = {};
 
 export const Representative: Story = {
-  args: { isRepresentative: true },
+  args: { flags: { isRepresentative: true } },
 };
 
 export const Video: Story = {
-  args: { isVideo: true },
+  args: { flags: { isVideo: true } },
 };
 
 export const AllBadges: Story = {
   args: {
-    isVideo: true,
-    isRepresentative: true,
+    flags: {
+      isVideo: true,
+      isRepresentative: true,
+    },
   },
 };
