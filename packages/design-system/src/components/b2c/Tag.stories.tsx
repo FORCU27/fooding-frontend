@@ -18,8 +18,20 @@ export const Gray: Story = {
   },
 };
 
+export const Primary: Story = {
+  render: () => {
+    return <Tag variant='primary'>태그</Tag>;
+  },
+};
+
 export const Red: Story = {
   render: () => {
     return <Tag variant='red'>태그</Tag>;
+  },
+};
+
+export const Green: Story = {
+  render: () => {
+    return <Tag variant='green'>태그</Tag>;
   },
 };

@@ -94,6 +94,18 @@ export const Review = z.object({
   updatedAt: z.iso.datetime({ local: true }),
 });
 
+export type StoreMenu = z.infer<typeof StoreMenu>;
+export const StoreMenu = z.object({
+  id: z.number(),
+  name: z.string(),
+  description: z.string(),
+  imageUrl: z.string().nullable(),
+  price: z.number(),
+  sortOrder: z.number(),
+  signature: z.boolean(),
+  recommend: z.boolean(),
+});
+
 export type GetStoreReviewListRequest = {
   id: number;
   params: {
@@ -131,18 +143,7 @@ export const GetStoreMenuListResponse = ApiResponse(
     z.object({
       id: z.number(),
       categoryName: z.string(),
-      menu: z.array(
-        z.object({
-          id: z.number(),
-          name: z.string(),
-          description: z.string(),
-          imageUrl: z.string(),
-          price: z.number(),
-          sortOrder: z.number(),
-          signature: z.boolean(),
-          recommend: z.boolean(),
-        }),
-      ),
+      menu: z.array(StoreMenu),
     }),
   ),
 );
