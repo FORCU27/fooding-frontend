@@ -14,10 +14,10 @@ export const MenuBadge = ({ type, className }: MenuBadgeProps) => {
     <span
       className={cn(
         'text-xs px-2 py-0.5 rounded font-medium',
-        type === '대표' && 'bg-orange-100 text-orange-600',
-        type === '추천' && 'bg-blue-100 text-blue-600',
-        type === '신규' && 'bg-green-100 text-green-600',
-        className
+        type === '대표' && 'bg-primary-pink/10 text-primary-pink',
+        type === '추천' && 'bg-fooding-green/10 text-fooding-green',
+        type === '신규' && 'bg-fooding-blue/10 text-fooding-blue',
+        className,
       )}
     >
       {type}
