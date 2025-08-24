@@ -25,6 +25,7 @@ export * from './RadioButtonGroup';
 export * from './RecurringDatePicker';
 export * from './MenuBoard';
 export * from './MenuBadge';
+export * from './MenuButton';
 export * from './Button';
 export * from './ChipList';
 export * from './SortToggle';

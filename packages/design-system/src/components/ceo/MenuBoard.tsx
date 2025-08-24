@@ -25,6 +25,7 @@ import { CSS } from '@dnd-kit/utilities';
 import { MoreVertical } from 'lucide-react';
 
 import { MenuBadgeList, type BadgeType } from './MenuBadge';
+import { MenuButton } from './MenuButton';
 import { ChevronsLeftRightIcon, ChevronsUpDownIcon } from '../../icons';
 import { cn } from '../../utils/cn';
 
@@ -134,10 +135,7 @@ const SortableMenuItems = ({
       <SortableContext items={items.map((item) => item.id)} strategy={verticalListSortingStrategy}>
         <div className='space-y-2 mb-4'>
           {items.map((item) => (
-            <SortableMenuItem
-              key={item.id}
-              item={item}
-            />
+            <SortableMenuItem key={item.id} item={item} />
           ))}
         </div>
       </SortableContext>
@@ -309,6 +307,11 @@ export const MenuBoard = ({
   return (
     <div className='w-[800px] bg-white'>
       <div className='w-full'>
+        <div className='flex flex-row justify-end gap-2'>
+          {/* <MenuButton icon=<ChevronsUpDownIcon />>카테로기 순서</MenuButton> */}
+          <MenuButton className=''>카테고리 등록</MenuButton>
+          <MenuButton className=''>메뉴 추가</MenuButton>
+        </div>
         {/* Header with buttons */}
         {/* <div className='flex items-center justify-between mb-6 px-4'>
           <div className='flex gap-2'>
@@ -376,7 +379,6 @@ export const MenuBoard = ({
               items={selectedCategory.items}
               onItemsReorder={handleItemsReorder}
             />
-            {/* <AddMenuItemDialog onAdd={(item) => handleAddMenuItem(selectedCategory.id, item)} /> */}
           </div>
         )}
       </div>
