@@ -85,7 +85,7 @@ export default function PhotoCard({
   const onDelete = actions?.onDelete;
 
   return (
-    <div className='relative mb-4 break-inside-avoid rounded-2xl overflow-hidden shadow-sm ring-1 ring-gray-200 bg-white group'>
+    <div className='relative break-inside-avoid rounded-2xl overflow-hidden bg-white group'>
       {/* 이미지 */}
       <div className='relative w-full'>
         <ImageComponent src={src} alt={alt} className='w-full h-auto object-cover align-middle' />
