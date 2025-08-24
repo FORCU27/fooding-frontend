@@ -13,10 +13,9 @@ const meta: Meta<typeof PhotoCard> = {
     alt: '맛있는 음식 사진',
     isVideo: false,
     isRepresentative: false,
-    isBookmarked: false,
     onSetRepresentative: () => console.log('대표사진 지정'),
+    onPlayVideo: () => console.log('동영상 재생'),
     onDelete: () => console.log('삭제'),
-    onToggleBookmark: () => console.log('즐겨찾기 토글'),
   },
   parameters: {
     layout: 'padded',
@@ -39,10 +38,6 @@ export const Representative: Story = {
   args: { isRepresentative: true },
 };
 
-export const Bookmarked: Story = {
-  args: { isBookmarked: true },
-};
-
 export const Video: Story = {
   args: { isVideo: true },
 };
@@ -50,6 +45,6 @@ export const Video: Story = {
 export const AllBadges: Story = {
   args: {
     isVideo: true,
-    isBookmarked: true,
+    isRepresentative: true,
   },
 };

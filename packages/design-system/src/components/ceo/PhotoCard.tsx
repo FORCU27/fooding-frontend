@@ -14,10 +14,10 @@ type PhotoCardProps = {
   src: string;
   alt: string;
   isVideo?: boolean;
-  isBookmarked?: boolean;
+  isRepresentative?: boolean;
   onSetRepresentative?: () => void;
+  onPlayVideo?: () => void;
   onDelete?: () => void;
-  onToggleBookmark?: () => void;
   ImageComponent?: React.ComponentType<ImageComponentProps>;
 };
 
@@ -29,10 +29,10 @@ export default function PhotoCard({
   src,
   alt,
   isVideo,
-  isBookmarked,
+  isRepresentative,
   onSetRepresentative,
+  onPlayVideo,
   onDelete,
-  onToggleBookmark,
   ImageComponent = DefaultImage,
 }: PhotoCardProps) {
   const [open, setOpen] = useState(false);
@@ -51,13 +51,13 @@ export default function PhotoCard({
       </div>
 
       <div className='absolute left-[22px] top-[20px] flex items-center gap-1 pointer-events-none'>
-        {isBookmarked && <PinIcon />}
+        {isRepresentative && <PinIcon />}
       </div>
 
       {/* 동영상 재생 버튼 */}
       {isVideo && (
         <div className='absolute inset-0 flex items-center justify-center'>
-          <button className='cursor-pointer'>
+          <button className='cursor-pointer' onClick={onPlayVideo}>
             <PlayVideoIcon />
           </button>
         </div>
@@ -75,8 +75,7 @@ export default function PhotoCard({
               role='menuitem'
               className='block w-full px-[16px] py-[4px] body-2 text-left hover:bg-gray-50 cursor-pointer'
               onClick={() => {
-                // onSetRepresentative?.();
-                onToggleBookmark?.();
+                onSetRepresentative?.();
                 setOpen(false);
               }}
             >
