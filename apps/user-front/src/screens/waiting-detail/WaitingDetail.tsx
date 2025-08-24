@@ -1,10 +1,8 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 'use client';
 
 import Image from 'next/image';
 import { useState } from 'react';
 
-import { mockWaitingDetailResponse } from '@repo/api/user';
 import { Button, Skeleton } from '@repo/design-system/components/b2c';
 import {
   ChevronUpIcon,
@@ -21,7 +19,9 @@ import { LoadingToggle } from '@/components/Devtool/LoadingToggle';
 import { DefaultErrorBoundary } from '@/components/Layout/DefaultErrorBoundary';
 import { Header } from '@/components/Layout/Header';
 import { Screen } from '@/components/Layout/Screen';
+import { useGetPlanList } from '@/hooks/plan/useGetPlanList';
 import { useGetStoreDetail } from '@/hooks/store/useGetStoreDetail';
+import { useGetStoreWaitingDetail } from '@/hooks/store-waiting/useGetStoreWaitingDetail';
 import { formatDotDateTime } from '@/utils/date';
 
 export const WaitingDetailScreen: ActivityComponentType<'WaitingDetailScreen'> = ({ params }) => {
@@ -43,9 +43,10 @@ type StoreDetailProps = {
 };
 
 const WaitingDetail = ({ waitingId }: StoreDetailProps) => {
-  //TODO: mock 데이터 제거
-  const { data: waiting } = mockWaitingDetailResponse;
-  const { data: storeInfo } = useGetStoreDetail(waiting.storeId);
+  const { data: plans } = useGetPlanList();
+  const plan = plans.list[0];
+  const { data: waiting } = useGetStoreWaitingDetail(plans.list[0]?.originId || 0);
+  const { data: storeInfo } = useGetStoreDetail(waitingId || 1);
   const [isAlertAccordionOpen, setIsAlertAccordionOpen] = useState(false);
   const [isParkingAccordionOpen, setIsParkingAccordionOpen] = useState(false);
   const onParkingAccordionClick = () => {
@@ -54,6 +55,11 @@ const WaitingDetail = ({ waitingId }: StoreDetailProps) => {
 
   const onAlertAccordionClick = () => {
     setIsAlertAccordionOpen((prev) => !prev);
+  };
+
+  const getKakaoMapDirectionUrl = (latitude: number, longitude: number, name?: string) => {
+    const encodedName = encodeURIComponent(name ?? '목적지');
+    return `https://map.kakao.com/link/to/${encodedName},${latitude},${longitude}`;
   };
 
   return (
@@ -84,8 +90,12 @@ const WaitingDetail = ({ waitingId }: StoreDetailProps) => {
         <div className='flex flex-col mt-8 gap-6'>
           <p className='subtitle-3'>나의 순서</p>
           <div>
-            <p className='headline-3 mb-2'>웨이팅 번호 {waiting.waitingNumber}번</p>
-            <p className='body-5 text-gray-5'>{formatDotDateTime(waiting.createdAt)} 등록</p>
+            <p className='headline-3 mb-2'>
+              웨이팅 번호 {waiting?.waitingUserId ? waiting.waitingUserId : 1}번
+            </p>
+            <p className='body-5 text-gray-5'>
+              {plan?.createdAt && formatDotDateTime(plan.createdAt)} 등록
+            </p>
           </div>
         </div>
       </div>
@@ -102,7 +112,7 @@ const WaitingDetail = ({ waitingId }: StoreDetailProps) => {
             <p>총 입장 인원</p>
           </div>
           <div className='flex flex-col gap-5 text-right'>
-            <p>{waiting.user.name}</p>
+            <p>{storeInfo.name}</p>
             <p>먹고갈게요 | 매장식사</p>
             <p>{waiting.adultCount + waiting.infantCount}명</p>
           </div>
@@ -172,7 +182,18 @@ const WaitingDetail = ({ waitingId }: StoreDetailProps) => {
           </div>
         </div>
 
-        <Button variant='gray' size='large'>
+        <Button
+          variant='gray'
+          size='large'
+          onClick={() => {
+            const url = getKakaoMapDirectionUrl(
+              storeInfo.latitude,
+              storeInfo.longitude,
+              storeInfo.name,
+            );
+            window.open(url, '_blank');
+          }}
+        >
           <CompassIcon />
           <span className='ml-1'>길찾기</span>
         </Button>

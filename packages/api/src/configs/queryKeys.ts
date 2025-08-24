@@ -18,6 +18,9 @@ export const queryKeys = {
   },
   ceo: {
     devices: 'ceoDevices',
+    store: {
+      getStore: 'ceoStoreGetStore',
+    },
   },
   pos: {},
   user: {
@@ -34,16 +37,22 @@ export const queryKeys = {
       operatingHours: 'userStoreOperatingHours',
       additionalInfo: 'userStoreAdditionalInfo',
       immediateEntryList: 'userStoreImmediateEntryList',
+      reward: 'userStoreReward',
+      rewardList: 'userStoreRewardList',
     },
     storePost: {
       list: 'userStorePostList',
       detail: 'userStorePostDetail',
     },
+    storeWaiting: {
+      detail: 'userStoreWaitingDetail',
+    },
     coupon: {
       infiniteList: 'userCouponInfiniteList',
     },
     bookmark: 'userBookmark',
-    reservation: { list: 'userReservationList', detail: 'userReservationDetail' },
+    plan: { list: 'userPlanList', detail: 'userPlanDetail' },
+    region: { list: 'userRegionList' },
   },
   me: {
     user: 'meUser',

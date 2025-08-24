@@ -46,7 +46,9 @@ export const StoreDetailReviewTab = ({ store }: StoreDetailReviewTabProps) => {
         <p className='body-4'>베스트순</p>
         <ChevronDownIcon size={16} className='stroke-gray-5 cursor-pointer' />
       </div>
-      {reviews?.list.length === 0 && <EmptyState className='mt-10' title='등록된 리뷰가 없어요!' />}
+      {reviews?.list.length === 0 && (
+        <EmptyState className='mt-10 mb-25' title='등록된 리뷰가 없어요!' />
+      )}
       {reviews && reviews?.list.length > 0 && (
         <ul className='flex flex-col mt-2 pb-24'>
           <ReviewsDetailList reviews={reviews?.list || []} />

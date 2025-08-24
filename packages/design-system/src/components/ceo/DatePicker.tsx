@@ -65,7 +65,7 @@ const DatePicker = forwardRef<HTMLInputElement, DatePickerProps>(
           {...props}
         />
 
-        <div className='p-6 mt-1 rounded-lg border border-gray-1 bg-white shadow-lg w-full max-w-xs'>
+        <div className='p-6 mt-1 rounded-lg border border-gray-1 bg-white w-full max-w-xs'>
           <div className='flex items-center justify-between mb-4'>
             <button
               type='button'

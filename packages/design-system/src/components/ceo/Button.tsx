@@ -2,8 +2,19 @@ import { type ComponentProps } from 'react';
 
 import { tv, type VariantProps } from 'tailwind-variants';
 
+import { cn } from '../../utils';
+
+const baseButtonClass = cn(
+  'inline-flex items-center justify-center whitespace-nowrap',
+  'cursor-pointer rounded-md',
+  'subtitle-5',
+  'transition-colors',
+  'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
+  'disabled:pointer-events-none disabled:bg-gray-2 disabled:text-gray-4',
+);
+
 const buttonVariants = tv({
-  base: 'inline-flex items-center justify-center whitespace-nowrap cursor-pointer rounded-md subtitle-5 font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50',
+  base: baseButtonClass,
   variants: {
     variant: {
       primary:
