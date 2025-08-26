@@ -1,10 +1,11 @@
 'use client';
 
 import Image from 'next/image';
+import { useMemo } from 'react';
 
 import { SelectBox } from '@repo/design-system/components/ceo';
 import { CeoBellIcon } from '@repo/design-system/icons';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient, useMutation } from '@tanstack/react-query';
 
 interface Props {
   className?: string;
@@ -13,7 +14,10 @@ interface Props {
 }
 
 const HeaderLayout = ({ className, isSidebarOpen, onToggleSidebar }: Props) => {
+  const qc = useQueryClient();
+
   const { data: me } = useQuery({
+    // TODO 쿼리 키 config에 저장해서 활용
     queryKey: ['me'],
     queryFn: async () => {
       const res = await fetch('/api/auth/me', { cache: 'no-store' });
@@ -25,7 +29,7 @@ const HeaderLayout = ({ className, isSidebarOpen, onToggleSidebar }: Props) => {
     },
   });
 
-  const { data: store } = useQuery({
+  const { data: selectedStore, isFetching: fetchingStore } = useQuery({
     queryKey: ['selectedStore'],
     queryFn: async () => {
       const res = await fetch('/api/store/select', { cache: 'no-store' });
@@ -37,7 +41,7 @@ const HeaderLayout = ({ className, isSidebarOpen, onToggleSidebar }: Props) => {
     },
   });
 
-  const { data: stores } = useQuery({
+  const { data: stores, isLoading: loadingStores } = useQuery({
     queryKey: ['storeList'],
     queryFn: async () => {
       const res = await fetch('/api/store/list', { cache: 'no-store' });
@@ -48,6 +52,36 @@ const HeaderLayout = ({ className, isSidebarOpen, onToggleSidebar }: Props) => {
       return res.json();
     },
   });
+
+  const storeOptions = useMemo(() => {
+    if (!stores?.data) return [];
+    return stores.data.map((store: any) => ({ value: String(store.id), label: store.name }));
+  }, [stores]);
+
+  // 현재 value = 선택된 매장 id
+  const currentStoreValue = selectedStore?.data?.id ? String(selectedStore.data.id) : undefined;
+
+  // 선택 변경 mutation
+  const { mutateAsync: changeStore, isPending: changingStore } = useMutation({
+    mutationFn: async (storeIdStr: string) => {
+      const storeId = Number(storeIdStr);
+      const r = await fetch('/api/store/select', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ storeId }),
+      });
+      if (!r.ok) throw new Error('store change failed');
+      return r.json();
+    },
+    onSuccess: async () => {
+      // 선택된 매장 정보 갱신
+      await qc.invalidateQueries({ queryKey: ['selectedStore'] });
+    },
+  });
+
+  const handleValueChange = async (value: string) => {
+    await changeStore(value);
+  };
 
   console.log('stores', stores);
 
@@ -128,11 +162,11 @@ const HeaderLayout = ({ className, isSidebarOpen, onToggleSidebar }: Props) => {
       </div>
       <div className='flex gap-[18px] items-center'>
         <SelectBox
-          options={[
-            { value: '강고기 홍대점', label: '강고기 홍대점' },
-            { value: '강고기 화곡점', label: '강고기 화곡점' },
-          ]}
-          placeholder={store?.data.name}
+          placeholder={selectedStore?.data.name}
+          value={currentStoreValue}
+          options={storeOptions}
+          onValueChange={handleValueChange}
+          disabled={loadingStores || fetchingStore || changingStore}
           className='h-[40px] text-[14px] py-[10px] px-[12px] w-auto'
         />
         <span className='text-[14px] font-semibold'>{me?.data.name} 사장님</span>
