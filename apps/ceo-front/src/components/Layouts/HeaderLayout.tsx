@@ -2,13 +2,55 @@
 
 import Image from 'next/image';
 
+import { SelectBox } from '@repo/design-system/components/ceo';
+import { CeoBellIcon } from '@repo/design-system/icons';
+import { useQuery } from '@tanstack/react-query';
+
 interface Props {
   className?: string;
   isSidebarOpen?: boolean;
   onToggleSidebar?: () => void;
 }
 
-const AppBarSection = ({ className, isSidebarOpen, onToggleSidebar }: Props) => {
+const HeaderLayout = ({ className, isSidebarOpen, onToggleSidebar }: Props) => {
+  const { data: me } = useQuery({
+    queryKey: ['me'],
+    queryFn: async () => {
+      const res = await fetch('/api/auth/me', { cache: 'no-store' });
+      if (!res.ok) {
+        console.warn('me fetch failed:', res.status, await res.text());
+        return null;
+      }
+      return res.json();
+    },
+  });
+
+  const { data: store } = useQuery({
+    queryKey: ['selectedStore'],
+    queryFn: async () => {
+      const res = await fetch('/api/store/select', { cache: 'no-store' });
+      if (!res.ok) {
+        console.warn('selectedStore fetch failed:', res.status, await res.text());
+        return null;
+      }
+      return res.json();
+    },
+  });
+
+  const { data: stores } = useQuery({
+    queryKey: ['storeList'],
+    queryFn: async () => {
+      const res = await fetch('/api/store/list', { cache: 'no-store' });
+      if (!res.ok) {
+        console.warn('storeList fetch failed:', res.status, await res.text());
+        return null;
+      }
+      return res.json();
+    },
+  });
+
+  console.log('stores', stores);
+
   const handleLogoutClick = async () => {
     try {
       // 로그아웃 요청 보내기
@@ -31,7 +73,7 @@ const AppBarSection = ({ className, isSidebarOpen, onToggleSidebar }: Props) => 
 
   return (
     <div
-      className={`flex px-[32px] py-[25px] justify-between bg-white items-center z-50 relative ${className || ''}`}
+      className={`flex px-[32px] py-[17px] justify-between bg-white items-center z-50 relative ${className || ''}`}
     >
       <div className='flex items-center gap-3'>
         {/* 모바일과 태블릿에서만 햄버거 메뉴 표시 */}
@@ -84,17 +126,27 @@ const AppBarSection = ({ className, isSidebarOpen, onToggleSidebar }: Props) => 
           className='object-contain'
         />
       </div>
-
-      {/*FIXME: 테스트용 로그아웃 버튼입니다 */}
-      <button
-        type='button'
-        onClick={handleLogoutClick}
-        className={`cursor-pointer border border-gray-8 rounded-[11px] px-[16px] py-[10px] transition-all hover:bg-gray-50`}
-      >
-        로그아웃
-      </button>
+      <div className='flex gap-[18px] items-center'>
+        <SelectBox
+          options={[
+            { value: '강고기 홍대점', label: '강고기 홍대점' },
+            { value: '강고기 화곡점', label: '강고기 화곡점' },
+          ]}
+          placeholder={store?.data.name}
+          className='h-[40px] text-[14px] py-[10px] px-[12px] w-auto'
+        />
+        <span className='text-[14px] font-semibold'>{me?.data.name} 사장님</span>
+        <button
+          type='button'
+          onClick={handleLogoutClick}
+          className={`cursor-pointer text-[14px] font-semibold text-gray-5 transition-all`}
+        >
+          로그아웃
+        </button>
+        <CeoBellIcon size={24} />
+      </div>
     </div>
   );
 };
 
-export default AppBarSection;
+export default HeaderLayout;
