@@ -16,6 +16,7 @@ type PhotoCardProps = {
   flags?: {
     isVideo?: boolean;
     isRepresentative?: boolean;
+    showCloseButton?: boolean;
   };
   actions?: {
     onSetRepresentative?: () => void;
@@ -79,13 +80,14 @@ export default function PhotoCard({
 
   const isVideo = flags?.isVideo;
   const isRepresentative = flags?.isRepresentative;
+  const showCloseButton = flags?.showCloseButton;
 
   const onPlayVideo = actions?.onPlayVideo;
   const onSetRepresentative = actions?.onSetRepresentative;
   const onDelete = actions?.onDelete;
 
   return (
-    <div className='relative mb-4 break-inside-avoid rounded-2xl overflow-hidden shadow-sm ring-1 ring-gray-200 bg-white group'>
+    <div className='relative break-inside-avoid rounded-2xl overflow-hidden bg-white group'>
       {/* 이미지 */}
       <div className='relative w-full'>
         <ImageComponent src={src} alt={alt} className='w-full h-auto object-cover align-middle' />
@@ -109,13 +111,38 @@ export default function PhotoCard({
 
       {/* 우측 상단 메뉴 버튼 */}
       <div className='absolute right-[22px] top-[20px]'>
-        <KebabButton onClick={toggleMenu} aria-haspopup='true' aria-expanded={isMenuOpen} />
-        {isMenuOpen && (
-          <ActionMenu
-            onSetRepresentative={onSetRepresentative}
-            onDelete={onDelete}
-            onClose={closeMenu}
-          />
+        {showCloseButton ? (
+          <>
+            <button className='w-[24px] h-[24px] rounded-full bg-[rgba(68,68,68,0.3)] flex items-center justify-center'>
+              <svg
+                width='20'
+                height='20'
+                viewBox='0 0 20 20'
+                fill='none'
+                xmlns='http://www.w3.org/2000/svg'
+              >
+                <rect width='20' height='20' rx='10' fill='#444444' fillOpacity='0.3' />
+                <path
+                  d='M14.1693 5.83594L5.83594 14.1693M5.83594 5.83594L14.1693 14.1693'
+                  stroke='white'
+                  strokeWidth='1.5'
+                  strokeLinecap='round'
+                  strokeLinejoin='round'
+                />
+              </svg>
+            </button>
+          </>
+        ) : (
+          <>
+            <KebabButton onClick={toggleMenu} aria-haspopup='true' aria-expanded={isMenuOpen} />
+            {isMenuOpen && (
+              <ActionMenu
+                onSetRepresentative={onSetRepresentative}
+                onDelete={onDelete}
+                onClose={closeMenu}
+              />
+            )}
+          </>
         )}
       </div>
     </div>

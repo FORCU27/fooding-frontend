@@ -14,6 +14,7 @@ const meta: Meta<typeof PhotoCard> = {
     flags: {
       isVideo: false,
       isRepresentative: false,
+      showCloseButton: false,
     },
     actions: {
       onSetRepresentative: () => console.log('대표사진 지정'),
@@ -44,6 +45,10 @@ export const Representative: Story = {
 
 export const Video: Story = {
   args: { flags: { isVideo: true } },
+};
+
+export const Menu: Story = {
+  args: { flags: { showCloseButton: true } },
 };
 
 export const AllBadges: Story = {
