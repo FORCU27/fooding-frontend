@@ -3,6 +3,7 @@ import { NextResponse } from 'next/server';
 
 import { storeApi } from '@repo/api/ceo';
 import { STORAGE_KEYS } from '@repo/api/configs/storage-keys';
+import { AxiosError } from 'axios';
 
 export async function POST(req: Request) {
   const { storeId } = await req.json();
@@ -34,12 +35,18 @@ export async function GET() {
     });
 
     return NextResponse.json(response);
-  } catch (e: any) {
-    console.error(
-      'GET /api/store/select failed:',
-      e?.response?.status,
-      e?.response?.data ?? e?.message,
-    );
-    return NextResponse.json({ ok: false, message: e?.message ?? 'fetch failed' }, { status: 500 });
+  } catch (e: unknown) {
+    if (e instanceof AxiosError) {
+      console.error(
+        'GET /api/store/select failed:',
+        e.response?.status,
+        e.response?.data ?? e.message,
+      );
+      return NextResponse.json({ ok: false, message: e.message }, { status: 500 });
+    }
+
+    // axios 외 예외 처리
+    console.error('Unexpected error in /api/store/select:', e);
+    return NextResponse.json({ ok: false, message: 'unexpected error' }, { status: 500 });
   }
 }

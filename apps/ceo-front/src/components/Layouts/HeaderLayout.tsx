@@ -3,6 +3,7 @@
 import Image from 'next/image';
 import { useMemo } from 'react';
 
+import { Store } from '@repo/api/ceo';
 import { SelectBox } from '@repo/design-system/components/ceo';
 import { CeoBellIcon } from '@repo/design-system/icons';
 import { useQuery, useQueryClient, useMutation } from '@tanstack/react-query';
@@ -55,7 +56,7 @@ const HeaderLayout = ({ className, isSidebarOpen, onToggleSidebar }: Props) => {
 
   const storeOptions = useMemo(() => {
     if (!stores?.data) return [];
-    return stores.data.map((store: any) => ({ value: String(store.id), label: store.name }));
+    return stores.data.map((store: Store) => ({ value: String(store.id), label: store.name }));
   }, [stores]);
 
   // 현재 value = 선택된 매장 id
