@@ -207,7 +207,35 @@ export const mockStoreMenuListResponse: GetStoreMenuListResponse = {
   data: [
     {
       id: 1,
-      categoryName: '식사류',
+      categoryName: 'SET MENU',
+      menu: [
+        {
+          id: 1,
+          name: '딤섬 SET',
+          description:
+            '오이무침-마늘새우찜-찜딤섬5종-계절야채요리-춘권-식사(토마토당면or홍쇼육덮밥)-디저트딤섬',
+          imageUrl: null,
+          price: 40000,
+          sortOrder: 1,
+          signature: true,
+          recommend: true,
+        },
+        {
+          id: 2,
+          name: '딤섬 SET',
+          description:
+            '오이무침-마늘새우찜-찜딤섬5종-계절야채요리-춘권-식사(토마토당면or홍쇼육덮밥)-디저트딤섬',
+          imageUrl: null,
+          price: 40000,
+          sortOrder: 1,
+          signature: false,
+          recommend: true,
+        },
+      ],
+    },
+    {
+      id: 2,
+      categoryName: '일품메뉴',
       menu: [
         {
           id: 1,
