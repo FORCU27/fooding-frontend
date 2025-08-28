@@ -1,13 +1,13 @@
 import { queryKeys } from '@repo/api/configs/query-keys';
-import { GetStoreListResponse, userApi } from '@repo/api/user';
+import { bookmarkApi, GetStoreListResponse } from '@repo/api/user';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 export const useDeleteBookmark = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationKey: [queryKeys.user.bookmark, 'delete'],
-    mutationFn: (storeId: number) => userApi.deleteBookmarkStore(storeId),
+    mutationKey: [queryKeys.user.bookmark.list, 'delete'],
+    mutationFn: (storeId: number) => bookmarkApi.deleteBookmarkStore(storeId),
 
     onMutate: async (storeId: number) => {
       await queryClient.cancelQueries({ queryKey: [queryKeys.user.store.list] });
@@ -29,7 +29,7 @@ export const useDeleteBookmark = () => {
       }
 
       const bookmarkListData = queryClient.getQueriesData<GetStoreListResponse['data']>({
-        queryKey: [queryKeys.user.bookmark],
+        queryKey: [queryKeys.user.bookmark.list],
         exact: false,
       });
 
@@ -55,7 +55,7 @@ export const useDeleteBookmark = () => {
     },
 
     onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: [queryKeys.user.bookmark] });
+      queryClient.invalidateQueries({ queryKey: [queryKeys.user.bookmark.list] });
       queryClient.invalidateQueries({ queryKey: [queryKeys.user.store.list] });
     },
   });

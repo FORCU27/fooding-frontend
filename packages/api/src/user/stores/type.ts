@@ -220,8 +220,8 @@ export type CreateStoreReviewBody = {
   imageUrls: string[];
 };
 
-export type Reward = z.infer<typeof Reward>;
-export const Reward = z.object({
+export type StoreReward = z.infer<typeof StoreReward>;
+export const StoreReward = z.object({
   id: z.number(),
   name: z.string(),
   point: z.number(),
@@ -239,4 +239,4 @@ export const RewardListResponse = <TListItem extends z.ZodType>(listItem: TListI
   );
 
 export type GetStoreRewardListResponse = z.infer<typeof GetStoreRewardListResponse>;
-export const GetStoreRewardListResponse = RewardListResponse(Reward);
+export const GetStoreRewardListResponse = RewardListResponse(StoreReward);

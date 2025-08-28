@@ -50,9 +50,10 @@ export const queryKeys = {
     coupon: {
       infiniteList: 'userCouponInfiniteList',
     },
-    bookmark: 'userBookmark',
+    bookmark: { list: 'userBookmarkList' },
     plan: { list: 'userPlanList', detail: 'userPlanDetail' },
     region: { list: 'userRegionList' },
+    reward: { list: 'userRewardList', log: 'userRewardLog' },
   },
   me: {
     user: 'meUser',

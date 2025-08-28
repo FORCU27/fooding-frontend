@@ -4,7 +4,7 @@ import { Bookmark } from '@repo/api/user';
 import { BookmarkIcon, FoodingIcon, StarIcon } from '@repo/design-system/icons';
 import { useFlow } from '@stackflow/react/future';
 
-import { useDeleteBookmark } from '@/hooks/user/useDeleteBookmark';
+import { useDeleteBookmark } from '@/hooks/bookmark/useDeleteBookmark';
 
 interface BookmarkCardProps {
   bookmark: Bookmark;

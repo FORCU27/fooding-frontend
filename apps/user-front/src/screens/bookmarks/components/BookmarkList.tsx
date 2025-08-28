@@ -3,8 +3,8 @@ import React from 'react';
 
 import { BookmarkIcon, FoodingIcon, StarIcon } from '@repo/design-system/icons';
 
-import { useDeleteBookmark } from '@/hooks/user/useDeleteBookmark';
-import { useGetBookmarkList } from '@/hooks/user/useGetBookmarkList';
+import { useDeleteBookmark } from '@/hooks/bookmark/useDeleteBookmark';
+import { useGetBookmarkList } from '@/hooks/bookmark/useGetBookmarkList';
 
 export const BookmarkList = () => {
   const { data: bookmarks } = useGetBookmarkList();
