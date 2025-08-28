@@ -2,23 +2,23 @@ export * from './mock';
 export * from './type';
 
 import {
+  GetBookmarkStoreListResponse,
   CreateBookmarkResponse,
   DeleteBookmarkResponse,
   GetBookmarkStoreListParams,
-  GetBookmarkStoreListResponse,
 } from './type';
 import { api } from '../../shared';
 
-const ENDPOINT = '/user';
+const ENDPOINT = '/user/bookmarks';
 
-export const userApi = {
+export const bookmarkApi = {
   getBookmarkedStoreList: async (params?: GetBookmarkStoreListParams) => {
-    const response = await api.get(`${ENDPOINT}/bookmarks`, { params });
+    const response = await api.get(`${ENDPOINT}`, { params });
     return GetBookmarkStoreListResponse.parse(response);
   },
   createBookmarkStore: async (storeId: number) => {
     const response = await api.post(
-      `${ENDPOINT}/bookmarks`,
+      `${ENDPOINT}`,
       { storeId },
       {
         headers: {
@@ -30,7 +30,7 @@ export const userApi = {
     return CreateBookmarkResponse.parse(response);
   },
   deleteBookmarkStore: async (storeId: number) => {
-    const response = await api.delete(`${ENDPOINT}/bookmarks/${storeId}`);
+    const response = await api.delete(`${ENDPOINT}/${storeId}`);
     return DeleteBookmarkResponse.parse(response);
   },
 };

@@ -1,13 +1,13 @@
 import { queryKeys } from '@repo/api/configs/query-keys';
-import { GetStoreListResponse, userApi } from '@repo/api/user';
+import { bookmarkApi, GetStoreListResponse } from '@repo/api/user';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 export const useAddBookmark = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationKey: [queryKeys.user.bookmark, 'create'],
-    mutationFn: (storeId: number) => userApi.createBookmarkStore(storeId),
+    mutationKey: [queryKeys.user.bookmark.list, 'create'],
+    mutationFn: (storeId: number) => bookmarkApi.createBookmarkStore(storeId),
 
     onMutate: async (storeId: number) => {
       await queryClient.cancelQueries({ queryKey: [queryKeys.user.store.list] });

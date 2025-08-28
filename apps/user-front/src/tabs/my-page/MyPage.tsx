@@ -2,7 +2,7 @@
 
 import Image from 'next/image';
 
-import { Bookmark, mockUserRewardLogResponse } from '@repo/api/user';
+import { Bookmark } from '@repo/api/user';
 import { Button, ErrorFallback, Skeleton } from '@repo/design-system/components/b2c';
 import {
   ChevronRightIcon,
@@ -21,9 +21,10 @@ import { Header } from '@/components/Layout/Header';
 import { Screen } from '@/components/Layout/Screen';
 import { useAuth } from '@/components/Provider/AuthProvider';
 import { StoresList } from '@/components/Store/StoresList';
+import { useGetBookmarkList } from '@/hooks/bookmark/useGetBookmarkList';
 import { useGetInfiniteMyCouponList } from '@/hooks/coupon/useGetMyCouponList';
+import { useGetRewardPersonalLog } from '@/hooks/reward/useGetRewardPersonalLog';
 import { useGetStoreList } from '@/hooks/store/useGetStoreList';
-import { useGetBookmarkList } from '@/hooks/user/useGetBookmarkList';
 import { BookmarkCard } from '@/screens/bookmarks/components/BookmarkCard';
 
 export const MyPageTab: ActivityComponentType<'MyPageTab'> = () => {
@@ -69,8 +70,8 @@ const Content = () => {
   });
 
   const { coupons } = useGetInfiniteMyCouponList({ used: false });
-  const { data: rewards } = mockUserRewardLogResponse; //TODO: 추후 목데이터제거
 
+  const { data: reward } = useGetRewardPersonalLog();
   return (
     <div className='w-full'>
       <div className='flex-col bg-white/80 pb-5 py-grid-margin'>
@@ -132,8 +133,8 @@ const Content = () => {
             onClick={() => flow.push('MyRewardListScreen', {})}
           >
             <GiftIcon />
-            <p className='body-7 text-gray-5'>포인트 적립</p>
-            <p className='subtitle-6'>{rewards.list.filter((reward) => !reward.used).length}건</p>
+            <p className='body-7 text-gray-5'>포인트</p>
+            <p className='subtitle-6'>{reward.list.length}건</p>
           </div>
         </div>
       </div>
