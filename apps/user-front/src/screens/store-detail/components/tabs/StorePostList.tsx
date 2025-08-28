@@ -22,7 +22,7 @@ export const StoreDetailPostListTab = ({ storeId }: StoreDetailPostListTabProps)
   const { data: store } = useGetStoreDetail(storeId);
 
   if (storePosts.length === 0) {
-    return <EmptyState className='mt-16' title='등록된 가게 소식이 없어요.' />;
+    return <EmptyState className='my-16' title='등록된 가게 소식이 없어요.' />;
   }
 
   return (
