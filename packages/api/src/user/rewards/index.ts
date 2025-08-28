@@ -32,7 +32,7 @@ export const rewardApi = {
     const response = await api.get(`${ENDPOINT}/logs`, { params });
     return GetUserRewardLogResponse.parse(response);
   },
-  getRewardLogByUser: async (params?: GetRewardListParams) => {
+  getRewardPersonalLog: async (params?: GetRewardListParams) => {
     const response = await api.get(`${ENDPOINT}/logs/personal`, { params });
     return GetUserRewardLogResponse.parse(response);
   },

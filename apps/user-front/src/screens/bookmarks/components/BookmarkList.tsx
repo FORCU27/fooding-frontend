@@ -40,7 +40,6 @@ export const BookmarkList = () => {
                   : '• 바로 입장가능'}
               </span>
             </div>
-            <div className='body-6 text-gray-5'>{bookmark.city}</div>
             <div>
               <div>
                 {bookmark.images.length > 0 ? (
