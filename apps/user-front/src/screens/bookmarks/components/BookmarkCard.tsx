@@ -65,7 +65,7 @@ export const BookmarkCard = ({ bookmark }: BookmarkCardProps) => {
               <span className='body-6 text-gray-5'>({bookmark.reviewCount})</span>
             </div>
             <p className='body-8 text-gray-5'>
-              {bookmark.city.length >= 3 ? bookmark.city.slice(0, 2) : bookmark.city} •{' '}
+              {/* {bookmark.city.length >= 3 ? bookmark.city.slice(0, 2) : bookmark.city} •{' '} */}
               {bookmark.estimatedWaitingTimeMinutes
                 ? `예상 대기시간 ${bookmark.estimatedWaitingTimeMinutes}분`
                 : '바로 입장가능'}

@@ -51,7 +51,7 @@ export const MainStoreList = ({ stores }: MainStoreListProps) => {
                 <span className='flex body-6 text-gray-5'>({store.reviewCount})</span>
               </div>
               <p className='body-8 text-gray-5'>
-                {store.city.length >= 3 ? store.city.slice(0, 2) : store.city} •{' '}
+                {/* {store.city.length >= 3 ? store.city.slice(0, 2) : store.city} •{' '} */}
                 {store.estimatedWaitingTimeMinutes
                   ? `예상 대기시간 ${store.estimatedWaitingTimeMinutes}분`
                   : '바로 입장가능'}
