@@ -15,7 +15,13 @@ import {
   Notifications, 
   Email,
   Article,
-  History
+  History,
+  RateReview,
+  Monitor,
+  Campaign,
+  ContactPage,
+  Public,
+  CardGiftcard
 } from '@mui/icons-material';
 import {
   Box,
@@ -50,6 +56,29 @@ const menu = [
       { label: '알림 내역', path: '/user-notifications', icon: <History /> },
       { label: '발송 내역', path: '/notifications', icon: <Email /> },
       { label: '템플릿 관리', path: '/notification-templates', icon: <Article /> },
+    ],
+  },
+  {
+    label: '모니터링',
+    icon: <Monitor />,
+    sub: [
+      { label: '리뷰', path: '/reviews', icon: <RateReview /> },
+    ],
+  },
+  {
+    label: '마케팅',
+    icon: <Campaign />,
+    sub: [
+      { label: 'Lead', path: '/leads', icon: <ContactPage /> },
+      { label: 'Regions', path: '/regions', icon: <Public /> },
+    ],
+  },
+  {
+    label: '리워드',
+    icon: <CardGiftcard />,
+    sub: [
+      { label: '포인트 관리', path: '/rewards/points', icon: <CardGiftcard /> },
+      { label: '로그 관리', path: '/rewards/logs', icon: <History /> },
     ],
   },
 ];
