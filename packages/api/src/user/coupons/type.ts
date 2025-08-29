@@ -22,7 +22,7 @@ export type GetMyCouponListParams = {
 export type Coupon = z.infer<typeof Coupon>;
 export const Coupon = z.object({
   id: z.number(),
-  storeId: z.number(),
+  storeId: z.number().nullable(),
   storeName: z.string().nullable(),
   name: z.string(),
   conditions: z.string().nullable(),
@@ -30,9 +30,11 @@ export const Coupon = z.object({
   discountType: z.enum(DISCOUNT_TYPES),
   discountValue: z.number(),
   status: z.enum(COUPON_STATUS),
-  usedAt: z.iso.datetime({ local: true }).nullable(),
-  expiredOn: z.iso.date().nullable(),
-  createdDateAt: z.iso.datetime({ local: true }),
+  usedAt: z.string().nullable(),
+  expiredOn: z.string().nullable(),
+  createdDateAt: z.string(),
+  tableNumber: z.string().nullable(),
+  point: z.number().nullable(),
   mainImage: z.string().nullable(),
 });
 
