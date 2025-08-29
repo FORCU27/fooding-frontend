@@ -19,11 +19,17 @@ import {
   DialogContentText,
 } from '@mui/material';
 import {
+  Table, TableBody, TableCell, TableContainer, TableHead, TableRow,
+  TextField
+} from '@mui/material';
+import {
   storeApi,
   AdminStoreResponse,
   AdminUpdateStoreRequest,
 } from '@repo/api/admin';
+import { menuApi, AdminMenuResponse, AdminMenuCreateRequest, AdminMenuUpdateRequest } from '@repo/api/admin';
 import { useQuery, useMutation } from '@tanstack/react-query';
+import { useQuery as useRQ, useMutation as useRMutation } from '@tanstack/react-query';
 
 import { queryClient } from '../../providers';
 import { DeleteConfirmDialog } from '../DeleteConfirmDialog';
@@ -48,6 +54,11 @@ export default function StoreDetailPage() {
     queryFn: () => storeApi.getStore(storeId),
     enabled: !!storeId,
   });
+
+  // 디버깅을 위한 로그
+  console.log('API Response:', storeResponse);
+  console.log('Store Data:', storeResponse?.data);
+  console.log('Error:', error);
 
   const updateMutation = useMutation({
     mutationFn: ({ id, body }: { id: number; body: AdminUpdateStoreRequest }) =>
@@ -111,6 +122,42 @@ export default function StoreDetailPage() {
       deleteMutation.mutate(storeToDelete.id);
     }
   };
+
+  // Menus state and queries
+  const [menuPage, setMenuPage] = useState(1);
+  const [isCreateMenuOpen, setIsCreateMenuOpen] = useState(false);
+  const [isEditMenuOpen, setIsEditMenuOpen] = useState(false);
+  const [selectedMenu, setSelectedMenu] = useState<AdminMenuResponse | null>(null);
+
+  const { data: menuList } = useRQ({
+    queryKey: ['menus', storeId, menuPage],
+    queryFn: () => menuApi.getMenuList(menuPage - 1, 10, { storeId }),
+    enabled: !!storeId,
+  });
+
+  const createMenuMutation = useRMutation({
+    mutationFn: (body: AdminMenuCreateRequest) => menuApi.createMenu(body),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['menus', storeId] });
+      setIsCreateMenuOpen(false);
+    },
+  });
+
+  const updateMenuMutation = useRMutation({
+    mutationFn: ({ id, body }: { id: number; body: AdminMenuUpdateRequest }) => menuApi.updateMenu(id, body),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['menus', storeId] });
+      setIsEditMenuOpen(false);
+      setSelectedMenu(null);
+    },
+  });
+
+  const deleteMenuMutation = useRMutation({
+    mutationFn: (id: number) => menuApi.deleteMenu(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['menus', storeId] });
+    },
+  });
 
   if (isLoading) return <div>Loading...</div>;
   if (error) return <div>Error loading store</div>;
@@ -280,6 +327,91 @@ export default function StoreDetailPage() {
       {/* 스토어 서비스 관리 */}
       <StoreServiceManagement storeId={storeId} />
 
+      {/* 메뉴 관리 */}
+      <Paper sx={{ p: 3 }}>
+        <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
+          <Typography variant="h6">메뉴 관리</Typography>
+          <Button variant="contained" onClick={() => setIsCreateMenuOpen(true)}>새 메뉴 추가</Button>
+        </Box>
+        <TableContainer component={Paper}>
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableCell>ID</TableCell>
+                <TableCell>이름</TableCell>
+                <TableCell>가격</TableCell>
+                <TableCell>카테고리ID</TableCell>
+                <TableCell>정렬</TableCell>
+                <TableCell>대표</TableCell>
+                <TableCell>추천</TableCell>
+                <TableCell>작업</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {(menuList?.data.list ?? []).map((m) => (
+                <TableRow key={m.id}>
+                  <TableCell>{m.id}</TableCell>
+                  <TableCell>{m.name}</TableCell>
+                  <TableCell>{m.price}</TableCell>
+                  <TableCell>{m.categoryId}</TableCell>
+                  <TableCell>{m.sortOrder}</TableCell>
+                  <TableCell>{m.isSignature ? 'Y' : 'N'}</TableCell>
+                  <TableCell>{m.isRecommend ? 'Y' : 'N'}</TableCell>
+                  <TableCell>
+                    <Box sx={{ display: 'flex', gap: 1 }}>
+                      <Button size="small" variant="outlined" onClick={() => { setSelectedMenu(m); setIsEditMenuOpen(true); }}>수정</Button>
+                      <Button size="small" variant="outlined" color="error" onClick={() => deleteMenuMutation.mutate(m.id)}>삭제</Button>
+                    </Box>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
+      </Paper>
+
+      {/* 메뉴 생성 다이얼로그 */}
+      <MenuDialog
+        open={isCreateMenuOpen}
+        title="메뉴 생성"
+        initial={{
+          storeId,
+          categoryId: 0,
+          name: '',
+          price: 0,
+          description: '',
+          imageId: '',
+          sortOrder: 0,
+          isSignature: false,
+          isRecommend: false,
+        }}
+        onClose={() => setIsCreateMenuOpen(false)}
+        onSubmit={(values) => createMenuMutation.mutate(values)}
+        loading={createMenuMutation.isPending}
+      />
+
+      {/* 메뉴 수정 다이얼로그 */}
+      {selectedMenu && (
+        <MenuDialog
+          open={isEditMenuOpen}
+          title="메뉴 수정"
+          initial={{
+            storeId,
+            categoryId: selectedMenu.categoryId,
+            name: selectedMenu.name,
+            price: Number(selectedMenu.price),
+            description: selectedMenu.description,
+            imageId: '',
+            sortOrder: selectedMenu.sortOrder,
+            isSignature: selectedMenu.isSignature,
+            isRecommend: selectedMenu.isRecommend,
+          }}
+          onClose={() => { setIsEditMenuOpen(false); setSelectedMenu(null); }}
+          onSubmit={(values) => updateMenuMutation.mutate({ id: selectedMenu.id, body: values })}
+          loading={updateMenuMutation.isPending}
+        />
+      )}
+
       {/* 상태 관리 */}
       <Paper sx={{ p: 3 }}>
         <Typography variant="h6" gutterBottom>
@@ -369,5 +501,75 @@ export default function StoreDetailPage() {
         description={storeToDelete ? `정말로 '${storeToDelete.name}' 가게를 삭제하시겠습니까?` : ''}
       />
     </Box>
+  );
+}
+
+type MenuFormValues = {
+  storeId: number;
+  categoryId: number;
+  name: string;
+  price: number;
+  description: string;
+  imageId: string;
+  sortOrder: number;
+  isSignature: boolean;
+  isRecommend: boolean;
+};
+
+function MenuDialog({
+  open,
+  title,
+  initial,
+  onClose,
+  onSubmit,
+  loading,
+}: {
+  open: boolean;
+  title: string;
+  initial: MenuFormValues;
+  onClose: () => void;
+  onSubmit: (values: MenuFormValues) => void;
+  loading: boolean;
+}) {
+  const [values, setValues] = useState<MenuFormValues>(initial);
+
+  const handleChange = (key: keyof MenuFormValues) => (e: React.ChangeEvent<HTMLInputElement>) => {
+    const val = e.target.value;
+    setValues((prev) => ({
+      ...prev,
+      [key]: key === 'price' || key === 'sortOrder' || key === 'categoryId' ? Number(val) : val,
+    }));
+  };
+
+  const handleBoolChange = (key: keyof MenuFormValues) => (e: React.ChangeEvent<HTMLInputElement>) => {
+    setValues((prev) => ({ ...prev, [key]: e.target.checked } as any));
+  };
+
+  return (
+    <Dialog open={open} onClose={onClose} fullWidth>
+      <DialogTitle>{title}</DialogTitle>
+      <DialogContent sx={{ display: 'grid', gap: 2, mt: 1 }}>
+        <TextField label="카테고리 ID" type="number" value={values.categoryId} onChange={handleChange('categoryId')} fullWidth />
+        <TextField label="이름" value={values.name} onChange={handleChange('name')} fullWidth />
+        <TextField label="가격" type="number" value={values.price} onChange={handleChange('price')} fullWidth />
+        <TextField label="설명" value={values.description} onChange={handleChange('description')} fullWidth />
+        <TextField label="이미지 ID" value={values.imageId} onChange={handleChange('imageId')} fullWidth />
+        <TextField label="정렬" type="number" value={values.sortOrder} onChange={handleChange('sortOrder')} fullWidth />
+        <Box sx={{ display: 'flex', gap: 2 }}>
+          <label>
+            <input type="checkbox" checked={values.isSignature} onChange={handleBoolChange('isSignature')} /> 대표
+          </label>
+          <label>
+            <input type="checkbox" checked={values.isRecommend} onChange={handleBoolChange('isRecommend')} /> 추천
+          </label>
+        </Box>
+      </DialogContent>
+      <DialogActions>
+        <Button onClick={onClose}>취소</Button>
+        <Button onClick={() => onSubmit(values)} variant="contained" disabled={loading}>
+          {loading ? '저장 중...' : '저장'}
+        </Button>
+      </DialogActions>
+    </Dialog>
   );
 }

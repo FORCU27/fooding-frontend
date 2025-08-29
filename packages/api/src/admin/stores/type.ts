@@ -78,7 +78,7 @@ export const GetStoreListResponse = PageResponse(AdminStoreResponseSchema);
 
 export type GetStoreResponse = z.infer<typeof GetStoreResponse>;
 export const GetStoreResponse = z.object({
-  status: z.string(),
+  status: z.string().nullable(),
   data: AdminStoreResponseSchema,
 });
 
