@@ -45,6 +45,7 @@ export type GetUserListParams = {
   page: number;
   size: number;
   role?: UserRole;
+  searchString?: string;
 };
 
 export const GetUserListResponse = PageResponse(AdminUserResponseSchema);
