@@ -10,13 +10,20 @@ type ImageGalleryProps = {
   onClose: () => void;
   title: string;
   imageUrls: string[];
+  initialPage: number;
 };
 
-export const ImageGallery = ({ isOpen, onClose, title, imageUrls }: ImageGalleryProps) => {
+export const ImageGallery = ({
+  isOpen,
+  onClose,
+  title,
+  imageUrls,
+  initialPage,
+}: ImageGalleryProps) => {
   return (
     <FullscreenBottomSheet isOpen={isOpen} onOpenChange={(isOpen) => isOpen === false && onClose()}>
       <FullscreenBottomSheet.Content className='bg-black' hideCloseButton>
-        <Carousel>
+        <Carousel initialPage={initialPage}>
           <div className='flex h-[60px] items-center text-white justify-between'>
             <div className='flex items-center'>
               <FullscreenBottomSheet.Close className='ml-3 size-[30px] flex justify-center items-center'>
