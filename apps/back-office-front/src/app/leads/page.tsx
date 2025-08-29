@@ -1,7 +1,9 @@
 'use client';
 
+import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
+import SearchIcon from '@mui/icons-material/Search';
 import {
   Box,
   Paper,
@@ -15,20 +17,32 @@ import {
   Pagination,
   TextField,
   InputAdornment,
+  Button,
 } from '@mui/material';
-import SearchIcon from '@mui/icons-material/Search';
 import { leadApi, AdminLeadResponse } from '@repo/api/admin';
 import { useQuery } from '@tanstack/react-query';
 
 export default function LeadsPage() {
+  const router = useRouter();
   const [page, setPage] = useState(1);
   const [pageSize] = useState(10);
   const [search, setSearch] = useState('');
 
-  const { data, isLoading } = useQuery({
+  const { data, isLoading, error } = useQuery({
     queryKey: ['leads', page, pageSize, search],
     queryFn: () => leadApi.getLeadList(page - 1, pageSize, search),
   });
+
+  // 에러 로깅 추가
+  if (error) {
+    console.error('Leads query error:', error);
+    console.error('Error details:', {
+      name: error.name,
+      message: error.message,
+      cause: error.cause,
+      stack: error.stack
+    });
+  }
 
   const leads: AdminLeadResponse[] = data?.data.list ?? [];
   const pageInfo = data?.data.pageInfo;
@@ -81,7 +95,14 @@ export default function LeadsPage() {
             ) : (
               leads.map((lead) => (
                 <TableRow key={lead.id}>
-                  <TableCell>{lead.id}</TableCell>
+                  <TableCell>
+                    <Button
+                      onClick={() => router.push(`/leads/${lead.id}`)}
+                      sx={{ textDecoration: 'underline', color: 'primary.main' }}
+                    >
+                      {lead.id}
+                    </Button>
+                  </TableCell>
                   <TableCell>{lead.name}</TableCell>
                   <TableCell>{lead.phone}</TableCell>
                   <TableCell>{lead.source ?? '-'}</TableCell>
@@ -106,4 +127,3 @@ export default function LeadsPage() {
     </Box>
   );
 }
-
