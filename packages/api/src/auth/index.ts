@@ -1,5 +1,7 @@
 export * from './type';
 
+import { AxiosRequestConfig } from 'axios';
+
 import { api } from '../shared';
 import {
   AuthLoginBody,
@@ -29,8 +31,8 @@ export const authApi = {
     return GetLoginResponseSchema.parse(response);
   },
 
-  getSelf: async () => {
-    const response = await api.get('/auth/me');
+  getSelf: async (config?: AxiosRequestConfig) => {
+    const response = await api.get('/auth/me', config);
     return GetUserResponseSchema.parse(response);
   },
 

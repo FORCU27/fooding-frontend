@@ -36,9 +36,11 @@ const SelectBox = ({ className, options, placeholder, label, ...props }: SelectB
             <ChevronUpIcon />
           </Select.ScrollUpButton>
           <Select.Viewport className=''>
-            <div className='flex subtitle-2 items-center subtitle-2 justify-between px-5 py-3 text-sm'>
-              {label}
-            </div>
+            {label && (
+              <div className='flex subtitle-2 items-center subtitle-2 justify-between px-5 py-3 text-sm'>
+                {label}
+              </div>
+            )}
             <hr className='border-gray-3' />
             {options.map((option) => (
               <Select.Item
