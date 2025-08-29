@@ -10,7 +10,6 @@ import {
   Typography,
   Stack,
   Chip,
-  Divider,
   Grid,
 } from '@mui/material';
 import { notificationTemplateApi } from '@repo/api/admin';

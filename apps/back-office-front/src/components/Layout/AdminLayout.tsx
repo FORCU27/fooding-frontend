@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import React from 'react';
+import React, { useCallback } from 'react';
 
 import { ExpandLess, ExpandMore } from '@mui/icons-material';
 import { 
@@ -13,9 +13,7 @@ import {
   Business, 
   AdminPanelSettings, 
   Notifications, 
-  Settings,
   Email,
-  Sms,
   Article,
   History
 } from '@mui/icons-material';
@@ -60,7 +58,7 @@ function Sidebar() {
   const pathname = usePathname();
   
   // 현재 경로를 기반으로 메뉴 상태 초기화
-  const getInitialMenuState = () => {
+  const getInitialMenuState = useCallback(() => {
     const initialOpen: { [key: string]: boolean } = {};
     let initialActive = '';
     
@@ -79,7 +77,7 @@ function Sidebar() {
     }
     
     return { initialOpen, initialActive };
-  };
+  }, [pathname]);
 
   const { initialOpen, initialActive } = getInitialMenuState();
   const [open, setOpen] = React.useState<{ [key: string]: boolean }>(initialOpen);
@@ -90,7 +88,7 @@ function Sidebar() {
     const { initialOpen: newOpen, initialActive: newActive } = getInitialMenuState();
     setOpen(newOpen);
     setActive(newActive);
-  }, [pathname]);
+  }, [pathname, getInitialMenuState]);
 
   // TODO: Replace with real user info
   const user = { name: '홍길동', email: 'admin@fooding.com' };

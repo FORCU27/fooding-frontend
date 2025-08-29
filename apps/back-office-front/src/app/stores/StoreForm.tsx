@@ -6,8 +6,6 @@ import {
   Button,
   Stack,
   Box,
-  FormControlLabel,
-  Switch,
   MenuItem,
   Select,
   FormControl,

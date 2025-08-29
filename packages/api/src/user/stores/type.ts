@@ -74,8 +74,8 @@ export const StoreInfo = Store.omit({ mainImage: true }).extend({
   description: z.string(),
   contactNumber: z.string(),
   direction: z.string(),
-  latitude: z.number(),
-  longitude: z.number(),
+  latitude: z.number().nullable(),
+  longitude: z.number().nullable(),
   images: z.array(StoreImage),
   bookmarkCount: z.number(),
 });

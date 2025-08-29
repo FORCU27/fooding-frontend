@@ -1,16 +1,14 @@
 'use client';
 
 import { useParams, useRouter } from 'next/navigation';
-import { useState } from 'react';
 
 import {
   Box,
   Button,
   Paper,
   Typography,
-  Stack,
 } from '@mui/material';
-import { notificationTemplateApi, AdminNotificationTemplateResponse, AdminUpdateNotificationTemplateRequest } from '@repo/api/admin';
+import { notificationTemplateApi, AdminUpdateNotificationTemplateRequest } from '@repo/api/admin';
 import { useQuery, useMutation } from '@tanstack/react-query';
 
 import { queryClient } from '../../../providers';
@@ -30,7 +28,7 @@ export default function EditNotificationTemplatePage() {
   const updateMutation = useMutation({
     mutationFn: (data: AdminUpdateNotificationTemplateRequest) =>
       notificationTemplateApi.updateNotificationTemplate({ id, body: data }),
-    onSuccess: (response) => {
+    onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['notification-template', id] });
       queryClient.invalidateQueries({ queryKey: ['notification-templates'] });
       router.push(`/notification-templates/${id}`);

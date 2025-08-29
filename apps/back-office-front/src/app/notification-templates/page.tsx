@@ -49,7 +49,7 @@ export default function NotificationTemplatesPage() {
 
   const createMutation = useMutation({
     mutationFn: (data: AdminCreateNotificationTemplateRequest) => notificationTemplateApi.createNotificationTemplate(data),
-    onSuccess: (response) => {
+    onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['notification-templates'] });
       setIsCreateDialogOpen(false);
     },
@@ -58,7 +58,7 @@ export default function NotificationTemplatesPage() {
   const updateMutation = useMutation({
     mutationFn: ({ id, body }: { id: string; body: AdminUpdateNotificationTemplateRequest }) =>
       notificationTemplateApi.updateNotificationTemplate({ id, body }),
-    onSuccess: (response) => {
+    onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['notification-templates'] });
       setIsEditDialogOpen(false);
     },
@@ -66,7 +66,7 @@ export default function NotificationTemplatesPage() {
 
   const deleteMutation = useMutation({
     mutationFn: (id: string) => notificationTemplateApi.deleteNotificationTemplate(id),
-    onSuccess: (response) => {
+    onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['notification-templates'] });
       setDeleteDialogOpen(false);
       setTemplateToDelete(null);
