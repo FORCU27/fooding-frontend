@@ -28,3 +28,4 @@ export * from './MenuBadge';
 export * from './Button';
 export * from './ChipList';
 export * from './SortToggle';
+export * from './PhotoCard';
