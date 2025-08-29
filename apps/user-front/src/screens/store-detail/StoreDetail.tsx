@@ -16,6 +16,7 @@ import { ActivityComponentType, useFlow } from '@stackflow/react/future';
 import { Suspense } from '@suspensive/react';
 
 import { StoreDetailHomeTab } from './components/tabs/Home';
+import { StoreDetailPhotoTab } from './components/tabs/Photo';
 import { StoreDetailReviewTab } from './components/tabs/ReviewDetail';
 import { StoreDetailPostListTab } from './components/tabs/StorePostList';
 import { useLoginBottomSheet } from '@/components/Auth/LoginBottomSheet';
@@ -31,7 +32,6 @@ import { useAddBookmark } from '@/hooks/user/useAddBookmark';
 import { useDeleteBookmark } from '@/hooks/user/useDeleteBookmark';
 import { useScrollVisibility } from '@/hooks/useScrollVisibility';
 import { cn } from '@/utils/cn';
-import { StoreDetailPhotoTab } from './components/tabs/Photo';
 
 // TODO: mock 데이터 제거
 const mock = {

@@ -1,5 +1,6 @@
 import {
   GetStoreByIdResponse,
+  GetStoreImageListResponse,
   GetStoreListResponse,
   GetStoreMenuListResponse,
   GetStoreReviewListResponse,
@@ -222,4 +223,24 @@ export const mockStoreMenuListResponse: GetStoreMenuListResponse = {
       ],
     },
   ],
+};
+
+const DUMMY_IMAGES = ['/images/dummy/1.jpg', '/images/dummy/2.jpg', '/images/dummy/3.jpg'];
+
+export const mockStoreImageListResponse: GetStoreImageListResponse = {
+  status: 'OK',
+  data: {
+    list: Array.from({ length: 20 }, (_, index) => ({
+      id: index + 1,
+      imageUrl: DUMMY_IMAGES[(index + 1) % DUMMY_IMAGES.length] ?? '',
+      sortOrder: index + 1,
+      tags: [],
+    })),
+    pageInfo: {
+      pageNum: 1,
+      pageSize: 20,
+      totalCount: 100,
+      totalPages: 5,
+    },
+  },
 };

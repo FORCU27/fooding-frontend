@@ -35,6 +35,7 @@ export const queryKeys = {
       additionalInfo: 'userStoreAdditionalInfo',
       immediateEntryList: 'userStoreImmediateEntryList',
       imageList: 'userStoreImageList',
+      infiniteImageList: 'userStoreInfiniteImageList',
     },
     storePost: {
       list: 'userStorePostList',
