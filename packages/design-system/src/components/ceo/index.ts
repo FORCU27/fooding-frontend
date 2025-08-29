@@ -29,3 +29,4 @@ export * from './Button';
 export * from './ChipList';
 export * from './SortToggle';
 export * from './PhotoCard';
+export * from './ImageUploader';
