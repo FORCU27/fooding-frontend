@@ -28,6 +28,7 @@ import { useQuery, useMutation } from '@tanstack/react-query';
 import { queryClient } from '../../providers';
 import { DeleteConfirmDialog } from '../DeleteConfirmDialog';
 import { EditStoreDialog } from '../EditStoreDialog';
+import StoreServiceManagement from './StoreServiceManagement';
 
 export default function StoreDetailPage() {
   const router = useRouter();
@@ -275,6 +276,9 @@ export default function StoreDetailPage() {
           </Box>
         </Stack>
       </Paper>
+
+      {/* 스토어 서비스 관리 */}
+      <StoreServiceManagement storeId={storeId} />
 
       {/* 상태 관리 */}
       <Paper sx={{ p: 3 }}>
