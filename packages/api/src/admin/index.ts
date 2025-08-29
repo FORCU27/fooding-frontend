@@ -7,3 +7,4 @@ export * from './reviews';
 export * from './store-services';
 export * from './leads';
 export * from './regions';
+export * from './menus';

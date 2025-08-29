@@ -20,7 +20,8 @@ import {
   Monitor,
   Campaign,
   ContactPage,
-  Public
+  Public,
+  CardGiftcard
 } from '@mui/icons-material';
 import {
   Box,
@@ -70,6 +71,14 @@ const menu = [
     sub: [
       { label: 'Lead', path: '/leads', icon: <ContactPage /> },
       { label: 'Regions', path: '/regions', icon: <Public /> },
+    ],
+  },
+  {
+    label: '리워드',
+    icon: <CardGiftcard />,
+    sub: [
+      { label: '포인트 관리', path: '/rewards/points', icon: <CardGiftcard /> },
+      { label: '로그 관리', path: '/rewards/logs', icon: <History /> },
     ],
   },
 ];
