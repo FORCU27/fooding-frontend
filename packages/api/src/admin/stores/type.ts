@@ -15,6 +15,16 @@ export const SortDirection = {
 
 export type SortDirection = (typeof SortDirection)[keyof typeof SortDirection];
 
+export const STORE_STATUS = {
+  PENDING: 'PENDING',
+  APPROVED: 'APPROVED',
+  REJECTED: 'REJECTED',
+  SUSPENDED: 'SUSPENDED',
+  CLOSED: 'CLOSED',
+} as const;
+
+export type StoreStatus = (typeof STORE_STATUS)[keyof typeof STORE_STATUS];
+
 export type AdminStoreResponse = z.infer<typeof AdminStoreResponseSchema>;
 export const AdminStoreResponseSchema = z.object({
   id: z.number(),
@@ -30,6 +40,7 @@ export const AdminStoreResponseSchema = z.object({
   latitude: z.number().nullable(),
   longitude: z.number().nullable(),
   stations: z.array(z.any()),
+  // status: z.enum(Object.values(STORE_STATUS)),
 });
 
 export const AdminCreateStoreRequestSchema = z.object({
@@ -64,5 +75,12 @@ export const AdminUpdateStoreRequestSchema = z.object({
 
 export type GetStoreListResponse = z.infer<typeof GetStoreListResponse>;
 export const GetStoreListResponse = PageResponse(AdminStoreResponseSchema);
+
+export type GetStoreResponse = z.infer<typeof GetStoreResponse>;
+export const GetStoreResponse = z.object({
+  status: z.string(),
+  data: AdminStoreResponseSchema,
+});
+
 export type AdminCreateStoreRequest = z.infer<typeof AdminCreateStoreRequestSchema>;
 export type AdminUpdateStoreRequest = z.infer<typeof AdminUpdateStoreRequestSchema>;

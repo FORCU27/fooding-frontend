@@ -5,14 +5,24 @@ import { PageResponse } from '../../shared';
 export const UserRole = z.enum(['USER', 'CEO', 'ADMIN']);
 export type UserRole = z.infer<typeof UserRole>;
 
+export const Gender = z.enum(['NONE', 'MALE', 'FEMALE']);
+export type Gender = z.infer<typeof Gender>;
+
+export const Provider = z.enum(['GOOGLE', 'FOODING', 'APPLE', 'KAKAO']);
+export type Provider = z.infer<typeof Provider>;
+
 export const AdminUserResponseSchema = z.object({
   id: z.number(),
   email: z.string(),
   nickname: z.string().nullable(),
   phoneNumber: z.string().nullable(),
-  gender: z.string(),
-  provider: z.string(),
-  createdAt: z.iso.datetime({ local: true }),
+  gender: Gender,
+  provider: Provider,
+  termsAgreed: z.boolean(),
+  privacyPolicyAgreed: z.boolean(),
+  marketingConsent: z.boolean(),
+  pushAgreed: z.boolean(),
+  createdAt: z.string(),
   lastLoggedInAt: z.string().nullable(),
 });
 

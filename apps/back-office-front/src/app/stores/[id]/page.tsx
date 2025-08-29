@@ -1,0 +1,368 @@
+'use client';
+
+import { useRouter } from 'next/navigation';
+import { useParams } from 'next/navigation';
+import { useState } from 'react';
+
+import { ArrowBack, Edit, Delete } from '@mui/icons-material';
+import {
+  Box,
+  Button,
+  Paper,
+  Typography,
+  Chip,
+  Stack,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  DialogContentText,
+} from '@mui/material';
+import {
+  storeApi,
+  AdminStoreResponse,
+} from '@repo/api/admin';
+import { useQuery, useMutation } from '@tanstack/react-query';
+
+import { queryClient } from '../../providers';
+import { DeleteConfirmDialog } from '../DeleteConfirmDialog';
+import { EditStoreDialog } from '../EditStoreDialog';
+
+export default function StoreDetailPage() {
+  const router = useRouter();
+  const params = useParams();
+  const storeId = Number(params.id);
+  
+  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+  const [selectedStore, setSelectedStore] = useState<AdminStoreResponse | null>(null);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [storeToDelete, setStoreToDelete] = useState<AdminStoreResponse | null>(null);
+  const [statusDialogOpen, setStatusDialogOpen] = useState(false);
+  const [statusAction, setStatusAction] = useState<string>('');
+  const [statusActionName, setStatusActionName] = useState<string>('');
+
+  const { data: storeResponse, isLoading, error } = useQuery({
+    queryKey: ['store', storeId],
+    queryFn: () => storeApi.getStore(storeId),
+    enabled: !!storeId,
+  });
+
+  const updateMutation = useMutation({
+    mutationFn: ({ id, body }: { id: number; body: any }) =>
+      storeApi.updateStore({ id, body }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['store', storeId] });
+      queryClient.invalidateQueries({ queryKey: ['stores'] });
+      setIsEditDialogOpen(false);
+    },
+  });
+
+  const deleteMutation = useMutation({
+    mutationFn: (id: number) => storeApi.deleteStore(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['stores'] });
+      router.push('/stores');
+    },
+  });
+
+  const statusMutation = useMutation({
+    mutationFn: (action: string) => {
+      switch (action) {
+        case 'approve':
+          return storeApi.approveStore(storeId);
+        case 'reject':
+          return storeApi.rejectStore(storeId);
+        case 'suspend':
+          return storeApi.suspendStore(storeId);
+        case 'close':
+          return storeApi.closeStore(storeId);
+        case 'pending':
+          return storeApi.setPendingStore(storeId);
+        default:
+          throw new Error('Unknown action');
+      }
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['store', storeId] });
+      queryClient.invalidateQueries({ queryKey: ['stores'] });
+      setStatusDialogOpen(false);
+    },
+  });
+
+  const handleStatusAction = (action: string, actionName: string) => {
+    setStatusAction(action);
+    setStatusActionName(actionName);
+    setStatusDialogOpen(true);
+  };
+
+  const handleStatusConfirm = () => {
+    statusMutation.mutate(statusAction);
+  };
+
+  const handleDeleteClick = (store: AdminStoreResponse) => {
+    setStoreToDelete(store);
+    setDeleteDialogOpen(true);
+  };
+
+  const handleDeleteConfirm = () => {
+    if (storeToDelete) {
+      deleteMutation.mutate(storeToDelete.id);
+    }
+  };
+
+  if (isLoading) return <div>Loading...</div>;
+  if (error) return <div>Error loading store</div>;
+  if (!storeResponse?.data) return <div>Store not found</div>;
+
+  const store = storeResponse.data;
+
+  return (
+    <Box sx={{ p: 3 }}>
+      {/* 헤더 */}
+      <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 3 }}>
+        <Button
+          startIcon={<ArrowBack />}
+          onClick={() => router.push('/stores')}
+          variant="outlined"
+        >
+          목록으로
+        </Button>
+        <Typography variant="h4" component="h1">
+          {store.name}
+        </Typography>
+        <Box sx={{ ml: 'auto', display: 'flex', gap: 1 }}>
+          <Button
+            variant="outlined"
+            startIcon={<Edit />}
+            onClick={() => {
+              setSelectedStore(store);
+              setIsEditDialogOpen(true);
+            }}
+          >
+            수정
+          </Button>
+          <Button
+            variant="outlined"
+            color="error"
+            startIcon={<Delete />}
+            onClick={() => handleDeleteClick(store)}
+          >
+            삭제
+          </Button>
+        </Box>
+      </Box>
+
+      {/* 기본 정보 */}
+      <Paper sx={{ p: 3 }}>
+        <Typography variant="h6" gutterBottom>
+          기본 정보
+        </Typography>
+        <Stack spacing={2}>
+          <Box>
+            <Typography variant="body2" color="text.secondary">
+              가게 ID
+            </Typography>
+            <Typography variant="body1">{store.id}</Typography>
+          </Box>
+          <Box>
+            <Typography variant="body2" color="text.secondary">
+              점주 ID
+            </Typography>
+            <Typography variant="body1">{store.ownerId}</Typography>
+          </Box>
+          <Box>
+            <Typography variant="body2" color="text.secondary">
+              가게명
+            </Typography>
+            <Typography variant="body1">{store.name}</Typography>
+          </Box>
+          <Box>
+            <Typography variant="body2" color="text.secondary">
+              카테고리
+            </Typography>
+            <Chip label={store.category} color="primary" />
+          </Box>
+          <Box>
+            <Typography variant="body2" color="text.secondary">
+              설명
+            </Typography>
+            <Typography variant="body1">
+              {store.description || '설명 없음'}
+            </Typography>
+          </Box>
+        </Stack>
+      </Paper>
+
+      {/* 위치 정보 */}
+      <Paper sx={{ p: 3 }}>
+        <Typography variant="h6" gutterBottom>
+          위치 정보
+        </Typography>
+        <Stack spacing={2}>
+          <Box>
+            <Typography variant="body2" color="text.secondary">
+              지역 ID
+            </Typography>
+            <Typography variant="body1">
+              {store.regionId || '지정되지 않음'}
+            </Typography>
+          </Box>
+          <Box>
+            <Typography variant="body2" color="text.secondary">
+              주소
+            </Typography>
+            <Typography variant="body1">
+              {store.address || '주소 없음'}
+            </Typography>
+          </Box>
+          <Box>
+            <Typography variant="body2" color="text.secondary">
+              상세 주소
+            </Typography>
+            <Typography variant="body1">
+              {store.addressDetail || '상세 주소 없음'}
+            </Typography>
+          </Box>
+          <Box>
+            <Typography variant="body2" color="text.secondary">
+              위도
+            </Typography>
+            <Typography variant="body1">
+              {store.latitude || '위도 없음'}
+            </Typography>
+          </Box>
+          <Box>
+            <Typography variant="body2" color="text.secondary">
+              경도
+            </Typography>
+            <Typography variant="body1">
+              {store.longitude || '경도 없음'}
+            </Typography>
+          </Box>
+        </Stack>
+      </Paper>
+
+      {/* 연락처 및 기타 정보 */}
+      <Paper sx={{ p: 3 }}>
+        <Typography variant="h6" gutterBottom>
+          연락처 및 기타
+        </Typography>
+        <Stack spacing={2}>
+          <Box>
+            <Typography variant="body2" color="text.secondary">
+              연락처
+            </Typography>
+            <Typography variant="body1">
+              {store.contactNumber || '연락처 없음'}
+            </Typography>
+          </Box>
+          <Box>
+            <Typography variant="body2" color="text.secondary">
+              찾아오는 길
+            </Typography>
+            <Typography variant="body1">
+              {store.direction || '안내 없음'}
+            </Typography>
+          </Box>
+          <Box>
+            <Typography variant="body2" color="text.secondary">
+              지하철역
+            </Typography>
+            <Typography variant="body1">
+              {store.stations.length > 0 ? store.stations.join(', ') : '지하철역 정보 없음'}
+            </Typography>
+          </Box>
+        </Stack>
+      </Paper>
+
+      {/* 상태 관리 */}
+      <Paper sx={{ p: 3 }}>
+        <Typography variant="h6" gutterBottom>
+          상태 관리
+        </Typography>
+        <Stack spacing={2}>
+          <Button
+            variant="contained"
+            color="success"
+            onClick={() => handleStatusAction('approve', '승인')}
+            fullWidth
+          >
+            승인
+          </Button>
+          <Button
+            variant="contained"
+            color="warning"
+            onClick={() => handleStatusAction('reject', '거부')}
+            fullWidth
+          >
+            거부
+          </Button>
+          <Button
+            variant="contained"
+            color="info"
+            onClick={() => handleStatusAction('suspend', '일시정지')}
+            fullWidth
+          >
+            일시정지
+          </Button>
+          <Button
+            variant="contained"
+            color="error"
+            onClick={() => handleStatusAction('close', '폐업')}
+            fullWidth
+          >
+            폐업
+          </Button>
+          <Button
+            variant="contained"
+            onClick={() => handleStatusAction('pending', '심사중')}
+            fullWidth
+          >
+            심사중으로 변경
+          </Button>
+        </Stack>
+      </Paper>
+
+      {/* 상태 변경 확인 다이얼로그 */}
+      <Dialog open={statusDialogOpen} onClose={() => setStatusDialogOpen(false)}>
+        <DialogTitle>상태 변경 확인</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            정말로 이 가게를 <strong>{statusActionName}</strong> 상태로 변경하시겠습니까?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setStatusDialogOpen(false)}>취소</Button>
+          <Button 
+            onClick={handleStatusConfirm} 
+            variant="contained"
+            disabled={statusMutation.isPending}
+          >
+            {statusMutation.isPending ? '처리 중...' : '확인'}
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      {/* 수정 다이얼로그 */}
+      <EditStoreDialog
+        open={isEditDialogOpen}
+        onClose={() => setIsEditDialogOpen(false)}
+        onSubmit={(data) =>
+          selectedStore && updateMutation.mutate({ id: selectedStore.id, body: data })
+        }
+        loading={updateMutation.isPending}
+        initialData={selectedStore || undefined}
+      />
+
+      {/* 삭제 확인 다이얼로그 */}
+      <DeleteConfirmDialog
+        open={deleteDialogOpen}
+        onClose={() => setDeleteDialogOpen(false)}
+        onConfirm={handleDeleteConfirm}
+        loading={deleteMutation.isPending}
+        title="가게 삭제 확인"
+        description={storeToDelete ? `정말로 '${storeToDelete.name}' 가게를 삭제하시겠습니까?` : ''}
+      />
+    </Box>
+  );
+}

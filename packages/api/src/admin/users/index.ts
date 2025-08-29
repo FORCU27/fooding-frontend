@@ -9,8 +9,8 @@ import {
 import { api } from '../../shared';
 
 export const userApi = {
-  getUserList: (params: GetUserListParams) => {
-    const response = api.get('/admin/users', { params });
+  getUserList: async (params: GetUserListParams) => {
+    const response = await api.get('/admin/users', { params });
     return GetUserListResponse.parse(response);
   },
 
