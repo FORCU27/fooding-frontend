@@ -19,7 +19,8 @@ import {
   RateReview,
   Monitor,
   Campaign,
-  ContactPage
+  ContactPage,
+  Public
 } from '@mui/icons-material';
 import {
   Box,
@@ -68,6 +69,7 @@ const menu = [
     icon: <Campaign />,
     sub: [
       { label: 'Lead', path: '/leads', icon: <ContactPage /> },
+      { label: 'Regions', path: '/regions', icon: <Public /> },
     ],
   },
 ];
