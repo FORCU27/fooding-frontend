@@ -6,12 +6,6 @@ import {
   Button,
   Stack,
   Box,
-  FormControlLabel,
-  Switch,
-  MenuItem,
-  Select,
-  FormControl,
-  InputLabel,
 } from '@mui/material';
 import { AdminNotificationTemplateResponse, AdminCreateNotificationTemplateRequest } from '@repo/api/admin';
 import { useForm } from 'react-hook-form';
@@ -25,8 +19,6 @@ const NotificationTemplateSchema = z.object({
 //   isActive: z.boolean(),
 });
 
-type NotificationTemplateFormData = z.infer<typeof NotificationTemplateSchema>;
-
 interface NotificationTemplateFormProps {
   initialData?: AdminNotificationTemplateResponse;
   onSubmit: (data: AdminCreateNotificationTemplateRequest) => void;
@@ -39,17 +31,10 @@ export function NotificationTemplateForm({ initialData, onSubmit, isLoading }: N
     defaultValues: initialData || {
       subject: '',
       content: '',
-      type: '' as any,
+      type: '',
     //   isActive: true,
     },
   });
-
-  const notificationTypes = [
-    { value: 'EMAIL', label: '이메일' },
-    { value: 'SMS', label: 'SMS' },
-    { value: 'PUSH', label: '푸시 알림' },
-    { value: 'IN_APP', label: '앱 내 알림' },
-  ];
 
   return (
     <Box component='form' onSubmit={form.handleSubmit(onSubmit)} sx={{ mt: 2 }}>
@@ -79,34 +64,6 @@ export function NotificationTemplateForm({ initialData, onSubmit, isLoading }: N
           helperText={form.formState.errors.content?.message}
           {...form.register('type')}
         />
-
-
-{/* 
-        <FormControl required>
-          <InputLabel id='type-select-label'>알림 타입</InputLabel>
-          <Select
-            labelId='type-select-label'
-            label='알림 타입'
-            value={form.watch('type')}
-            onChange={(e) => form.setValue('type', e.target.value)}
-          >
-            {notificationTypes.map((type) => (
-              <MenuItem key={type.value} value={type.value}>
-                {type.label}
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl> */}
-
-        {/* <FormControlLabel
-          control={
-            <Switch
-              {...form.register('isActive')}
-              checked={form.watch('isActive')}
-            />
-          }
-          label='활성화'
-        /> */}
 
         <Button type='submit' variant='contained' disabled={isLoading} fullWidth>
           {isLoading ? '저장 중...' : '저장'}

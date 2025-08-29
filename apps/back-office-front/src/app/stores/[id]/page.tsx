@@ -21,6 +21,7 @@ import {
 import {
   storeApi,
   AdminStoreResponse,
+  AdminUpdateStoreRequest,
 } from '@repo/api/admin';
 import { useQuery, useMutation } from '@tanstack/react-query';
 
@@ -48,7 +49,7 @@ export default function StoreDetailPage() {
   });
 
   const updateMutation = useMutation({
-    mutationFn: ({ id, body }: { id: number; body: any }) =>
+    mutationFn: ({ id, body }: { id: number; body: AdminUpdateStoreRequest }) =>
       storeApi.updateStore({ id, body }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['store', storeId] });

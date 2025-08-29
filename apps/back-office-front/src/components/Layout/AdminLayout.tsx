@@ -13,9 +13,7 @@ import {
   Business, 
   AdminPanelSettings, 
   Notifications, 
-  Settings,
   Email,
-  Sms,
   Article,
   History
 } from '@mui/icons-material';

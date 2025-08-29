@@ -18,7 +18,6 @@ import {
   Select,
   MenuItem,
   SelectChangeEvent,
-  Chip,
 } from '@mui/material';
 import { Link } from '@mui/material';
 import {
@@ -27,7 +26,6 @@ import {
   AdminCreateStoreRequest,
   AdminUpdateStoreRequest,
 } from '@repo/api/admin';
-import { STORE_STATUS } from '@repo/api/admin';
 import { useQuery, useMutation } from '@tanstack/react-query';
 
 import { CreateStoreDialog } from './CreateStoreDialog';
