@@ -19,6 +19,7 @@ export const storeApi = {
     size: number = 10,
     sortType: StoreSortType = 'RECENT',
     sortDirection: SortDirection = 'DESCENDING',
+    searchString?: string,
   ) => {
     const params = new URLSearchParams({
       pageNum: (page + 1).toString(),
@@ -26,6 +27,9 @@ export const storeApi = {
       sortType,
       sortDirection,
     });
+    if (searchString && searchString.trim().length > 0) {
+      params.set('searchString', searchString);
+    }
     const response = await api.get(`${ENDPOINT}?${params.toString()}`);
     return GetStoreListResponse.parse(response);
   },

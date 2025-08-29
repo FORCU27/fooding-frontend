@@ -6,7 +6,7 @@ import { api } from '../../shared';
 const ENDPOINT = '/admin/leads';
 
 export const leadApi = {
-  getLeadList: async (page: number = 0, size: number = 10, searchString?: string) => {
+  getLeadList: async (page: number = 0, size: number = 10, searchString?: string, isUploaded?: 'false' | 'true' | 'all') => {
     const params = new URLSearchParams({
       pageNum: (page + 1).toString(),
       pageSize: size.toString(),
@@ -14,6 +14,10 @@ export const leadApi = {
 
     if (searchString && searchString.length > 0) {
       params.set('searchString', searchString);
+    }
+
+    if (isUploaded && isUploaded !== 'all') {
+      params.set('isUploaded', isUploaded);
     }
 
     const response = await api.get(`${ENDPOINT}?${params.toString()}`);

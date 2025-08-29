@@ -2,9 +2,11 @@
 
 import { useRouter } from 'next/navigation';
 import { useParams } from 'next/navigation';
+import type React from 'react';
 import { useState } from 'react';
 
 import { ArrowBack, Edit, Delete } from '@mui/icons-material';
+import { Delete as DeleteIcon } from '@mui/icons-material';
 import {
   Box,
   Button,
@@ -19,6 +21,7 @@ import {
   DialogContentText,
   Tabs,
   Tab,
+  IconButton,
 } from '@mui/material';
 import {
   Table, TableBody, TableCell, TableContainer, TableHead, TableRow,
@@ -30,6 +33,7 @@ import {
   AdminUpdateStoreRequest,
 } from '@repo/api/admin';
 import { menuApi, AdminMenuResponse, AdminMenuCreateRequest, AdminMenuUpdateRequest, menuCategoryApi, AdminMenuCategoryResponse, AdminMenuCategoryCreateRequest, AdminMenuCategoryUpdateRequest } from '@repo/api/admin';
+import { fileApi } from '@repo/api/file';
 import { useQuery, useMutation } from '@tanstack/react-query';
 import { useQuery as useRQ, useMutation as useRMutation } from '@tanstack/react-query';
 
@@ -274,8 +278,8 @@ export default function StoreDetailPage() {
       <Box sx={{ borderBottom: 1, borderColor: 'divider', mb: 3 }}>
         <Tabs value={activeTab} onChange={handleTabChange} aria-label="store management tabs">
           <Tab label="기본 정보" />
+          <Tab label="메뉴 카테고리 관리" />
           <Tab label="메뉴 관리" />
-          <Tab label="카테고리 관리" />
           <Tab label="서비스 관리" />
           <Tab label="상태 관리" />
         </Tabs>
@@ -409,8 +413,47 @@ export default function StoreDetailPage() {
         </Stack>
       </TabPanel>
 
-      {/* 메뉴 관리 탭 */}
+      {/* 메뉴 카테고리 관리 탭 */}
       <TabPanel value={activeTab} index={1}>
+        <Paper sx={{ p: 3 }}>
+          <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
+            <Typography variant="h6">메뉴 카테고리 관리</Typography>
+            <Button variant="contained" onClick={() => setIsCreateCategoryOpen(true)}>새 카테고리 추가</Button>
+          </Box>
+          <TableContainer component={Paper}>
+            <Table>
+              <TableHead>
+                <TableRow>
+                  <TableCell>ID</TableCell>
+                  <TableCell>이름</TableCell>
+                  <TableCell>설명</TableCell>
+                  <TableCell>정렬</TableCell>
+                  <TableCell>작업</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {(categoryList?.data.list ?? []).map((c) => (
+                  <TableRow key={c.id}>
+                    <TableCell>{c.id}</TableCell>
+                    <TableCell>{c.name}</TableCell>
+                    <TableCell>{c.description}</TableCell>
+                    <TableCell>{c.sortOrder}</TableCell>
+                    <TableCell>
+                      <Box sx={{ display: 'flex', gap: 1 }}>
+                        <Button size="small" variant="outlined" onClick={() => { setSelectedCategory(c); setIsEditCategoryOpen(true); }}>수정</Button>
+                        <Button size="small" variant="outlined" color="error" onClick={() => deleteCategoryMutation.mutate(c.id)}>삭제</Button>
+                      </Box>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        </Paper>
+      </TabPanel>
+
+      {/* 메뉴 관리 탭 */}
+      <TabPanel value={activeTab} index={2}>
         <Paper sx={{ p: 3 }}>
           <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
             <Typography variant="h6">메뉴 관리</Typography>
@@ -444,45 +487,6 @@ export default function StoreDetailPage() {
                       <Box sx={{ display: 'flex', gap: 1 }}>
                         <Button size="small" variant="outlined" onClick={() => { setSelectedMenu(m); setIsEditMenuOpen(true); }}>수정</Button>
                         <Button size="small" variant="outlined" color="error" onClick={() => deleteMenuMutation.mutate(m.id)}>삭제</Button>
-                      </Box>
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </TableContainer>
-        </Paper>
-      </TabPanel>
-
-      {/* 카테고리 관리 탭 */}
-      <TabPanel value={activeTab} index={2}>
-        <Paper sx={{ p: 3 }}>
-          <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
-            <Typography variant="h6">메뉴 카테고리 관리</Typography>
-            <Button variant="contained" onClick={() => setIsCreateCategoryOpen(true)}>새 카테고리 추가</Button>
-          </Box>
-          <TableContainer component={Paper}>
-            <Table>
-              <TableHead>
-                <TableRow>
-                  <TableCell>ID</TableCell>
-                  <TableCell>이름</TableCell>
-                  <TableCell>설명</TableCell>
-                  <TableCell>정렬</TableCell>
-                  <TableCell>작업</TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {(categoryList?.data.list ?? []).map((c) => (
-                  <TableRow key={c.id}>
-                    <TableCell>{c.id}</TableCell>
-                    <TableCell>{c.name}</TableCell>
-                    <TableCell>{c.description}</TableCell>
-                    <TableCell>{c.sortOrder}</TableCell>
-                    <TableCell>
-                      <Box sx={{ display: 'flex', gap: 1 }}>
-                        <Button size="small" variant="outlined" onClick={() => { setSelectedCategory(c); setIsEditCategoryOpen(true); }}>수정</Button>
-                        <Button size="small" variant="outlined" color="error" onClick={() => deleteCategoryMutation.mutate(c.id)}>삭제</Button>
                       </Box>
                     </TableCell>
                   </TableRow>
@@ -688,6 +692,9 @@ function MenuDialog({
   categories: { id: number; name: string }[];
 }) {
   const [values, setValues] = useState<MenuFormValues>(initial);
+  const [uploading, setUploading] = useState(false);
+  const [uploadedFileName, setUploadedFileName] = useState<string>('');
+  const [previewUrl, setPreviewUrl] = useState<string>('');
 
   const handleChange = (key: keyof MenuFormValues) => (e: React.ChangeEvent<HTMLInputElement>) => {
     const val = e.target.value;
@@ -701,8 +708,57 @@ function MenuDialog({
     setValues((prev) => ({ ...prev, [key]: e.target.checked } as any));
   };
 
+  const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (!files || files.length === 0) return;
+    
+    const file = files[0];
+    if (!file) return;
+    
+    setUploading(true);
+    try {
+      const form = new FormData();
+      form.append('files', file);
+      const res = await fileApi.upload(form);
+      const first = res.data?.[0];
+      if (first?.id) {
+        setValues((prev) => ({ ...prev, imageId: first.id }));
+        setUploadedFileName(first.name ?? file.name);
+        
+        // 미리보기 URL 생성
+        if (first.url) {
+          setPreviewUrl(first.url);
+        } else {
+          // URL이 없는 경우 FileReader로 로컬 미리보기
+          const reader = new FileReader();
+          reader.onload = (e) => {
+            setPreviewUrl(e.target?.result as string);
+          };
+          reader.readAsDataURL(file);
+        }
+      }
+    } finally {
+      setUploading(false);
+      e.target.value = '';
+    }
+  };
+
+  const handleRemoveImage = () => {
+    setValues((prev) => ({ ...prev, imageId: '' }));
+    setUploadedFileName('');
+    setPreviewUrl('');
+  };
+
+  const handleClose = () => {
+    // 다이얼로그 닫을 때 상태 초기화
+    setValues(initial);
+    setUploadedFileName('');
+    setPreviewUrl('');
+    onClose();
+  };
+
   return (
-    <Dialog open={open} onClose={onClose} fullWidth>
+    <Dialog open={open} onClose={handleClose} fullWidth>
       <DialogTitle>{title}</DialogTitle>
       <DialogContent sx={{ display: 'grid', gap: 2, mt: 1 }}>
         <TextField label="카테고리" select SelectProps={{ native: true }} value={values.categoryId} onChange={handleChange('categoryId')} fullWidth>
@@ -714,7 +770,64 @@ function MenuDialog({
         <TextField label="이름" value={values.name} onChange={handleChange('name')} fullWidth />
         <TextField label="가격" type="number" value={values.price} onChange={handleChange('price')} fullWidth />
         <TextField label="설명" value={values.description} onChange={handleChange('description')} fullWidth />
-        <TextField label="이미지 ID" value={values.imageId} onChange={handleChange('imageId')} fullWidth />
+        
+        {/* 이미지 업로드 및 미리보기 */}
+        <Box>
+          <Typography variant="body2" color={values.imageId ? 'text.secondary' : 'error'} sx={{ mb: 1 }}>
+            메뉴 이미지 업로드 (필수)
+          </Typography>
+          
+          {!values.imageId ? (
+            <Button variant="outlined" component="label" disabled={uploading}>
+              {uploading ? '업로드 중…' : '이미지 선택 및 업로드'}
+              <input type="file" hidden accept="image/*" onChange={handleUpload} />
+            </Button>
+          ) : (
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+              <Button variant="outlined" component="label" disabled={uploading}>
+                {uploading ? '업로드 중…' : '이미지 변경'}
+                <input type="file" hidden accept="image/*" onChange={handleUpload} />
+              </Button>
+              <IconButton 
+                color="error" 
+                onClick={handleRemoveImage}
+                size="small"
+              >
+                <DeleteIcon />
+              </IconButton>
+            </Box>
+          )}
+          
+          {uploadedFileName && (
+            <Typography variant="caption" sx={{ ml: 2 }}>
+              {uploadedFileName}
+            </Typography>
+          )}
+          
+          {/* 이미지 미리보기 */}
+          {previewUrl && (
+            <Box sx={{ mt: 2, textAlign: 'center' }}>
+              <img 
+                src={previewUrl} 
+                alt="미리보기" 
+                style={{ 
+                  maxWidth: '100%', 
+                  maxHeight: '200px', 
+                  objectFit: 'contain',
+                  border: '1px solid #ddd',
+                  borderRadius: '4px'
+                }} 
+              />
+            </Box>
+          )}
+          
+          {!values.imageId && (
+            <Typography variant="caption" color="error" display="block" sx={{ mt: 0.5 }}>
+              이미지를 업로드해야 저장할 수 있습니다.
+            </Typography>
+          )}
+        </Box>
+        
         <TextField label="정렬" type="number" value={values.sortOrder} onChange={handleChange('sortOrder')} fullWidth />
         <Box sx={{ display: 'flex', gap: 2 }}>
           <label>
@@ -726,8 +839,8 @@ function MenuDialog({
         </Box>
       </DialogContent>
       <DialogActions>
-        <Button onClick={onClose}>취소</Button>
-        <Button onClick={() => onSubmit(values)} variant="contained" disabled={loading}>
+        <Button onClick={handleClose}>취소</Button>
+        <Button onClick={() => onSubmit(values)} variant="contained" disabled={loading || uploading || !values.imageId}>
           {loading ? '저장 중...' : '저장'}
         </Button>
       </DialogActions>
