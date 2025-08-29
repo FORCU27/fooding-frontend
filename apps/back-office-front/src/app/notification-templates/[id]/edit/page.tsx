@@ -10,12 +10,12 @@ import {
   Typography,
   Stack,
 } from '@mui/material';
+import { notificationTemplateApi, AdminNotificationTemplateResponse, AdminUpdateNotificationTemplateRequest } from '@repo/api/admin';
 import { useQuery, useMutation } from '@tanstack/react-query';
 
-import { NotificationTemplateForm } from '../../NotificationTemplateForm';
 import { queryClient } from '../../../providers';
+import { NotificationTemplateForm } from '../../NotificationTemplateForm';
 
-import { notificationTemplateApi, AdminNotificationTemplateResponse, AdminUpdateNotificationTemplateRequest } from '@repo/api/admin';
 
 export default function EditNotificationTemplatePage() {
   const params = useParams();
@@ -24,7 +24,7 @@ export default function EditNotificationTemplatePage() {
 
   const { data: templateResponse, isLoading } = useQuery({
     queryKey: ['notification-template', id],
-    queryFn: () => notificationTemplateApi.getById(id),
+    queryFn: () => notificationTemplateApi.getNotificationTemplate(id),
   });
 
   const updateMutation = useMutation({

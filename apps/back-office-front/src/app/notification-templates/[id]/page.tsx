@@ -1,7 +1,7 @@
 'use client';
 
 import { useParams } from 'next/navigation';
-import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 
 import {
   Box,
@@ -13,10 +13,9 @@ import {
   Divider,
   Grid,
 } from '@mui/material';
+import { notificationTemplateApi } from '@repo/api/admin';
 import { useQuery } from '@tanstack/react-query';
-import { useRouter } from 'next/navigation';
 
-import { notificationTemplateApi, AdminNotificationTemplateResponse } from '@repo/api/admin';
 
 export default function NotificationTemplateDetailPage() {
   const params = useParams();
@@ -25,7 +24,7 @@ export default function NotificationTemplateDetailPage() {
 
   const { data: templateResponse, isLoading } = useQuery({
     queryKey: ['notification-template', id],
-    queryFn: () => notificationTemplateApi.getById(id),
+    queryFn: () => notificationTemplateApi.getNotificationTemplate(id),
   });
 
   const template = templateResponse?.data;
@@ -59,7 +58,7 @@ export default function NotificationTemplateDetailPage() {
 
       <Paper sx={{ p: 3 }}>
         <Grid container spacing={3}>
-          <Grid item xs={12} md={6}>
+          <Grid component='div'>
             <Stack spacing={2}>
               <Box>
                 <Typography variant="subtitle2" color="text.secondary" gutterBottom>
@@ -72,7 +71,7 @@ export default function NotificationTemplateDetailPage() {
                 <Typography variant="subtitle2" color="text.secondary" gutterBottom>
                   제목
                 </Typography>
-                <Typography variant="h6">{template.title}</Typography>
+                <Typography variant="h6">{template.subject}</Typography>
               </Box>
 
               <Box>
@@ -86,54 +85,7 @@ export default function NotificationTemplateDetailPage() {
                   size="small"
                 />
               </Box>
-
-              <Box>
-                <Typography variant="subtitle2" color="text.secondary" gutterBottom>
-                  활성화 상태
-                </Typography>
-                <Chip
-                  label={template.isActive ? '활성' : '비활성'}
-                  color={template.isActive ? 'success' : 'default'}
-                  size="small"
-                />
-              </Box>
             </Stack>
-          </Grid>
-
-          <Grid item xs={12} md={6}>
-            <Stack spacing={2}>
-              <Box>
-                <Typography variant="subtitle2" color="text.secondary" gutterBottom>
-                  생성일
-                </Typography>
-                <Typography variant="body1">
-                  {new Date(template.createdAt).toLocaleString()}
-                </Typography>
-              </Box>
-
-              <Box>
-                <Typography variant="subtitle2" color="text.secondary" gutterBottom>
-                  수정일
-                </Typography>
-                <Typography variant="body1">
-                  {new Date(template.updatedAt).toLocaleString()}
-                </Typography>
-              </Box>
-            </Stack>
-          </Grid>
-
-          <Grid item xs={12}>
-            <Divider sx={{ my: 2 }} />
-            <Box>
-              <Typography variant="subtitle2" color="text.secondary" gutterBottom>
-                내용
-              </Typography>
-              <Paper variant="outlined" sx={{ p: 2, bgcolor: 'grey.50' }}>
-                <Typography variant="body1" sx={{ whiteSpace: 'pre-wrap' }}>
-                  {template.content}
-                </Typography>
-              </Paper>
-            </Box>
           </Grid>
         </Grid>
       </Paper>
