@@ -21,59 +21,59 @@ import {
 } from '@mui/material';
 import { Link } from '@mui/material';
 import {
-  storeApi,
-  AdminStoreResponse,
-  AdminCreateStoreRequest,
-  AdminUpdateStoreRequest,
+  notificationTemplateApi,
+  AdminNotificationTemplateResponse,
+  AdminCreateNotificationTemplateRequest,
+  AdminUpdateNotificationTemplateRequest,
 } from '@repo/api/admin';
 import { useQuery, useMutation } from '@tanstack/react-query';
 
-import { CreateStoreDialog } from './CreateStoreDialog';
+import { CreateNotificationTemplateDialog } from './CreateNotificationTemplateDialog';
 import { DeleteConfirmDialog } from './DeleteConfirmDialog';
-import { EditStoreDialog } from './EditStoreDialog';
+import { EditNotificationTemplateDialog } from './EditNotificationTemplateDialog';
 import { queryClient } from '../providers';
 
-export default function StoresPage() {
+export default function NotificationTemplatesPage() {
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
-  const [selectedStore, setSelectedStore] = useState<AdminStoreResponse | null>(null);
+  const [selectedTemplate, setSelectedTemplate] = useState<AdminNotificationTemplateResponse | null>(null);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
-  const [storeToDelete, setStoreToDelete] = useState<AdminStoreResponse | null>(null);
+  const [templateToDelete, setTemplateToDelete] = useState<AdminNotificationTemplateResponse | null>(null);
 
-  const { data: storesResponse, isLoading } = useQuery({
-    queryKey: ['stores', page, pageSize],
-    queryFn: () => storeApi.getStoreList(page - 1, pageSize), // API는 0-based index 사용
+  const { data: templatesResponse, isLoading } = useQuery({
+    queryKey: ['notification-templates', page, pageSize],
+    queryFn: () => notificationTemplateApi.getNotificationTemplateList(page - 1, pageSize),
   });
 
   const createMutation = useMutation({
-    mutationFn: (data: AdminCreateStoreRequest) => storeApi.createStore(data),
+    mutationFn: (data: AdminCreateNotificationTemplateRequest) => notificationTemplateApi.createNotificationTemplate(data),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['stores'] });
+      queryClient.invalidateQueries({ queryKey: ['notification-templates'] });
       setIsCreateDialogOpen(false);
     },
   });
 
   const updateMutation = useMutation({
-    mutationFn: ({ id, body }: { id: number; body: AdminUpdateStoreRequest }) =>
-      storeApi.updateStore({ id, body }),
+    mutationFn: ({ id, body }: { id: string; body: AdminUpdateNotificationTemplateRequest }) =>
+      notificationTemplateApi.updateNotificationTemplate({ id, body }),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['stores'] });
+      queryClient.invalidateQueries({ queryKey: ['notification-templates'] });
       setIsEditDialogOpen(false);
     },
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (id: number) => storeApi.deleteStore(id),
+    mutationFn: (id: string) => notificationTemplateApi.deleteNotificationTemplate(id),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['stores'] });
+      queryClient.invalidateQueries({ queryKey: ['notification-templates'] });
       setDeleteDialogOpen(false);
-      setStoreToDelete(null);
+      setTemplateToDelete(null);
     },
     onSettled: () => {
       setDeleteDialogOpen(false);
-      setStoreToDelete(null);
+      setTemplateToDelete(null);
     },
   });
 
@@ -83,32 +83,23 @@ export default function StoresPage() {
 
   const handlePageSizeChange = (event: SelectChangeEvent<number>) => {
     setPageSize(Number(event.target.value));
-    setPage(1); // 페이지 크기 변경 시 첫 페이지로 이동
+    setPage(1);
   };
 
   if (isLoading) return <div>Loading...</div>;
 
-  const stores = storesResponse?.data.list || [];
-  const pageInfo = storesResponse?.data.pageInfo;
+  const templates = templatesResponse?.data.list || [];
+  const pageInfo = templatesResponse?.data.pageInfo;
   const totalPages = pageInfo?.totalPages || 1;
 
-  const handleDeleteClick = (store: AdminStoreResponse) => {
-    setStoreToDelete(store);
+  const handleDeleteClick = (template: AdminNotificationTemplateResponse) => {
+    setTemplateToDelete(template);
     setDeleteDialogOpen(true);
   };
 
   const handleDeleteConfirm = () => {
-    if (storeToDelete) {
-      deleteMutation.mutate(storeToDelete.id, {
-        onSuccess: () => {
-          setDeleteDialogOpen(false);
-          setStoreToDelete(null);
-        },
-        onSettled: () => {
-          setDeleteDialogOpen(false);
-          setStoreToDelete(null);
-        },
-      });
+    if (templateToDelete) {
+      deleteMutation.mutate(templateToDelete.id);
     }
   };
 
@@ -116,10 +107,10 @@ export default function StoresPage() {
     <Box sx={{ p: 3 }}>
       <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 3 }}>
         <Typography variant='h4' component='h1'>
-          가게 관리
+          알림 양식 관리
         </Typography>
         <Button variant='contained' onClick={() => setIsCreateDialogOpen(true)}>
-          새 가게 추가
+          새 알림 양식 추가
         </Button>
       </Box>
 
@@ -128,44 +119,30 @@ export default function StoresPage() {
           <TableHead>
             <TableRow>
               <TableCell>ID</TableCell>
-              <TableCell>이름</TableCell>
-              <TableCell>지역</TableCell>
-              <TableCell>주소</TableCell>
-              <TableCell>카테고리</TableCell>
-              <TableCell>연락처</TableCell>
-              <TableCell>상태</TableCell>
+              <TableCell>제목</TableCell>
+              <TableCell>내용</TableCell>
+              <TableCell>타입</TableCell>
               <TableCell>작업</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
-            {stores.map((store) => (
-              <TableRow key={store.id}>
-                <TableCell>{store.id}</TableCell>
+            {templates.map((template) => (
+              <TableRow key={template.id}>
+                <TableCell>{template.id}</TableCell>
                 <TableCell>
-                  <Link href={`/stores/${store.id}`} underline="hover">
-                    {store.name}
+                  <Link href={`/notification-templates/${template.id}`} underline="hover">
+                    {template.subject}
                   </Link>
                 </TableCell>
-                <TableCell>{store.regionId || '-'}</TableCell>
-                <TableCell>{store.address || '-'}</TableCell>
-                <TableCell>{store.category}</TableCell>
-                <TableCell>{store.contactNumber || '-'}</TableCell>
+                <TableCell>{template.content}</TableCell>
+                <TableCell>{template.type}</TableCell>
                 {/* <TableCell>
-                  <Chip
-                    label={store.status}
-                    color={
-                      store.status === STORE_STATUS.APPROVED
-                        ? 'success'
-                        : store.status === STORE_STATUS.REJECTED
-                        ? 'error'
-                        : store.status === STORE_STATUS.SUSPENDED
-                        ? 'warning'
-                        : store.status === STORE_STATUS.CLOSED
-                        ? 'default'
-                        : 'info'
-                    }
-                    size="small"
-                  />
+                  <Typography
+                    variant="body2"
+                    color={template.isActive ? 'success.main' : 'text.secondary'}
+                  >
+                    {template.isActive ? '활성' : '비활성'}
+                  </Typography>
                 </TableCell> */}
                 <TableCell>
                   <Box sx={{ display: 'flex', gap: 1 }}>
@@ -173,7 +150,7 @@ export default function StoresPage() {
                       variant='outlined'
                       size='small'
                       onClick={() => {
-                        setSelectedStore(store);
+                        setSelectedTemplate(template);
                         setIsEditDialogOpen(true);
                       }}
                     >
@@ -183,7 +160,7 @@ export default function StoresPage() {
                       variant='outlined'
                       color='error'
                       size='small'
-                      onClick={() => handleDeleteClick(store)}
+                      onClick={() => handleDeleteClick(template)}
                     >
                       삭제
                     </Button>
@@ -227,21 +204,21 @@ export default function StoresPage() {
         />
       </Box>
 
-      <CreateStoreDialog
+      <CreateNotificationTemplateDialog
         open={isCreateDialogOpen}
         onClose={() => setIsCreateDialogOpen(false)}
-        onSubmit={(data) => createMutation.mutate(data)}
+        onSubmit={(data: AdminCreateNotificationTemplateRequest) => createMutation.mutate(data)}
         loading={createMutation.isPending}
       />
 
-      <EditStoreDialog
+      <EditNotificationTemplateDialog
         open={isEditDialogOpen}
         onClose={() => setIsEditDialogOpen(false)}
-        onSubmit={(data) =>
-          selectedStore && updateMutation.mutate({ id: selectedStore.id, body: data })
+        onSubmit={(data: AdminUpdateNotificationTemplateRequest) =>
+          selectedTemplate && updateMutation.mutate({ id: selectedTemplate.id, body: data })
         }
         loading={updateMutation.isPending}
-        initialData={selectedStore || undefined}
+        initialData={selectedTemplate || undefined}
       />
 
       <DeleteConfirmDialog
@@ -249,8 +226,8 @@ export default function StoresPage() {
         onClose={() => setDeleteDialogOpen(false)}
         onConfirm={handleDeleteConfirm}
         loading={deleteMutation.isPending}
-        title='가게 삭제 확인'
-        description={storeToDelete ? `정말로 '${storeToDelete.name}' 가게를 삭제하시겠습니까?` : ''}
+        title='알림 양식 삭제 확인'
+        description={templateToDelete ? `정말로 '${templateToDelete.subject}' 알림 양식을 삭제하시겠습니까?` : ''}
       />
     </Box>
   );
