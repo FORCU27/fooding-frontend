@@ -37,7 +37,7 @@ const roleMap: Record<Role, { queryKey: string; label: string }> = {
 };
 
 export default function UserList({ role }: { role: Role }) {
-  const [page, setPage] = useState(0);
+  const [page, setPage] = useState(1);
   const size = 10;
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);

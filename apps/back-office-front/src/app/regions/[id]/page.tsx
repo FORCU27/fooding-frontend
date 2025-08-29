@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { useState } from 'react';
+import { useState, use } from 'react';
 
 import SearchIcon from '@mui/icons-material/Search';
 import {
@@ -24,8 +24,8 @@ import {
 import { regionApi, AdminRegionResponse } from '@repo/api/admin';
 import { useQuery } from '@tanstack/react-query';
 
-export default function RegionDetailPage({ params }: { params: { id: string } }) {
-  const { id } = params;
+export default function RegionDetailPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = use(params);
   const [page, setPage] = useState(1);
   const [pageSize] = useState(10);
   const [searchString, setSearchString] = useState('');
