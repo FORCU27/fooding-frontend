@@ -34,6 +34,7 @@ export const queryKeys = {
       operatingHours: 'userStoreOperatingHours',
       additionalInfo: 'userStoreAdditionalInfo',
       immediateEntryList: 'userStoreImmediateEntryList',
+      imageList: 'userStoreImageList',
     },
     storePost: {
       list: 'userStorePostList',

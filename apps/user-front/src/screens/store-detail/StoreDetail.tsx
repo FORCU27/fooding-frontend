@@ -31,6 +31,7 @@ import { useAddBookmark } from '@/hooks/user/useAddBookmark';
 import { useDeleteBookmark } from '@/hooks/user/useDeleteBookmark';
 import { useScrollVisibility } from '@/hooks/useScrollVisibility';
 import { cn } from '@/utils/cn';
+import { StoreDetailPhotoTab } from './components/tabs/Photo';
 
 // TODO: mock 데이터 제거
 const mock = {
@@ -170,6 +171,9 @@ const StoreDetail = ({ storeId, showHeader, initialTab = 'home' }: StoreDetailPr
             </ChipTabs.Content>
             <ChipTabs.Content value='review'>
               <StoreDetailReviewTab store={store} />
+            </ChipTabs.Content>
+            <ChipTabs.Content value='photo'>
+              <StoreDetailPhotoTab store={store} />
             </ChipTabs.Content>
           </Suspense>
         </ChipTabs>
