@@ -15,7 +15,11 @@ import {
   Notifications, 
   Email,
   Article,
-  History
+  History,
+  RateReview,
+  Monitor,
+  Campaign,
+  ContactPage
 } from '@mui/icons-material';
 import {
   Box,
@@ -50,6 +54,20 @@ const menu = [
       { label: '알림 내역', path: '/user-notifications', icon: <History /> },
       { label: '발송 내역', path: '/notifications', icon: <Email /> },
       { label: '템플릿 관리', path: '/notification-templates', icon: <Article /> },
+    ],
+  },
+  {
+    label: '모니터링',
+    icon: <Monitor />,
+    sub: [
+      { label: '리뷰', path: '/reviews', icon: <RateReview /> },
+    ],
+  },
+  {
+    label: '마케팅',
+    icon: <Campaign />,
+    sub: [
+      { label: 'Lead', path: '/leads', icon: <ContactPage /> },
     ],
   },
 ];
