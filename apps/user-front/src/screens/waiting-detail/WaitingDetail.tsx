@@ -209,7 +209,9 @@ const WaitingDetail = ({ waitingId }: StoreDetailProps) => {
             />
           </button>
         </div>
-        <div
+        {/* FIXME: 추후수정 */}
+
+        {/* <div
           className={`overflow-hidden transition-all duration-300 ease-in-out ${
             isParkingAccordionOpen ? 'max-h-40 opacity-100 mt-5' : 'max-h-0 opacity-0 mt-0'
           }`}
@@ -217,7 +219,7 @@ const WaitingDetail = ({ waitingId }: StoreDetailProps) => {
           <div className='flex flex-col bg-gray-1 rounded-xl p-4 body-5'>
             <p>{storeInfo.isParkingAvailable ? '주차가능' : '주차불가'}</p>
           </div>
-        </div>
+        </div> */}
       </div>
       <div className='flex flex-col p-5 mt-[10px] bg-white/80'>
         <div className='flex gap-4 items-center'>

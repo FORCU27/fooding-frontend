@@ -57,7 +57,7 @@ declare module '@stackflow/config' {
     JoinFormScreen: object;
     MenuDetailScreen: MenuDetailScreenProps;
     MyRewardListScreen: object;
-    MyRewardDetailScreen: { rewardId: number };
+    MyRewardDetailScreen: { storeId: number };
   }
 }
 

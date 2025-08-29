@@ -28,9 +28,9 @@ import { Header } from '@/components/Layout/Header';
 import { Screen } from '@/components/Layout/Screen';
 import { Section } from '@/components/Layout/Section';
 import { useAuth } from '@/components/Provider/AuthProvider';
+import { useAddBookmark } from '@/hooks/bookmark/useAddBookmark';
+import { useDeleteBookmark } from '@/hooks/bookmark/useDeleteBookmark';
 import { useGetStoreDetail } from '@/hooks/store/useGetStoreDetail';
-import { useAddBookmark } from '@/hooks/user/useAddBookmark';
-import { useDeleteBookmark } from '@/hooks/user/useDeleteBookmark';
 import { useScrollVisibility } from '@/hooks/useScrollVisibility';
 import { cn } from '@/utils/cn';
 

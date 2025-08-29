@@ -2,17 +2,10 @@ import z from 'zod/v4';
 
 import { PageResponse } from '../../shared';
 
-export type GetBookmarkStoreListParams = {
-  searchString?: string;
-  pageNum?: number;
-  pageSize?: number;
-};
-
 export type Bookmark = z.infer<typeof Bookmark>;
 export const Bookmark = z.object({
   averageRating: z.number(),
   bookmarkCount: z.number(),
-  city: z.string(),
   estimatedWaitingTimeMinutes: z.number().nullable(),
   id: z.number(),
   images: z.string().array(),
@@ -22,6 +15,12 @@ export const Bookmark = z.object({
   storeId: z.number(),
   visitCount: z.number(),
 });
+
+export type GetBookmarkStoreListParams = {
+  searchString?: string;
+  pageNum?: number;
+  pageSize?: number;
+};
 
 export type GetBookmarkStoreListResponse = z.infer<typeof GetBookmarkStoreListResponse>;
 export const GetBookmarkStoreListResponse = PageResponse(Bookmark);
@@ -37,22 +36,3 @@ export const DeleteBookmarkResponse = z.object({
   status: z.string(),
   data: z.null(),
 });
-
-//TODO: 추후 수정
-export const RewardType = z.enum(['EVENT', 'VISIT']);
-export type RewardType = z.infer<typeof RewardType>;
-
-export type RewardLog = z.infer<typeof RewardLog>;
-export const RewardLog = z.object({
-  id: z.number(),
-  storeName: z.string(),
-  storeId: z.number(),
-  point: z.number(),
-  avaliablePoint: z.number(),
-  used: z.boolean(),
-  type: RewardType,
-  createdAt: z.string(),
-});
-
-export type GetUserRewardLogResponse = z.infer<typeof GetUserRewardLogResponse>;
-export const GetUserRewardLogResponse = PageResponse(RewardLog);
