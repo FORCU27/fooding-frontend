@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import type React from 'react';
 
 import {
   Box,
@@ -41,10 +42,11 @@ export default function StoresPage() {
   const [selectedStore, setSelectedStore] = useState<AdminStoreResponse | null>(null);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [storeToDelete, setStoreToDelete] = useState<AdminStoreResponse | null>(null);
+  const [search, setSearch] = useState('');
 
   const { data: storesResponse, isLoading } = useQuery({
-    queryKey: ['stores', page, pageSize],
-    queryFn: () => storeApi.getStoreList(page - 1, pageSize), // API는 0-based index 사용
+    queryKey: ['stores', page, pageSize, search],
+    queryFn: () => storeApi.getStoreList(page - 1, pageSize, 'RECENT', 'DESCENDING', search), // API는 0-based index 사용
   });
 
   const createMutation = useMutation({
@@ -86,6 +88,13 @@ export default function StoresPage() {
     setPage(1); // 페이지 크기 변경 시 첫 페이지로 이동
   };
 
+  const handleSearchKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      setPage(1);
+      // query key already includes search, so updating state triggers refetch
+    }
+  };
+
   if (isLoading) return <div>Loading...</div>;
 
   const stores = storesResponse?.data.list || [];
@@ -120,6 +129,19 @@ export default function StoresPage() {
         </Typography>
         <Button variant='contained' onClick={() => setIsCreateDialogOpen(true)}>
           새 가게 추가
+        </Button>
+      </Box>
+
+      <Box sx={{ display: 'flex', gap: 2, mb: 2 }}>
+        <input
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          onKeyDown={handleSearchKeyDown}
+          placeholder="가게명 검색"
+          style={{ flex: 1, padding: '8px 12px', borderRadius: 4, border: '1px solid #ccc' }}
+        />
+        <Button variant="outlined" onClick={() => { setPage(1); }}>
+          검색
         </Button>
       </Box>
 

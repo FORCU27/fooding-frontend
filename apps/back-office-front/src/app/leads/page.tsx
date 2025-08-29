@@ -18,6 +18,10 @@ import {
   TextField,
   InputAdornment,
   Button,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
 } from '@mui/material';
 import { leadApi, AdminLeadResponse } from '@repo/api/admin';
 import { useQuery } from '@tanstack/react-query';
@@ -27,10 +31,11 @@ export default function LeadsPage() {
   const [page, setPage] = useState(1);
   const [pageSize] = useState(10);
   const [search, setSearch] = useState('');
+  const [uploadFilter, setUploadFilter] = useState<'false' | 'true' | 'all'>('false');
 
   const { data, isLoading, error } = useQuery({
-    queryKey: ['leads', page, pageSize, search],
-    queryFn: () => leadApi.getLeadList(page - 1, pageSize, search),
+    queryKey: ['leads', page, pageSize, search, uploadFilter],
+    queryFn: () => leadApi.getLeadList(page - 1, pageSize, search, uploadFilter),
   });
 
   // 에러 로깅 추가
@@ -48,28 +53,47 @@ export default function LeadsPage() {
   const pageInfo = data?.data.pageInfo;
   const totalPages = pageInfo?.totalPages || 1;
 
+  const handleFilterChange = (newFilter: 'false' | 'true' | 'all') => {
+    setUploadFilter(newFilter);
+    setPage(1);
+  };
+
   return (
     <Box sx={{ p: 3 }}>
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 3, alignItems: 'center' }}>
+       <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 3, alignItems: 'center' }}>
         <Typography variant='h4' component='h1'>
           Lead
         </Typography>
-        <TextField
-          size='small'
-          placeholder='검색'
-          value={search}
-          onChange={(e) => {
-            setPage(1);
-            setSearch(e.target.value);
-          }}
-          InputProps={{
-            startAdornment: (
-              <InputAdornment position='start'>
-                <SearchIcon fontSize='small' />
-              </InputAdornment>
-            ),
-          }}
-        />
+        <Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
+          <FormControl size='small' sx={{ minWidth: 120 }}>
+            <InputLabel>업로드 상태</InputLabel>
+            <Select
+              value={uploadFilter}
+              label='업로드 상태'
+              onChange={(e) => handleFilterChange(e.target.value as 'false' | 'true' | 'all')}
+            >
+              <MenuItem value='false'>미업로드</MenuItem>
+              <MenuItem value='true'>업로드됨</MenuItem>
+              <MenuItem value='all'>전체</MenuItem>
+            </Select>
+          </FormControl>
+          <TextField
+            size='small'
+            placeholder='검색'
+            value={search}
+            onChange={(e) => {
+              setPage(1);
+              setSearch(e.target.value);
+            }}
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position='start'>
+                  <SearchIcon fontSize='small' />
+                </InputAdornment>
+              ),
+            }}
+          />
+        </Box>
       </Box>
 
       <TableContainer component={Paper}>

@@ -4,6 +4,7 @@ import { useParams, useRouter } from 'next/navigation';
 import { useState } from 'react';
 
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import SearchIcon from '@mui/icons-material/Search';
 import UploadIcon from '@mui/icons-material/Upload';
 import {
   Box,
@@ -16,9 +17,22 @@ import {
   DialogActions,
   TextField,
   Alert,
+  InputAdornment,
+  List,
+  ListItem,
+  ListItemText,
+  ClickAwayListener,
+  CircularProgress,
 } from '@mui/material';
 import { leadApi, UploadLeadRequest } from '@repo/api/admin';
+import { userApi } from '@repo/api/admin';
+import { regionApi } from '@repo/api/admin';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+
+interface SearchOption {
+  id: string | number;
+  label: string;
+}
 
 export default function LeadDetailPage() {
   const params = useParams();
@@ -26,9 +40,19 @@ export default function LeadDetailPage() {
   const queryClient = useQueryClient();
   const [uploadDialogOpen, setUploadDialogOpen] = useState(false);
   const [uploadForm, setUploadForm] = useState<UploadLeadRequest>({
-    ownerId: 1, // 기본값 설정 (실제로는 사용자 선택이 필요)
-    regionId: "KR-11", // 기본값 설정 (실제로는 지역 선택이 필요)
+    ownerId: 1,
+    regionId: "KR-11",
   });
+
+  // 검색 관련 상태
+  const [ownerSearchTerm, setOwnerSearchTerm] = useState('');
+  const [regionSearchTerm, setRegionSearchTerm] = useState('');
+  const [ownerSearchResults, setOwnerSearchResults] = useState<SearchOption[]>([]);
+  const [regionSearchResults, setRegionSearchResults] = useState<SearchOption[]>([]);
+  const [showOwnerResults, setShowOwnerResults] = useState(false);
+  const [showRegionResults, setShowRegionResults] = useState(false);
+  const [isSearchingOwner, setIsSearchingOwner] = useState(false);
+  const [isSearchingRegion, setIsSearchingRegion] = useState(false);
 
   const leadId = params.id as string;
 
@@ -38,7 +62,55 @@ export default function LeadDetailPage() {
     enabled: !!leadId,
   });
 
+  // 사용자 검색
+  const searchUsers = async (searchTerm: string) => {
+    if (!searchTerm.trim()) {
+      setOwnerSearchResults([]);
+      return;
+    }
 
+    setIsSearchingOwner(true);
+    try {
+      const response = await userApi.getUserList({
+        page: 1,
+        size: 10,
+        searchString: searchTerm,
+      });
+      const results = response.data.list.map(user => ({
+        id: user.id,
+        label: `${user.nickname || '이름 없음'} (${user.email})`,
+      }));
+      setOwnerSearchResults(results);
+    } catch (error) {
+      console.error('사용자 검색 실패:', error);
+      setOwnerSearchResults([]);
+    } finally {
+      setIsSearchingOwner(false);
+    }
+  };
+
+  // 지역 검색
+  const searchRegions = async (searchTerm: string) => {
+    if (!searchTerm.trim()) {
+      setRegionSearchResults([]);
+      return;
+    }
+
+    setIsSearchingRegion(true);
+    try {
+      const response = await regionApi.getRegionList(0, 10, { searchString: searchTerm });
+      const results = response.data.list.map(region => ({
+        id: region.id,
+        label: `${region.name} (${region.id})`,
+      }));
+      setRegionSearchResults(results);
+    } catch (error) {
+      console.error('지역 검색 실패:', error);
+      setRegionSearchResults([]);
+    } finally {
+      setIsSearchingRegion(false);
+    }
+  };
 
   const uploadMutation = useMutation({
     mutationFn: (data: UploadLeadRequest) =>
@@ -47,7 +119,6 @@ export default function LeadDetailPage() {
       queryClient.invalidateQueries({ queryKey: ['leads'] });
       setUploadDialogOpen(false);
       setUploadForm({ ownerId: 1, regionId: "KR-11" });
-      // 성공 후 리드 목록으로 이동
       router.push('/leads');
     },
   });
@@ -143,22 +214,137 @@ export default function LeadDetailPage() {
         <DialogContent>
           <Box sx={{ pt: 1 }}>
             <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-              <TextField
-                fullWidth
-                label="소유자 ID"
-                type="number"
-                value={uploadForm.ownerId}
-                onChange={(e) => setUploadForm({ ...uploadForm, ownerId: Number(e.target.value) })}
-                required
-              />
-              <TextField
-                fullWidth
-                label="지역 ID"
-                type="number"
-                value={uploadForm.regionId}
-                onChange={(e) => setUploadForm({ ...uploadForm, regionId: e.target.value })}
-                required
-              />
+              {/* 소유자 검색 */}
+              <Box sx={{ position: 'relative' }}>
+                <TextField
+                  fullWidth
+                  label="소유자 검색"
+                  placeholder="사용자 이름이나 이메일로 검색..."
+                  value={ownerSearchTerm}
+                  onChange={(e) => {
+                    const value = e.target.value;
+                    setOwnerSearchTerm(value);
+                    searchUsers(value);
+                    setShowOwnerResults(true);
+                  }}
+                  onFocus={() => setShowOwnerResults(true)}
+                  InputProps={{
+                    endAdornment: (
+                      <InputAdornment position="end">
+                        {isSearchingOwner ? (
+                          <CircularProgress size={20} />
+                        ) : (
+                          <SearchIcon fontSize="small" />
+                        )}
+                      </InputAdornment>
+                    ),
+                  }}
+                  size="small"
+                />
+                {showOwnerResults && ownerSearchResults.length > 0 && (
+                  <ClickAwayListener onClickAway={() => setShowOwnerResults(false)}>
+                    <Paper
+                      elevation={3}
+                      sx={{
+                        position: 'absolute',
+                        top: '100%',
+                        left: 0,
+                        right: 0,
+                        zIndex: 1300,
+                        maxHeight: 200,
+                        overflow: 'auto',
+                      }}
+                    >
+                      <List dense>
+                        {ownerSearchResults.map((option) => (
+                          <ListItem
+                            key={option.id}
+                            onClick={() => {
+                              setUploadForm({ ...uploadForm, ownerId: Number(option.id) });
+                              setOwnerSearchTerm(option.label);
+                              setShowOwnerResults(false);
+                            }}
+                            sx={{
+                              cursor: 'pointer',
+                              '&:hover': {
+                                backgroundColor: 'action.hover',
+                              },
+                            }}
+                          >
+                            <ListItemText primary={option.label} />
+                          </ListItem>
+                        ))}
+                      </List>
+                    </Paper>
+                  </ClickAwayListener>
+                )}
+              </Box>
+
+              {/* 지역 검색 */}
+              <Box sx={{ position: 'relative' }}>
+                <TextField
+                  fullWidth
+                  label="지역 검색"
+                  placeholder="지역 이름으로 검색..."
+                  value={regionSearchTerm}
+                  onChange={(e) => {
+                    const value = e.target.value;
+                    setRegionSearchTerm(value);
+                    searchRegions(value);
+                    setShowRegionResults(true);
+                  }}
+                  onFocus={() => setShowRegionResults(true)}
+                  InputProps={{
+                    endAdornment: (
+                      <InputAdornment position="end">
+                        {isSearchingRegion ? (
+                          <CircularProgress size={20} />
+                        ) : (
+                          <SearchIcon fontSize="small" />
+                        )}
+                      </InputAdornment>
+                    ),
+                  }}
+                  size="small"
+                />
+                {showRegionResults && regionSearchResults.length > 0 && (
+                  <ClickAwayListener onClickAway={() => setShowRegionResults(false)}>
+                    <Paper
+                      elevation={3}
+                      sx={{
+                        position: 'absolute',
+                        top: '100%',
+                        left: 0,
+                        right: 0,
+                        zIndex: 1300,
+                        maxHeight: 200,
+                        overflow: 'auto',
+                      }}
+                    >
+                      <List dense>
+                        {regionSearchResults.map((option) => (
+                          <ListItem
+                            key={option.id}
+                            onClick={() => {
+                              setUploadForm({ ...uploadForm, regionId: String(option.id) });
+                              setRegionSearchTerm(option.label);
+                              setShowRegionResults(false);
+                            }}
+                            sx={{
+                              cursor: 'pointer',
+                              '&:hover': {
+                                backgroundColor: 'action.hover',
+                              },
+                            }}
+                          >
+                            <ListItemText primary={option.label} />
+                          </ListItem>
+                        ))}
+                      </List>
+                    </Paper>
+                  </ClickAwayListener>
+                )}
+              </Box>
             </Box>
           </Box>
         </DialogContent>

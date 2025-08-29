@@ -8,6 +8,7 @@ export const AdminLeadResponseSchema = z.object({
   phone: z.string(),
   source: z.string().nullable().optional(),
   createdAt: z.string().nullable().optional(),
+  isUploaded: z.boolean().nullable().optional(),
 });
 
 export type AdminLeadResponse = z.infer<typeof AdminLeadResponseSchema>;
@@ -16,6 +17,7 @@ export type GetLeadListParams = {
   page: number;
   size: number;
   searchString?: string;
+  isUploaded?: boolean;
 };
 
 export const GetLeadListResponse = PageResponse(AdminLeadResponseSchema);
