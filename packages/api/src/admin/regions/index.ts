@@ -1,12 +1,12 @@
 export * from './type';
 
-import { api } from '../../shared';
 import {
   GetRegionListResponse,
   GetRegionResponse,
   AdminRegionCreateRequest,
   AdminRegionUpdateRequest,
 } from './type';
+import { api } from '../../shared';
 
 const ENDPOINT = '/admin/regions';
 

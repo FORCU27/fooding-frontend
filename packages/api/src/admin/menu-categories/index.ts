@@ -1,12 +1,12 @@
 export * from './type';
 
-import { api } from '../../shared';
 import {
   GetMenuCategoryListResponse,
   GetMenuCategoryResponse,
   AdminMenuCategoryCreateRequest,
   AdminMenuCategoryUpdateRequest,
 } from './type';
+import { api } from '../../shared';
 
 const ENDPOINT = '/admin/menu-categories';
 

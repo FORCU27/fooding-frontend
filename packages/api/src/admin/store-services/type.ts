@@ -1,4 +1,5 @@
 import { z } from 'zod/v4';
+
 import { ApiResponse, PageResponse } from '../../shared';
 
 export const StoreServiceType = z.enum(['WAITING', 'REWARD']);
