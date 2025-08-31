@@ -16,8 +16,8 @@ import { ActivityComponentType, useFlow } from '@stackflow/react/future';
 import { Suspense } from '@suspensive/react';
 
 import { StoreDetailHomeTab } from './components/tabs/Home';
-import { StoreDetailPhotoTab } from './components/tabs/Photo';
 import { StoreDetailMenuTab } from './components/tabs/Menu';
+import { StoreDetailPhotoTab } from './components/tabs/Photo';
 import { StoreDetailReviewTab } from './components/tabs/ReviewDetail';
 import { StoreDetailPostListTab } from './components/tabs/StorePostList';
 import { StoreRewardListTab } from './components/tabs/StoreRewardList';
