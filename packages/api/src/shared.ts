@@ -95,7 +95,7 @@ export const api = createApi(apiClient);
 
 export const ApiResponse = <TData extends z.ZodType>(data: TData) =>
   z.object({
-    status: z.string(),
+    status: z.string().nullable(),
     data,
   });
 

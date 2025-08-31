@@ -44,12 +44,16 @@ export const queryKeys = {
       list: 'userStorePostList',
       detail: 'userStorePostDetail',
     },
+    storeWaiting: {
+      detail: 'userStoreWaitingDetail',
+    },
     coupon: {
       infiniteList: 'userCouponInfiniteList',
     },
-    bookmark: 'userBookmark',
-    reservation: { list: 'userReservationList', detail: 'userReservationDetail' },
+    bookmark: { list: 'userBookmarkList' },
+    plan: { list: 'userPlanList', detail: 'userPlanDetail' },
     region: { list: 'userRegionList' },
+    reward: { list: 'userRewardList', log: 'userRewardLog' },
   },
   me: {
     user: 'meUser',
