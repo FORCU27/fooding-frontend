@@ -2,24 +2,21 @@ import { z } from 'zod/v4';
 
 import { ApiResponse, PageInfo } from '../../shared';
 
+export const StoreCategory = z.enum(['KOREAN', 'JAPANESE', 'CHINESE', 'WESTERN', 'CAFE', 'DESSERT', 'BAR', 'ETC']);
+
 export const Store = z.object({
   id: z.number(),
   name: z.string(),
-  city: z.string(),
   address: z.string(),
-  category: z.string(),
+  addressDetail: z.string().nullable(),
+  category: StoreCategory,
   description: z.string(),
-  priceCategory: z.string(),
-  eventDescription: z.string(),
   contactNumber: z.string(),
   direction: z.string(),
-  information: z.string(),
-  isParkingAvailable: z.boolean(),
-  isNewOpen: z.boolean(),
-  isTakeOut: z.boolean(),
 });
 
 export type Store = z.infer<typeof Store>;
+export type StoreCategory = z.infer<typeof StoreCategory>;
 
 export type GetStoresParams = {
   searchString: string;

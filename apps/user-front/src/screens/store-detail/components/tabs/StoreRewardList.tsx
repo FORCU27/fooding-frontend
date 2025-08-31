@@ -1,7 +1,7 @@
 import Image from 'next/image';
 import { useState } from 'react';
 
-import { Reward } from '@repo/api/user';
+import { StoreReward } from '@repo/api/user';
 import { BottomSheet, Button, Checkbox, EmptyState } from '@repo/design-system/components/b2c';
 import { FoodingIcon, GiftIcon } from '@repo/design-system/icons';
 import { useFlow } from '@stackflow/react/future';
@@ -63,7 +63,7 @@ export const StoreRewardListTab = ({ storeId }: StoreRewardListTabProps) => {
 };
 
 type StoreRewardItemProps = {
-  reward: Reward;
+  reward: StoreReward;
   storeId: number;
   userPoint: number;
 };

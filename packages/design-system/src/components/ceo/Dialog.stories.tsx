@@ -12,7 +12,7 @@ import {
 import { Button } from './Button';
 
 const meta: any = {
-  title: 'Components/ceo/CeoDialog',
+  title: 'Components/ceo/Dialog',
   component: Dialog,
   parameters: {
     layout: 'centered',
