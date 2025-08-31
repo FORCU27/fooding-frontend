@@ -11,6 +11,9 @@ import {
   TableHead,
   TableRow,
   Typography,
+  Pagination,
+  Alert,
+  CircularProgress,
 } from '@mui/material';
 import {
   AdminCreateUserRequest,
@@ -34,7 +37,7 @@ const roleMap: Record<Role, { queryKey: string; label: string }> = {
 };
 
 export default function UserList({ role }: { role: Role }) {
-  const page = 0;
+  const [page, setPage] = useState(1);
   const size = 10;
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
@@ -44,14 +47,23 @@ export default function UserList({ role }: { role: Role }) {
 
   const queryKey = [roleMap[role].queryKey ?? 'unknown', page];
   const roleName = roleMap[role].label;
-  const { data: usersResponse, isLoading } = useQuery({
+  const { data: usersResponse, isLoading, error } = useQuery({
     queryKey,
-    queryFn: () =>
-      userApi.getUserList({
-        page,
-        size,
-        role,
-      }),
+    queryFn: async () => {
+      try {
+        console.log('Fetching users with params:', { page, size, role });
+        const result = await userApi.getUserList({
+          page,
+          size,
+          role,
+        });
+        console.log('API Response:', result);
+        return result;
+      } catch (err) {
+        console.error('Error in queryFn:', err);
+        throw err;
+      }
+    },
   });
 
   const createMutation = useMutation({
@@ -84,9 +96,34 @@ export default function UserList({ role }: { role: Role }) {
     },
   });
 
-  if (isLoading) return <div>Loading...</div>;
+  if (isLoading) {
+    return (
+      <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '200px' }}>
+        <CircularProgress />
+      </Box>
+    );
+  }
+
+  if (error) {
+    console.error('UserList Error:', error);
+    console.error('Error details:', {
+      message: error.message,
+      stack: error.stack,
+      cause: error.cause,
+    });
+    return (
+      <Box sx={{ p: 3 }}>
+        <Alert severity="error">
+          사용자 목록을 불러오는 중 오류가 발생했습니다.
+          <br />
+          에러: {error.message}
+        </Alert>
+      </Box>
+    );
+  }
 
   const users = usersResponse?.data.list || [];
+  const pageInfo = usersResponse?.data.pageInfo;
 
   const handleDeleteClick = (user: AdminUserResponse) => {
     setUserToDelete(user);
@@ -130,10 +167,17 @@ export default function UserList({ role }: { role: Role }) {
               <TableRow key={user.id}>
                 <TableCell>{user.id}</TableCell>
                 <TableCell>{user.email}</TableCell>
-                <TableCell>{user.nickname}</TableCell>
+                <TableCell>{user.nickname || '-'}</TableCell>
                 <TableCell>{user.phoneNumber || '-'}</TableCell>
-                <TableCell>{user.gender}</TableCell>
-                <TableCell>{user.provider}</TableCell>
+                <TableCell>
+                  {user.gender === 'NONE' ? '-' : user.gender === 'MALE' ? '남성' : '여성'}
+                </TableCell>
+                <TableCell>
+                  {user.provider === 'GOOGLE' ? '구글' : 
+                   user.provider === 'FOODING' ? '푸딩' : 
+                   user.provider === 'APPLE' ? '애플' : 
+                   user.provider === 'KAKAO' ? '카카오' : user.provider}
+                </TableCell>
                 <TableCell>{new Date(user.createdAt).toLocaleString()}</TableCell>
                 <TableCell>
                   {user.lastLoggedInAt ? new Date(user.lastLoggedInAt).toLocaleString() : '-'}
@@ -165,6 +209,19 @@ export default function UserList({ role }: { role: Role }) {
           </TableBody>
         </Table>
       </TableContainer>
+
+      {pageInfo && (
+        <Box sx={{ display: 'flex', justifyContent: 'center', mt: 3 }}>
+          <Pagination
+            count={pageInfo.totalPages}
+            page={page + 1}
+            onChange={(_, newPage) => setPage(newPage - 1)}
+            color="primary"
+            showFirstButton
+            showLastButton
+          />
+        </Box>
+      )}
 
       <CreateUserDialog
         open={isCreateDialogOpen}

@@ -9,8 +9,14 @@ import {
 import { api } from '../../shared';
 
 export const userApi = {
-  getUserList: (params: GetUserListParams) => {
-    const response = api.get('/admin/users', { params });
+  getUserList: async (params: GetUserListParams) => {
+    const queryParams = new URLSearchParams();
+    queryParams.set('pageNum', params.page.toString());
+    queryParams.set('pageSize', params.size.toString());
+    if (params.role) queryParams.set('role', params.role);
+    if (params.searchString) queryParams.set('searchString', params.searchString);
+    
+    const response = await api.get(`/admin/users?${queryParams.toString()}`);
     return GetUserListResponse.parse(response);
   },
 

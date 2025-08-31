@@ -17,8 +17,10 @@ import { Suspense } from '@suspensive/react';
 
 import { StoreDetailHomeTab } from './components/tabs/Home';
 import { StoreDetailPhotoTab } from './components/tabs/Photo';
+import { StoreDetailMenuTab } from './components/tabs/Menu';
 import { StoreDetailReviewTab } from './components/tabs/ReviewDetail';
 import { StoreDetailPostListTab } from './components/tabs/StorePostList';
+import { StoreRewardListTab } from './components/tabs/StoreRewardList';
 import { useLoginBottomSheet } from '@/components/Auth/LoginBottomSheet';
 import { Carousel } from '@/components/Carousel';
 import { LoadingToggle } from '@/components/Devtool/LoadingToggle';
@@ -27,9 +29,9 @@ import { Header } from '@/components/Layout/Header';
 import { Screen } from '@/components/Layout/Screen';
 import { Section } from '@/components/Layout/Section';
 import { useAuth } from '@/components/Provider/AuthProvider';
+import { useAddBookmark } from '@/hooks/bookmark/useAddBookmark';
+import { useDeleteBookmark } from '@/hooks/bookmark/useDeleteBookmark';
 import { useGetStoreDetail } from '@/hooks/store/useGetStoreDetail';
-import { useAddBookmark } from '@/hooks/user/useAddBookmark';
-import { useDeleteBookmark } from '@/hooks/user/useDeleteBookmark';
 import { useScrollVisibility } from '@/hooks/useScrollVisibility';
 import { cn } from '@/utils/cn';
 
@@ -108,7 +110,7 @@ const StoreDetail = ({ storeId, showHeader, initialTab = 'home' }: StoreDetailPr
   };
 
   return (
-    <div className='flex flex-col pb-[120px] min-h-dvh'>
+    <div className='flex flex-col min-h-dvh'>
       {showHeader && <Header left={<Header.Back />} title={store.name} />}
       {/* TODO: 공유 기능 추가 */}
       <NavButton className='z-10 absolute right-grid-margin top-3'>
@@ -152,7 +154,7 @@ const StoreDetail = ({ storeId, showHeader, initialTab = 'home' }: StoreDetailPr
           <span className='subtitle-6 text-black'>{store.estimatedWaitingTimeMinutes ?? 0}분</span>
         </div>
       </Section>
-      <Section className='mt-[10px] py-[14px]'>
+      <Section className='mt-[10px] pt-[14px] pb-[100px]'>
         <ChipTabs defaultValue={initialTab} scrollable>
           <ChipTabs.List>
             <ChipTabs.Trigger value='home'>홈</ChipTabs.Trigger>
@@ -160,6 +162,7 @@ const StoreDetail = ({ storeId, showHeader, initialTab = 'home' }: StoreDetailPr
             <ChipTabs.Trigger value='menu'>메뉴</ChipTabs.Trigger>
             <ChipTabs.Trigger value='photo'>사진</ChipTabs.Trigger>
             <ChipTabs.Trigger value='review'>리뷰</ChipTabs.Trigger>
+            <ChipTabs.Trigger value='reward'>리워드</ChipTabs.Trigger>
             <ChipTabs.Trigger value='info'>매장정보</ChipTabs.Trigger>
           </ChipTabs.List>
           <Suspense>
@@ -169,11 +172,17 @@ const StoreDetail = ({ storeId, showHeader, initialTab = 'home' }: StoreDetailPr
             <ChipTabs.Content value='news'>
               <StoreDetailPostListTab storeId={storeId} />
             </ChipTabs.Content>
+            <ChipTabs.Content value='menu'>
+              <StoreDetailMenuTab store={store} />
+            </ChipTabs.Content>
             <ChipTabs.Content value='review'>
               <StoreDetailReviewTab store={store} />
             </ChipTabs.Content>
             <ChipTabs.Content value='photo'>
               <StoreDetailPhotoTab store={store} />
+            </ChipTabs.Content>
+            <ChipTabs.Content value='reward'>
+              <StoreRewardListTab storeId={storeId} />
             </ChipTabs.Content>
           </Suspense>
         </ChipTabs>

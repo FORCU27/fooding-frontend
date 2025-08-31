@@ -4,11 +4,11 @@ import { Card } from './Card';
 import { CardSubtitle } from './CardSubtitle';
 import { Input } from './Input';
 import { TextArea } from './TextArea';
-import { CheckBox } from './CheckBox';
+import { Checkbox } from './Checkbox';
 import { SelectBox } from './SelectBox';
 
 const meta = {
-  title: 'Components/ceo/CeoCard',
+  title: 'Components/ceo/Card',
   component: Card,
   parameters: {
     layout: 'centered',
@@ -52,8 +52,8 @@ export const Default: Story = {
       <Card>
         <CardSubtitle label='옵션 선택'>
           <div className='flex gap-4'>
-            <CheckBox labelText='옵션 A' />
-            <CheckBox labelText='옵션 B' />
+            <Checkbox labelText='옵션 A' />
+            <Checkbox labelText='옵션 B' />
           </div>
         </CardSubtitle>
       </Card>

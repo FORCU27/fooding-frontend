@@ -5,10 +5,10 @@ import { HomeIcon, SearchIcon } from '@repo/design-system/icons';
 import { Link } from '@stackflow/link/future';
 
 import { MyPageLink } from '../AuthTab/MyPageLink';
-import { ReservationLink } from '../AuthTab/ReservationLink';
+import { PlanLink } from '../AuthTab/PlanLink';
 import { cn } from '@/utils/cn';
 
-type Tab = 'home' | 'search' | 'reservation' | 'mypage';
+type Tab = 'home' | 'search' | 'plan' | 'mypage';
 
 type BottomTabProps = {
   currentTab: Tab;
@@ -47,10 +47,10 @@ const BottomTab = ({ currentTab }: BottomTabProps) => {
           <BottomTabLabel>검색</BottomTabLabel>
         </Link>
       </BottomTabItem>
-      <ReservationLink
+      <PlanLink
         BottomTabItem={BottomTabItem}
         BottomTabLabel={BottomTabLabel}
-        isActive={currentTab === 'reservation'}
+        isActive={currentTab === 'plan'}
       />
 
       <MyPageLink

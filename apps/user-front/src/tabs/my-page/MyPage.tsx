@@ -21,8 +21,10 @@ import { Header } from '@/components/Layout/Header';
 import { Screen } from '@/components/Layout/Screen';
 import { useAuth } from '@/components/Provider/AuthProvider';
 import { StoresList } from '@/components/Store/StoresList';
+import { useGetBookmarkList } from '@/hooks/bookmark/useGetBookmarkList';
+import { useGetInfiniteMyCouponList } from '@/hooks/coupon/useGetMyCouponList';
+import { useGetRewardPersonalLog } from '@/hooks/reward/useGetRewardPersonalLog';
 import { useGetStoreList } from '@/hooks/store/useGetStoreList';
-import { useGetBookmarkList } from '@/hooks/user/useGetBookmarkList';
 import { BookmarkCard } from '@/screens/bookmarks/components/BookmarkCard';
 
 export const MyPageTab: ActivityComponentType<'MyPageTab'> = () => {
@@ -67,6 +69,9 @@ const Content = () => {
     pageSize: 5,
   });
 
+  const { coupons } = useGetInfiniteMyCouponList({ used: false });
+
+  const { data: reward } = useGetRewardPersonalLog();
   return (
     <div className='w-full'>
       <div className='flex-col bg-white/80 pb-5 py-grid-margin'>
@@ -120,13 +125,16 @@ const Content = () => {
           >
             <TicketIcon />
             <p className='body-7 text-gray-5'>쿠폰</p>
-            <p className='subtitle-6'>3장</p>
+            <p className='subtitle-6'>{coupons && coupons.length}장</p>
           </div>
           <hr className='w-[2px] h-[81px] bg-gray-2 text-gray-2 mx-2' />
-          <div className='flex flex-col justify-center items-center gap-1 cursor-pointer'>
+          <div
+            className='flex flex-col justify-center items-center gap-1 cursor-pointer'
+            onClick={() => flow.push('MyRewardListScreen', {})}
+          >
             <GiftIcon />
-            <p className='body-7 text-gray-5'>포인트 적립</p>
-            <p className='subtitle-6'>5건</p>
+            <p className='body-7 text-gray-5'>포인트</p>
+            <p className='subtitle-6'>{reward.list.length}건</p>
           </div>
         </div>
       </div>
