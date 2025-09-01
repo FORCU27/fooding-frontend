@@ -1,4 +1,4 @@
-/* eslint-disable @next/next/no-img-element */
+ 
 import { PropsWithoutRef, useRef } from 'react';
 
 import { CreateStoreReviewBody } from '@repo/api/user';
