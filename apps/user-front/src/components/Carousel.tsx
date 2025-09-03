@@ -7,11 +7,13 @@ import { cn } from '@/utils/cn';
 
 type CarouselProps = {
   children: React.ReactNode;
+  initialPage?: number;
 };
 
-const Carousel = ({ children }: CarouselProps) => {
+const Carousel = ({ children, initialPage }: CarouselProps) => {
   const [carouselRef, carousel] = useEmblaCarousel({
     loop: true,
+    startIndex: initialPage ? initialPage - 1 : undefined,
   });
   const [currentPage, setCurrentPage] = useState<number | null>(null);
 
