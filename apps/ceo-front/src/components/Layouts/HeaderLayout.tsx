@@ -84,8 +84,6 @@ const HeaderLayout = ({ className, isSidebarOpen, onToggleSidebar }: Props) => {
     await changeStore(value);
   };
 
-  console.log('stores', stores);
-
   const handleLogoutClick = async () => {
     try {
       // 로그아웃 요청 보내기
