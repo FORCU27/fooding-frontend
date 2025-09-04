@@ -14766,6 +14766,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"react-plock@npm:^3.5.1":
+  version: 3.5.1
+  resolution: "react-plock@npm:3.5.1"
+  peerDependencies:
+    react: ^18.2.0 || ^19.0.0
+  checksum: 10/9b3de61263156118a012e25f1aa03ab3c2bfa34ab232e8511eb19d222c34a4cb6ac51827b0e2f502bff41c05245f826b30e86a279e43f142bac9cda669bbd908
+  languageName: node
+  linkType: hard
+
 "react-refresh@npm:^0.14.0":
   version: 0.14.2
   resolution: "react-refresh@npm:0.14.2"
@@ -17037,6 +17046,7 @@ __metadata:
     react-dom: "npm:^19.1.0"
     react-hook-form: "npm:^7.55.0"
     react-kakao-maps-sdk: "npm:^1.2.0"
+    react-plock: "npm:^3.5.1"
     swiper: "npm:^11.2.6"
     tailwind-merge: "npm:^3.2.0"
     tailwindcss: "npm:^4.1.4"
