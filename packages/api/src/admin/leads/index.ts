@@ -8,7 +8,7 @@ const ENDPOINT = '/admin/leads';
 export const leadApi = {
   getLeadList: async (page: number = 0, size: number = 10, searchString?: string, isUploaded?: 'false' | 'true' | 'all') => {
     const params = new URLSearchParams({
-      pageNum: (page + 1).toString(),
+      pageNum: (page).toString(),
       pageSize: size.toString(),
     });
 

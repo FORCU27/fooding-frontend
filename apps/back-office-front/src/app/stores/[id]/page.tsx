@@ -3,7 +3,7 @@
 import { useRouter } from 'next/navigation';
 import { useParams } from 'next/navigation';
 import type React from 'react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 import { ArrowBack, Edit, Delete } from '@mui/icons-material';
 import { Delete as DeleteIcon } from '@mui/icons-material';
@@ -31,6 +31,14 @@ import {
   storeApi,
   AdminStoreResponse,
   AdminUpdateStoreRequest,
+  adminStorePostApi,
+  AdminStorePostResponse,
+  AdminStorePostCreateRequest,
+  AdminStorePostUpdateRequest,
+  adminStoreImageApi,
+  AdminStoreImageResponse,
+  AdminStoreImageCreateRequest,
+  AdminStoreImageUpdateRequest,
 } from '@repo/api/admin';
 import { menuApi, AdminMenuResponse, AdminMenuCreateRequest, AdminMenuUpdateRequest, menuCategoryApi, AdminMenuCategoryResponse, AdminMenuCategoryCreateRequest, AdminMenuCategoryUpdateRequest } from '@repo/api/admin';
 import { fileApi } from '@repo/api/file';
@@ -167,15 +175,39 @@ export default function StoreDetailPage() {
   const [isEditCategoryOpen, setIsEditCategoryOpen] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState<AdminMenuCategoryResponse | null>(null);
 
+  // Posts (소식) state
+  const [postPage, setPostPage] = useState(1);
+  const [isCreatePostOpen, setIsCreatePostOpen] = useState(false);
+  const [isEditPostOpen, setIsEditPostOpen] = useState(false);
+  const [selectedPost, setSelectedPost] = useState<AdminStorePostResponse | null>(null);
+
+  // Images state
+  const [imagePage, setImagePage] = useState(1);
+  const [isCreateImageOpen, setIsCreateImageOpen] = useState(false);
+  const [isEditImageOpen, setIsEditImageOpen] = useState(false);
+  const [selectedImage, setSelectedImage] = useState<AdminStoreImageResponse | null>(null);
+
   const { data: menuList } = useRQ({
     queryKey: ['menus', storeId, menuPage],
-    queryFn: () => menuApi.getMenuList(menuPage - 1, 10, { storeId }),
+    queryFn: () => menuApi.getMenuList(menuPage, 10, { storeId }),
     enabled: !!storeId,
   });
 
   const { data: categoryList } = useRQ({
     queryKey: ['menuCategories', storeId, categoryPage],
-    queryFn: () => menuCategoryApi.getCategoryList(categoryPage - 1, 50, { storeId }),
+    queryFn: () => menuCategoryApi.getCategoryList(categoryPage, 50, { storeId }),
+    enabled: !!storeId,
+  });
+
+  const { data: postList } = useRQ({
+    queryKey: ['storePosts', storeId, postPage],
+    queryFn: () => adminStorePostApi.getList(storeId, postPage, 10),
+    enabled: !!storeId,
+  });
+
+  const { data: imageList } = useRQ({
+    queryKey: ['storeImages', storeId, imagePage],
+    queryFn: () => adminStoreImageApi.getList(storeId, imagePage, 20),
     enabled: !!storeId,
   });
 
@@ -225,6 +257,58 @@ export default function StoreDetailPage() {
     mutationFn: (id: number) => menuCategoryApi.deleteCategory(id),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['menuCategories', storeId] });
+    },
+  });
+
+  // Post (소식) mutations
+  const createPostMutation = useRMutation({
+    mutationFn: (body: Omit<AdminStorePostCreateRequest, 'storeId'>) => adminStorePostApi.create(storeId, body),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['storePosts', storeId] });
+      setIsCreatePostOpen(false);
+    },
+  });
+
+  const updatePostMutation = useRMutation({
+    mutationFn: ({ id, body }: { id: number; body: Omit<AdminStorePostUpdateRequest, 'storeId'> }) =>
+      adminStorePostApi.update(storeId, id, body),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['storePosts', storeId] });
+      setIsEditPostOpen(false);
+      setSelectedPost(null);
+    },
+  });
+
+  const deletePostMutation = useRMutation({
+    mutationFn: (id: number) => adminStorePostApi.delete(storeId, id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['storePosts', storeId] });
+    },
+  });
+
+  // Image mutations
+  const createImageMutation = useRMutation({
+    mutationFn: (body: AdminStoreImageCreateRequest) => adminStoreImageApi.create(storeId, body),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['storeImages', storeId] });
+      setIsCreateImageOpen(false);
+    },
+  });
+
+  const updateImageMutation = useRMutation({
+    mutationFn: ({ id, body }: { id: number; body: AdminStoreImageUpdateRequest }) =>
+      adminStoreImageApi.update(storeId, id, body),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['storeImages', storeId] });
+      setIsEditImageOpen(false);
+      setSelectedImage(null);
+    },
+  });
+
+  const deleteImageMutation = useRMutation({
+    mutationFn: (id: number) => adminStoreImageApi.delete(storeId, id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['storeImages', storeId] });
     },
   });
 
@@ -278,9 +362,10 @@ export default function StoreDetailPage() {
       <Box sx={{ borderBottom: 1, borderColor: 'divider', mb: 3 }}>
         <Tabs value={activeTab} onChange={handleTabChange} aria-label="store management tabs">
           <Tab label="기본 정보" />
-          <Tab label="메뉴 카테고리 관리" />
-          <Tab label="메뉴 관리" />
-          <Tab label="서비스 관리" />
+          <Tab label="메뉴" />
+          <Tab label="사진" />
+          <Tab label="소식" />
+          <Tab label="서비스" />
           <Tab label="상태 관리" />
         </Tabs>
       </Box>
@@ -413,9 +498,10 @@ export default function StoreDetailPage() {
         </Stack>
       </TabPanel>
 
-      {/* 메뉴 카테고리 관리 탭 */}
+      {/* 메뉴 탭 (카테고리 + 메뉴) */}
       <TabPanel value={activeTab} index={1}>
-        <Paper sx={{ p: 3 }}>
+        {/* 카테고리 관리 섹션 */}
+        <Paper sx={{ p: 3, mb: 3 }}>
           <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
             <Typography variant="h6">메뉴 카테고리 관리</Typography>
             <Button variant="contained" onClick={() => setIsCreateCategoryOpen(true)}>새 카테고리 추가</Button>
@@ -450,10 +536,8 @@ export default function StoreDetailPage() {
             </Table>
           </TableContainer>
         </Paper>
-      </TabPanel>
 
-      {/* 메뉴 관리 탭 */}
-      <TabPanel value={activeTab} index={2}>
+        {/* 메뉴 관리 섹션 */}
         <Paper sx={{ p: 3 }}>
           <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
             <Typography variant="h6">메뉴 관리</Typography>
@@ -497,13 +581,185 @@ export default function StoreDetailPage() {
         </Paper>
       </TabPanel>
 
-      {/* 서비스 관리 탭 */}
+      {/* 사진 관리 탭 */}
+      <TabPanel value={activeTab} index={2}>
+        <Paper sx={{ p: 3 }}>
+          <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
+            <Typography variant="h6">사진 관리</Typography>
+            <Button variant="contained" onClick={() => setIsCreateImageOpen(true)}>새 이미지 추가</Button>
+          </Box>
+          <TableContainer component={Paper}>
+            <Table>
+              <TableHead>
+                <TableRow>
+                  <TableCell>ID</TableCell>
+                  <TableCell>이미지</TableCell>
+                  <TableCell>태그</TableCell>
+                  <TableCell>정렬</TableCell>
+                  <TableCell>작업</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {(imageList?.data.list ?? []).map((img) => (
+                  <TableRow key={img.id}>
+                    <TableCell>{img.id}</TableCell>
+                    <TableCell>
+                      <img src={img.imageUrl} alt={`image-${img.id}`} style={{ width: 80, height: 60, objectFit: 'cover', borderRadius: 4 }} />
+                    </TableCell>
+                    <TableCell>{img.tags || ''}</TableCell>
+                    <TableCell>{img.sortOrder}</TableCell>
+                    <TableCell>
+                      <Box sx={{ display: 'flex', gap: 1 }}>
+                        <Button size="small" variant="outlined" onClick={() => { setSelectedImage(img); setIsEditImageOpen(true); }}>수정</Button>
+                        <Button size="small" variant="outlined" color="error" onClick={() => deleteImageMutation.mutate(img.id)}>삭제</Button>
+                      </Box>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        </Paper>
+
+        {/* Create/Edit Dialogs for Images */}
+        <ImageDialog
+          open={isCreateImageOpen}
+          title="이미지 추가"
+          initial={{ imageUrl: '', sortOrder: 0, tags: '' }}
+          onClose={() => setIsCreateImageOpen(false)}
+          onSubmit={(values) =>
+            createImageMutation.mutate({ storeId, imageUrl: values.imageUrl, sortOrder: values.sortOrder, tags: values.tags })
+          }
+          loading={createImageMutation.isPending}
+        />
+
+        <ImageDialog
+          open={isEditImageOpen}
+          title="이미지 수정"
+          initial={{
+            imageUrl: selectedImage?.imageUrl ?? '',
+            sortOrder: selectedImage?.sortOrder ?? 0,
+            tags: selectedImage?.tags ?? '',
+          }}
+          onClose={() => {
+            setIsEditImageOpen(false);
+            setSelectedImage(null);
+          }}
+          onSubmit={(values) => {
+            if (!selectedImage) return;
+            updateImageMutation.mutate({ id: selectedImage.id, body: { imageUrl: values.imageUrl || undefined, sortOrder: values.sortOrder, tags: values.tags } });
+          }}
+          loading={updateImageMutation.isPending}
+        />
+      </TabPanel>
+
+      {/* 소식 탭 */}
       <TabPanel value={activeTab} index={3}>
+        <Paper sx={{ p: 3 }}>
+          <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
+            <Typography variant="h6">소식</Typography>
+            <Button variant="contained" onClick={() => setIsCreatePostOpen(true)}>새 소식 추가</Button>
+          </Box>
+          <TableContainer component={Paper}>
+            <Table>
+              <TableHead>
+                <TableRow>
+                  <TableCell>ID</TableCell>
+                  <TableCell>제목</TableCell>
+                  <TableCell>태그</TableCell>
+                  <TableCell>상단고정</TableCell>
+                  <TableCell>작업</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {(postList?.data.list ?? []).map((p) => (
+                  <TableRow key={p.id}>
+                    <TableCell>{p.id}</TableCell>
+                    <TableCell>{p.title}</TableCell>
+                    <TableCell>{(p.tags ?? []).join(', ')}</TableCell>
+                    <TableCell>{p.isFixed ? 'Y' : 'N'}</TableCell>
+                    <TableCell>
+                      <Box sx={{ display: 'flex', gap: 1 }}>
+                        <Button
+                          size="small"
+                          variant="outlined"
+                          onClick={() => {
+                            setSelectedPost(p);
+                            setIsEditPostOpen(true);
+                          }}
+                        >
+                          수정
+                        </Button>
+                        <Button
+                          size="small"
+                          variant="outlined"
+                          color="error"
+                          onClick={() => deletePostMutation.mutate(p.id)}
+                        >
+                          삭제
+                        </Button>
+                      </Box>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        </Paper>
+
+        {/* Create/Edit Dialogs for Posts */}
+        <PostDialog
+          open={isCreatePostOpen}
+          title="소식 추가"
+          initial={{ title: '', content: '', tags: [], isFixed: false }}
+          onClose={() => setIsCreatePostOpen(false)}
+          onSubmit={(values) =>
+            createPostMutation.mutate({
+              title: values.title,
+              content: values.content,
+              tags: values.tags,
+              isFixed: values.isFixed,
+            })
+          }
+          loading={createPostMutation.isPending}
+        />
+
+        <PostDialog
+          open={isEditPostOpen}
+          title="소식 수정"
+          initial={{
+            title: selectedPost?.title ?? '',
+            content: selectedPost?.content ?? '',
+            tags: selectedPost?.tags ?? [],
+            isFixed: selectedPost?.isFixed ?? false,
+          }}
+          onClose={() => {
+            setIsEditPostOpen(false);
+            setSelectedPost(null);
+          }}
+          onSubmit={(values) => {
+            if (!selectedPost) return;
+            updatePostMutation.mutate({
+              id: selectedPost.id,
+              body: {
+                title: values.title,
+                content: values.content,
+                tags: values.tags,
+                isFixed: values.isFixed,
+              },
+            });
+          }}
+          loading={updatePostMutation.isPending}
+        />
+      </TabPanel>
+
+      {/* 서비스 관리 탭 */}
+      <TabPanel value={activeTab} index={4}>
         <StoreServiceManagement storeId={storeId} />
       </TabPanel>
 
       {/* 상태 관리 탭 */}
-      <TabPanel value={activeTab} index={4}>
+      <TabPanel value={activeTab} index={5}>
         <Paper sx={{ p: 3 }}>
           <Typography variant="h6" gutterBottom>
             상태 관리
@@ -887,6 +1143,205 @@ function CategoryDialog({
         <TextField label="이름" value={values.name} onChange={handleChange('name')} fullWidth />
         <TextField label="설명" value={values.description} onChange={handleChange('description')} fullWidth />
         <TextField label="정렬" type="number" value={values.sortOrder} onChange={handleChange('sortOrder')} fullWidth />
+      </DialogContent>
+      <DialogActions>
+        <Button onClick={onClose}>취소</Button>
+        <Button onClick={() => onSubmit(values)} variant="contained" disabled={loading}>
+          {loading ? '저장 중...' : '저장'}
+        </Button>
+      </DialogActions>
+    </Dialog>
+  );
+}
+
+type ImageFormValues = {
+  imageUrl: string;
+  sortOrder: number;
+  tags: string;
+};
+
+function ImageDialog({
+  open,
+  title,
+  initial,
+  onClose,
+  onSubmit,
+  loading,
+}: {
+  open: boolean;
+  title: string;
+  initial: ImageFormValues;
+  onClose: () => void;
+  onSubmit: (values: ImageFormValues) => void;
+  loading: boolean;
+}) {
+  const [values, setValues] = useState<ImageFormValues>(initial);
+  const [uploading, setUploading] = useState(false);
+  const [uploadedFileName, setUploadedFileName] = useState<string>('');
+  const [previewUrl, setPreviewUrl] = useState<string>(initial.imageUrl ?? '');
+
+  useEffect(() => {
+    setValues(initial);
+    setPreviewUrl(initial.imageUrl ?? '');
+    setUploadedFileName('');
+  }, [initial]);
+
+  const handleChange = (key: keyof ImageFormValues) => (e: React.ChangeEvent<HTMLInputElement>) => {
+    const val = e.target.value;
+    setValues((prev) => ({
+      ...prev,
+      [key]: key === 'sortOrder' ? Number(val) : val,
+    } as ImageFormValues));
+  };
+
+  const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (!files || files.length === 0) return;
+
+    const file = files[0];
+    if (!file) return;
+
+    setUploading(true);
+    try {
+      const form = new FormData();
+      form.append('files', file);
+      const res = await fileApi.upload(form);
+      const first = res.data?.[0];
+      if (first?.url) {
+        setValues((prev) => ({ ...prev, imageUrl: first.url }));
+        setUploadedFileName(first.name ?? file.name);
+        setPreviewUrl(first.url);
+      }
+    } finally {
+      setUploading(false);
+      e.target.value = '';
+    }
+  };
+
+  const handleRemoveImage = () => {
+    setValues((prev) => ({ ...prev, imageUrl: '' }));
+    setUploadedFileName('');
+    setPreviewUrl('');
+  };
+
+  return (
+    <Dialog open={open} onClose={onClose} fullWidth>
+      <DialogTitle>{title}</DialogTitle>
+      <DialogContent sx={{ display: 'grid', gap: 2, mt: 1 }}>
+        <Box>
+          <Typography variant="body2" color="text.secondary">이미지 업로드</Typography>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mt: 1 }}>
+            <Button variant="outlined" component="label" disabled={uploading}>
+              {uploading ? '업로드 중...' : '파일 선택'}
+              <input type="file" hidden accept="image/*" onChange={handleUpload} />
+            </Button>
+            {!!values.imageUrl && (
+              <Button variant="outlined" color="warning" onClick={handleRemoveImage}>이미지 제거</Button>
+            )}
+          </Box>
+          {uploadedFileName && (
+            <Typography variant="caption" sx={{ ml: 2 }}>
+              {uploadedFileName}
+            </Typography>
+          )}
+          {previewUrl && (
+            <Box sx={{ mt: 2, textAlign: 'center' }}>
+              <img src={previewUrl} alt="미리보기" style={{ maxWidth: '100%', maxHeight: 200, objectFit: 'contain', border: '1px solid #ddd', borderRadius: 4 }} />
+            </Box>
+          )}
+          {!values.imageUrl && (
+            <Typography variant="caption" color="error" display="block" sx={{ mt: 0.5 }}>
+              이미지를 업로드해야 저장할 수 있습니다.
+            </Typography>
+          )}
+        </Box>
+
+        <TextField label="정렬" type="number" value={values.sortOrder} onChange={handleChange('sortOrder')} fullWidth />
+        <TextField label="태그" value={values.tags} onChange={handleChange('tags')} fullWidth />
+      </DialogContent>
+      <DialogActions>
+        <Button onClick={onClose}>취소</Button>
+        <Button onClick={() => onSubmit(values)} variant="contained" disabled={loading || uploading || !values.imageUrl}>
+          {loading ? '저장 중...' : '저장'}
+        </Button>
+      </DialogActions>
+    </Dialog>
+  );
+}
+
+type PostFormValues = {
+  title: string;
+  content: string;
+  tags: string[];
+  isFixed: boolean;
+};
+
+function PostDialog({
+  open,
+  title,
+  initial,
+  onClose,
+  onSubmit,
+  loading,
+}: {
+  open: boolean;
+  title: string;
+  initial: PostFormValues;
+  onClose: () => void;
+  onSubmit: (values: PostFormValues) => void;
+  loading: boolean;
+}) {
+  const [values, setValues] = useState<PostFormValues>(initial);
+
+  // keep initial in sync when editing different rows
+  useEffect(() => {
+    setValues(initial);
+  }, [initial]);
+
+  const handleChange = (key: keyof Omit<PostFormValues, 'isFixed' | 'tags'>) =>
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const val = e.target.value;
+      setValues((prev) => ({ ...prev, [key]: val }));
+    };
+
+  const handleTagsChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const raw = e.target.value;
+    const tags = raw
+      .split(',')
+      .map((t) => t.trim())
+      .filter((t) => t.length > 0);
+    setValues((prev) => ({ ...prev, tags }));
+  };
+
+  const handleBoolChange = (key: 'isFixed') => (e: React.ChangeEvent<HTMLInputElement>) => {
+    const checked = e.target.checked;
+    setValues((prev) => ({ ...prev, [key]: checked }));
+  };
+
+  return (
+    <Dialog open={open} onClose={onClose} fullWidth>
+      <DialogTitle>{title}</DialogTitle>
+      <DialogContent sx={{ display: 'grid', gap: 2, mt: 1 }}>
+        <TextField label="제목" value={values.title} onChange={handleChange('title')} fullWidth />
+        <TextField
+          label="내용"
+          value={values.content}
+          onChange={handleChange('content')}
+          fullWidth
+          multiline
+          minRows={4}
+        />
+        <TextField
+          label="태그 (쉼표로 구분)"
+          value={values.tags.join(', ')}
+          onChange={handleTagsChange}
+          fullWidth
+        />
+        <Box sx={{ display: 'flex', gap: 2 }}>
+          <label>
+            <input type="checkbox" checked={values.isFixed} onChange={handleBoolChange('isFixed')} /> 상단 고정
+          </label>
+        </Box>
       </DialogContent>
       <DialogActions>
         <Button onClick={onClose}>취소</Button>

@@ -1,12 +1,12 @@
 export * from './type';
 
-import { api } from '../../shared';
 import {
   GetMenuCategoryListResponse,
   GetMenuCategoryResponse,
   AdminMenuCategoryCreateRequest,
   AdminMenuCategoryUpdateRequest,
 } from './type';
+import { api } from '../../shared';
 
 const ENDPOINT = '/admin/menu-categories';
 
@@ -17,7 +17,7 @@ export const menuCategoryApi = {
     filters?: { storeId?: number; searchString?: string },
   ) => {
     const params = new URLSearchParams({
-      pageNum: (page + 1).toString(),
+      pageNum: (page).toString(),
       pageSize: size.toString(),
     });
     if (filters?.storeId != null) params.set('storeId', String(filters.storeId));
