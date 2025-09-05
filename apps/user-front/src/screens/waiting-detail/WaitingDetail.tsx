@@ -167,8 +167,8 @@ const WaitingDetail = ({ waitingId }: StoreDetailProps) => {
         <div className='flex flex-col p-3  gap-4'>
           <div className='w-full h-[300px]'>
             <StoreInfoMap
-              lat={storeInfo.latitude}
-              lng={storeInfo.longitude}
+              lat={storeInfo.latitude ?? 0}
+              lng={storeInfo.longitude ?? 0}
               className='rounded-2xl'
             />
           </div>
@@ -187,8 +187,8 @@ const WaitingDetail = ({ waitingId }: StoreDetailProps) => {
           size='large'
           onClick={() => {
             const url = getKakaoMapDirectionUrl(
-              storeInfo.latitude,
-              storeInfo.longitude,
+              storeInfo.latitude ?? 0,
+              storeInfo.longitude ?? 0,
               storeInfo.name,
             );
             window.open(url, '_blank');

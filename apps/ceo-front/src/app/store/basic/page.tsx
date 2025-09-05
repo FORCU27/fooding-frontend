@@ -181,16 +181,9 @@ const BasicInfoPage = () => {
       contactNumber: formData.contactNumber || undefined,
       address: formData.address || undefined,
       direction: formData.direction || undefined,
-      information: formData.information || undefined,
       // 추가 필드들 (필요한 경우)
       regionId: store.regionId || undefined,
-      city: store.city || undefined,
       description: store.description || undefined,
-      priceCategory: store.priceCategory || undefined,
-      eventDescription: store.eventDescription || undefined,
-      isParkingAvailable: store.isParkingAvailable,
-      isNewOpen: store.isNewOpen,
-      isTakeOut: store.isTakeOut,
       // 위도 경도는 formData에서 가져옴 (수정된 경우 반영)
       latitude: formData.latitude || store.latitude,
       longitude: formData.longitude || store.longitude,

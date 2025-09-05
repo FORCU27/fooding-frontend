@@ -113,7 +113,7 @@ export const StoreDetailHomeTab = ({ store }: StoreDetailHomeTabProps) => {
           <Section.Title>매장 위치</Section.Title>
         </Section.Header>
         <div className='w-full mt-[14px] rounded-[12px] h-[300px]'>
-          <StoreInfoMap lat={store.latitude} lng={store.longitude} className='rounded-2xl' />
+          <StoreInfoMap lat={store.latitude ?? 0} lng={store.longitude ?? 0} className='rounded-2xl' />
         </div>
         <div className='mt-3 flex flex-col gap-1'>
           <span className='body-6 flex items-center gap-[10px]'>
@@ -131,7 +131,7 @@ export const StoreDetailHomeTab = ({ store }: StoreDetailHomeTabProps) => {
           className='mt-5'
           variant='gray'
           onClick={() => {
-            const url = getKakaoMapDirectionUrl(store.latitude, store.longitude, store.name);
+            const url = getKakaoMapDirectionUrl(store.latitude ?? 0, store.longitude ?? 0, store.name);
             window.open(url, '_blank');
           }}
         >
