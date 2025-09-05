@@ -31,3 +31,13 @@ export type SortMenuCategoriesBody = z.infer<typeof SortMenuCategoriesBody>;
 export const SortMenuCategoriesResponse = ApiResponse(z.null());
 
 export type SortMenuCategoriesResponse = z.infer<typeof SortMenuCategoriesResponse>;
+
+// PATCH 카테고리 수정 응답
+export const UpdateMenuCategoryResponse = ApiResponse(z.number());
+
+export type UpdateMenuCategoryResponse = z.infer<typeof UpdateMenuCategoryResponse>;
+
+// DELETE 카테고리 삭제 응답
+export const DeleteMenuCategoryResponse = ApiResponse(z.null());
+
+export type DeleteMenuCategoryResponse = z.infer<typeof DeleteMenuCategoryResponse>;

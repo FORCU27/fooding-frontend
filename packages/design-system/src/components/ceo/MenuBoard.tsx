@@ -51,9 +51,10 @@ type MenuBoardProps = {
   categories: Category[];
   onCategoriesChange: (categories: Category[]) => void;
   onSave?: (categories: Category[]) => void;
+  onEditCategory?: (categoryId: string, name: string) => void;
 };
 
-const SortableCategory = ({ category, index }: { category: Category; index: number }) => {
+const SortableCategory = ({ category, index, onDoubleClick }: { category: Category; index: number; onDoubleClick?: () => void }) => {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
     id: category.id,
   });
@@ -82,6 +83,7 @@ const SortableCategory = ({ category, index }: { category: Category; index: numb
           'subtitle-2 cursor-pointer',
           index === 0 ? 'text-fooding-purple' : 'hover:fooding-purple',
         )}
+        onDoubleClick={onDoubleClick}
       >
         {category.name}
       </span>
@@ -215,6 +217,7 @@ const SortableMenuItem = ({ item }: { item: MenuItem }) => {
 export const MenuBoard = ({
   categories: initialCategories,
   onCategoriesChange,
+  onEditCategory,
 }: MenuBoardProps) => {
   const [categories, setCategories] = useState<Category[]>(initialCategories);
   const [activeId, setActiveId] = useState<string | null>(null);
@@ -359,6 +362,7 @@ export const MenuBoard = ({
                     <SortableCategory
                       category={category}
                       index={selectedCategoryId === category.id ? 0 : index + 1}
+                      onDoubleClick={() => onEditCategory?.(category.id, category.name)}
                     />
                   </div>
                 ))}

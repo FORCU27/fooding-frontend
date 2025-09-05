@@ -6,6 +6,8 @@ import {
   CreateMenuCategoryResponse,
   SortMenuCategoriesBody,
   SortMenuCategoriesResponse,
+  UpdateMenuCategoryResponse,
+  DeleteMenuCategoryResponse,
 } from './type';
 
 const ENDPOINT = '/ceo/stores';
@@ -36,5 +38,25 @@ export const menuCategoryApi = {
       body
     );
     return SortMenuCategoriesResponse.parse(response);
+  },
+
+  // 메뉴 카테고리 수정
+  updateMenuCategory: async (categoryId: number, categoryName: string) => {
+    const response = await api.patch(
+      `${ENDPOINT}/menu-categorys/${categoryId}`,
+      null,
+      {
+        params: { categoryName },
+      }
+    );
+    return UpdateMenuCategoryResponse.parse(response);
+  },
+
+  // 메뉴 카테고리 삭제
+  deleteMenuCategory: async (categoryId: number) => {
+    const response = await api.delete(
+      `${ENDPOINT}/menu-categorys/${categoryId}`
+    );
+    return DeleteMenuCategoryResponse.parse(response);
   },
 };

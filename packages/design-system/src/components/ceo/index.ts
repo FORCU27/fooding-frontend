@@ -28,6 +28,7 @@ export * from './MenuBoard';
 export * from './MenuBadge';
 export * from './MenuButton';
 export * from './AddCategoryDialog';
+export * from './EditCategoryDialog';
 export * from './Button';
 export * from './ChipList';
 export * from './SortToggle';

@@ -7,12 +7,15 @@ import {
   MenuBoard, 
   Button,
   AddCategoryDialog,
+  EditCategoryDialog,
   MenuButton
 } from '@repo/design-system/components/ceo';
 import { useSelectedStoreId } from '@/hooks/useSelectedStoreId';
 import { useGetMenuCategories } from '@/hooks/menu-category/useGetMenuCategories';
 import { useCreateMenuCategory } from '@/hooks/menu-category/useCreateMenuCategory';
 import { useSortMenuCategories } from '@/hooks/menu-category/useSortMenuCategories';
+import { useUpdateMenuCategory } from '@/hooks/menu-category/useUpdateMenuCategory';
+import { useDeleteMenuCategory } from '@/hooks/menu-category/useDeleteMenuCategory';
 
 type BadgeType = '대표' | '추천' | '신규';
 
@@ -36,8 +39,11 @@ const MenusPage = () => {
   const { data: menuCategories, isLoading: isLoadingCategories } = useGetMenuCategories(selectedStoreId);
   const createCategoryMutation = useCreateMenuCategory();
   const sortCategoriesMutation = useSortMenuCategories();
+  const updateCategoryMutation = useUpdateMenuCategory(selectedStoreId);
+  const deleteCategoryMutation = useDeleteMenuCategory(selectedStoreId);
   
   const [categories, setCategories] = useState<Category[]>([]);
+  const [editingCategory, setEditingCategory] = useState<{ id: string; name: string } | null>(null);
 
   // API 데이터로 카테고리 초기화
   useEffect(() => {
@@ -58,6 +64,22 @@ const MenusPage = () => {
   const handleCategoriesChange = (newCategories: Category[]) => {
     setCategories(newCategories);
     console.log('카테고리 변경:', newCategories);
+    
+    // 드래그 앤 드롭으로 순서 변경시 바로 API 호출
+    const categoryIds = newCategories.map(cat => parseInt(cat.id));
+    sortCategoriesMutation.mutate(
+      { menuCategoryIds: categoryIds },
+      {
+        onSuccess: () => {
+          console.log('카테고리 순서 저장 완료');
+        },
+        onError: (error) => {
+          console.error('카테고리 순서 저장 실패:', error);
+          // 실패시 이전 상태로 복구
+          setCategories(categories);
+        },
+      }
+    );
   };
 
   const handleAddCategory = (name: string) => {
@@ -84,25 +106,62 @@ const MenusPage = () => {
     );
   };
 
-  const handleSave = () => {
-    if (!selectedStoreId || categories.length === 0) return;
-    
-    // 카테고리 ID를 숫자로 변환하여 정렬 API 호출
-    const categoryIds = categories.map(cat => parseInt(cat.id));
-    console.log('카테고리 정렬 순서:', categoryIds);
-    
-    sortCategoriesMutation.mutate(
-      { menuCategoryIds: categoryIds },
+  const handleEditCategory = (categoryId: string, categoryName: string) => {
+    setEditingCategory({ id: categoryId, name: categoryName });
+  };
+
+  const handleUpdateCategory = (newName: string) => {
+    if (!editingCategory) return;
+
+    updateCategoryMutation.mutate(
+      { categoryId: parseInt(editingCategory.id), categoryName: newName },
       {
         onSuccess: () => {
-          alert('메뉴가 저장되었습니다.');
+          // 로컬 상태 업데이트
+          setCategories(prev => 
+            prev.map(cat => 
+              cat.id === editingCategory.id ? { ...cat, name: newName } : cat
+            )
+          );
+          setEditingCategory(null);
+          alert('카테고리가 수정되었습니다.');
         },
         onError: (error) => {
-          console.error('메뉴 저장 실패:', error);
-          alert('메뉴 저장에 실패했습니다.');
+          console.error('카테고리 수정 실패:', error);
+          alert('카테고리 수정에 실패했습니다.');
         },
       }
     );
+  };
+
+  const handleDeleteCategory = () => {
+    if (!editingCategory) return;
+
+    deleteCategoryMutation.mutate(
+      parseInt(editingCategory.id),
+      {
+        onSuccess: () => {
+          // 로컬 상태에서도 제거
+          setCategories(prev => prev.filter(cat => cat.id !== editingCategory.id));
+          setEditingCategory(null);
+          alert('카테고리가 삭제되었습니다.');
+        },
+        onError: (error: any) => {
+          console.error('카테고리 삭제 실패:', error);
+          // 메뉴 아이템이 있는 경우 등의 에러 메시지 처리
+          const message = error?.response?.data?.message || '카테고리 삭제에 실패했습니다. 카테고리에 메뉴가 있는지 확인해주세요.';
+          alert(message);
+        },
+      }
+    );
+  };
+
+  const handleSave = () => {
+    if (!selectedStoreId) return;
+    
+    // TODO: 메뉴 아이템 저장 API 호출
+    console.log('메뉴 저장:', categories);
+    alert('메뉴가 저장되었습니다.');
   };
 
   // 로딩 상태 처리
@@ -130,16 +189,28 @@ const MenusPage = () => {
           categories={categories}
           onCategoriesChange={handleCategoriesChange}
           onSave={handleSave}
+          onEditCategory={handleEditCategory}
         />
       </Card>
+
+      {editingCategory && (
+        <EditCategoryDialog
+          open={!!editingCategory}
+          onOpenChange={(open) => {
+            if (!open) setEditingCategory(null);
+          }}
+          categoryName={editingCategory.name}
+          onSave={handleUpdateCategory}
+          onDelete={handleDeleteCategory}
+        />
+      )}
 
       <div className='flex justify-center mb-17'>
         <Button 
           type='button' 
           onClick={handleSave}
-          disabled={sortCategoriesMutation.isPending || categories.length === 0}
         >
-          {sortCategoriesMutation.isPending ? '저장 중...' : '저장'}
+          저장
         </Button>
       </div>
     </CardForm>
