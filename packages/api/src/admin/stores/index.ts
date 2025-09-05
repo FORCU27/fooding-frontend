@@ -22,7 +22,7 @@ export const storeApi = {
     searchString?: string,
   ) => {
     const params = new URLSearchParams({
-      pageNum: (page + 1).toString(),
+      pageNum: (page).toString(),
       pageSize: size.toString(),
       sortType,
       sortDirection,

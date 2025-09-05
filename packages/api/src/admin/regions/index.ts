@@ -1,12 +1,12 @@
 export * from './type';
 
-import { api } from '../../shared';
 import {
   GetRegionListResponse,
   GetRegionResponse,
   AdminRegionCreateRequest,
   AdminRegionUpdateRequest,
 } from './type';
+import { api } from '../../shared';
 
 const ENDPOINT = '/admin/regions';
 
@@ -17,7 +17,7 @@ export const regionApi = {
     filters?: { searchString?: string; parentRegionId?: string },
   ) => {
     const params = new URLSearchParams({
-      pageNum: (page + 1).toString(),
+      pageNum: (page).toString(),
       pageSize: size.toString(),
     });
     if (filters?.searchString) params.set('searchString', filters.searchString);
