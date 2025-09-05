@@ -40,13 +40,29 @@ import {
 
 const menu = [
   {
-    label: '고객 관리',
+    label: '고객',
     icon: <People />,
     sub: [
       { label: '유저 관리', path: '/users', icon: <People /> },
-      { label: '가게 관리', path: '/stores', icon: <Store /> },
       { label: '점주 관리', path: '/ceos', icon: <Business /> },
       { label: '관리자 관리', path: '/managers', icon: <AdminPanelSettings /> },
+    ],
+  },
+  {
+    label: '가게',
+    icon: <Store />,
+    sub: [
+      { label: '가게 관리', path: '/stores', icon: <Store /> },
+    ],
+  },
+  {
+    label: '운영',
+    icon: <Monitor />,
+    sub: [
+      { label: '공지사항', path: '/notices', icon: <Article /> },
+      { label: '가게 심사', path: '/store-reviews', icon: <RateReview /> },
+      { label: '리뷰', path: '/reviews', icon: <RateReview /> },
+
     ],
   },
   {
@@ -56,13 +72,6 @@ const menu = [
       { label: '알림 내역', path: '/user-notifications', icon: <History /> },
       { label: '발송 내역', path: '/notifications', icon: <Email /> },
       { label: '템플릿 관리', path: '/notification-templates', icon: <Article /> },
-    ],
-  },
-  {
-    label: '모니터링',
-    icon: <Monitor />,
-    sub: [
-      { label: '리뷰', path: '/reviews', icon: <RateReview /> },
     ],
   },
   {
