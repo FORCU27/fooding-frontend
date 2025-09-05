@@ -3,6 +3,7 @@ export * from './type';
 import {
   AdminCreateUserRequest,
   AdminUpdateUserRequest,
+  AdminUserResponseSchema,
   GetUserListParams,
   GetUserListResponse,
 } from './type';
@@ -18,6 +19,12 @@ export const userApi = {
     
     const response = await api.get(`/admin/users?${queryParams.toString()}`);
     return GetUserListResponse.parse(response);
+  },
+
+  getUser: async (id: number) => {
+    const response: any = await api.get(`/admin/users/${id}`);
+    // API 응답이 { status: "OK", data: {...} } 형태이므로 data 부분만 파싱
+    return { data: AdminUserResponseSchema.parse(response.data as any) };
   },
 
   createUser: async (data: AdminCreateUserRequest) => api.post('/admin/users', data),

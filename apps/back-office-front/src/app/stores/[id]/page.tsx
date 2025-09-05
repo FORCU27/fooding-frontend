@@ -410,7 +410,22 @@ export default function StoreDetailPage() {
                 <Typography variant="body2" color="text.secondary">
                   점주 ID
                 </Typography>
-                <Typography variant="body1">{store.ownerId}</Typography>
+                <Button
+                  variant="text"
+                  color="primary"
+                  onClick={() => router.push(`/users/${store.ownerId}`)}
+                  sx={{ 
+                    p: 0, 
+                    minWidth: 'auto', 
+                    textTransform: 'none',
+                    justifyContent: 'flex-start',
+                    '&:hover': {
+                      textDecoration: 'underline'
+                    }
+                  }}
+                >
+                  {store.ownerId}
+                </Button>
               </Box>
               <Box>
                 <Typography variant="body2" color="text.secondary">
