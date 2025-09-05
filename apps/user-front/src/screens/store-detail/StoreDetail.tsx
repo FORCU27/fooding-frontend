@@ -17,6 +17,7 @@ import { Suspense } from '@suspensive/react';
 
 import { StoreDetailHomeTab } from './components/tabs/Home';
 import { StoreDetailMenuTab } from './components/tabs/Menu';
+import { StoreDetailPhotoTab } from './components/tabs/Photo';
 import { StoreDetailReviewTab } from './components/tabs/ReviewDetail';
 import { StoreDetailPostListTab } from './components/tabs/StorePostList';
 import { StoreRewardListTab } from './components/tabs/StoreRewardList';
@@ -176,6 +177,9 @@ const StoreDetail = ({ storeId, showHeader, initialTab = 'home' }: StoreDetailPr
             </ChipTabs.Content>
             <ChipTabs.Content value='review'>
               <StoreDetailReviewTab store={store} />
+            </ChipTabs.Content>
+            <ChipTabs.Content value='photo'>
+              <StoreDetailPhotoTab store={store} />
             </ChipTabs.Content>
             <ChipTabs.Content value='reward'>
               <StoreRewardListTab storeId={storeId} />
