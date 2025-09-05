@@ -1,3 +1,4 @@
 export * from './devices';
 export * from './storeV2';
 export * from './store';
+export * from './menu-category';

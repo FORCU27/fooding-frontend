@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 import {
   DndContext,
@@ -222,6 +222,14 @@ export const MenuBoard = ({
     initialCategories[0]?.id || null,
   );
 
+  // prop 변경 시 내부 state 업데이트
+  useEffect(() => {
+    setCategories(initialCategories);
+    if (initialCategories.length > 0 && !selectedCategoryId) {
+      setSelectedCategoryId(initialCategories[0].id);
+    }
+  }, [initialCategories]);
+
   const sensors = useSensors(
     useSensor(PointerSensor),
     useSensor(KeyboardSensor, {
@@ -307,11 +315,6 @@ export const MenuBoard = ({
   return (
     <div className='w-[800px] bg-white'>
       <div className='w-full'>
-        <div className='flex flex-row justify-end gap-2'>
-          {/* <MenuButton icon=<ChevronsUpDownIcon />>카테로기 순서</MenuButton> */}
-          <MenuButton className=''>카테고리 등록</MenuButton>
-          <MenuButton className=''>메뉴 추가</MenuButton>
-        </div>
         {/* Header with buttons */}
         {/* <div className='flex items-center justify-between mb-6 px-4'>
           <div className='flex gap-2'>
