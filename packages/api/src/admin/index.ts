@@ -11,3 +11,4 @@ export * from './menus';
 export * from './menu-categories';
 export * from './store-posts';
 export * from './store-images';
+export * from './point-shop';
