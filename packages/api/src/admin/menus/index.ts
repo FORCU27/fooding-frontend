@@ -17,7 +17,7 @@ export const menuApi = {
     filters?: { storeId?: number; searchString?: string },
   ) => {
     const params = new URLSearchParams({
-      pageNum: (page + 1).toString(),
+      pageNum: (page).toString(),
       pageSize: size.toString(),
     });
     if (filters?.storeId != null) params.set('storeId', String(filters.storeId));

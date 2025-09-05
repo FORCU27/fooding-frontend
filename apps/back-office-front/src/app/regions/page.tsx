@@ -31,7 +31,7 @@ export default function RegionsPage() {
   const { data, isLoading } = useQuery({
     queryKey: ['regions', page, pageSize, searchString, parentRegionId],
     queryFn: () =>
-      regionApi.getRegionList(page - 1, pageSize, {
+      regionApi.getRegionList(page, pageSize, {
         searchString: searchString || undefined,
         parentRegionId: parentRegionId || undefined,
       }),

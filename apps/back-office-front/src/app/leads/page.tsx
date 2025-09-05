@@ -35,7 +35,7 @@ export default function LeadsPage() {
 
   const { data, isLoading, error } = useQuery({
     queryKey: ['leads', page, pageSize, search, uploadFilter],
-    queryFn: () => leadApi.getLeadList(page - 1, pageSize, search, uploadFilter),
+    queryFn: () => leadApi.getLeadList(page, pageSize, search, uploadFilter),
   });
 
   // 에러 로깅 추가

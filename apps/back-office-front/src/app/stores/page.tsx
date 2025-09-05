@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import type React from 'react';
 
 import {
@@ -43,10 +43,20 @@ export default function StoresPage() {
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [storeToDelete, setStoreToDelete] = useState<AdminStoreResponse | null>(null);
   const [search, setSearch] = useState('');
+  const [debouncedSearch, setDebouncedSearch] = useState('');
+
+  // debounce search input
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedSearch(search);
+    }, 500); // 500ms debounce
+
+    return () => clearTimeout(timer);
+  }, [search]);
 
   const { data: storesResponse, isLoading } = useQuery({
-    queryKey: ['stores', page, pageSize, search],
-    queryFn: () => storeApi.getStoreList(page - 1, pageSize, 'RECENT', 'DESCENDING', search), // API는 0-based index 사용
+    queryKey: ['stores', page, pageSize, debouncedSearch],
+    queryFn: () => storeApi.getStoreList(page, pageSize, 'RECENT', 'DESCENDING', debouncedSearch), // API는 0-based index 사용
   });
 
   const createMutation = useMutation({
@@ -91,7 +101,7 @@ export default function StoresPage() {
   const handleSearchKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter') {
       setPage(1);
-      // query key already includes search, so updating state triggers refetch
+      setDebouncedSearch(search); // 즉시 검색 실행
     }
   };
 
@@ -140,7 +150,10 @@ export default function StoresPage() {
           placeholder="가게명 검색"
           style={{ flex: 1, padding: '8px 12px', borderRadius: 4, border: '1px solid #ccc' }}
         />
-        <Button variant="outlined" onClick={() => { setPage(1); }}>
+        <Button variant="outlined" onClick={() => { 
+          setPage(1); 
+          setDebouncedSearch(search); // 즉시 검색 실행
+        }}>
           검색
         </Button>
       </Box>

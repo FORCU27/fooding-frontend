@@ -44,7 +44,7 @@ export default function NotificationTemplatesPage() {
 
   const { data: templatesResponse, isLoading } = useQuery({
     queryKey: ['notification-templates', page, pageSize],
-    queryFn: () => notificationTemplateApi.getNotificationTemplateList(page - 1, pageSize),
+    queryFn: () => notificationTemplateApi.getNotificationTemplateList(page, pageSize),
   });
 
   const createMutation = useMutation({
