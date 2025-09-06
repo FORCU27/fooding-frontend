@@ -4,7 +4,7 @@ import { CreateStoreReviewBody, mockStoreReviewListResponse, VisitPurpose } from
 import { ActivityComponentType, useFlow } from '@stackflow/react/future';
 
 import { ReviewForm } from './components/ReviewForm';
-import { ReviewStoreInfoCard } from './components/StoreInfoCard';
+import { ReviewStoreInfoCard } from './components/ReviewStoreInfoCard';
 import BottomTab from '@/components/Layout/BottomTab';
 import { Header } from '@/components/Layout/Header';
 import { Screen } from '@/components/Layout/Screen';
