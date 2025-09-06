@@ -21,7 +21,9 @@ import {
   Campaign,
   ContactPage,
   Public,
-  CardGiftcard
+  CardGiftcard,
+  Devices,
+  ViewCarousel
 } from '@mui/icons-material';
 import {
   Box,
@@ -59,10 +61,11 @@ const menu = [
     label: '운영',
     icon: <Monitor />,
     sub: [
-      { label: '공지사항', path: '/notices', icon: <Article /> },
+      { label: '게시글', path: '/posts', icon: <Article /> },
       { label: '가게 심사', path: '/store-reviews', icon: <RateReview /> },
       { label: '리뷰', path: '/reviews', icon: <RateReview /> },
-
+      { label: '디바이스 목록', path: '/devices', icon: <Devices /> },
+      { label: '배너 관리', path: '/banners', icon: <ViewCarousel /> },
     ],
   },
   {
@@ -88,6 +91,14 @@ const menu = [
     sub: [
       { label: '포인트 관리', path: '/rewards/points', icon: <CardGiftcard /> },
       { label: '로그 관리', path: '/rewards/logs', icon: <History /> },
+    ],
+  },
+  {
+    label: '웨이팅',
+    icon: <CardGiftcard />,
+    sub: [
+      { label: '웨이팅 관리', path: '/waitings', icon: <CardGiftcard /> },
+      { label: '웨이팅 로그', path: '/waiting-logs', icon: <History /> },
     ],
   },
 ];
