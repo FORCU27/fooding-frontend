@@ -41,7 +41,7 @@ export default function LeadDetailPage() {
   const [uploadDialogOpen, setUploadDialogOpen] = useState(false);
   const [uploadForm, setUploadForm] = useState<UploadLeadRequest>({
     ownerId: 1,
-    regionId: "KR-11",
+    regionId: 'KR-11',
   });
 
   // 검색 관련 상태
@@ -56,7 +56,7 @@ export default function LeadDetailPage() {
 
   const leadId = params.id as string;
 
-  const { data: lead, isLoading, error } = useQuery({
+  const { data: lead, isLoading } = useQuery({
     queryKey: ['lead', leadId],
     queryFn: () => leadApi.getLead(leadId),
     enabled: !!leadId,
@@ -76,7 +76,7 @@ export default function LeadDetailPage() {
         size: 10,
         searchString: searchTerm,
       });
-      const results = response.data.list.map(user => ({
+      const results = response.data.list.map((user) => ({
         id: user.id,
         label: `${user.nickname || '이름 없음'} (${user.email})`,
       }));
@@ -99,7 +99,7 @@ export default function LeadDetailPage() {
     setIsSearchingRegion(true);
     try {
       const response = await regionApi.getRegionList(0, 10, { searchString: searchTerm });
-      const results = response.data.list.map(region => ({
+      const results = response.data.list.map((region) => ({
         id: region.id,
         label: `${region.name} (${region.id})`,
       }));
@@ -113,12 +113,11 @@ export default function LeadDetailPage() {
   };
 
   const uploadMutation = useMutation({
-    mutationFn: (data: UploadLeadRequest) =>
-      leadApi.uploadLead(leadId, data),
+    mutationFn: (data: UploadLeadRequest) => leadApi.uploadLead(leadId, data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['leads'] });
       setUploadDialogOpen(false);
-      setUploadForm({ ownerId: 1, regionId: "KR-11" });
+      setUploadForm({ ownerId: 1, regionId: 'KR-11' });
       router.push('/leads');
     },
   });
@@ -151,19 +150,19 @@ export default function LeadDetailPage() {
           <Button
             startIcon={<ArrowBackIcon />}
             onClick={() => router.push('/leads')}
-            variant="outlined"
+            variant='outlined'
           >
             뒤로가기
           </Button>
-          <Typography variant="h4" component="h1">
+          <Typography variant='h4' component='h1'>
             리드 상세
           </Typography>
         </Box>
         <Button
-          variant="contained"
+          variant='contained'
           startIcon={<UploadIcon />}
           onClick={() => setUploadDialogOpen(true)}
-          color="primary"
+          color='primary'
         >
           Store로 업로드
         </Button>
@@ -171,45 +170,50 @@ export default function LeadDetailPage() {
 
       {/* 리드 정보 */}
       <Paper sx={{ p: 3, mb: 3 }}>
-        <Typography variant="h6" sx={{ mb: 2 }}>
+        <Typography variant='h6' sx={{ mb: 2 }}>
           기본 정보
         </Typography>
         <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: '1fr 1fr' }, gap: 3 }}>
           <Box>
-            <Typography variant="subtitle2" color="text.secondary">
+            <Typography variant='subtitle2' color='text.secondary'>
               ID
             </Typography>
-            <Typography variant="body1">{lead.id}</Typography>
+            <Typography variant='body1'>{lead.id}</Typography>
           </Box>
           <Box>
-            <Typography variant="subtitle2" color="text.secondary">
+            <Typography variant='subtitle2' color='text.secondary'>
               이름
             </Typography>
-            <Typography variant="body1">{lead.name}</Typography>
+            <Typography variant='body1'>{lead.name}</Typography>
           </Box>
           <Box>
-            <Typography variant="subtitle2" color="text.secondary">
+            <Typography variant='subtitle2' color='text.secondary'>
               연락처
             </Typography>
-            <Typography variant="body1">{lead.phone}</Typography>
+            <Typography variant='body1'>{lead.phone}</Typography>
           </Box>
           <Box>
-            <Typography variant="subtitle2" color="text.secondary">
+            <Typography variant='subtitle2' color='text.secondary'>
               유입 경로
             </Typography>
-            <Typography variant="body1">{lead.source ?? '-'}</Typography>
+            <Typography variant='body1'>{lead.source ?? '-'}</Typography>
           </Box>
           <Box>
-            <Typography variant="subtitle2" color="text.secondary">
+            <Typography variant='subtitle2' color='text.secondary'>
               생성일
             </Typography>
-            <Typography variant="body1">{lead.createdAt}</Typography>
+            <Typography variant='body1'>{lead.createdAt}</Typography>
           </Box>
         </Box>
       </Paper>
 
       {/* 업로드 다이얼로그 */}
-      <Dialog open={uploadDialogOpen} onClose={() => setUploadDialogOpen(false)} maxWidth="sm" fullWidth>
+      <Dialog
+        open={uploadDialogOpen}
+        onClose={() => setUploadDialogOpen(false)}
+        maxWidth='sm'
+        fullWidth
+      >
         <DialogTitle>Store로 업로드</DialogTitle>
         <DialogContent>
           <Box sx={{ pt: 1 }}>
@@ -218,8 +222,8 @@ export default function LeadDetailPage() {
               <Box sx={{ position: 'relative' }}>
                 <TextField
                   fullWidth
-                  label="소유자 검색"
-                  placeholder="사용자 이름이나 이메일로 검색..."
+                  label='소유자 검색'
+                  placeholder='사용자 이름이나 이메일로 검색...'
                   value={ownerSearchTerm}
                   onChange={(e) => {
                     const value = e.target.value;
@@ -230,16 +234,16 @@ export default function LeadDetailPage() {
                   onFocus={() => setShowOwnerResults(true)}
                   InputProps={{
                     endAdornment: (
-                      <InputAdornment position="end">
+                      <InputAdornment position='end'>
                         {isSearchingOwner ? (
                           <CircularProgress size={20} />
                         ) : (
-                          <SearchIcon fontSize="small" />
+                          <SearchIcon fontSize='small' />
                         )}
                       </InputAdornment>
                     ),
                   }}
-                  size="small"
+                  size='small'
                 />
                 {showOwnerResults && ownerSearchResults.length > 0 && (
                   <ClickAwayListener onClickAway={() => setShowOwnerResults(false)}>
@@ -284,8 +288,8 @@ export default function LeadDetailPage() {
               <Box sx={{ position: 'relative' }}>
                 <TextField
                   fullWidth
-                  label="지역 검색"
-                  placeholder="지역 이름으로 검색..."
+                  label='지역 검색'
+                  placeholder='지역 이름으로 검색...'
                   value={regionSearchTerm}
                   onChange={(e) => {
                     const value = e.target.value;
@@ -296,16 +300,16 @@ export default function LeadDetailPage() {
                   onFocus={() => setShowRegionResults(true)}
                   InputProps={{
                     endAdornment: (
-                      <InputAdornment position="end">
+                      <InputAdornment position='end'>
                         {isSearchingRegion ? (
                           <CircularProgress size={20} />
                         ) : (
-                          <SearchIcon fontSize="small" />
+                          <SearchIcon fontSize='small' />
                         )}
                       </InputAdornment>
                     ),
                   }}
-                  size="small"
+                  size='small'
                 />
                 {showRegionResults && regionSearchResults.length > 0 && (
                   <ClickAwayListener onClickAway={() => setShowRegionResults(false)}>
@@ -350,11 +354,7 @@ export default function LeadDetailPage() {
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setUploadDialogOpen(false)}>취소</Button>
-          <Button
-            onClick={handleUpload}
-            variant="contained"
-            disabled={uploadMutation.isPending}
-          >
+          <Button onClick={handleUpload} variant='contained' disabled={uploadMutation.isPending}>
             {uploadMutation.isPending ? '업로드 중...' : '업로드'}
           </Button>
         </DialogActions>
@@ -362,7 +362,7 @@ export default function LeadDetailPage() {
 
       {/* 에러 메시지 */}
       {uploadMutation.isError && (
-        <Alert severity="error" sx={{ mt: 2 }}>
+        <Alert severity='error' sx={{ mt: 2 }}>
           업로드 중 오류가 발생했습니다.
         </Alert>
       )}
