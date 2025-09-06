@@ -103,6 +103,8 @@ export default function StoreDetailPage() {
   const [isEditPointShopOpen, setIsEditPointShopOpen] = useState(false);
   const [selectedPointShop, setSelectedPointShop] = useState<AdminPointShopResponse | null>(null);
 
+  
+
   const { data: storeResponse, isLoading, error } = useQuery({
     queryKey: ['store', storeId],
     queryFn: () => storeApi.getStore(storeId),
@@ -212,11 +214,7 @@ export default function StoreDetailPage() {
     enabled: !!storeId,
   });
 
-  const { data: postList } = useRQ({
-    queryKey: ['storePosts', storeId, postPage],
-    queryFn: () => adminStorePostApi.getList(storeId, postPage, 10),
-    enabled: !!storeId,
-  });
+  
 
   const { data: imageList } = useRQ({
     queryKey: ['storeImages', storeId, imagePage],
@@ -230,6 +228,15 @@ export default function StoreDetailPage() {
     queryFn: () => adminPointShopApi.list(storeId, pointShopPage, 10, pointShopIsActive),
     enabled: !!storeId,
   });
+
+  // Store posts query
+  const { data: postList } = useRQ({
+    queryKey: ['adminStorePosts', storeId, postPage],
+    queryFn: () => adminStorePostApi.getList(storeId, postPage - 1, 10),
+    enabled: !!storeId,
+  });
+
+  
 
   const createMenuMutation = useRMutation({
     mutationFn: (body: AdminMenuCreateRequest) => menuApi.createMenu(body),
@@ -284,7 +291,7 @@ export default function StoreDetailPage() {
   const createPostMutation = useRMutation({
     mutationFn: (body: Omit<AdminStorePostCreateRequest, 'storeId'>) => adminStorePostApi.create(storeId, body),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['storePosts', storeId] });
+      queryClient.invalidateQueries({ queryKey: ['adminStorePosts', storeId] });
       setIsCreatePostOpen(false);
     },
   });
@@ -293,7 +300,7 @@ export default function StoreDetailPage() {
     mutationFn: ({ id, body }: { id: number; body: Omit<AdminStorePostUpdateRequest, 'storeId'> }) =>
       adminStorePostApi.update(storeId, id, body),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['storePosts', storeId] });
+      queryClient.invalidateQueries({ queryKey: ['adminStorePosts', storeId] });
       setIsEditPostOpen(false);
       setSelectedPost(null);
     },
@@ -302,7 +309,7 @@ export default function StoreDetailPage() {
   const deletePostMutation = useRMutation({
     mutationFn: (id: number) => adminStorePostApi.delete(storeId, id),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['storePosts', storeId] });
+      queryClient.invalidateQueries({ queryKey: ['adminStorePosts', storeId] });
     },
   });
 
@@ -1368,6 +1375,8 @@ function MenuDialog({
     </Dialog>
   );
 }
+
+ 
 
 type CategoryFormValues = {
   storeId: number;
