@@ -42,7 +42,7 @@ export const PlanCompletedCard = ({ plan, showEditButton }: PlanCompletedCardPro
               fill
               style={{ objectFit: 'cover' }}
               src={storeInfo.images[0]?.imageUrl}
-              alt='리뷰 이미지'
+              alt='가게 이미지'
             />
           </div>
         ) : (

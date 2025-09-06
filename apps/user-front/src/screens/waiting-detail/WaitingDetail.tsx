@@ -65,12 +65,12 @@ const WaitingDetail = ({ waitingId }: StoreDetailProps) => {
     <div className='flex flex-col bg-gray-1'>
       <div className='flex flex-col p-5 bg-white/80'>
         <div className='flex border border-gray-2 items-center w-full h-[100px] p-5 rounded-xl gap-4 '>
-          {storeInfo.images.length !== 0 ? (
+          {storeInfo.images[0]?.imageUrl ? (
             <div className='relative w-[60px] h-[60px] rounded-lg overflow-hidden'>
               <Image
                 fill
                 style={{ objectFit: 'cover' }}
-                src={`${storeInfo.images[0]}`}
+                src={storeInfo.images[0]?.imageUrl}
                 alt='가게 이미지'
               />
             </div>
