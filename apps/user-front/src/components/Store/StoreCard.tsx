@@ -22,7 +22,7 @@ export const StoreCard = ({ store }: StoreCardProps) => {
             <Image
               width={140}
               height={140}
-              src={`/${store.mainImage}`}
+              src={store.mainImage}
               alt={store.name || 'store image'}
               className='rounded-xl mb-4 object-center'
             />

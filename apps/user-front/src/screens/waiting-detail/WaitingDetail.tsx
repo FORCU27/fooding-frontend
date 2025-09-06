@@ -71,7 +71,7 @@ const WaitingDetail = ({ waitingId }: StoreDetailProps) => {
               <Image
                 fill
                 style={{ objectFit: 'cover' }}
-                src={`/${storeInfo.images[0]}`}
+                src={`${storeInfo.images[0]}`}
                 alt='리뷰 이미지'
               />
             </div>
