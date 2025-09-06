@@ -20,7 +20,7 @@ export const ReviewStoreInfoCard = ({ planInfo }: ReviewStoreInfoCardProps) => {
             fill
             style={{ objectFit: 'cover' }}
             src={storeInfo.images[0].imageUrl}
-            alt='리뷰 이미지'
+            alt='가게 이미지'
           />
         </div>
       ) : (
