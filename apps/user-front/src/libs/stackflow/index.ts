@@ -40,9 +40,9 @@ declare module '@stackflow/config' {
     StorePostDetailScreen: { storePostId: number; storeName: string };
     SettingScreen: object;
     NotificationSettingScreen: object;
-    ReviewCreateScreen: { planId: number };
-    WaitingDetailScreen: { waitingId: number };
-    PlanDetailScreen: { planId: number };
+    ReviewCreateScreen: { planId: string };
+    WaitingDetailScreen: { waitingId: string };
+    PlanDetailScreen: { planId: string };
     ProfileModifyScreen: object;
     ProfileUserInfoScreen: {
       isUpdateMode: boolean;

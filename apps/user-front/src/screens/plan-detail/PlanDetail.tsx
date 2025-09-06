@@ -3,7 +3,7 @@
 import Image from 'next/image';
 import { useState } from 'react';
 
-import { Button, Skeleton } from '@repo/design-system/components/b2c';
+import { Button, EmptyState, Skeleton } from '@repo/design-system/components/b2c';
 import {
   ChevronUpIcon,
   ClockIcon,
@@ -19,7 +19,7 @@ import { LoadingToggle } from '@/components/Devtool/LoadingToggle';
 import { DefaultErrorBoundary } from '@/components/Layout/DefaultErrorBoundary';
 import { Header } from '@/components/Layout/Header';
 import { Screen } from '@/components/Layout/Screen';
-import { useGetPlanList } from '@/hooks/plan/useGetPlanList';
+import { useGetPlanDetail } from '@/hooks/plan/useGetPlanDetail';
 import { useGetStoreDetail } from '@/hooks/store/useGetStoreDetail';
 import { formatDotDateTime } from '@/utils/date';
 
@@ -38,18 +38,17 @@ export const PlanDetailScreen: ActivityComponentType<'PlanDetailScreen'> = ({ pa
 };
 
 type StoreDetailProps = {
-  planId: number;
+  planId: string;
 };
 
 const PlanDetail = ({ planId }: StoreDetailProps) => {
-  const { data: plans } = useGetPlanList();
-  const plan = plans.list[0];
-  const { data: storeInfo } = useGetStoreDetail(planId); //TODO: 예약상세 API -> 수정
+  const { data: planInfo } = useGetPlanDetail(planId);
+  const { data: storeInfo } = useGetStoreDetail(planInfo.storeId);
   const [isAlertAccordionOpen, setIsAlertAccordionOpen] = useState(false);
-  const [isParkingAccordionOpen, setIsParkingAccordionOpen] = useState(false);
-  const onParkingAccordionClick = () => {
-    setIsParkingAccordionOpen((prev) => !prev);
-  };
+  // const [isParkingAccordionOpen, setIsParkingAccordionOpen] = useState(false);
+  // const onParkingAccordionClick = () => {
+  //   setIsParkingAccordionOpen((prev) => !prev);
+  // };
 
   const onAlertAccordionClick = () => {
     setIsAlertAccordionOpen((prev) => !prev);
@@ -79,8 +78,8 @@ const PlanDetail = ({ planId }: StoreDetailProps) => {
             </div>
           )}
           <div className='flex flex-col gap-2'>
-            <div className='flex bg-gray-1 text-gray-5 body-7 h-5 p-2 justify-center items-center rounded-md'>
-              방문예정
+            <div className='flex'>
+              <p className='rounded-md bg-gray-1 text-gray-5 body-7 py-1 px-2'>방문 예정</p>
             </div>
             <div className='flex subtitle-4'>{storeInfo.name}</div>
           </div>
@@ -88,8 +87,8 @@ const PlanDetail = ({ planId }: StoreDetailProps) => {
         <div className='flex flex-col my-6 gap-6'>
           <p className='subtitle-3'>예약정보</p>
           <p className='body-5 text-gray-5'>
-            <span>{plan?.reservationTime && formatDotDateTime(plan.reservationTime)}</span>
-            <span> {plan?.adultCount}명</span>
+            <span>{planInfo?.reservationTime && formatDotDateTime(planInfo.reservationTime)}</span>
+            <span> {planInfo?.adultCount}명</span>
           </p>
         </div>
       </div>
@@ -126,11 +125,15 @@ const PlanDetail = ({ planId }: StoreDetailProps) => {
         </div>
         <div className='flex flex-col p-3  gap-4'>
           <div className='w-full h-[300px]'>
-            <StoreInfoMap
-              lat={storeInfo.latitude ?? 0}
-              lng={storeInfo.longitude ?? 0}
-              className='rounded-2xl'
-            />
+            {storeInfo.latitude != null && storeInfo.longitude != null ? (
+              <StoreInfoMap
+                lat={storeInfo.latitude}
+                lng={storeInfo.longitude}
+                className='rounded-2xl'
+              />
+            ) : (
+              <EmptyState className='mt-20' title='등록된 위치정보가 없어요!' />
+            )}
           </div>
           <div className='flex body-6 items-center gap-2'>
             <MarkPinIcon size={18} />
@@ -141,22 +144,24 @@ const PlanDetail = ({ planId }: StoreDetailProps) => {
             {storeInfo.direction}
           </div>
         </div>
-        <Button
-          variant='gray'
-          size='large'
-          onClick={() => {
-            const url = getKakaoMapDirectionUrl(
-              storeInfo.latitude ?? 0,
-              storeInfo.longitude ?? 0,
-              storeInfo.name,
-            );
-            window.open(url, '_blank');
-          }}
-        >
-          <CompassIcon />
-          <span className='ml-1'>길찾기</span>
-        </Button>
-        <div className='flex justify-between mt-9 items-center'>
+        {storeInfo.latitude != null && storeInfo.longitude != null && (
+          <Button
+            variant='gray'
+            size='large'
+            onClick={() => {
+              const url = getKakaoMapDirectionUrl(
+                storeInfo.latitude!,
+                storeInfo.longitude!,
+                storeInfo.name,
+              );
+              window.open(url, '_blank');
+            }}
+          >
+            <CompassIcon />
+            <span className='ml-1'>길찾기</span>
+          </Button>
+        )}
+        {/* <div className='flex justify-between mt-9 items-center'>
           <div className='flex gap-4 items-center'>
             <CarIcon />
             <p className='subtitle-3'>주차 및 발렛 안내</p>
@@ -166,7 +171,7 @@ const PlanDetail = ({ planId }: StoreDetailProps) => {
               className={`text-gray-5 transform transition-transform duration-200 ease-out ${isParkingAccordionOpen ? 'rotate-180 duration-200' : ''}`}
             />
           </button>
-        </div>
+        </div> */}
         {/* FIXME: 추후수정 */}
         {/* <div
           className={`overflow-hidden transition-all duration-300 ease-in-out ${

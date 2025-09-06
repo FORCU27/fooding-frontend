@@ -43,13 +43,14 @@ export const PlanCanceledCard = ({ plan }: PlanCanceledCardProps) => {
           <span className='subtitle-5'>{storeInfo.name}</span>
           {plan.reservationType !== 'RESERVATION' ? (
             <p className='text-gray-5 body-8'>
-              <span className='line-through decoration-gray-5'>웨이팅 번호 {plan.id}</span> •{' '}
-              <span className='line-through decoration-gray-5'>매장 식사 {plan.adultCount} 명</span>
+              <span className='line-through decoration-gray-5'>웨이팅 번호 {plan.originId}번</span>{' '}
+              •{' '}
+              <span className='line-through decoration-gray-5'>매장 식사 {plan.adultCount}명</span>
             </p>
           ) : (
             <p className='text-gray-5 body-8'>
               <span className='line-through decoration-gray-5'>
-                {formatDotDate(plan.createdAt)}
+                {plan.createdAt !== null && formatDotDate(plan.createdAt)}
               </span>{' '}
               • <span className='line-through decoration-gray-5'>{plan.adultCount} 명</span>
             </p>
