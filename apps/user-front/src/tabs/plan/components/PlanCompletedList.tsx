@@ -17,7 +17,9 @@ export const PlanCompletedList = () => {
         <PlanCompletedCard
           key={plan.id}
           plan={plan}
-          showEditButton={plan.createdAt !== null && isReviewWithin20Days(plan.createdAt)}
+          showEditButton={
+            plan.reservationTime !== null && isReviewWithin20Days(plan.reservationTime)
+          }
         />
       ))}
     </div>
