@@ -6,6 +6,7 @@ export * from './Checkbox';
 export * from './SelectBox';
 export * from './CardSubtitle';
 export * from './Button';
+export * from './IconButton';
 export * from './ToggleGroup';
 export * from './UrlLinkList';
 export * from './BusinessHours';

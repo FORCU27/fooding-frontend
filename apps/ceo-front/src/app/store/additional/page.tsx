@@ -70,23 +70,15 @@ const AdditionalPage = () => {
       // 기존 데이터 유지
       name: store.name,
       regionId: store.regionId,
-      city: store.city,
       address: store.address,
       category: store.category,
       description: store.description,
-      priceCategory: store.priceCategory,
-      eventDescription: store.eventDescription,
       contactNumber: store.contactNumber,
       direction: store.direction,
-      information: store.information,
       latitude: store.latitude,
       longitude: store.longitude,
-      isNewOpen: store.isNewOpen,
-      isTakeOut: store.isTakeOut,
 
-      // 부가정보 업데이트
-      isParkingAvailable: formData.isParkingAvailable,
-      // TODO: 추가 필드 매핑 필요
+      // TODO: 부가정보 필드 매핑 필요
     };
 
     // undefined 값 제거

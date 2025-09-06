@@ -45,10 +45,10 @@ const PlanDetail = ({ planId }: StoreDetailProps) => {
   const { data: planInfo } = useGetPlanDetail(planId);
   const { data: storeInfo } = useGetStoreDetail(planInfo.storeId);
   const [isAlertAccordionOpen, setIsAlertAccordionOpen] = useState(false);
-  const [isParkingAccordionOpen, setIsParkingAccordionOpen] = useState(false);
-  const onParkingAccordionClick = () => {
-    setIsParkingAccordionOpen((prev) => !prev);
-  };
+  // const [isParkingAccordionOpen, setIsParkingAccordionOpen] = useState(false);
+  // const onParkingAccordionClick = () => {
+  //   setIsParkingAccordionOpen((prev) => !prev);
+  // };
 
   const onAlertAccordionClick = () => {
     setIsAlertAccordionOpen((prev) => !prev);
@@ -68,8 +68,8 @@ const PlanDetail = ({ planId }: StoreDetailProps) => {
               <Image
                 fill
                 style={{ objectFit: 'cover' }}
-                src={`/${storeInfo.images[0]}`}
-                alt='가게 이미지'
+                src={`${storeInfo.images[0]}`}
+                alt='리뷰 이미지'
               />
             </div>
           ) : (

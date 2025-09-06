@@ -31,7 +31,7 @@ export const ReviewStoreInfoCard = ({ planInfo }: ReviewStoreInfoCardProps) => {
       <div className='flex flex-col p-4 gap-1'>
         <p className='subtitle-4'>{storeInfo.name}</p>
         <div className='flex justify-around body-8 text-gray-5'>
-          <span>{formatDotDate(planInfo.createdAt)}</span>
+          <span>{planInfo.createdAt !== null && formatDotDate(planInfo.createdAt)}</span>
           <span>•</span>
           <span>{planInfo.adultCount}명</span>
         </div>

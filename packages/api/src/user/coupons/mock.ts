@@ -18,6 +18,8 @@ export const mockMyCouponList: GetMyCouponListResponse = {
         conditions: null,
         status: 'AVAILABLE',
         mainImage: null,
+        point: 1000,  
+        tableNumber: null,
       },
     ],
     pageInfo: {

@@ -94,20 +94,13 @@ const SeatGuidePage = () => {
       // 기존 데이터 유지
       name: store.name,
       regionId: store.regionId,
-      city: store.city,
       address: store.address,
       category: store.category,
       description: store.description,
-      priceCategory: store.priceCategory,
-      eventDescription: store.eventDescription,
       contactNumber: store.contactNumber,
       direction: store.direction,
-      information: store.information,
       latitude: store.latitude,
       longitude: store.longitude,
-      isNewOpen: store.isNewOpen,
-      isTakeOut: store.isTakeOut,
-      isParkingAvailable: store.isParkingAvailable,
 
       // TODO: 영업시간 데이터 매핑
     };

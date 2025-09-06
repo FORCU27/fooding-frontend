@@ -33,6 +33,7 @@ export { default as InfoCircleIcon } from './InfoCircleIcon';
 export { default as ImageIcon } from './ImageIcon';
 export { default as EyeOffIcon } from './EyeOffIcon';
 export { default as EyeOnIcon } from './EyeOnIcon';
+export { default as CeoBellIcon } from './CeoBellIcon';
 export { default as KebabButton } from './KebabButton';
 export { default as PinIcon } from './PinIcon';
 export { default as PlayVideoIcon } from './PlayVideoIcon';

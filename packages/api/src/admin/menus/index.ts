@@ -1,12 +1,12 @@
 export * from './type';
 
-import { api } from '../../shared';
 import {
   AdminMenuCreateRequest,
   AdminMenuUpdateRequest,
   AdminMenuResponseSchema,
   GetMenuListResponse,
 } from './type';
+import { api } from '../../shared';
 
 const ENDPOINT = '/admin/menus';
 
@@ -17,7 +17,7 @@ export const menuApi = {
     filters?: { storeId?: number; searchString?: string },
   ) => {
     const params = new URLSearchParams({
-      pageNum: (page + 1).toString(),
+      pageNum: (page).toString(),
       pageSize: size.toString(),
     });
     if (filters?.storeId != null) params.set('storeId', String(filters.storeId));

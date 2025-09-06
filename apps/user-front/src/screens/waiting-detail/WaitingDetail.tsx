@@ -47,10 +47,10 @@ const WaitingDetail = ({ waitingId }: StoreDetailProps) => {
   const { data: waiting } = useGetStoreWaitingDetail(planInfo.originId);
   const { data: storeInfo } = useGetStoreDetail(planInfo.storeId);
   const [isAlertAccordionOpen, setIsAlertAccordionOpen] = useState(false);
-  const [isParkingAccordionOpen, setIsParkingAccordionOpen] = useState(false);
-  const onParkingAccordionClick = () => {
-    setIsParkingAccordionOpen((prev) => !prev);
-  };
+  // const [isParkingAccordionOpen, setIsParkingAccordionOpen] = useState(false);
+  // const onParkingAccordionClick = () => {
+  //   setIsParkingAccordionOpen((prev) => !prev);
+  // };
 
   const onAlertAccordionClick = () => {
     setIsAlertAccordionOpen((prev) => !prev);
@@ -70,7 +70,7 @@ const WaitingDetail = ({ waitingId }: StoreDetailProps) => {
               <Image
                 fill
                 style={{ objectFit: 'cover' }}
-                src={`/${storeInfo.images[0]}`}
+                src={`${storeInfo.images[0]}`}
                 alt='가게 이미지'
               />
             </div>
