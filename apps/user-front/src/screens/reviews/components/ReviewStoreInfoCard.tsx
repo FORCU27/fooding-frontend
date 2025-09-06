@@ -4,6 +4,7 @@ import { Plan } from '@repo/api/user';
 import { FoodingIcon } from '@repo/design-system/icons';
 
 import { useGetStoreDetail } from '@/hooks/store/useGetStoreDetail';
+import { useGetStoreWaitingDetail } from '@/hooks/store-waiting/useGetStoreWaitingDetail';
 import { formatDotDate } from '@/utils/date';
 
 interface ReviewStoreInfoCardProps {
@@ -11,7 +12,8 @@ interface ReviewStoreInfoCardProps {
 }
 
 export const ReviewStoreInfoCard = ({ planInfo }: ReviewStoreInfoCardProps) => {
-  const { data: storeInfo } = useGetStoreDetail(planInfo.storeId);
+  const { data: waitingInfo } = useGetStoreWaitingDetail(planInfo.originId);
+  const { data: storeInfo } = useGetStoreDetail(waitingInfo.storeId);
   return (
     <div className='flex bg-gray-1 items-center w-full h-[100px] p-5 rounded-xl'>
       {storeInfo?.images?.[0]?.imageUrl ? (
@@ -31,7 +33,9 @@ export const ReviewStoreInfoCard = ({ planInfo }: ReviewStoreInfoCardProps) => {
       <div className='flex flex-col p-4 gap-1'>
         <p className='subtitle-4'>{storeInfo.name}</p>
         <div className='flex justify-around body-8 text-gray-5'>
-          <span>{planInfo.createdAt !== null && formatDotDate(planInfo.createdAt)}</span>
+          <span>
+            {planInfo.reservationTime !== null && formatDotDate(planInfo.reservationTime)}
+          </span>
           <span>•</span>
           <span>{planInfo.adultCount}명</span>
         </div>

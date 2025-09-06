@@ -90,7 +90,7 @@ const WaitingDetail = ({ waitingId }: StoreDetailProps) => {
           <p className='subtitle-3'>나의 순서</p>
           <div>
             <p className='headline-3 mb-2'>
-              웨이팅 번호 {waiting?.waitingUserId ? waiting.waitingUserId : 1}번
+              웨이팅 번호 {waiting?.callNumber ? waiting.callNumber : 1}번
             </p>
             <p className='body-5 text-gray-5'>
               {planInfo?.reservationTime && formatDotDateTime(planInfo.reservationTime)} 등록

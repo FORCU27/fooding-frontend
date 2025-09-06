@@ -6,6 +6,7 @@ import { CloseIcon, FoodingIcon } from '@repo/design-system/icons';
 import { useFlow } from '@stackflow/react/future';
 
 import { useGetStoreDetail } from '@/hooks/store/useGetStoreDetail';
+import { useGetStoreWaitingDetail } from '@/hooks/store-waiting/useGetStoreWaitingDetail';
 import { formatDotDate } from '@/utils/date';
 
 interface PlanCardProps {
@@ -15,6 +16,7 @@ interface PlanCardProps {
 export const PlanCard = ({ plan }: PlanCardProps) => {
   const flow = useFlow();
   const { data: storeInfo } = useGetStoreDetail(plan.storeId);
+  const { data: waitingInfo } = useGetStoreWaitingDetail(plan.originId);
 
   const handlePlanCardClick = (isWaiting: boolean, planId: string) => {
     // eslint-disable-next-line @typescript-eslint/no-unused-expressions
@@ -52,7 +54,8 @@ export const PlanCard = ({ plan }: PlanCardProps) => {
           <span className='subtitle-5'>{storeInfo.name}</span>
           {plan.reservationType !== 'RESERVATION' ? (
             <span className='text-gray-5 body-8'>
-              웨이팅 번호 {plan.originId}번 • 매장 식사 {plan.adultCount + plan.infantCount} 명
+              웨이팅 번호 {waitingInfo.callNumber}번 • 매장 식사{' '}
+              {plan.adultCount + plan.infantCount} 명
             </span>
           ) : (
             <span className='text-gray-5 body-8'>
