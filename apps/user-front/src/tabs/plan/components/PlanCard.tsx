@@ -16,20 +16,20 @@ export const PlanCard = ({ plan }: PlanCardProps) => {
   const flow = useFlow();
   const { data: storeInfo } = useGetStoreDetail(plan.storeId);
 
-  const handlePlanCardClick = (isWaiting: boolean, planId: number) => {
+  const handlePlanCardClick = (isWaiting: boolean, planId: string) => {
     // eslint-disable-next-line @typescript-eslint/no-unused-expressions
     isWaiting
-      ? flow.push('WaitingDetailScreen', { waitingId: planId })
-      : flow.push('PlanDetailScreen', { planId });
+      ? flow.push('PlanDetailScreen', { planId })
+      : flow.push('WaitingDetailScreen', { waitingId: planId });
   };
   return (
     <div
       className='flex flex-col bg-white/80 rounded-xl p-4 gap-3'
-      onClick={() => handlePlanCardClick(plan.visitStatus === 'SCHEDULED', plan.id)}
+      onClick={() => handlePlanCardClick(plan.reservationType === 'RESERVATION', plan.id)}
     >
       <div className='flex justify-between'>
         <p className='body-4'>
-          {plan.reservationType === 'ONSITE_WAITING' ? '온라인 웨이팅' : '현장 웨이팅'}
+          {plan.reservationType === 'ONSITE_WAITING' ? '현장 웨이팅' : '온라인 웨이팅'}
         </p>
         <CloseIcon className='text-gray-5' />
       </div>
@@ -40,7 +40,7 @@ export const PlanCard = ({ plan }: PlanCardProps) => {
               fill
               style={{ objectFit: 'cover' }}
               src={storeInfo.images[0]?.imageUrl}
-              alt='리뷰 이미지'
+              alt='가게 이미지'
             />
           </div>
         ) : (
@@ -52,11 +52,12 @@ export const PlanCard = ({ plan }: PlanCardProps) => {
           <span className='subtitle-5'>{storeInfo.name}</span>
           {plan.reservationType !== 'RESERVATION' ? (
             <span className='text-gray-5 body-8'>
-              웨이팅 번호 {plan.originId} • 매장 식사 {plan.adultCount} 명
+              웨이팅 번호 {plan.originId}번 • 매장 식사 {plan.adultCount + plan.infantCount} 명
             </span>
           ) : (
             <span className='text-gray-5 body-8'>
-              {formatDotDate(plan.createdAt)} • {plan.adultCount} 명
+              {plan.createdAt !== null && formatDotDate(plan.createdAt)} •{' '}
+              {plan.adultCount + plan.infantCount} 명
             </span>
           )}
         </div>
