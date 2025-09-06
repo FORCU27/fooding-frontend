@@ -32,7 +32,6 @@ export type Store = z.infer<typeof Store>;
 export const Store = z.object({
   id: z.number(),
   name: z.string(),
-  city: z.string(),
   visitCount: z.number(),
   reviewCount: z.number(),
   averageRating: z.number(),
@@ -49,20 +48,34 @@ const StoreImage = z.object({
   tags: z.array(z.string()).nullable(),
 });
 
+export enum STORE_CATEGORY {
+  PORK = '족발/보쌈',
+  MEAT = '고기',
+  CHICKEN = '치킨',
+  JAPANESE = '일식',
+  WESTERN = '양식',
+  CHINESE = '중식',
+  KOREAN = '한식',
+  ASIAN = '아시안 푸드',
+  LUNCHBOX_PORRIDGE = '도시락/죽',
+  CAFE_DESSERT = '카페/디저트',
+  BURGER = '햄버거',
+  SALAD = '샐러드',
+  SNACK = '분식',
+  SEAFOOD = '수산물',
+  SIDE_DISH = '술안주',
+}
+
 export type StoreInfo = z.infer<typeof StoreInfo>;
 export const StoreInfo = Store.omit({ mainImage: true }).extend({
   address: z.string(),
-  category: z.string(),
+  addressDetail: z.string().nullable(),
+  category: z.enum(Object.keys(STORE_CATEGORY) as (keyof typeof STORE_CATEGORY)[]),
   description: z.string(),
-  priceCategory: z.string(),
-  eventDescription: z.string().optional(),
   contactNumber: z.string(),
   direction: z.string(),
-  isParkingAvailable: z.boolean(),
-  isNewOpen: z.boolean(),
-  isTakeOut: z.boolean(),
-  latitude: z.number(),
-  longitude: z.number(),
+  latitude: z.number().nullable(),
+  longitude: z.number().nullable(),
   images: z.array(StoreImage),
   bookmarkCount: z.number(),
 });
@@ -207,8 +220,8 @@ export type CreateStoreReviewBody = {
   imageUrls: string[];
 };
 
-export type Reward = z.infer<typeof Reward>;
-export const Reward = z.object({
+export type StoreReward = z.infer<typeof StoreReward>;
+export const StoreReward = z.object({
   id: z.number(),
   name: z.string(),
   point: z.number(),
@@ -226,4 +239,4 @@ export const RewardListResponse = <TListItem extends z.ZodType>(listItem: TListI
   );
 
 export type GetStoreRewardListResponse = z.infer<typeof GetStoreRewardListResponse>;
-export const GetStoreRewardListResponse = RewardListResponse(Reward);
+export const GetStoreRewardListResponse = RewardListResponse(StoreReward);

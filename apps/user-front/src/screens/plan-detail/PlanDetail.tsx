@@ -127,8 +127,8 @@ const PlanDetail = ({ planId }: StoreDetailProps) => {
         <div className='flex flex-col p-3  gap-4'>
           <div className='w-full h-[300px]'>
             <StoreInfoMap
-              lat={storeInfo.latitude}
-              lng={storeInfo.longitude}
+              lat={storeInfo.latitude ?? 0}
+              lng={storeInfo.longitude ?? 0}
               className='rounded-2xl'
             />
           </div>
@@ -141,14 +141,13 @@ const PlanDetail = ({ planId }: StoreDetailProps) => {
             {storeInfo.direction}
           </div>
         </div>
-
         <Button
           variant='gray'
           size='large'
           onClick={() => {
             const url = getKakaoMapDirectionUrl(
-              storeInfo.latitude,
-              storeInfo.longitude,
+              storeInfo.latitude ?? 0,
+              storeInfo.longitude ?? 0,
               storeInfo.name,
             );
             window.open(url, '_blank');
@@ -157,7 +156,6 @@ const PlanDetail = ({ planId }: StoreDetailProps) => {
           <CompassIcon />
           <span className='ml-1'>길찾기</span>
         </Button>
-
         <div className='flex justify-between mt-9 items-center'>
           <div className='flex gap-4 items-center'>
             <CarIcon />
@@ -169,7 +167,8 @@ const PlanDetail = ({ planId }: StoreDetailProps) => {
             />
           </button>
         </div>
-        <div
+        {/* FIXME: 추후수정 */}
+        {/* <div
           className={`overflow-hidden transition-all duration-300 ease-in-out ${
             isParkingAccordionOpen ? 'max-h-40 opacity-100 mt-5' : 'max-h-0 opacity-0 mt-0'
           }`}
@@ -177,7 +176,7 @@ const PlanDetail = ({ planId }: StoreDetailProps) => {
           <div className='flex flex-col bg-gray-1 rounded-xl p-4 body-5'>
             <p>{storeInfo.isParkingAvailable ? '주차가능' : '주차불가'}</p>
           </div>
-        </div>
+        </div> */}
       </div>
       <div className='flex flex-col p-5 mt-[10px] bg-white/80'>
         <div className='flex gap-4 items-center'>

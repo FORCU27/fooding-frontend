@@ -7,6 +7,7 @@ import {
   StoreSortType,
   AdminStoreResponseSchema,
   GetStoreListResponse,
+  GetStoreResponse,
 } from './type';
 import { api } from '../../shared';
 
@@ -18,15 +19,24 @@ export const storeApi = {
     size: number = 10,
     sortType: StoreSortType = 'RECENT',
     sortDirection: SortDirection = 'DESCENDING',
+    searchString?: string,
   ) => {
     const params = new URLSearchParams({
-      pageNum: (page + 1).toString(),
+      pageNum: (page).toString(),
       pageSize: size.toString(),
       sortType,
       sortDirection,
     });
+    if (searchString && searchString.trim().length > 0) {
+      params.set('searchString', searchString);
+    }
     const response = await api.get(`${ENDPOINT}?${params.toString()}`);
     return GetStoreListResponse.parse(response);
+  },
+
+  getStore: async (id: number) => {
+    const response = await api.get(`${ENDPOINT}/${id}`);
+    return GetStoreResponse.parse(response);
   },
 
   getStoreById: async (id: number) => {
@@ -44,5 +54,26 @@ export const storeApi = {
 
   deleteStore: async (id: number) => {
     return api.delete(`${ENDPOINT}/${id}`);
+  },
+
+  // 상태 변경 API 함수들
+  approveStore: async (id: number) => {
+    return api.put(`${ENDPOINT}/${id}/approve`);
+  },
+
+  rejectStore: async (id: number) => {
+    return api.put(`${ENDPOINT}/${id}/reject`);
+  },
+
+  suspendStore: async (id: number) => {
+    return api.put(`${ENDPOINT}/${id}/suspend`);
+  },
+
+  closeStore: async (id: number) => {
+    return api.put(`${ENDPOINT}/${id}/close`);
+  },
+
+  setPendingStore: async (id: number) => {
+    return api.put(`${ENDPOINT}/${id}/pending`);
   },
 };

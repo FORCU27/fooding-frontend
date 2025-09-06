@@ -37,6 +37,8 @@ export const queryKeys = {
       operatingHours: 'userStoreOperatingHours',
       additionalInfo: 'userStoreAdditionalInfo',
       immediateEntryList: 'userStoreImmediateEntryList',
+      imageList: 'userStoreImageList',
+      infiniteImageList: 'userStoreInfiniteImageList',
       reward: 'userStoreReward',
       rewardList: 'userStoreRewardList',
     },
@@ -50,9 +52,10 @@ export const queryKeys = {
     coupon: {
       infiniteList: 'userCouponInfiniteList',
     },
-    bookmark: 'userBookmark',
+    bookmark: { list: 'userBookmarkList' },
     plan: { list: 'userPlanList', detail: 'userPlanDetail' },
     region: { list: 'userRegionList' },
+    reward: { list: 'userRewardList', log: 'userRewardLog' },
   },
   me: {
     user: 'meUser',

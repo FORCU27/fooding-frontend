@@ -1,5 +1,6 @@
 import {
   mockStoreByIdResponse,
+  mockStoreImageListResponse,
   mockStoreListResponse,
   mockStoreMenuListResponse,
   mockStoreReviewListResponse,
@@ -75,6 +76,17 @@ export const storeHandlers = mockClient.createHandlerGroup('/user/stores', [
         label: '[실패] 존재하지 않는 가게의 리뷰',
         status: 404,
         response: null,
+      },
+    ],
+  },
+  {
+    method: 'GET',
+    path: '/:id/images',
+    presets: [
+      {
+        label: '[성공] 기본 응답',
+        status: 200,
+        response: mockStoreImageListResponse,
       },
     ],
   },
