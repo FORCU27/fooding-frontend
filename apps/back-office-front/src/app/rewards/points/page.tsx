@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 
-import { Add, Edit, Delete, Visibility } from '@mui/icons-material';
+import { Add, Edit, Delete } from '@mui/icons-material';
 import {
   Box,
   Typography,
@@ -20,13 +20,8 @@ import {
   DialogTitle,
   DialogContent,
   DialogActions,
-  FormControl,
-  InputLabel,
-  Select,
-  MenuItem,
   IconButton,
   Chip,
-  Alert
 } from '@mui/material';
 
 interface RewardPoint {
@@ -52,7 +47,7 @@ export default function RewardPointsPage() {
     phoneNumber: '',
     userId: '',
     point: '',
-    memo: ''
+    memo: '',
   });
 
   // Mock data - 실제로는 API에서 가져와야 함
@@ -67,7 +62,7 @@ export default function RewardPointsPage() {
       point: 1000,
       memo: '첫 방문 적립',
       createdAt: '2024-01-01',
-      updatedAt: '2024-01-01'
+      updatedAt: '2024-01-01',
     },
     {
       id: 2,
@@ -77,8 +72,8 @@ export default function RewardPointsPage() {
       point: 500,
       memo: '리뷰 작성 적립',
       createdAt: '2024-01-02',
-      updatedAt: '2024-01-02'
-    }
+      updatedAt: '2024-01-02',
+    },
   ];
 
   const handleChangePage = (event: unknown, newPage: number) => {
@@ -98,7 +93,7 @@ export default function RewardPointsPage() {
         phoneNumber: point.phoneNumber,
         userId: point.userId?.toString() || '',
         point: point.point.toString(),
-        memo: point.memo || ''
+        memo: point.memo || '',
       });
     } else {
       setEditingPoint(null);
@@ -107,7 +102,7 @@ export default function RewardPointsPage() {
         phoneNumber: '',
         userId: '',
         point: '',
-        memo: ''
+        memo: '',
       });
     }
     setOpenDialog(true);
@@ -134,11 +129,11 @@ export default function RewardPointsPage() {
   return (
     <Box>
       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
-        <Typography variant="h4" sx={{ fontWeight: 600, color: '#1e293b' }}>
+        <Typography variant='h4' sx={{ fontWeight: 600, color: '#1e293b' }}>
           포인트 관리
         </Typography>
         <Button
-          variant="contained"
+          variant='contained'
           startIcon={<Add />}
           onClick={() => handleOpenDialog()}
           sx={{ backgroundColor: '#3b82f6', '&:hover': { backgroundColor: '#2563eb' } }}
@@ -163,40 +158,33 @@ export default function RewardPointsPage() {
               </TableRow>
             </TableHead>
             <TableBody>
-              {mockData
-                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                .map((row) => (
-                  <TableRow hover key={row.id}>
-                    <TableCell>{row.id}</TableCell>
-                    <TableCell>{row.storeName}</TableCell>
-                    <TableCell>{row.phoneNumber}</TableCell>
-                    <TableCell>{row.userName || '-'}</TableCell>
-                    <TableCell>
-                      <Chip 
-                        label={`${row.point}P`} 
-                        color="primary" 
-                        variant="outlined"
-                        size="small"
-                      />
-                    </TableCell>
-                    <TableCell>{row.memo || '-'}</TableCell>
-                    <TableCell>{row.createdAt}</TableCell>
-                    <TableCell>
-                      <IconButton size="small" onClick={() => handleOpenDialog(row)}>
-                        <Edit />
-                      </IconButton>
-                      <IconButton size="small" onClick={() => handleDelete(row.id)}>
-                        <Delete />
-                      </IconButton>
-                    </TableCell>
-                  </TableRow>
-                ))}
+              {mockData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => (
+                <TableRow hover key={row.id}>
+                  <TableCell>{row.id}</TableCell>
+                  <TableCell>{row.storeName}</TableCell>
+                  <TableCell>{row.phoneNumber}</TableCell>
+                  <TableCell>{row.userName || '-'}</TableCell>
+                  <TableCell>
+                    <Chip label={`${row.point}P`} color='primary' variant='outlined' size='small' />
+                  </TableCell>
+                  <TableCell>{row.memo || '-'}</TableCell>
+                  <TableCell>{row.createdAt}</TableCell>
+                  <TableCell>
+                    <IconButton size='small' onClick={() => handleOpenDialog(row)}>
+                      <Edit />
+                    </IconButton>
+                    <IconButton size='small' onClick={() => handleDelete(row.id)}>
+                      <Delete />
+                    </IconButton>
+                  </TableCell>
+                </TableRow>
+              ))}
             </TableBody>
           </Table>
         </TableContainer>
         <TablePagination
           rowsPerPageOptions={[5, 10, 25]}
-          component="div"
+          component='div'
           count={mockData.length}
           rowsPerPage={rowsPerPage}
           page={page}
@@ -205,39 +193,37 @@ export default function RewardPointsPage() {
         />
       </Paper>
 
-      <Dialog open={openDialog} onClose={handleCloseDialog} maxWidth="sm" fullWidth>
-        <DialogTitle>
-          {editingPoint ? '포인트 수정' : '포인트 추가'}
-        </DialogTitle>
+      <Dialog open={openDialog} onClose={handleCloseDialog} maxWidth='sm' fullWidth>
+        <DialogTitle>{editingPoint ? '포인트 수정' : '포인트 추가'}</DialogTitle>
         <DialogContent>
           <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, mt: 2 }}>
             <TextField
-              label="가게 ID"
+              label='가게 ID'
               value={formData.storeId}
               onChange={(e) => setFormData({ ...formData, storeId: e.target.value })}
               fullWidth
             />
             <TextField
-              label="전화번호"
+              label='전화번호'
               value={formData.phoneNumber}
               onChange={(e) => setFormData({ ...formData, phoneNumber: e.target.value })}
               fullWidth
             />
             <TextField
-              label="사용자 ID (선택사항)"
+              label='사용자 ID (선택사항)'
               value={formData.userId}
               onChange={(e) => setFormData({ ...formData, userId: e.target.value })}
               fullWidth
             />
             <TextField
-              label="포인트"
-              type="number"
+              label='포인트'
+              type='number'
               value={formData.point}
               onChange={(e) => setFormData({ ...formData, point: e.target.value })}
               fullWidth
             />
             <TextField
-              label="메모"
+              label='메모'
               value={formData.memo}
               onChange={(e) => setFormData({ ...formData, memo: e.target.value })}
               fullWidth
@@ -248,7 +234,7 @@ export default function RewardPointsPage() {
         </DialogContent>
         <DialogActions>
           <Button onClick={handleCloseDialog}>취소</Button>
-          <Button onClick={handleSubmit} variant="contained">
+          <Button onClick={handleSubmit} variant='contained'>
             {editingPoint ? '수정' : '추가'}
           </Button>
         </DialogActions>

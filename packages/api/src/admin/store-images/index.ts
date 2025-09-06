@@ -1,19 +1,19 @@
 export * from './type';
 
-import { api } from '../../shared';
 import {
   AdminStoreImageCreateRequest,
   AdminStoreImageUpdateRequest,
   GetAdminStoreImageListResponse,
   GetAdminStoreImageResponse,
 } from './type';
+import { api } from '../../shared';
 
 const BASE = '/admin/stores';
 
 export const adminStoreImageApi = {
   getList: async (storeId: number, page: number = 0, size: number = 10, searchTag?: string) => {
     const params = new URLSearchParams({
-      pageNum: (page).toString(),
+      pageNum: page.toString(),
       pageSize: size.toString(),
     });
     if (searchTag && searchTag.trim()) params.set('searchTag', searchTag);
@@ -38,4 +38,3 @@ export const adminStoreImageApi = {
     return api.delete(`${BASE}/images/${id}`);
   },
 };
-

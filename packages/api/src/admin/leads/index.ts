@@ -1,14 +1,26 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 export * from './type';
 
-import { GetLeadListResponse, UploadLeadRequest, UploadLeadResponseSchema, AdminLeadResponse, AdminLeadResponseSchema } from './type';
+import {
+  GetLeadListResponse,
+  UploadLeadRequest,
+  UploadLeadResponseSchema,
+  AdminLeadResponse,
+  AdminLeadResponseSchema,
+} from './type';
 import { api } from '../../shared';
 
 const ENDPOINT = '/admin/leads';
 
 export const leadApi = {
-  getLeadList: async (page: number = 0, size: number = 10, searchString?: string, isUploaded?: 'false' | 'true' | 'all') => {
+  getLeadList: async (
+    page: number = 0,
+    size: number = 10,
+    searchString?: string,
+    isUploaded?: 'false' | 'true' | 'all',
+  ) => {
     const params = new URLSearchParams({
-      pageNum: (page).toString(),
+      pageNum: page.toString(),
       pageSize: size.toString(),
     });
 
@@ -37,4 +49,3 @@ export const leadApi = {
     return UploadLeadResponseSchema.parse(response);
   },
 };
-
