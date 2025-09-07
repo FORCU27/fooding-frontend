@@ -22,12 +22,8 @@ import {
   TextField,
   Chip,
 } from '@mui/material';
+import { deviceApi } from '@repo/api/admin';
 import { useQuery, useMutation } from '@tanstack/react-query';
-import {
-  deviceApi,
-  AdminDeviceResponse,
-  RetrieveDeviceRequest,
-} from '@repo/api/admin';
 
 import { queryClient } from '../providers';
 
@@ -171,11 +167,7 @@ export default function DevicesPage() {
               <TableRow key={device.id}>
                 <TableCell>{device.id}</TableCell>
                 <TableCell>
-                  <Chip
-                    label={device.platform}
-                    color={getPlatformColor(device.platform) as any}
-                    size="small"
-                  />
+                  <Chip label={device.platform} color={getPlatformColor(device.platform)} size="small" />
                 </TableCell>
                 <TableCell>{device.name}</TableCell>
                 <TableCell>{device.osVersion}</TableCell>

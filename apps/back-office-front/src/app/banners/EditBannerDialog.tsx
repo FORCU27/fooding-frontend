@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+
 import {
   Dialog,
   DialogActions,
@@ -16,6 +17,7 @@ import {
   Switch,
   Box,
 } from '@mui/material';
+import { AdminBannerUpdateRequest } from '@repo/api/admin';
 
 interface Banner {
   id: string;
@@ -30,7 +32,7 @@ interface Banner {
 interface EditBannerDialogProps {
   open: boolean;
   onClose: () => void;
-  onSubmit: (data: any) => void;
+  onSubmit: (data: AdminBannerUpdateRequest) => void;
   loading?: boolean;
   initialData?: Banner;
 }

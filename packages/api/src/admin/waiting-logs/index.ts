@@ -1,7 +1,7 @@
 export * from './type';
 
-import { api } from '../../shared';
 import { GetAdminWaitingLogListResponse, AdminWaitingLogResponseSchema } from './type';
+import { api } from '../../shared';
 
 const ENDPOINT = '/admin/waitings/logs';
 
@@ -20,4 +20,3 @@ export const adminWaitingLogApi = {
   },
   delete: async (id: number) => api.delete(`${ENDPOINT}/${id}`),
 };
-

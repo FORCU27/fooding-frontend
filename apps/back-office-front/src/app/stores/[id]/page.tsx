@@ -106,7 +106,7 @@ export default function StoreDetailPage() {
   const [statusActionName, setStatusActionName] = useState<string>('');
   const [activeTab, setActiveTab] = useState(0);
   // Point Shop state
-  const [pointShopPage, setPointShopPage] = useState(1);
+  const [pointShopPage] = useState(1);
   const [pointShopIsActive, setPointShopIsActive] = useState<boolean>(true);
   const [isCreatePointShopOpen, setIsCreatePointShopOpen] = useState(false);
   const [isEditPointShopOpen, setIsEditPointShopOpen] = useState(false);

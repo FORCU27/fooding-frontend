@@ -1,16 +1,8 @@
 'use client';
 
 import { useParams, useRouter } from 'next/navigation';
-import { useQuery, useMutation } from '@tanstack/react-query';
-import {
-  storeServiceApi,
-  StoreServiceResponse,
-  adminWaitingsApi,
-  AdminWaitingResponse,
-  AdminWaitingCreateRequest,
-  AdminWaitingUpdateRequest,
-  AdminWaitingStatus,
-} from '@repo/api/admin';
+import { useState, useEffect } from 'react';
+
 import {
   Box,
   Paper,
@@ -34,7 +26,17 @@ import {
   MenuItem,
   InputLabel,
 } from '@mui/material';
-import { useState, useEffect } from 'react';
+import {
+  storeServiceApi,
+  StoreServiceResponse,
+  adminWaitingsApi,
+  AdminWaitingResponse,
+  AdminWaitingCreateRequest,
+  AdminWaitingUpdateRequest,
+  AdminWaitingStatus,
+} from '@repo/api/admin';
+import { useQuery, useMutation } from '@tanstack/react-query';
+
 import { queryClient } from '../../../../providers';
 
 export default function StoreServiceDetailPage() {

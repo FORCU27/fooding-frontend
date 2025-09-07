@@ -1,12 +1,12 @@
 export * from './type';
 
-import { api } from '../../shared';
 import {
   AdminWaitingSettingCreateRequest,
   AdminWaitingSettingUpdateRequest,
   GetAdminWaitingSettingListResponse,
   GetAdminWaitingSettingResponse,
 } from './type';
+import { api } from '../../shared';
 
 const BASE = '/admin/waitings/settings';
 
@@ -40,4 +40,3 @@ export const adminWaitingSettingsApi = {
     return api.delete(`${BASE}/${id}`);
   },
 };
-

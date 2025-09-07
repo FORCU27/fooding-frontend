@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+
 import {
   Dialog,
   DialogActions,
@@ -16,11 +17,12 @@ import {
   Switch,
   Box,
 } from '@mui/material';
+import { AdminBannerCreateRequest } from '@repo/api/admin';
 
 interface CreateBannerDialogProps {
   open: boolean;
   onClose: () => void;
-  onSubmit: (data: any) => void;
+  onSubmit: (data: AdminBannerCreateRequest) => void;
   loading?: boolean;
 }
 
