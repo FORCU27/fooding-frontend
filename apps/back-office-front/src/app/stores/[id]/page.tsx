@@ -245,7 +245,7 @@ export default function StoreDetailPage() {
   // Store posts query
   const { data: postList } = useRQ({
     queryKey: ['adminStorePosts', storeId, postPage],
-    queryFn: () => adminStorePostApi.getList(storeId, postPage - 1, 10),
+    queryFn: () => adminStorePostApi.getList(storeId, postPage, 10),
     enabled: !!storeId,
   });
 
