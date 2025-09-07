@@ -18,7 +18,7 @@ export const useUpdateMenuCategory = (storeId: number | null) => {
       }
       console.log('메뉴 카테고리 수정 완료');
     },
-    onError: (error: any) => {
+    onError: (error: unknown) => {
       console.error('메뉴 카테고리 수정 실패:', error);
     },
   });

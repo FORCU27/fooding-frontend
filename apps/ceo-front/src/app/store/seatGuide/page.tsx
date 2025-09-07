@@ -93,7 +93,7 @@ const SeatGuidePage = () => {
     const putBody: PutStoreBody = {
       // 기존 데이터 유지
       name: store.name,
-      regionId: store.regionId,
+      // regionId는 PutStoreBody에 없음
       address: store.address,
       category: store.category,
       description: store.description,

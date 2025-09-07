@@ -9,7 +9,7 @@ export const useSortMenuCategories = () => {
     onSuccess: () => {
       console.log('메뉴 카테고리 정렬 완료');
     },
-    onError: (error: any) => {
+    onError: (error: unknown) => {
       console.error('메뉴 카테고리 정렬 실패:', error);
     },
   });

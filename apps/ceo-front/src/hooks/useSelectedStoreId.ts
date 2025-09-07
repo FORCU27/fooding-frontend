@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
-import Cookies from 'js-cookie';
+
 import { STORAGE_KEYS } from '@repo/api/configs/storage-keys';
+import Cookies from 'js-cookie';
 
 /**
  * 선택된 가게 ID를 관리하는 Hook

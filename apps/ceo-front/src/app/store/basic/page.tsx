@@ -209,20 +209,11 @@ const BasicInfoPage = () => {
       { id: storeIdToUpdate, body: cleanedBody },
       {
         onSuccess: () => {
-          console.log('저장 성공 - storeId:', storeIdToUpdate);
-          alert('저장되었습니다.');
+          // console.log('저장 성공 - storeId:', storeIdToUpdate);
+          // alert('저장되었습니다.');
         },
-        onError: (error: any) => {
-          console.log('저장 실패 - storeId:', storeIdToUpdate);
-          console.error('에러 상세:', error);
-          if (error.response?.data?.detailedErrors) {
-            const errorMessages = error.response.data.detailedErrors
-              .map((e: any) => `${e.location}: ${e.message}`)
-              .join('\n');
-            alert(`저장 실패:\n${errorMessages}`);
-          } else {
-            alert('저장에 실패했습니다.');
-          }
+        onError: () => {
+          // console.log('저장 실패 - storeId:', storeIdToUpdate);
         },
       },
     );

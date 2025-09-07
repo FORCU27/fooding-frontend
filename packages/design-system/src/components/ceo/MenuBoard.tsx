@@ -25,7 +25,6 @@ import { CSS } from '@dnd-kit/utilities';
 import { MoreVertical } from 'lucide-react';
 
 import { MenuBadgeList, type BadgeType } from './MenuBadge';
-import { MenuButton } from './MenuButton';
 import { ChevronsLeftRightIcon, ChevronsUpDownIcon } from '../../icons';
 import { cn } from '../../utils/cn';
 
@@ -228,10 +227,10 @@ export const MenuBoard = ({
   // prop 변경 시 내부 state 업데이트
   useEffect(() => {
     setCategories(initialCategories);
-    if (initialCategories.length > 0 && !selectedCategoryId) {
+    if (initialCategories.length > 0 && !selectedCategoryId && initialCategories[0]) {
       setSelectedCategoryId(initialCategories[0].id);
     }
-  }, [initialCategories]);
+  }, [initialCategories, selectedCategoryId]);
 
   const sensors = useSensors(
     useSensor(PointerSensor),

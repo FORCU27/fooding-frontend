@@ -1,6 +1,3 @@
-export * from './type';
-
-import { api } from '../../shared';
 import {
   GetMenuCategoriesResponse,
   CreateMenuCategoryResponse,
@@ -9,6 +6,9 @@ import {
   UpdateMenuCategoryResponse,
   DeleteMenuCategoryResponse,
 } from './type';
+import { api } from '../../shared';
+
+export * from './type';
 
 const ENDPOINT = '/ceo/stores';
 

@@ -56,7 +56,7 @@ const AdditionalPage = () => {
       // TODO: 실제 store 데이터 구조에 맞게 매핑 필요
       setFormData((prev) => ({
         ...prev, // 기존 초기값 유지
-        isParkingAvailable: store.isParkingAvailable || false,
+        // isParkingAvailable: store.isParkingAvailable || false, // TODO: store 타입에 isParkingAvailable 필드 추가 필요
         // store에서 추가 데이터가 있으면 여기에 매핑
       }));
       setIsInitialized(true);
@@ -69,7 +69,7 @@ const AdditionalPage = () => {
     const putBody: PutStoreBody = {
       // 기존 데이터 유지
       name: store.name,
-      regionId: store.regionId,
+      // regionId는 PutStoreBody에 없음
       address: store.address,
       category: store.category,
       description: store.description,

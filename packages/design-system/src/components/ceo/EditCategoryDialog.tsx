@@ -1,15 +1,15 @@
 'use client';
 
-import { useState, useEffect, type ReactNode } from 'react';
+import { useState, useEffect } from 'react';
+
+import { Button } from './Button';
 import {
   Dialog,
-  DialogTrigger,
   DialogContent,
   DialogHeader,
   DialogTitle,
   DialogFooter,
 } from './Dialog';
-import { Button } from './Button';
 import { Input } from './Input';
 
 type EditCategoryDialogProps = {

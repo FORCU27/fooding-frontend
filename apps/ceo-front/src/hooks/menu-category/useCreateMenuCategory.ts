@@ -16,7 +16,7 @@ export const useCreateMenuCategory = () => {
       });
       console.log('메뉴 카테고리 생성 완료, ID:', data.data);
     },
-    onError: (error: any) => {
+    onError: (error: unknown) => {
       console.error('메뉴 카테고리 생성 실패:', error);
     },
   });

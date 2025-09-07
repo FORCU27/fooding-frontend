@@ -1,6 +1,8 @@
 'use client';
 
 import { useState, type ReactNode } from 'react';
+
+import { Button } from './Button';
 import {
   Dialog,
   DialogTrigger,
@@ -9,7 +11,6 @@ import {
   DialogTitle,
   DialogFooter,
 } from './Dialog';
-import { Button } from './Button';
 import { Input } from './Input';
 
 type AddCategoryDialogProps = {
