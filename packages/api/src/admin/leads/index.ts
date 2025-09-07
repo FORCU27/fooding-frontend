@@ -5,7 +5,6 @@ import {
   GetLeadListResponse,
   UploadLeadRequest,
   UploadLeadResponseSchema,
-  AdminLeadResponse,
   AdminLeadResponseSchema,
 } from './type';
 import { api } from '../../shared';
@@ -37,11 +36,11 @@ export const leadApi = {
     return GetLeadListResponse.parse(response);
   },
 
-  getLead: async (id: string): Promise<AdminLeadResponse> => {
+  getLead: async (id: string) => {
     const response = await api.get(`${ENDPOINT}/${id}`);
     // 백엔드 응답 구조: { status: string, data: AdminLeadResponse }
-    const parsedResponse = AdminLeadResponseSchema.parse((response as any).data);
-    return parsedResponse;
+    const parsedResponse = AdminLeadResponseSchema.parse(response);
+    return parsedResponse.data;
   },
 
   uploadLead: async (id: string, data: UploadLeadRequest) => {

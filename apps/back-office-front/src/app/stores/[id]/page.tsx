@@ -112,6 +112,8 @@ export default function StoreDetailPage() {
   const [isEditPointShopOpen, setIsEditPointShopOpen] = useState(false);
   const [selectedPointShop, setSelectedPointShop] = useState<AdminPointShopResponse | null>(null);
 
+  
+
   const {
     data: storeResponse,
     isLoading,
@@ -191,24 +193,24 @@ export default function StoreDetailPage() {
   };
 
   // Menus state and queries
-  const [menuPage, setMenuPage] = useState(1);
+  const [menuPage] = useState(1);
   const [isCreateMenuOpen, setIsCreateMenuOpen] = useState(false);
   const [isEditMenuOpen, setIsEditMenuOpen] = useState(false);
   const [selectedMenu, setSelectedMenu] = useState<AdminMenuResponse | null>(null);
   // Categories state
-  const [categoryPage, setCategoryPage] = useState(1);
+  const [categoryPage] = useState(1);
   const [isCreateCategoryOpen, setIsCreateCategoryOpen] = useState(false);
   const [isEditCategoryOpen, setIsEditCategoryOpen] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState<AdminMenuCategoryResponse | null>(null);
 
   // Posts (소식) state
-  const [postPage, setPostPage] = useState(1);
+  const [postPage] = useState(1);
   const [isCreatePostOpen, setIsCreatePostOpen] = useState(false);
   const [isEditPostOpen, setIsEditPostOpen] = useState(false);
   const [selectedPost, setSelectedPost] = useState<AdminStorePostResponse | null>(null);
 
   // Images state
-  const [imagePage, setImagePage] = useState(1);
+  const [imagePage] = useState(1);
   const [isCreateImageOpen, setIsCreateImageOpen] = useState(false);
   const [isEditImageOpen, setIsEditImageOpen] = useState(false);
   const [selectedImage, setSelectedImage] = useState<AdminStoreImageResponse | null>(null);
@@ -398,15 +400,16 @@ export default function StoreDetailPage() {
 
       {/* 탭 네비게이션 */}
       <Box sx={{ borderBottom: 1, borderColor: 'divider', mb: 3 }}>
-        <Tabs value={activeTab} onChange={handleTabChange} aria-label='store management tabs'>
-          <Tab label='기본 정보' />
-          <Tab label='메뉴' />
-          <Tab label='사진' />
-          <Tab label='소식' />
-          <Tab label='서비스' />
-          <Tab label='상태 관리' />
-        </Tabs>
-      </Box>
+      <Tabs value={activeTab} onChange={handleTabChange} aria-label='store management tabs'>
+        <Tab label='기본 정보' />
+        <Tab label='메뉴' />
+        <Tab label='사진' />
+        <Tab label='소식' />
+        <Tab label='서비스' />
+        <Tab label='상태 관리' />
+        <Tab label='포인트샵' />
+      </Tabs>
+    </Box>
 
       {/* 기본 정보 탭 */}
       <TabPanel value={activeTab} index={0}>
@@ -427,7 +430,22 @@ export default function StoreDetailPage() {
                 <Typography variant='body2' color='text.secondary'>
                   점주 ID
                 </Typography>
-                <Typography variant='body1'>{store.ownerId}</Typography>
+                <Button
+                  variant='text'
+                  color="primary"
+                  onClick={() => router.push(`/users/${store.ownerId}`)}
+                  sx={{ 
+                    p: 0, 
+                    minWidth: 'auto', 
+                    textTransform: 'none',
+                    justifyContent: 'flex-start',
+                    '&:hover': {
+                      textDecoration: 'underline'
+                    }
+                  }}
+                >
+                  {store.ownerId}
+                </Button>
               </Box>
               <Box>
                 <Typography variant='body2' color='text.secondary'>
@@ -489,8 +507,8 @@ export default function StoreDetailPage() {
             </Stack>
           </Paper>
 
-          {/* 연락처 및 기타 정보 */}
-          <Paper sx={{ p: 3 }}>
+      {/* 연락처 및 기타 정보 */}
+      <Paper sx={{ p: 3 }}>
             <Typography variant='h6' gutterBottom>
               연락처 및 기타
             </Typography>
@@ -520,29 +538,75 @@ export default function StoreDetailPage() {
         </Stack>
       </TabPanel>
 
-      {/* 포인트샵 탭 */}
-      <TabPanel value={activeTab} index={6}>
-        <Stack spacing={3}>
-          <Paper sx={{ p: 3 }}>
-            <Box sx={{ display: 'flex', alignItems: 'center', mb: 2, gap: 2 }}>
-              <Typography variant='h6'>포인트샵 상품</Typography>
-              <Chip
-                label={pointShopIsActive ? '판매중' : '판매중지'}
-                color={pointShopIsActive ? 'primary' : 'default'}
-              />
-              <Box sx={{ ml: 'auto', display: 'flex', gap: 1 }}>
-                <Button variant='outlined' onClick={() => setPointShopIsActive((v) => !v)}>
-                  {pointShopIsActive ? '중지 상품 보기' : '판매중 상품 보기'}
-                </Button>
-                <Button variant='contained' onClick={() => setIsCreatePointShopOpen(true)}>
-                  등록
-                </Button>
-              </Box>
+    {/* 포인트샵 탭 */}
+    <TabPanel value={activeTab} index={6}>
+      <Stack spacing={3}>
+        <Paper sx={{ p: 3 }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', mb: 2, gap: 2 }}>
+            <Typography variant='h6'>포인트샵 상품</Typography>
+            <Chip label={pointShopIsActive ? '판매중' : '판매중지'} color={pointShopIsActive ? 'primary' : 'default'} />
+            <Box sx={{ ml: 'auto', display: 'flex', gap: 1 }}>
+              <Button variant='outlined' onClick={() => setPointShopIsActive((v) => !v)}>
+                {pointShopIsActive ? '중지 상품 보기' : '판매중 상품 보기'}
+              </Button>
+              <Button variant='contained' onClick={() => setIsCreatePointShopOpen(true)}>등록</Button>
             </Box>
 
-            <TableContainer component={Paper} variant='outlined'>
-              <Table>
-                <TableHead>
+          <TableContainer component={Paper} variant='outlined'>
+            <Table>
+              <TableHead>
+                <TableRow>
+                  <TableCell>ID</TableCell>
+                  <TableCell>상품명</TableCell>
+                  <TableCell>포인트</TableCell>
+                  <TableCell>대상</TableCell>
+                  <TableCell>조건</TableCell>
+                  <TableCell>총수량</TableCell>
+                  <TableCell>발급</TableCell>
+                  <TableCell>시작일</TableCell>
+                  <TableCell>종료일</TableCell>
+                  <TableCell>상태</TableCell>
+                  <TableCell align="right">액션</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {pointShopList?.data.list.map((item) => (
+                  <TableRow key={item.id} hover>
+                    <TableCell>{item.id}</TableCell>
+                    <TableCell>{item.name}</TableCell>
+                    <TableCell>{item.point}</TableCell>
+                    <TableCell>{item.provideType}</TableCell>
+                    <TableCell>{item.conditions || '-'}</TableCell>
+                    <TableCell>{item.totalQuantity ?? '-'}</TableCell>
+                    <TableCell>{item.issuedQuantity}</TableCell>
+                    <TableCell>{item.issueStartOn || '-'}</TableCell>
+                    <TableCell>{item.issueEndOn || '-'}</TableCell>
+                    <TableCell>
+                      <Chip label={item.isActive ? '판매중' : '중지'} color={item.isActive ? 'success' : 'default'} />
+                    </TableCell>
+                    <TableCell align="right">
+                      <Stack direction="row" spacing={1} justifyContent="flex-end">
+                        {item.isActive ? (
+                          <Button size="small" variant='outlined' onClick={async () => {
+                            await adminPointShopApi.inactivate(item.id);
+                            queryClient.invalidateQueries({ queryKey: ['pointShop', storeId] });
+                          }}>중지</Button>
+                        ) : (
+                          <Button size="small" variant='outlined' onClick={async () => {
+                            await adminPointShopApi.activate(item.id);
+                            queryClient.invalidateQueries({ queryKey: ['pointShop', storeId] });
+                          }}>판매</Button>
+                        )}
+                        <Button size="small" variant='outlined' onClick={() => { setSelectedPointShop(item); setIsEditPointShopOpen(true); }}>수정</Button>
+                        <Button size="small" color="error" variant='outlined' onClick={async () => {
+                          await adminPointShopApi.delete(item.id);
+                          queryClient.invalidateQueries({ queryKey: ['pointShop', storeId] });
+                        }}>삭제</Button>
+                      </Stack>
+                    </TableCell>
+                  </TableRow>
+                ))}
+                {pointShopList && pointShopList.data.list.length === 0 && (
                   <TableRow>
                     <TableCell>ID</TableCell>
                     <TableCell>상품명</TableCell>
@@ -1233,15 +1297,10 @@ function PointShopDialog({ open, onClose, mode, initial, onSubmit }: PointShopDi
       <DialogTitle>{mode === 'create' ? '포인트샵 상품 등록' : '포인트샵 상품 수정'}</DialogTitle>
       <DialogContent dividers>
         <Stack spacing={2} sx={{ mt: 1 }}>
-          <TextField
-            label='상품명'
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            fullWidth
-          />
+          <TextField label='상품명' value={name} onChange={(e) => setName(e.target.value)} fullWidth />
           <TextField
             label='포인트'
-            type='number'
+            type="number"
             value={point}
             onChange={(e) => setPoint(Number(e.target.value))}
             fullWidth
@@ -1270,7 +1329,7 @@ function PointShopDialog({ open, onClose, mode, initial, onSubmit }: PointShopDi
           />
           <TextField
             label='총 수량 (빈값=무제한)'
-            type='number'
+            type="number"
             value={totalQuantity}
             onChange={(e) => setTotalQuantity(e.target.value)}
             fullWidth
@@ -1278,7 +1337,7 @@ function PointShopDialog({ open, onClose, mode, initial, onSubmit }: PointShopDi
           <Stack direction='row' spacing={2}>
             <TextField
               label='시작일'
-              type='date'
+              type="date"
               value={issueStartOn || ''}
               onChange={(e) => setIssueStartOn(e.target.value)}
               fullWidth
@@ -1286,7 +1345,7 @@ function PointShopDialog({ open, onClose, mode, initial, onSubmit }: PointShopDi
             />
             <TextField
               label='종료일'
-              type='date'
+              type="date"
               value={issueEndOn || ''}
               onChange={(e) => setIssueEndOn(e.target.value)}
               fullWidth
@@ -1349,7 +1408,7 @@ function MenuDialog({
 
   const handleBoolChange =
     (key: keyof MenuFormValues) => (e: React.ChangeEvent<HTMLInputElement>) => {
-      setValues((prev) => ({ ...prev, [key]: e.target.checked }) as any);
+      setValues((prev) => ({ ...prev, [key]: e.target.checked }));
     };
 
   const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
