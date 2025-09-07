@@ -37,7 +37,7 @@ export default function RegionDetailPage({ params }: { params: Promise<{ id: str
 
   const { data: childList } = useQuery({
     queryKey: ['regions', 'children', id, page, pageSize, searchString],
-    queryFn: () => regionApi.getRegionList(page - 1, pageSize, { 
+    queryFn: () => regionApi.getRegionList(page, pageSize, { 
       parentRegionId: id,
       searchString: searchString || undefined,
     }),

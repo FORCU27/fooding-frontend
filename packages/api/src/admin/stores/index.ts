@@ -14,21 +14,49 @@ import { api } from '../../shared';
 const ENDPOINT = '/admin/stores';
 
 export const storeApi = {
-  getStoreList: async (
-    page: number = 0,
-    size: number = 10,
-    sortType: StoreSortType = 'RECENT',
-    sortDirection: SortDirection = 'DESCENDING',
-    searchString?: string,
-  ) => {
+  getStoreList: async (args?: {
+    page?: number;
+    size?: number;
+    sortType?: StoreSortType;
+    sortDirection?: SortDirection;
+    searchString?: string;
+    regionIds?: string[];
+    category?: string;
+    statuses?: string[];
+    includeDeleted?: boolean;
+  }) => {
+    const {
+      page = 0,
+      size = 10,
+      sortType = 'RECENT',
+      sortDirection = 'DESCENDING',
+      searchString,
+      regionIds,
+      category,
+      statuses,
+      includeDeleted,
+    } = args || {};
+
     const params = new URLSearchParams({
-      pageNum: (page + 1).toString(),
+      pageNum: page.toString(),
       pageSize: size.toString(),
       sortType,
       sortDirection,
     });
     if (searchString && searchString.trim().length > 0) {
       params.set('searchString', searchString);
+    }
+    if (regionIds && regionIds.length > 0) {
+      regionIds.forEach((id) => params.append('regionIds', id));
+    }
+    if (category && category.trim().length > 0) {
+      params.set('category', category);
+    }
+    if (statuses && statuses.length > 0) {
+      statuses.forEach((s) => params.append('statuses', s));
+    }
+    if (typeof includeDeleted === 'boolean') {
+      params.set('includeDeleted', String(includeDeleted));
     }
     const response = await api.get(`${ENDPOINT}?${params.toString()}`);
     return GetStoreListResponse.parse(response);

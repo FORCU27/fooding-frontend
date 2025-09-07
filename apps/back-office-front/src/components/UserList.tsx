@@ -14,6 +14,7 @@ import {
   Pagination,
   Alert,
   CircularProgress,
+  Link,
 } from '@mui/material';
 import {
   AdminCreateUserRequest,
@@ -51,13 +52,11 @@ export default function UserList({ role }: { role: Role }) {
     queryKey,
     queryFn: async () => {
       try {
-        console.log('Fetching users with params:', { page, size, role });
         const result = await userApi.getUserList({
           page,
           size,
           role,
         });
-        console.log('API Response:', result);
         return result;
       } catch (err) {
         console.error('Error in queryFn:', err);
@@ -166,7 +165,16 @@ export default function UserList({ role }: { role: Role }) {
             {users.map((user: AdminUserResponse) => (
               <TableRow key={user.id}>
                 <TableCell>{user.id}</TableCell>
-                <TableCell>{user.email}</TableCell>
+                <TableCell>
+                  <Link 
+                    href={`/users/${user.id}`} 
+                    underline="hover"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    {user.email}
+                  </Link>
+                </TableCell>
                 <TableCell>{user.nickname || '-'}</TableCell>
                 <TableCell>{user.phoneNumber || '-'}</TableCell>
                 <TableCell>
@@ -214,8 +222,8 @@ export default function UserList({ role }: { role: Role }) {
         <Box sx={{ display: 'flex', justifyContent: 'center', mt: 3 }}>
           <Pagination
             count={pageInfo.totalPages}
-            page={page + 1}
-            onChange={(_, newPage) => setPage(newPage - 1)}
+            page={page}
+            onChange={(_, newPage) => setPage(newPage)}
             color="primary"
             showFirstButton
             showLastButton

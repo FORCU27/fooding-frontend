@@ -1,14 +1,24 @@
 export * from './type';
 
-import { GetLeadListResponse, UploadLeadRequest, UploadLeadResponseSchema, AdminLeadResponse, AdminLeadResponseSchema } from './type';
+import {
+  GetLeadListResponse,
+  UploadLeadRequest,
+  UploadLeadResponseSchema,
+  AdminLeadResponseSchema,
+} from './type';
 import { api } from '../../shared';
 
 const ENDPOINT = '/admin/leads';
 
 export const leadApi = {
-  getLeadList: async (page: number = 0, size: number = 10, searchString?: string, isUploaded?: 'false' | 'true' | 'all') => {
+  getLeadList: async (
+    page: number = 0,
+    size: number = 10,
+    searchString?: string,
+    isUploaded?: 'false' | 'true' | 'all',
+  ) => {
     const params = new URLSearchParams({
-      pageNum: (page + 1).toString(),
+      pageNum: page.toString(),
       pageSize: size.toString(),
     });
 
@@ -25,11 +35,11 @@ export const leadApi = {
     return GetLeadListResponse.parse(response);
   },
 
-  getLead: async (id: string): Promise<AdminLeadResponse> => {
+  getLead: async (id: string) => {
     const response = await api.get(`${ENDPOINT}/${id}`);
     // 백엔드 응답 구조: { status: string, data: AdminLeadResponse }
-    const parsedResponse = AdminLeadResponseSchema.parse((response as any).data);
-    return parsedResponse;
+    const parsedResponse = AdminLeadResponseSchema.parse(response);
+    return parsedResponse.data;
   },
 
   uploadLead: async (id: string, data: UploadLeadRequest) => {
@@ -37,4 +47,3 @@ export const leadApi = {
     return UploadLeadResponseSchema.parse(response);
   },
 };
-

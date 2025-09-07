@@ -234,7 +234,11 @@ const BasicInfoPage = () => {
   }
 
   if (!selectedStoreId) {
-    return <div>가게를 선택해주세요. <a href="/store/select">가게 선택하기</a></div>;
+    return (
+      <div>
+        가게를 선택해주세요. <a href='/store/select'>가게 선택하기</a>
+      </div>
+    );
   }
 
   return (

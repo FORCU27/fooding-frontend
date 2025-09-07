@@ -1,8 +1,8 @@
 import { z } from 'zod/v4';
 
-import { PageResponse } from '../../shared';
+import { ApiResponse, PageResponse } from '../../shared';
 
-export const AdminLeadResponseSchema = z.object({
+export const Lead = z.object({
   id: z.number(),
   name: z.string(),
   phone: z.string(),
@@ -12,6 +12,7 @@ export const AdminLeadResponseSchema = z.object({
 });
 
 export type AdminLeadResponse = z.infer<typeof AdminLeadResponseSchema>;
+export const AdminLeadResponseSchema = ApiResponse(Lead);
 
 export type GetLeadListParams = {
   page: number;
@@ -20,7 +21,7 @@ export type GetLeadListParams = {
   isUploaded?: boolean;
 };
 
-export const GetLeadListResponse = PageResponse(AdminLeadResponseSchema);
+export const GetLeadListResponse = PageResponse(Lead);
 
 export const UploadLeadRequestSchema = z.object({
   ownerId: z.number(),
@@ -35,4 +36,3 @@ export const UploadLeadResponseSchema = z.object({
 });
 
 export type UploadLeadResponse = z.infer<typeof UploadLeadResponseSchema>;
-
