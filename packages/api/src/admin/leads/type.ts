@@ -1,17 +1,18 @@
 import { z } from 'zod/v4';
 
-import { PageResponse } from '../../shared';
-
-export const AdminLeadResponseSchema = z.object({
-  id: z.number(),
-  name: z.string(),
-  phone: z.string(),
-  source: z.string().nullable().optional(),
-  createdAt: z.string().nullable().optional(),
-  isUploaded: z.boolean().nullable().optional(),
-});
+import { ApiResponse, PageResponse } from '../../shared';
 
 export type AdminLeadResponse = z.infer<typeof AdminLeadResponseSchema>;
+export const AdminLeadResponseSchema = ApiResponse(
+  z.object({
+    id: z.number(),
+    name: z.string(),
+    phone: z.string(),
+    source: z.string().nullable().optional(),
+    createdAt: z.string().nullable().optional(),
+    isUploaded: z.boolean().nullable().optional(),
+  }),
+);
 
 export type GetLeadListParams = {
   page: number;
@@ -35,4 +36,3 @@ export const UploadLeadResponseSchema = z.object({
 });
 
 export type UploadLeadResponse = z.infer<typeof UploadLeadResponseSchema>;
-
