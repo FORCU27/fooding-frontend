@@ -556,7 +556,6 @@ export default function StoreDetailPage() {
               <Button variant='contained' onClick={() => setIsCreatePointShopOpen(true)}>등록</Button>
             </Box>
           </Box>
-
           <TableContainer component={Paper} variant='outlined'>
             <Table>
               <TableHead>
@@ -576,51 +575,84 @@ export default function StoreDetailPage() {
               </TableHead>
               <TableBody>
                 {pointShopList?.data.list.map((item) => (
-                  <TableRow key={item.id} hover>
-                    <TableCell>{item.id}</TableCell>
-                    <TableCell>{item.name}</TableCell>
-                    <TableCell>{item.point}</TableCell>
-                    <TableCell>{item.provideType}</TableCell>
-                    <TableCell>{item.conditions || '-'}</TableCell>
-                    <TableCell>{item.totalQuantity ?? '-'}</TableCell>
-                    <TableCell>{item.issuedQuantity}</TableCell>
-                    <TableCell>{item.issueStartOn || '-'}</TableCell>
-                    <TableCell>{item.issueEndOn || '-'}</TableCell>
-                    <TableCell>
-                      <Chip label={item.isActive ? '판매중' : '중지'} color={item.isActive ? 'success' : 'default'} />
-                    </TableCell>
-                    <TableCell align="right">
-                      <Stack direction="row" spacing={1} justifyContent="flex-end">
-                        {item.isActive ? (
-                          <Button size="small" variant='outlined' onClick={async () => {
-                            await adminPointShopApi.inactivate(item.id);
-                            queryClient.invalidateQueries({ queryKey: ['pointShop', storeId] });
-                          }}>중지</Button>
-                        ) : (
-                          <Button size="small" variant='outlined' onClick={async () => {
-                            await adminPointShopApi.activate(item.id);
-                            queryClient.invalidateQueries({ queryKey: ['pointShop', storeId] });
-                          }}>판매</Button>
-                        )}
-                        <Button size="small" variant='outlined' onClick={() => { setSelectedPointShop(item); setIsEditPointShopOpen(true); }}>수정</Button>
-                        <Button size="small" color="error" variant='outlined' onClick={async () => {
-                          await adminPointShopApi.delete(item.id);
-                          queryClient.invalidateQueries({ queryKey: ['pointShop', storeId] });
-                        }}>삭제</Button>
-                      </Stack>
-                    </TableCell>
-                  </TableRow>
-                ))}
-                {pointShopList && pointShopList.data.list.length === 0 && (
-                  <TableRow>
-                    <TableCell colSpan={11} align="center">데이터가 없습니다.</TableCell>
-                  </TableRow>
-                )}
-              </TableBody>
-            </Table>
-          </TableContainer>
-        </Paper>
-      </Stack>
+                    <TableRow key={item.id} hover>
+                      <TableCell>{item.id}</TableCell>
+                      <TableCell>{item.name}</TableCell>
+                      <TableCell>{item.point}</TableCell>
+                      <TableCell>{item.provideType}</TableCell>
+                      <TableCell>{item.conditions || '-'}</TableCell>
+                      <TableCell>{item.totalQuantity ?? '-'}</TableCell>
+                      <TableCell>{item.issuedQuantity}</TableCell>
+                      <TableCell>{item.issueStartOn || '-'}</TableCell>
+                      <TableCell>{item.issueEndOn || '-'}</TableCell>
+                      <TableCell>
+                        <Chip
+                          label={item.isActive ? '판매중' : '중지'}
+                          color={item.isActive ? 'success' : 'default'}
+                        />
+                      </TableCell>
+                      <TableCell align='right'>
+                        <Stack direction='row' spacing={1} justifyContent='flex-end'>
+                          {item.isActive ? (
+                            <Button
+                              size='small'
+                              variant='outlined'
+                              onClick={async () => {
+                                await adminPointShopApi.inactivate(item.id);
+                                queryClient.invalidateQueries({ queryKey: ['pointShop', storeId] });
+                              }}
+                            >
+                              중지
+                            </Button>
+                          ) : (
+                            <Button
+                              size='small'
+                              variant='outlined'
+                              onClick={async () => {
+                                await adminPointShopApi.activate(item.id);
+                                queryClient.invalidateQueries({ queryKey: ['pointShop', storeId] });
+                              }}
+                            >
+                              판매
+                            </Button>
+                          )}
+                          <Button
+                            size='small'
+                            variant='outlined'
+                            onClick={() => {
+                              setSelectedPointShop(item);
+                              setIsEditPointShopOpen(true);
+                            }}
+                          >
+                            수정
+                          </Button>
+                          <Button
+                            size='small'
+                            color='error'
+                            variant='outlined'
+                            onClick={async () => {
+                              await adminPointShopApi.delete(item.id);
+                              queryClient.invalidateQueries({ queryKey: ['pointShop', storeId] });
+                            }}
+                          >
+                            삭제
+                          </Button>
+                        </Stack>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                  {pointShopList && pointShopList.data.list.length === 0 && (
+                    <TableRow>
+                      <TableCell colSpan={11} align='center'>
+                        데이터가 없습니다.
+                      </TableCell>
+                    </TableRow>
+                  )}
+                </TableBody>
+              </Table>
+            </TableContainer>
+          </Paper>
+        </Stack>
 
       {/* 등록 다이얼로그 */}
       <PointShopDialog
