@@ -1,10 +1,11 @@
 'use client';
 
 import { useState } from 'react';
-import { useQuery, useMutation } from '@tanstack/react-query';
-import { Box, Button, Chip, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material';
 
+import { Box, Button, Chip, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material';
 import { adminWaitingLogApi, AdminWaitingLogResponse } from '@repo/api/admin';
+import { useQuery, useMutation } from '@tanstack/react-query';
+
 import { queryClient } from '../providers';
 
 export default function WaitingLogsPage() {
@@ -61,4 +62,3 @@ export default function WaitingLogsPage() {
     </Box>
   );
 }
-

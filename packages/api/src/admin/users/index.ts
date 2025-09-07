@@ -22,9 +22,10 @@ export const userApi = {
   },
 
   getUser: async (id: number) => {
-    const response: any = await api.get(`/admin/users/${id}`);
+    type ApiResp<T> = { status: string | null; data: T };
+    const response = await api.get<ApiResp<unknown>>(`/admin/users/${id}`);
     // API 응답이 { status: "OK", data: {...} } 형태이므로 data 부분만 파싱
-    return { data: AdminUserResponseSchema.parse(response.data as any) };
+    return { data: AdminUserResponseSchema.parse(response.data) };
   },
 
   createUser: async (data: AdminCreateUserRequest) => api.post('/admin/users', data),

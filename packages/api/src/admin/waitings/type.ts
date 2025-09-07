@@ -1,4 +1,5 @@
 import { z } from 'zod/v4';
+
 import { ApiResponse, PageResponse } from '../../shared';
 
 export const AdminWaitingResponseSchema = z.object({
@@ -29,4 +30,3 @@ export type AdminWaitingUpdateRequest = {
   storeId: number;
   status: AdminWaitingStatus;
 };
-

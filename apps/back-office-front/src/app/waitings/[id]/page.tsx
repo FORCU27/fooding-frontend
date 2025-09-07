@@ -1,7 +1,8 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
+import React, { useState, useEffect } from 'react';
+
 import {
   Box,
   Button,
@@ -22,17 +23,14 @@ import {
   Switch,
   FormControlLabel,
 } from '@mui/material';
-import { useQuery, useMutation } from '@tanstack/react-query';
-
 import {
   adminWaitingsApi,
   adminWaitingSettingsApi,
-  AdminWaitingResponse,
   AdminWaitingSettingResponse,
   AdminWaitingSettingCreateRequest,
   AdminWaitingSettingUpdateRequest,
-  AdminWaitingStatus,
 } from '@repo/api/admin';
+import { useQuery, useMutation } from '@tanstack/react-query';
 
 import { queryClient } from '../../providers';
 import { DeleteConfirmDialog } from '../../stores/DeleteConfirmDialog';
@@ -282,4 +280,3 @@ function SettingDialog({
     </Dialog>
   );
 }
-

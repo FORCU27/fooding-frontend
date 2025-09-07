@@ -1,12 +1,12 @@
 export * from './type';
 
-import { api } from '../../shared';
 import {
   AdminWaitingCreateRequest,
   AdminWaitingUpdateRequest,
   GetAdminWaitingListResponse,
   GetAdminWaitingResponse,
 } from './type';
+import { api } from '../../shared';
 
 const BASE = '/admin/waitings';
 
@@ -40,4 +40,3 @@ export const adminWaitingsApi = {
     return api.delete(`${BASE}/${id}`);
   },
 };
-

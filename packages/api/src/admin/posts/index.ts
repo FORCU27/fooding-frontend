@@ -4,7 +4,6 @@ import {
   AdminCreatePostRequest,
   AdminUpdatePostRequest,
   PostType,
-  AdminPostResponseSchema,
   GetPostListResponse,
   GetPostResponse,
 } from './type';

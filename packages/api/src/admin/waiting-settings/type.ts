@@ -1,4 +1,5 @@
 import { z } from 'zod/v4';
+
 import { ApiResponse, PageResponse } from '../../shared';
 
 export const AdminWaitingSettingResponseSchema = z.object({
@@ -36,4 +37,3 @@ export type AdminWaitingSettingUpdateRequest = {
   isActive: boolean;
   entryTimeLimitMinutes: number;
 };
-

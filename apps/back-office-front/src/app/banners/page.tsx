@@ -22,16 +22,15 @@ import {
   Chip,
   TextField,
   Switch,
-  FormControlLabel,
 } from '@mui/material';
 import { Link } from '@mui/material';
+import { bannerApi, AdminBannerResponse, AdminBannerCreateRequest, AdminBannerUpdateRequest } from '@repo/api/admin';
 import { useQuery, useMutation } from '@tanstack/react-query';
 
 import { CreateBannerDialog } from './CreateBannerDialog';
 import { DeleteConfirmDialog } from './DeleteConfirmDialog';
 import { EditBannerDialog } from './EditBannerDialog';
 import { queryClient } from '../providers';
-import { bannerApi, AdminBannerResponse } from '@repo/api/admin';
 
 type Banner = AdminBannerResponse;
 
@@ -68,7 +67,7 @@ export default function BannersPage() {
   });
 
   const createMutation = useMutation({
-    mutationFn: (data: any) => bannerApi.create(data),
+    mutationFn: (data: AdminBannerCreateRequest) => bannerApi.create(data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['banners'] });
       setIsCreateDialogOpen(false);
@@ -76,7 +75,7 @@ export default function BannersPage() {
   });
 
   const updateMutation = useMutation({
-    mutationFn: ({ id, body }: { id: string; body: any }) =>
+    mutationFn: ({ id, body }: { id: string; body: AdminBannerUpdateRequest }) =>
       bannerApi.update(id, body),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['banners'] });

@@ -1,12 +1,12 @@
 export * from './type';
 
-import { api } from '../../shared';
 import {
   AdminCreatePointShopRequest,
   AdminUpdatePointShopRequest,
   GetAdminPointShopListResponse,
   GetAdminPointShopResponse,
 } from './type';
+import { api } from '../../shared';
 
 const BASE = '/admin/point-shop';
 
@@ -54,4 +54,3 @@ export const adminPointShopApi = {
     return api.put(`${BASE}/${id}/inactive`);
   },
 };
-
