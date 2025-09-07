@@ -1,7 +1,9 @@
 'use client';
 
+import Link from 'next/link';
 import { useState } from 'react';
 
+import SearchIcon from '@mui/icons-material/Search';
 import {
   Box,
   Paper,
@@ -16,11 +18,9 @@ import {
   TextField,
   InputAdornment,
 } from '@mui/material';
-import SearchIcon from '@mui/icons-material/Search';
-import { useQuery } from '@tanstack/react-query';
-import Link from 'next/link';
 import { Link as MLink } from '@mui/material';
 import { regionApi, AdminRegionResponse } from '@repo/api/admin';
+import { useQuery } from '@tanstack/react-query';
 
 export default function RegionsPage() {
   const [page, setPage] = useState(1);

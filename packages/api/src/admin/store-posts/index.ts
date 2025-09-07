@@ -1,24 +1,19 @@
 export * from './type';
 
-import { api } from '../../shared';
 import {
   AdminStorePostCreateRequest,
   AdminStorePostUpdateRequest,
   GetAdminStorePostListResponse,
   GetAdminStorePostResponse,
 } from './type';
+import { api } from '../../shared';
 
 const BASE = '/admin/store-posts';
 
 export const adminStorePostApi = {
-  getList: async (
-    storeId: number,
-    page: number = 0,
-    size: number = 10,
-    searchString?: string,
-  ) => {
+  getList: async (storeId: number, page: number = 0, size: number = 10, searchString?: string) => {
     const params = new URLSearchParams({
-      pageNum: (page).toString(),
+      pageNum: page.toString(),
       pageSize: size.toString(),
       storeId: String(storeId),
     });
@@ -33,12 +28,22 @@ export const adminStorePostApi = {
   },
 
   create: async (storeId: number, body: Omit<AdminStorePostCreateRequest, 'storeId'>) => {
-    const payload: AdminStorePostCreateRequest = { ...body, storeId } as AdminStorePostCreateRequest;
+    const payload: AdminStorePostCreateRequest = {
+      ...body,
+      storeId,
+    } as AdminStorePostCreateRequest;
     return api.post(`${BASE}`, payload);
   },
 
-  update: async (storeId: number, id: number, body: Omit<AdminStorePostUpdateRequest, 'storeId'>) => {
-    const payload: AdminStorePostUpdateRequest = { ...body, storeId } as AdminStorePostUpdateRequest;
+  update: async (
+    storeId: number,
+    id: number,
+    body: Omit<AdminStorePostUpdateRequest, 'storeId'>,
+  ) => {
+    const payload: AdminStorePostUpdateRequest = {
+      ...body,
+      storeId,
+    } as AdminStorePostUpdateRequest;
     return api.put(`${BASE}/${id}`, payload);
   },
 
