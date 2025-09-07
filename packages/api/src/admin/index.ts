@@ -16,3 +16,5 @@ export * from './point-shop';
 export * from './posts';
 export * from './devices';
 export * from './banners';
+export * from './waitings';
+export * from './waiting-settings';

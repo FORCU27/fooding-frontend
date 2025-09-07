@@ -4,7 +4,6 @@ import {
   AdminBannerCreateRequest,
   AdminBannerUpdateRequest,
   AdminBannerPageRequest,
-  AdminBannerResponseSchema,
   GetBannerListResponse,
   GetBannerResponse,
 } from './type';

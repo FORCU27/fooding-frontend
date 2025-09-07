@@ -1,5 +1,6 @@
 import { useState } from 'react';
 
+import { useRouter } from 'next/navigation';
 import {
   Box,
   Button,
@@ -37,6 +38,7 @@ const serviceTypeMap = {
 };
 
 export default function StoreServiceManagement({ storeId }: StoreServiceManagementProps) {
+  const router = useRouter();
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [serviceToDelete, setServiceToDelete] = useState<StoreServiceResponse | null>(null);
@@ -173,10 +175,12 @@ export default function StoreServiceManagement({ storeId }: StoreServiceManageme
               {services.map((service: StoreServiceResponse) => (
                 <TableRow key={service.id}>
                   <TableCell>
-                    <Chip 
-                      label={serviceTypeMap[service.type]} 
+                    <Chip
+                      label={serviceTypeMap[service.type]}
                       color="primary"
                       variant="outlined"
+                      onClick={() => router.push(`/stores/${storeId}/services/${service.id}`)}
+                      sx={{ cursor: 'pointer' }}
                     />
                   </TableCell>
                   <TableCell>
@@ -194,6 +198,13 @@ export default function StoreServiceManagement({ storeId }: StoreServiceManageme
                   </TableCell>
                   <TableCell>
                     <Stack direction="row" spacing={1}>
+                      <Button
+                        variant='outlined'
+                        size='small'
+                        onClick={() => router.push(`/stores/${storeId}/services/${service.id}`)}
+                      >
+                        상세
+                      </Button>
                       <Button
                         variant='outlined'
                         size='small'
