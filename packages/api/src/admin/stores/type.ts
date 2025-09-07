@@ -40,7 +40,7 @@ export const AdminStoreResponseSchema = z.object({
   latitude: z.number().nullable(),
   longitude: z.number().nullable(),
   stations: z.array(z.any()),
-  // status: z.enum(Object.values(STORE_STATUS)),
+  status: z.string().optional().nullable(),
 });
 
 export const AdminCreateStoreRequestSchema = z.object({

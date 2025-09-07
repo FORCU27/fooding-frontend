@@ -21,7 +21,9 @@ import {
   Campaign,
   ContactPage,
   Public,
-  CardGiftcard
+  CardGiftcard,
+  Devices,
+  ViewCarousel
 } from '@mui/icons-material';
 import {
   Box,
@@ -40,13 +42,30 @@ import {
 
 const menu = [
   {
-    label: '고객 관리',
+    label: '고객',
     icon: <People />,
     sub: [
       { label: '유저 관리', path: '/users', icon: <People /> },
-      { label: '가게 관리', path: '/stores', icon: <Store /> },
       { label: '점주 관리', path: '/ceos', icon: <Business /> },
       { label: '관리자 관리', path: '/managers', icon: <AdminPanelSettings /> },
+    ],
+  },
+  {
+    label: '가게',
+    icon: <Store />,
+    sub: [
+      { label: '가게 관리', path: '/stores', icon: <Store /> },
+    ],
+  },
+  {
+    label: '운영',
+    icon: <Monitor />,
+    sub: [
+      { label: '게시글', path: '/posts', icon: <Article /> },
+      { label: '가게 심사', path: '/store-reviews', icon: <RateReview /> },
+      { label: '리뷰', path: '/reviews', icon: <RateReview /> },
+      { label: '디바이스 목록', path: '/devices', icon: <Devices /> },
+      { label: '배너 관리', path: '/banners', icon: <ViewCarousel /> },
     ],
   },
   {
@@ -56,13 +75,6 @@ const menu = [
       { label: '알림 내역', path: '/user-notifications', icon: <History /> },
       { label: '발송 내역', path: '/notifications', icon: <Email /> },
       { label: '템플릿 관리', path: '/notification-templates', icon: <Article /> },
-    ],
-  },
-  {
-    label: '모니터링',
-    icon: <Monitor />,
-    sub: [
-      { label: '리뷰', path: '/reviews', icon: <RateReview /> },
     ],
   },
   {
@@ -79,6 +91,14 @@ const menu = [
     sub: [
       { label: '포인트 관리', path: '/rewards/points', icon: <CardGiftcard /> },
       { label: '로그 관리', path: '/rewards/logs', icon: <History /> },
+    ],
+  },
+  {
+    label: '웨이팅',
+    icon: <CardGiftcard />,
+    sub: [
+      { label: '웨이팅 관리', path: '/waitings', icon: <CardGiftcard /> },
+      { label: '웨이팅 로그', path: '/waiting-logs', icon: <History /> },
     ],
   },
 ];

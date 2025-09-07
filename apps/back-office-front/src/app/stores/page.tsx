@@ -19,6 +19,12 @@ import {
   Select,
   MenuItem,
   SelectChangeEvent,
+  Checkbox,
+  ListItemText,
+  OutlinedInput,
+  Chip,
+  TextField,
+  FormControlLabel,
 } from '@mui/material';
 import { Link } from '@mui/material';
 import {
@@ -26,7 +32,9 @@ import {
   AdminStoreResponse,
   AdminCreateStoreRequest,
   AdminUpdateStoreRequest,
+  STORE_STATUS,
 } from '@repo/api/admin';
+import { StoreCategory as StoreCategoryEnum } from '@repo/api/app';
 import { useQuery, useMutation } from '@tanstack/react-query';
 
 import { CreateStoreDialog } from './CreateStoreDialog';
@@ -44,6 +52,10 @@ export default function StoresPage() {
   const [storeToDelete, setStoreToDelete] = useState<AdminStoreResponse | null>(null);
   const [search, setSearch] = useState('');
   const [debouncedSearch, setDebouncedSearch] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState<string>('');
+  const [selectedStatuses, setSelectedStatuses] = useState<string[]>(['APPROVED']);
+  const [regionInput, setRegionInput] = useState('');
+  const [includeDeleted, setIncludeDeleted] = useState(false);
 
   // debounce search input
   useEffect(() => {
@@ -55,8 +67,22 @@ export default function StoresPage() {
   }, [search]);
 
   const { data: storesResponse, isLoading } = useQuery({
-    queryKey: ['stores', page, pageSize, debouncedSearch],
-    queryFn: () => storeApi.getStoreList(page, pageSize, 'RECENT', 'DESCENDING', debouncedSearch), // API는 0-based index 사용
+    queryKey: ['stores', page, pageSize, debouncedSearch, selectedCategory, selectedStatuses, regionInput, includeDeleted],
+    queryFn: () =>
+      storeApi.getStoreList({
+        page: page,
+        size: pageSize,
+        sortType: 'RECENT',
+        sortDirection: 'DESCENDING',
+        searchString: debouncedSearch,
+        category: selectedCategory || undefined,
+        statuses: selectedStatuses,
+        regionIds: regionInput
+          .split(',')
+          .map((s) => s.trim())
+          .filter((s) => s.length > 0),
+        includeDeleted,
+      }),
   });
 
   const createMutation = useMutation({
@@ -131,6 +157,9 @@ export default function StoresPage() {
     }
   };
 
+  const categoryOptions = StoreCategoryEnum.options;
+  const statusOptions = Object.values(STORE_STATUS);
+
   return (
     <Box sx={{ p: 3 }}>
       <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 3 }}>
@@ -142,18 +171,71 @@ export default function StoresPage() {
         </Button>
       </Box>
 
-      <Box sx={{ display: 'flex', gap: 2, mb: 2 }}>
-        <input
+      <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2, mb: 2 }}>
+        <TextField
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           onKeyDown={handleSearchKeyDown}
           placeholder="가게명 검색"
-          style={{ flex: 1, padding: '8px 12px', borderRadius: 4, border: '1px solid #ccc' }}
+          size="small"
+          sx={{ flex: 1, minWidth: 240 }}
         />
-        <Button variant="outlined" onClick={() => { 
-          setPage(1); 
-          setDebouncedSearch(search); // 즉시 검색 실행
-        }}>
+
+        <FormControl size="small" sx={{ minWidth: 160 }}>
+          <Select
+            displayEmpty
+            value={selectedCategory}
+            onChange={(e) => setSelectedCategory(e.target.value)}
+            input={<OutlinedInput />}
+            renderValue={(selected) => (selected ? selected : '카테고리')}
+          >
+            <MenuItem value="">
+              <em>전체</em>
+            </MenuItem>
+            {categoryOptions.map((c) => (
+              <MenuItem key={c} value={c}>{c}</MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+
+        <FormControl size="small" sx={{ minWidth: 220 }}>
+          <Select
+            multiple
+            displayEmpty
+            value={selectedStatuses}
+            onChange={(e) => setSelectedStatuses(typeof e.target.value === 'string' ? e.target.value.split(',') : (e.target.value as string[]))}
+            input={<OutlinedInput />}
+            renderValue={(selected) => (selected.length === 0 ? '상태' : (selected as string[]).join(', '))}
+          >
+            {statusOptions.map((name) => (
+              <MenuItem key={name} value={name}>
+                <Checkbox checked={selectedStatuses.indexOf(name) > -1} />
+                <ListItemText primary={name} />
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+
+        <TextField
+          value={regionInput}
+          onChange={(e) => setRegionInput(e.target.value)}
+          placeholder="지역ID (쉼표로 구분)"
+          size="small"
+          sx={{ minWidth: 220 }}
+        />
+
+        <FormControlLabel
+          control={<Checkbox checked={includeDeleted} onChange={(e) => setIncludeDeleted(e.target.checked)} />}
+          label="삭제된 항목만"
+        />
+
+        <Button
+          variant="outlined"
+          onClick={() => {
+            setPage(1);
+            setDebouncedSearch(search); // 즉시 검색 실행
+          }}
+        >
           검색
         </Button>
       </Box>
@@ -185,23 +267,27 @@ export default function StoresPage() {
                 <TableCell>{store.address || '-'}</TableCell>
                 <TableCell>{store.category}</TableCell>
                 <TableCell>{store.contactNumber || '-'}</TableCell>
-                {/* <TableCell>
-                  <Chip
-                    label={store.status}
-                    color={
-                      store.status === STORE_STATUS.APPROVED
-                        ? 'success'
-                        : store.status === STORE_STATUS.REJECTED
-                        ? 'error'
-                        : store.status === STORE_STATUS.SUSPENDED
-                        ? 'warning'
-                        : store.status === STORE_STATUS.CLOSED
-                        ? 'default'
-                        : 'info'
-                    }
-                    size="small"
-                  />
-                </TableCell> */}
+                <TableCell>
+                  {store.status ? (
+                    <Chip
+                      label={store.status}
+                      color={
+                        store.status === STORE_STATUS.APPROVED
+                          ? 'success'
+                          : store.status === STORE_STATUS.REJECTED
+                          ? 'error'
+                          : store.status === STORE_STATUS.SUSPENDED
+                          ? 'warning'
+                          : store.status === STORE_STATUS.CLOSED
+                          ? 'default'
+                          : 'info'
+                      }
+                      size="small"
+                    />
+                  ) : (
+                    '-'
+                  )}
+                </TableCell>
                 <TableCell>
                   <Box sx={{ display: 'flex', gap: 1 }}>
                     <Button
