@@ -6,8 +6,8 @@ export const useUpdateStoreInformation = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: ({ storeId, body }: { storeId: number; body: StoreInformationBody }) => {
-      return storeInformationApi.updateStoreInformation(storeId, body);
+    mutationFn: ({ storeId, informationId, body }: { storeId: number; informationId: number; body: StoreInformationBody }) => {
+      return storeInformationApi.updateStoreInformation(storeId, informationId, body);
     },
 
     onSuccess: (_, variables) => {

@@ -38,6 +38,7 @@ const AdditionalPage = () => {
     parkingTimeUnit: '1', // 시간
     parkingTimeUnitMinutes: '60', // 분
     parkingFee: '3000', // 요금
+    parkingBasicFree: false, // 최초요금 무료 체크박스
     maxParkingFee: '5000', // 최대 요금
     additionalTimeHour: '0', // 추가 시간
     additionalTimeMinutes: '10', // 추가 분
@@ -49,22 +50,43 @@ const AdditionalPage = () => {
     // 결제 수단
     paymentMethods: [] as string[],
 
-    // SNS 링크
-    links: [] as { type: string; url: string }[],
+    // SNS 링크 (string array for URLs)
+    links: [] as string[],
   });
 
   // storeInformation 데이터로 폼 초기화
   useEffect(() => {
     if (storeInformation && !isInitialized) {
+      // 주차 가능하고 모든 요금 필드가 null이면 무료 주차
+      const isFreeParking =
+        storeInformation.parkingAvailable &&
+        !storeInformation.parkingChargeType &&
+        !storeInformation.parkingBasicFee;
+
+      const isPaidParking =
+        storeInformation.parkingChargeType === 'PAID' ||
+        storeInformation.parkingChargeType === 'HOURLY' ||
+        storeInformation.parkingChargeType === 'FLAT_RATE' ||
+        (storeInformation.parkingAvailable && storeInformation.parkingBasicFee);
+
+      // 유료 주차인 경우 parkingTimeType 결정
+      let parkingTimeType = '';
+      if (isPaidParking) {
+        // HOURLY면 시간당 과금, FLAT_RATE면 정액 과금
+        if (storeInformation.parkingChargeType === 'HOURLY') {
+          parkingTimeType = 'time';
+        } else if (storeInformation.parkingChargeType === 'FLAT_RATE') {
+          parkingTimeType = 'amount';
+        } else {
+          // 기본값은 시간당 과금
+          parkingTimeType = 'time';
+        }
+      }
+
       setFormData({
         isParkingAvailable: storeInformation.parkingAvailable || false,
-        parkingFeeType:
-          storeInformation.parkingChargeType === 'FREE'
-            ? 'free'
-            : storeInformation.parkingChargeType === 'PAID'
-              ? 'paid'
-              : '',
-        parkingTimeType: storeInformation.parkingType || '',
+        parkingFeeType: isFreeParking ? 'free' : isPaidParking ? 'paid' : '',
+        parkingTimeType: parkingTimeType,
         maxParkingTime: '',
         parkingTimeUnit: storeInformation.parkingBasicTimeMinutes
           ? Math.floor(storeInformation.parkingBasicTimeMinutes / 60).toString()
@@ -72,7 +94,11 @@ const AdditionalPage = () => {
         parkingTimeUnitMinutes: storeInformation.parkingBasicTimeMinutes
           ? (storeInformation.parkingBasicTimeMinutes % 60).toString()
           : '0',
-        parkingFee: storeInformation.parkingBasicFee?.toString() || '3000',
+        parkingFee:
+          storeInformation.parkingBasicFee === 0
+            ? '0'
+            : storeInformation.parkingBasicFee?.toString() || '3000',
+        parkingBasicFree: storeInformation.parkingBasicFee === 0, // 0원이면 무료 체크
         maxParkingFee: storeInformation.parkingMaxDailyFee?.toString() || '5000',
         additionalTimeHour: storeInformation.parkingExtraMinutes
           ? Math.floor(storeInformation.parkingExtraMinutes / 60).toString()
@@ -83,7 +109,7 @@ const AdditionalPage = () => {
         additionalFee: storeInformation.parkingExtraFee?.toString() || '3000',
         facilities: storeInformation.facilities || [],
         paymentMethods: storeInformation.paymentMethods || [],
-        links: storeInformation.links || [],
+        links: storeInformation.links || [], // API returns string array directly
       });
       setIsInitialized(true);
     }
@@ -103,25 +129,54 @@ const AdditionalPage = () => {
         ? parseInt(formData.additionalTimeHour) * 60 + parseInt(formData.additionalTimeMinutes)
         : null;
 
+    // 유료 주차일 때 시간당/정액 과금 체크
+    if (
+      formData.isParkingAvailable &&
+      formData.parkingFeeType === 'paid' &&
+      !formData.parkingTimeType
+    ) {
+      alert('유료 주차의 경우 시간당 과금 또는 정액 과금을 선택해주세요.');
+      return;
+    }
+
     const body: StoreInformationBody = {
-      links: formData.links,
+      links: formData.links, // Already a string array
       facilities: formData.facilities,
       paymentMethods: formData.paymentMethods,
       parkingAvailable: formData.isParkingAvailable,
-      parkingType: formData.parkingTimeType || null,
-      parkingChargeType: formData.isParkingAvailable
-        ? formData.parkingFeeType === 'free'
-          ? 'FREE'
-          : 'PAID'
-        : null,
-      parkingBasicTimeMinutes,
+      // 무료 주차인 경우 모든 요금 관련 필드를 null로 설정
+      parkingType:
+        formData.isParkingAvailable && formData.parkingFeeType === 'paid'
+          ? 'PAID' // 유료일 때는 PAID
+          : null,
+      parkingChargeType:
+        formData.isParkingAvailable && formData.parkingFeeType === 'paid'
+          ? formData.parkingTimeType === 'time'
+            ? 'HOURLY'
+            : 'FLAT_RATE' // 시간당이면 HOURLY, 정액이면 FLAT_RATE
+          : null,
+      parkingBasicTimeMinutes:
+        formData.isParkingAvailable &&
+        formData.parkingFeeType === 'paid' &&
+        formData.parkingTimeType === 'time'
+          ? parkingBasicTimeMinutes
+          : null,
       parkingBasicFee:
         formData.isParkingAvailable && formData.parkingFeeType === 'paid'
-          ? parseInt(formData.parkingFee)
+          ? formData.parkingBasicFree
+            ? 0
+            : parseInt(formData.parkingFee) // 무료 체크시 0원
           : null,
-      parkingExtraMinutes,
+      parkingExtraMinutes:
+        formData.isParkingAvailable &&
+        formData.parkingFeeType === 'paid' &&
+        formData.parkingTimeType === 'time'
+          ? parkingExtraMinutes
+          : null,
       parkingExtraFee:
-        formData.isParkingAvailable && formData.parkingFeeType === 'paid'
+        formData.isParkingAvailable &&
+        formData.parkingFeeType === 'paid' &&
+        formData.parkingTimeType === 'time'
           ? parseInt(formData.additionalFee)
           : null,
       parkingMaxDailyFee:
@@ -130,14 +185,20 @@ const AdditionalPage = () => {
           : null,
     };
 
+    // storeInformation.id가 있으면 update, 없으면 create (현재는 update만 구현)
+    if (!storeInformation?.id) {
+      alert('부가정보를 먼저 생성해야 합니다.');
+      return;
+    }
+
     updateInformationMutation.mutate(
-      { storeId: selectedStoreId, body },
+      { storeId: selectedStoreId, informationId: storeInformation.id, body },
       {
         onSuccess: () => {
-          alert('저장되었습니다.');
+          // alert('저장되었습니다.');
         },
         onError: () => {
-          alert('저장에 실패했습니다.');
+          // alert('저장에 실패했습니다.');
         },
       },
     );
@@ -154,6 +215,8 @@ const AdditionalPage = () => {
     setFormData((prev) => ({
       ...prev,
       parkingFeeType: value,
+      // 유료로 변경시 기본값으로 시간당 과금 설정
+      parkingTimeType: value === 'paid' && !prev.parkingTimeType ? 'time' : prev.parkingTimeType,
     }));
   };
 
@@ -168,6 +231,13 @@ const AdditionalPage = () => {
     setFormData((prev) => ({
       ...prev,
       paymentMethods: values,
+    }));
+  };
+
+  const handleLinksChange = (urls: string[]) => {
+    setFormData((prev) => ({
+      ...prev,
+      links: urls,
     }));
   };
 
@@ -208,7 +278,7 @@ const AdditionalPage = () => {
       <div className='headline-2'>부가 정보</div>
       <Card>
         <CardSubtitle label='홈페이지 / SNS 링크' required>
-          <UrlLinkList />
+          <UrlLinkList value={formData.links} onChange={handleLinksChange} />
         </CardSubtitle>
       </Card>
 
@@ -302,11 +372,12 @@ const AdditionalPage = () => {
                         </div>
                         <div className='w-[115px]'>
                           <Input
-                            type='texr'
-                            value={formData.parkingFee}
+                            type='text'
+                            value={formData.parkingBasicFree ? '0' : formData.parkingFee}
                             onChange={(e) =>
                               setFormData((prev) => ({ ...prev, parkingFee: e.target.value }))
                             }
+                            disabled={formData.parkingBasicFree}
                             suffix='원'
                           />
                         </div>
@@ -315,8 +386,10 @@ const AdditionalPage = () => {
                       <div className='ml-22'>
                         <Checkbox
                           labelText='무료'
-                          // checked={checked}
-                          // onChange={(e) => setChecked(e.target.checked)}
+                          checked={formData.parkingBasicFree}
+                          onChange={(e) =>
+                            setFormData((prev) => ({ ...prev, parkingBasicFree: e.target.checked }))
+                          }
                         />
                       </div>
 

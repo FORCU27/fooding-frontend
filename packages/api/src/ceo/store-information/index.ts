@@ -16,10 +16,11 @@ export const storeInformationApi = {
     return GetStoreInformationResponse.parse(response);
   },
 
-  // 부가정보 생성 또는 수정
-  updateStoreInformation: async (storeId: number, body: StoreInformationBody) => {
-    const response = await api.put(`${ENDPOINT}/${storeId}/information`, body);
-    return GetStoreInformationResponse.parse(response);
+  // 부가정보 수정 (information ID 필요)
+  updateStoreInformation: async (storeId: number, informationId: number, body: StoreInformationBody) => {
+    const response = await api.put(`${ENDPOINT}/${storeId}/information/${informationId}`, body);
+    // API returns null in data field for successful update
+    return response;
   },
 
   // 부가정보 삭제
