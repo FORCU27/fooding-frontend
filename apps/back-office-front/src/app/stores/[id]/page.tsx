@@ -551,7 +551,7 @@ export default function StoreDetailPage() {
               </Button>
               <Button variant='contained' onClick={() => setIsCreatePointShopOpen(true)}>등록</Button>
             </Box>
-
+          </Box>
           <TableContainer component={Paper} variant='outlined'>
             <Table>
               <TableHead>
@@ -571,58 +571,6 @@ export default function StoreDetailPage() {
               </TableHead>
               <TableBody>
                 {pointShopList?.data.list.map((item) => (
-                  <TableRow key={item.id} hover>
-                    <TableCell>{item.id}</TableCell>
-                    <TableCell>{item.name}</TableCell>
-                    <TableCell>{item.point}</TableCell>
-                    <TableCell>{item.provideType}</TableCell>
-                    <TableCell>{item.conditions || '-'}</TableCell>
-                    <TableCell>{item.totalQuantity ?? '-'}</TableCell>
-                    <TableCell>{item.issuedQuantity}</TableCell>
-                    <TableCell>{item.issueStartOn || '-'}</TableCell>
-                    <TableCell>{item.issueEndOn || '-'}</TableCell>
-                    <TableCell>
-                      <Chip label={item.isActive ? '판매중' : '중지'} color={item.isActive ? 'success' : 'default'} />
-                    </TableCell>
-                    <TableCell align="right">
-                      <Stack direction="row" spacing={1} justifyContent="flex-end">
-                        {item.isActive ? (
-                          <Button size="small" variant='outlined' onClick={async () => {
-                            await adminPointShopApi.inactivate(item.id);
-                            queryClient.invalidateQueries({ queryKey: ['pointShop', storeId] });
-                          }}>중지</Button>
-                        ) : (
-                          <Button size="small" variant='outlined' onClick={async () => {
-                            await adminPointShopApi.activate(item.id);
-                            queryClient.invalidateQueries({ queryKey: ['pointShop', storeId] });
-                          }}>판매</Button>
-                        )}
-                        <Button size="small" variant='outlined' onClick={() => { setSelectedPointShop(item); setIsEditPointShopOpen(true); }}>수정</Button>
-                        <Button size="small" color="error" variant='outlined' onClick={async () => {
-                          await adminPointShopApi.delete(item.id);
-                          queryClient.invalidateQueries({ queryKey: ['pointShop', storeId] });
-                        }}>삭제</Button>
-                      </Stack>
-                    </TableCell>
-                  </TableRow>
-                ))}
-                {pointShopList && pointShopList.data.list.length === 0 && (
-                  <TableRow>
-                    <TableCell>ID</TableCell>
-                    <TableCell>상품명</TableCell>
-                    <TableCell>포인트</TableCell>
-                    <TableCell>대상</TableCell>
-                    <TableCell>조건</TableCell>
-                    <TableCell>총수량</TableCell>
-                    <TableCell>발급</TableCell>
-                    <TableCell>시작일</TableCell>
-                    <TableCell>종료일</TableCell>
-                    <TableCell>상태</TableCell>
-                    <TableCell align='right'>액션</TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {pointShopList?.data.list.map((item) => (
                     <TableRow key={item.id} hover>
                       <TableCell>{item.id}</TableCell>
                       <TableCell>{item.name}</TableCell>
