@@ -29,6 +29,7 @@ import LocationEditDialog from '@/components/LocationEditDialog';
 import { useGetStore } from '@/hooks/store/useGetStore';
 import { usePutStore } from '@/hooks/store/usePutStore';
 import { useKakaoMap } from '@/hooks/useKakaoMap';
+import { useSelectedStoreId } from '@/hooks/useSelectedStoreId';
 
 const BasicInfoPage = () => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -36,10 +37,18 @@ const BasicInfoPage = () => {
   const [isInitialized, setIsInitialized] = useState(false);
   const [mapMarker, setMapMarker] = useState<kakao.maps.Marker | null>(null);
 
-  const parkingInfo = [];
+  // selectedStoreId 가져오기
+  const { selectedStoreId, isLoading: isLoadingStoreId } = useSelectedStoreId();
 
-  const { data: store } = useGetStore(15);
+  // selectedStoreId가 있을 때만 가게 데이터 조회
+  const { data: store } = useGetStore(selectedStoreId);
   const putStoreMutation = usePutStore();
+
+  // 콘솔로그로 확인
+  useEffect(() => {
+    console.log('selectedStoreId:', selectedStoreId);
+    console.log('isLoadingStoreId:', isLoadingStoreId);
+  }, [selectedStoreId, isLoadingStoreId]);
 
   // 폼 상태 관리
   const [formData, setFormData] = useState({
@@ -62,7 +71,7 @@ const BasicInfoPage = () => {
         contactNumber: store.contactNumber || '',
         address: store.address || '',
         direction: store.direction || '',
-        information: store.information || '',
+        information: store.addressDetail || '', // addressDetail을 information 필드에 매핑
         latitude: store.latitude || 0,
         longitude: store.longitude || 0,
       });
@@ -172,7 +181,7 @@ const BasicInfoPage = () => {
   };
 
   const handleSave = () => {
-    if (!store) return;
+    if (!store || !selectedStoreId) return;
 
     // 빈 문자열이나 undefined 값을 필터링
     const putBody: PutStoreBody = {
@@ -180,13 +189,12 @@ const BasicInfoPage = () => {
       category: formData.category || undefined,
       contactNumber: formData.contactNumber || undefined,
       address: formData.address || undefined,
+      addressDetail: formData.information || undefined, // information을 addressDetail로 매핑
       direction: formData.direction || undefined,
-      // 추가 필드들 (필요한 경우)
-      regionId: store.regionId || undefined,
       description: store.description || undefined,
       // 위도 경도는 formData에서 가져옴 (수정된 경우 반영)
-      latitude: formData.latitude || store.latitude,
-      longitude: formData.longitude || store.longitude,
+      latitude: formData.latitude || store.latitude || undefined,
+      longitude: formData.longitude || store.longitude || undefined,
     };
 
     // undefined 값을 제거
@@ -194,18 +202,39 @@ const BasicInfoPage = () => {
       Object.entries(putBody).filter(([, value]) => value !== undefined),
     ) as PutStoreBody;
 
+    // 디버깅용 로그
+    console.log('PUT 요청 바디:', cleanedBody);
+    console.log('formData category:', formData.category);
+
+    // selectedStoreId 사용
+    const storeIdToUpdate = selectedStoreId;
+
     putStoreMutation.mutate(
-      { id: 15, body: cleanedBody },
+      { id: storeIdToUpdate, body: cleanedBody },
       {
         onSuccess: () => {
+          // console.log('저장 성공 - storeId:', storeIdToUpdate);
           // alert('저장되었습니다.');
         },
         onError: () => {
-          // alert('저장에 실패했습니다.');
+          // console.log('저장 실패 - storeId:', storeIdToUpdate);
         },
       },
     );
   };
+
+  // 로딩 중이거나 storeId가 없으면 대체 UI 표시
+  if (isLoadingStoreId) {
+    return <div>가게 정보를 불러오는 중...</div>;
+  }
+
+  if (!selectedStoreId) {
+    return (
+      <div>
+        가게를 선택해주세요. <a href='/store/select'>가게 선택하기</a>
+      </div>
+    );
+  }
 
   return (
     <CardForm className='' onSubmit={(e) => e.preventDefault()}>
@@ -223,19 +252,20 @@ const BasicInfoPage = () => {
         <CardSubtitle label='업종' required>
           <SelectBox
             options={[
-              { value: '한식', label: '한식' },
-              { value: '중식', label: '중식' },
-              { value: '양식', label: '양식' },
-              { value: '일식', label: '일식' },
-              { value: '아시안', label: '아시안' },
-              { value: '분식', label: '분식' },
-              { value: '카페', label: '카페' },
-              { value: '패스트푸드', label: '패스트푸드' },
-              { value: '치킨', label: '치킨' },
+              { value: 'KOREAN', label: '한식' },
+              { value: 'CHINESE', label: '중식' },
+              { value: 'WESTERN', label: '양식' },
+              { value: 'JAPANESE', label: '일식' },
+              { value: 'ASIAN', label: '아시안' },
+              { value: 'SNACK', label: '분식' },
+              { value: 'CAFE', label: '카페' },
+              { value: 'FAST_FOOD', label: '패스트푸드' },
+              { value: 'CHICKEN', label: '치킨' },
             ]}
             label='업종 선택'
             value={formData.category}
             onValueChange={(value) => {
+              console.log('Category selected:', value);
               setFormData((prev) => ({ ...prev, category: value }));
             }}
             placeholder='업종을 선택해주세요'
@@ -363,12 +393,13 @@ const BasicInfoPage = () => {
         </CardSubtitle>
       </Card>
       <Card>
-        <CardSubtitle label='찾아오시는길' required>
+        <CardSubtitle label='상세주소'>
           <TextArea
             id='information'
             maxLength={1000}
             value={formData.information}
             onChange={(e) => setFormData((prev) => ({ ...prev, information: e.target.value }))}
+            placeholder='상세 주소를 입력하세요 (예: 3층 301호)'
           />
         </CardSubtitle>
       </Card>

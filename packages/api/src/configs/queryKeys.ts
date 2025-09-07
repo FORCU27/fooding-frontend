@@ -21,6 +21,9 @@ export const queryKeys = {
     store: {
       getStore: 'ceoStoreGetStore',
     },
+    menuCategory: {
+      list: 'ceoMenuCategoryList',
+    },
   },
   pos: {},
   user: {

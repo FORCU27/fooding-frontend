@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 import {
   DndContext,
@@ -50,9 +50,10 @@ type MenuBoardProps = {
   categories: Category[];
   onCategoriesChange: (categories: Category[]) => void;
   onSave?: (categories: Category[]) => void;
+  onEditCategory?: (categoryId: string, name: string) => void;
 };
 
-const SortableCategory = ({ category, index }: { category: Category; index: number }) => {
+const SortableCategory = ({ category, index, onDoubleClick }: { category: Category; index: number; onDoubleClick?: () => void }) => {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
     id: category.id,
   });
@@ -81,6 +82,7 @@ const SortableCategory = ({ category, index }: { category: Category; index: numb
           'subtitle-2 cursor-pointer',
           index === 0 ? 'text-fooding-purple' : 'hover:fooding-purple',
         )}
+        onDoubleClick={onDoubleClick}
       >
         {category.name}
       </span>
@@ -134,10 +136,7 @@ const SortableMenuItems = ({
       <SortableContext items={items.map((item) => item.id)} strategy={verticalListSortingStrategy}>
         <div className='space-y-2 mb-4'>
           {items.map((item) => (
-            <SortableMenuItem
-              key={item.id}
-              item={item}
-            />
+            <SortableMenuItem key={item.id} item={item} />
           ))}
         </div>
       </SortableContext>
@@ -217,12 +216,21 @@ const SortableMenuItem = ({ item }: { item: MenuItem }) => {
 export const MenuBoard = ({
   categories: initialCategories,
   onCategoriesChange,
+  onEditCategory,
 }: MenuBoardProps) => {
   const [categories, setCategories] = useState<Category[]>(initialCategories);
   const [activeId, setActiveId] = useState<string | null>(null);
   const [selectedCategoryId, setSelectedCategoryId] = useState<string | null>(
     initialCategories[0]?.id || null,
   );
+
+  // prop 변경 시 내부 state 업데이트
+  useEffect(() => {
+    setCategories(initialCategories);
+    if (initialCategories.length > 0 && !selectedCategoryId && initialCategories[0]) {
+      setSelectedCategoryId(initialCategories[0].id);
+    }
+  }, [initialCategories, selectedCategoryId]);
 
   const sensors = useSensors(
     useSensor(PointerSensor),
@@ -353,6 +361,7 @@ export const MenuBoard = ({
                     <SortableCategory
                       category={category}
                       index={selectedCategoryId === category.id ? 0 : index + 1}
+                      onDoubleClick={() => onEditCategory?.(category.id, category.name)}
                     />
                   </div>
                 ))}
@@ -376,7 +385,6 @@ export const MenuBoard = ({
               items={selectedCategory.items}
               onItemsReorder={handleItemsReorder}
             />
-            {/* <AddMenuItemDialog onAdd={(item) => handleAddMenuItem(selectedCategory.id, item)} /> */}
           </div>
         )}
       </div>
