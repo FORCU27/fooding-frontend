@@ -3,7 +3,13 @@
 import Image from 'next/image';
 import { useEffect, useRef, useState } from 'react';
 
-import { Button, ChipTabs, NavButton, Skeleton } from '@repo/design-system/components/b2c';
+import {
+  BottomSheet,
+  Button,
+  ChipTabs,
+  NavButton,
+  Skeleton,
+} from '@repo/design-system/components/b2c';
 import {
   BookmarkIcon,
   ChevronLeftIcon,
@@ -15,6 +21,7 @@ import {
 import { ActivityComponentType, useFlow } from '@stackflow/react/future';
 import { Suspense } from '@suspensive/react';
 
+import { StoreWaitingForm, StoreWaitingFormData } from './components/StoreWaitingForm';
 import { StoreDetailHomeTab } from './components/tabs/Home';
 import { StoreDetailMenuTab } from './components/tabs/Menu';
 import { StoreDetailPhotoTab } from './components/tabs/Photo';
@@ -32,6 +39,7 @@ import { useAuth } from '@/components/Provider/AuthProvider';
 import { useAddBookmark } from '@/hooks/bookmark/useAddBookmark';
 import { useDeleteBookmark } from '@/hooks/bookmark/useDeleteBookmark';
 import { useGetStoreDetail } from '@/hooks/store/useGetStoreDetail';
+import { useCreateStoreWaiting } from '@/hooks/store-waiting/useCreateStoreWaiting';
 import { useScrollVisibility } from '@/hooks/useScrollVisibility';
 import { cn } from '@/utils/cn';
 
@@ -81,9 +89,11 @@ const StoreDetail = ({ storeId, showHeader, initialTab = 'home' }: StoreDetailPr
   const { data: store } = useGetStoreDetail(storeId);
   const loginBottomSheet = useLoginBottomSheet();
   const addBookMark = useAddBookmark();
+  const createStoreWaiting = useCreateStoreWaiting();
   const deleteBookMark = useDeleteBookmark();
   const isLoggedIn = !!user;
   const [isBookmarked, setIsBookmarked] = useState(store.isBookmarked);
+  const [isBottomSheetOpen, setIsBottomSheetOpen] = useState(false);
 
   useEffect(() => {
     setIsBookmarked(store.isBookmarked);
@@ -107,6 +117,11 @@ const StoreDetail = ({ storeId, showHeader, initialTab = 'home' }: StoreDetailPr
         setIsBookmarked(!bookmarkState);
       },
     });
+  };
+
+  const handleWaitingFormSubmit = (data: StoreWaitingFormData) => {
+    createStoreWaiting.mutate({ ...data, storeId: store.id });
+    setIsBottomSheetOpen(false);
   };
 
   return (
@@ -203,9 +218,22 @@ const StoreDetail = ({ storeId, showHeader, initialTab = 'home' }: StoreDetailPr
           />
           <span className='subtitle-4 text-black h-[19px]'>{store.bookmarkCount}</span>
         </button>
-        {/* TODO: 줄서기 기능 추가 */}
-        <Button>줄서기</Button>
+        <Button disabled={store.isFinished} onClick={() => setIsBottomSheetOpen(true)}>
+          {store.isFinished ? '영업 종료' : '줄서기'}
+        </Button>
       </div>
+      <BottomSheet isOpen={isBottomSheetOpen} onOpenChange={setIsBottomSheetOpen}>
+        <BottomSheet.Content>
+          <BottomSheet.Header>
+            <BottomSheet.Title className='headline-3'>방문 인원을 선택하세요</BottomSheet.Title>
+            <BottomSheet.Description />
+          </BottomSheet.Header>
+          <BottomSheet.Body>
+            <StoreWaitingForm handleSubmit={handleWaitingFormSubmit} storeId={storeId} />
+          </BottomSheet.Body>
+          <BottomSheet.Footer />
+        </BottomSheet.Content>
+      </BottomSheet>
     </div>
   );
 };
