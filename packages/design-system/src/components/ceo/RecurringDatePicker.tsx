@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 
-import DatePicker from './DatePicker';
+import { DatePicker } from './DatePicker';
 import RadioButtonGroup from './RadioButtonGroup';
 
 export enum RecurrenceType {

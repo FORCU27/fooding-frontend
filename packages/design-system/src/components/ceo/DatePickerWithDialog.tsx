@@ -7,7 +7,7 @@ import { Calendar } from 'lucide-react';
 
 import { Button } from './Button';
 import { ChipList } from './ChipList';
-import DatePicker from './DatePicker';
+import { DatePicker } from './DatePicker';
 import RadioButtonGroup from './RadioButtonGroup';
 import { CloseIcon } from '../../icons';
 import { cn } from '../../utils';
@@ -34,7 +34,7 @@ interface DatePickerWithDialogProps {
   onChange?: Dispatch<SetStateAction<SelectedItem[] | SelectedItem | null>>;
 }
 
-export function DatePickerWithDialog({
+export const DatePickerWithDialog = ({
   title,
   placeholder,
   radioOptions,
@@ -43,7 +43,7 @@ export function DatePickerWithDialog({
   selectionMode = 'single',
   selectedDates: externalSelectedDates,
   onChange,
-}: DatePickerWithDialogProps) {
+}: DatePickerWithDialogProps) => {
   // 내부 상태: 외부에서 selectedDates가 제공되면 사용, 아니면 useState값 사용
   const [internalSelectedDates, setInternalSelectedDates] = useState<
     SelectedItem[] | SelectedItem | null
@@ -258,4 +258,4 @@ export function DatePickerWithDialog({
       </Dialog.Root>
     </div>
   );
-}
+};

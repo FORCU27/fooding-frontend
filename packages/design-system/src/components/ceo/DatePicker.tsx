@@ -14,7 +14,7 @@ type DatePickerProps = {
 
 const WEEK_DAYS = ['일', '월', '화', '수', '목', '금', '토'];
 
-const DatePicker = forwardRef<HTMLInputElement, DatePickerProps>(
+export const DatePicker = forwardRef<HTMLInputElement, DatePickerProps>(
   ({ label, value, onChange, className, ...props }, ref) => {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
@@ -47,10 +47,7 @@ const DatePicker = forwardRef<HTMLInputElement, DatePickerProps>(
     };
 
     return (
-      <div
-        className={cn('relative min-w-full flex flex-col justify-center items-center', className)}
-        {...props}
-      >
+      <div className={cn('relative flex flex-col', className)} {...props}>
         {label && (
           <label className='block mb-1 body-5 text-gray-5' htmlFor={props.id}>
             {label}
@@ -183,5 +180,3 @@ const DatePicker = forwardRef<HTMLInputElement, DatePickerProps>(
 );
 
 DatePicker.displayName = 'DatePicker';
-
-export default DatePicker;
