@@ -217,14 +217,10 @@ export default function RewardLogsPage() {
                     <Chip label={`${row.point}P`} color='primary' variant='outlined' size='small' />
                   </TableCell>
                   <TableCell>
-                    <Chip
-                      label={row.status}
-                      color={getStatusColor(row.status) as any}
-                      size='small'
-                    />
+                    <Chip label={row.status} color={getStatusColor(row.status)} size='small' />
                   </TableCell>
                   <TableCell>
-                    <Chip label={row.type} color={getTypeColor(row.type) as any} size='small' />
+                    <Chip label={row.type} color={getTypeColor(row.type)} size='small' />
                   </TableCell>
                   <TableCell>{row.channel}</TableCell>
                   <TableCell>{row.memo || '-'}</TableCell>
