@@ -2,7 +2,7 @@ import { useState } from 'react';
 
 import { Button, ChipFilter, SearchInput } from '@repo/design-system/components/b2c';
 import { CloseIcon, SearchIcon } from '@repo/design-system/icons';
-import { ActivityComponentType } from '@stackflow/react/future';
+import { ActivityComponentType, useFlow } from '@stackflow/react/future';
 
 import { CTAContainer } from '@/components/CTAContainer';
 import { Header } from '@/components/Layout/Header';
@@ -12,15 +12,14 @@ import { isNonEmptyArray } from '@/utils/array';
 
 export const SearchScreen: ActivityComponentType<'SearchScreen'> = () => {
   const [searchInputValue, setSearchInputValue] = useState('');
-  const [searchValue, setSearchValue] = useState('');
   const [selectedRegions, setSelectedRegions] = useState<string[]>([]);
   const [recentSearches, setRecentSearches] = useState<readonly string[]>(RECENT_SEARCHES);
+
+  const flow = useFlow();
 
   const removeRecentSearch = (search: string) => {
     setRecentSearches((prev) => prev.filter((item) => item !== search));
   };
-
-  console.log('searchValue', searchValue);
 
   const filterLabel =
     selectedRegions.length > 1
@@ -28,6 +27,13 @@ export const SearchScreen: ActivityComponentType<'SearchScreen'> = () => {
       : isNonEmptyArray(selectedRegions)
         ? selectedRegions[0]
         : '지역';
+
+  const search = (keyword: string) => {
+    flow.push('SearchResultScreen', {
+      keyword,
+      regions: selectedRegions,
+    });
+  };
 
   return (
     <Screen
@@ -37,7 +43,9 @@ export const SearchScreen: ActivityComponentType<'SearchScreen'> = () => {
         </Header>
       }
     >
-      {searchInputValue && <AutoComplete keyword={searchInputValue} onSelect={setSearchValue} />}
+      {searchInputValue && (
+        <AutoComplete keyword={searchInputValue} onSelect={(value) => search(value)} />
+      )}
       <div className='px-grid-margin py-[14px]'>
         <ChipFilter.List scrollable>
           <RegionMultiSelectBottomSheet
@@ -57,12 +65,16 @@ export const SearchScreen: ActivityComponentType<'SearchScreen'> = () => {
           </div>
           <ul className='mt-3 flex flex-col'>
             {recentSearches.map((search) => (
-              <li key={search} className='w-full'>
+              <li key={search} className='w-full relative'>
                 <button className='h-[55px] flex justify-between items-center px-grid-margin active:bg-gray-1 w-full'>
                   <span>{search}</span>
-                  <button aria-label='삭제' onClick={() => removeRecentSearch(search)}>
-                    <CloseIcon className='text-gray-5' />
-                  </button>
+                </button>
+                <button
+                  className='absolute top-1/2 -translate-y-1/2 right-grid-margin'
+                  aria-label='삭제'
+                  onClick={() => removeRecentSearch(search)}
+                >
+                  <CloseIcon className='text-gray-5' />
                 </button>
               </li>
             ))}
@@ -70,7 +82,9 @@ export const SearchScreen: ActivityComponentType<'SearchScreen'> = () => {
         </>
       )}
       <CTAContainer>
-        <Button>검색</Button>
+        <Button disabled={searchInputValue.length === 0} onClick={() => search(searchInputValue)}>
+          검색
+        </Button>
       </CTAContainer>
     </Screen>
   );

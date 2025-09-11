@@ -240,3 +240,15 @@ export const RewardListResponse = <TListItem extends z.ZodType>(listItem: TListI
 
 export type GetStoreRewardListResponse = z.infer<typeof GetStoreRewardListResponse>;
 export const GetStoreRewardListResponse = RewardListResponse(StoreReward);
+
+export type SearchStoreListParams = {
+  searchString: string;
+  pageNum: number;
+  pageSize: number;
+  sortType: SortType;
+  sortDirection: SortDirection;
+  regionIds: string[];
+  category?: STORE_CATEGORY;
+};
+
+export const SearchStoreListResponse = PageResponse(Store);

@@ -7,8 +7,7 @@ import { ActivityComponentType } from '@stackflow/react/future';
 import { Header } from '@/components/Layout/Header';
 import { Screen } from '@/components/Layout/Screen';
 
-
-export type MenuDetailScreenProps = {
+export type MenuDetailScreenParams = {
   storeName: string;
   menu: StoreMenu;
 };
