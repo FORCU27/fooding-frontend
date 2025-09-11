@@ -6,6 +6,7 @@ import { OverlayProvider } from 'overlay-kit';
 import { LoginBottomSheetProvider } from '@/components/Auth/LoginBottomSheet';
 import { AuthProvider } from '@/components/Provider/AuthProvider';
 import { ReactQueryProvider } from '@/components/Provider/ReactQueryProvider';
+import { Toaster } from '@/components/Toaster';
 
 export const Providers = ({ children }: { children: React.ReactNode }) => {
   return (
@@ -15,6 +16,7 @@ export const Providers = ({ children }: { children: React.ReactNode }) => {
           <AuthProvider>
             <LoginBottomSheetProvider>{children}</LoginBottomSheetProvider>
           </AuthProvider>
+          <Toaster />
         </OverlayProvider>
       </ReactQueryProvider>
     </MSWProvider>

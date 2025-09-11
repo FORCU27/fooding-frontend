@@ -36,6 +36,7 @@
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "react-hook-form": "^7.55.0",
+    "react-hot-toast": "^2.6.0",
     "react-kakao-maps-sdk": "^1.2.0",
     "react-plock": "^3.5.1",
     "swiper": "^11.2.6",
