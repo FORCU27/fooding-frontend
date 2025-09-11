@@ -43,6 +43,7 @@ jobs:
             NEXT_PUBLIC_KAKAO_CLIENT_ID=${{ secrets.STAGE_CEO_NEXT_PUBLIC_KAKAO_CLIENT_ID }}
             NEXT_PUBLIC_NAVER_CLIENT_ID=${{ secrets.STAGE_CEO_NEXT_PUBLIC_NAVER_CLIENT_ID }}
             NEXT_PUBLIC_APPLE_CLIENT_ID=${{ secrets.STAGE_CEO_NEXT_PUBLIC_APPLE_CLIENT_ID }}
+            NEXT_PUBLIC_KAKAO_JS_KEY=${{ secrets.STAGE_NEXT_PUBLIC_KAKAO_JS_KEY }}
       - name: Deployment
         uses: appleboy/ssh-action@master
         with:

@@ -1,5 +1,7 @@
 'use client';
 
+import Image from 'next/image';
+
 import { Bookmark } from '@repo/api/user';
 import { Button, ErrorFallback, Skeleton } from '@repo/design-system/components/b2c';
 import {
@@ -19,8 +21,10 @@ import { Header } from '@/components/Layout/Header';
 import { Screen } from '@/components/Layout/Screen';
 import { useAuth } from '@/components/Provider/AuthProvider';
 import { StoresList } from '@/components/Store/StoresList';
+import { useGetBookmarkList } from '@/hooks/bookmark/useGetBookmarkList';
+import { useGetInfiniteMyCouponList } from '@/hooks/coupon/useGetMyCouponList';
+import { useGetRewardPersonalLog } from '@/hooks/reward/useGetRewardPersonalLog';
 import { useGetStoreList } from '@/hooks/store/useGetStoreList';
-import { useGetBookmarkList } from '@/hooks/user/useGetBookmarkList';
 import { BookmarkCard } from '@/screens/bookmarks/components/BookmarkCard';
 
 export const MyPageTab: ActivityComponentType<'MyPageTab'> = () => {
@@ -65,14 +69,29 @@ const Content = () => {
     pageSize: 5,
   });
 
+  const { coupons } = useGetInfiniteMyCouponList({ used: false });
+
+  const { data: reward } = useGetRewardPersonalLog();
   return (
     <div className='w-full'>
       <div className='flex-col bg-white/80 pb-5 py-grid-margin'>
         <div className='flex justify-between px-grid-margin'>
           <div className='flex justify-center items-center'>
-            <div className='flex justify-center items-center w-[64px] h-[64px] bg-gray-1 rounded-full'>
-              <FoodingIcon fillOpacity={0.1} />
-            </div>
+            {user?.profileImage ? (
+              <div className='flex justify-center items-center w-[64px] h-[64px]'>
+                <Image
+                  src={user.profileImage}
+                  height={64}
+                  width={64}
+                  alt='user-profile'
+                  className='w-full h-full object-cover rounded-full'
+                />
+              </div>
+            ) : (
+              <div className='flex justify-center items-center w-[64px] h-[64px] bg-gray-1 rounded-full'>
+                <FoodingIcon fillOpacity={0.1} />
+              </div>
+            )}
             <div className='flex flex-col mx-5 justify-center w-[100px]'>
               <p className='subtitle-4 mb-2'>{user?.nickname ? user?.nickname : user?.email}</p>
               <div className='flex justify-between w-full'>
@@ -83,7 +102,12 @@ const Content = () => {
             </div>
           </div>
           <div className='flex justify-center items-center'>
-            <Button size='small' variant='outlined' className='w-[96px]'>
+            <Button
+              size='small'
+              variant='outlined'
+              className='w-[96px]'
+              onClick={() => flow.push('ProfileModifyScreen', {})}
+            >
               프로필 수정
             </Button>
           </div>
@@ -95,16 +119,22 @@ const Content = () => {
             <p className='subtitle-6'>5건</p>
           </div>
           <hr className='w-[2px] h-[81px] bg-gray-2 text-gray-2 mx-2' />
-          <div className='flex flex-col justify-center items-center gap-1 cursor-pointer'>
+          <div
+            className='flex flex-col justify-center items-center gap-1 cursor-pointer'
+            onClick={() => flow.push('MyCouponListScreen', {})}
+          >
             <TicketIcon />
             <p className='body-7 text-gray-5'>쿠폰</p>
-            <p className='subtitle-6'>3장</p>
+            <p className='subtitle-6'>{coupons && coupons.length}장</p>
           </div>
           <hr className='w-[2px] h-[81px] bg-gray-2 text-gray-2 mx-2' />
-          <div className='flex flex-col justify-center items-center gap-1 cursor-pointer'>
+          <div
+            className='flex flex-col justify-center items-center gap-1 cursor-pointer'
+            onClick={() => flow.push('MyRewardListScreen', {})}
+          >
             <GiftIcon />
-            <p className='body-7 text-gray-5'>포인트 적립</p>
-            <p className='subtitle-6'>5건</p>
+            <p className='body-7 text-gray-5'>포인트</p>
+            <p className='subtitle-6'>{reward.list.length}건</p>
           </div>
         </div>
       </div>

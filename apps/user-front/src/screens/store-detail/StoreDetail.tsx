@@ -3,7 +3,13 @@
 import Image from 'next/image';
 import { useEffect, useRef, useState } from 'react';
 
-import { Button, ChipTabs, NavButton, Skeleton } from '@repo/design-system/components/b2c';
+import {
+  BottomSheet,
+  Button,
+  ChipTabs,
+  NavButton,
+  Skeleton,
+} from '@repo/design-system/components/b2c';
 import {
   BookmarkIcon,
   ChevronLeftIcon,
@@ -15,9 +21,13 @@ import {
 import { ActivityComponentType, useFlow } from '@stackflow/react/future';
 import { Suspense } from '@suspensive/react';
 
+import { StoreWaitingForm, StoreWaitingFormData } from './components/StoreWaitingForm';
 import { StoreDetailHomeTab } from './components/tabs/Home';
+import { StoreDetailMenuTab } from './components/tabs/Menu';
+import { StoreDetailPhotoTab } from './components/tabs/Photo';
 import { StoreDetailReviewTab } from './components/tabs/ReviewDetail';
 import { StoreDetailPostListTab } from './components/tabs/StorePostList';
+import { StoreRewardListTab } from './components/tabs/StoreRewardList';
 import { useLoginBottomSheet } from '@/components/Auth/LoginBottomSheet';
 import { Carousel } from '@/components/Carousel';
 import { LoadingToggle } from '@/components/Devtool/LoadingToggle';
@@ -26,9 +36,10 @@ import { Header } from '@/components/Layout/Header';
 import { Screen } from '@/components/Layout/Screen';
 import { Section } from '@/components/Layout/Section';
 import { useAuth } from '@/components/Provider/AuthProvider';
+import { useAddBookmark } from '@/hooks/bookmark/useAddBookmark';
+import { useDeleteBookmark } from '@/hooks/bookmark/useDeleteBookmark';
 import { useGetStoreDetail } from '@/hooks/store/useGetStoreDetail';
-import { useAddBookmark } from '@/hooks/user/useAddBookmark';
-import { useDeleteBookmark } from '@/hooks/user/useDeleteBookmark';
+import { useCreateStoreWaiting } from '@/hooks/store-waiting/useCreateStoreWaiting';
 import { useScrollVisibility } from '@/hooks/useScrollVisibility';
 import { cn } from '@/utils/cn';
 
@@ -49,6 +60,8 @@ export const StoreDetailScreen: ActivityComponentType<'StoreDetailScreen'> = ({ 
     ref: screenRef,
   });
 
+  const initialTab = params.tab ?? 'home';
+
   return (
     <Screen ref={screenRef}>
       <DefaultErrorBoundary>
@@ -57,7 +70,7 @@ export const StoreDetailScreen: ActivityComponentType<'StoreDetailScreen'> = ({ 
         </NavButton>
         <LoadingToggle fallback={<StoreDetailLoadingFallback />}>
           <Suspense clientOnly fallback={<StoreDetailLoadingFallback />}>
-            <StoreDetail storeId={params.storeId} showHeader={showHeader} />
+            <StoreDetail storeId={params.storeId} showHeader={showHeader} initialTab={initialTab} />
           </Suspense>
         </LoadingToggle>
       </DefaultErrorBoundary>
@@ -68,16 +81,19 @@ export const StoreDetailScreen: ActivityComponentType<'StoreDetailScreen'> = ({ 
 type StoreDetailProps = {
   storeId: number;
   showHeader: boolean;
+  initialTab?: string;
 };
 
-const StoreDetail = ({ storeId, showHeader }: StoreDetailProps) => {
+const StoreDetail = ({ storeId, showHeader, initialTab = 'home' }: StoreDetailProps) => {
   const { user } = useAuth();
   const { data: store } = useGetStoreDetail(storeId);
   const loginBottomSheet = useLoginBottomSheet();
   const addBookMark = useAddBookmark();
+  const createStoreWaiting = useCreateStoreWaiting();
   const deleteBookMark = useDeleteBookmark();
   const isLoggedIn = !!user;
   const [isBookmarked, setIsBookmarked] = useState(store.isBookmarked);
+  const [isBottomSheetOpen, setIsBottomSheetOpen] = useState(false);
 
   useEffect(() => {
     setIsBookmarked(store.isBookmarked);
@@ -103,8 +119,13 @@ const StoreDetail = ({ storeId, showHeader }: StoreDetailProps) => {
     });
   };
 
+  const handleWaitingFormSubmit = (data: StoreWaitingFormData) => {
+    createStoreWaiting.mutate({ ...data, storeId: store.id });
+    setIsBottomSheetOpen(false);
+  };
+
   return (
-    <div className='flex flex-col pb-[120px] min-h-dvh'>
+    <div className='flex flex-col min-h-dvh'>
       {showHeader && <Header left={<Header.Back />} title={store.name} />}
       {/* TODO: 공유 기능 추가 */}
       <NavButton className='z-10 absolute right-grid-margin top-3'>
@@ -148,14 +169,15 @@ const StoreDetail = ({ storeId, showHeader }: StoreDetailProps) => {
           <span className='subtitle-6 text-black'>{store.estimatedWaitingTimeMinutes ?? 0}분</span>
         </div>
       </Section>
-      <Section className='mt-[10px] py-[14px]'>
-        <ChipTabs defaultValue='home' scrollable>
+      <Section className='mt-[10px] pt-[14px] pb-[100px]'>
+        <ChipTabs defaultValue={initialTab} scrollable>
           <ChipTabs.List>
             <ChipTabs.Trigger value='home'>홈</ChipTabs.Trigger>
             <ChipTabs.Trigger value='news'>소식</ChipTabs.Trigger>
             <ChipTabs.Trigger value='menu'>메뉴</ChipTabs.Trigger>
             <ChipTabs.Trigger value='photo'>사진</ChipTabs.Trigger>
             <ChipTabs.Trigger value='review'>리뷰</ChipTabs.Trigger>
+            <ChipTabs.Trigger value='reward'>리워드</ChipTabs.Trigger>
             <ChipTabs.Trigger value='info'>매장정보</ChipTabs.Trigger>
           </ChipTabs.List>
           <Suspense>
@@ -165,8 +187,17 @@ const StoreDetail = ({ storeId, showHeader }: StoreDetailProps) => {
             <ChipTabs.Content value='news'>
               <StoreDetailPostListTab storeId={storeId} />
             </ChipTabs.Content>
+            <ChipTabs.Content value='menu'>
+              <StoreDetailMenuTab store={store} />
+            </ChipTabs.Content>
             <ChipTabs.Content value='review'>
               <StoreDetailReviewTab store={store} />
+            </ChipTabs.Content>
+            <ChipTabs.Content value='photo'>
+              <StoreDetailPhotoTab store={store} />
+            </ChipTabs.Content>
+            <ChipTabs.Content value='reward'>
+              <StoreRewardListTab storeId={storeId} />
             </ChipTabs.Content>
           </Suspense>
         </ChipTabs>
@@ -185,11 +216,24 @@ const StoreDetail = ({ storeId, showHeader }: StoreDetailProps) => {
             fill={isBookmarked ? 'var(--color-primary-pink)' : 'none'}
             onClick={handleBookmarkClick}
           />
-          <span className='subtitle-4 text-black h-[19px]'>{mock.bookmarkCount}</span>
+          <span className='subtitle-4 text-black h-[19px]'>{store.bookmarkCount}</span>
         </button>
-        {/* TODO: 줄서기 기능 추가 */}
-        <Button>줄서기</Button>
+        <Button disabled={store.isFinished} onClick={() => setIsBottomSheetOpen(true)}>
+          {store.isFinished ? '영업 종료' : '줄서기'}
+        </Button>
       </div>
+      <BottomSheet isOpen={isBottomSheetOpen} onOpenChange={setIsBottomSheetOpen}>
+        <BottomSheet.Content>
+          <BottomSheet.Header>
+            <BottomSheet.Title className='headline-3'>방문 인원을 선택하세요</BottomSheet.Title>
+            <BottomSheet.Description />
+          </BottomSheet.Header>
+          <BottomSheet.Body>
+            <StoreWaitingForm handleSubmit={handleWaitingFormSubmit} storeId={storeId} />
+          </BottomSheet.Body>
+          <BottomSheet.Footer />
+        </BottomSheet.Content>
+      </BottomSheet>
     </div>
   );
 };
@@ -303,20 +347,22 @@ const StoreImagePlaceholder = () => {
 const StoreImageCarousel = ({ imageUrls }: CarouselProps) => {
   return (
     <Carousel>
-      <Carousel.List>
-        {imageUrls.map((imageUrl, index) => (
-          <Carousel.Item key={index} className='h-[280px]'>
-            <Image fill style={{ objectFit: 'cover' }} src={imageUrl} alt='메뉴 이미지' />
-          </Carousel.Item>
-        ))}
-      </Carousel.List>
-      <Carousel.Pagination>
-        {({ page }) => (
-          <div className='absolute bottom-5 right-5 text-white text-xs p-[10px] flex justify-center items-center bg-black/60 rounded-[8px] h-7'>
-            {page} / {imageUrls.length}
-          </div>
-        )}
-      </Carousel.Pagination>
+      <Carousel.Region>
+        <Carousel.List>
+          {imageUrls.map((imageUrl, index) => (
+            <Carousel.Item key={index} className='h-[280px]'>
+              <Image fill style={{ objectFit: 'cover' }} src={imageUrl} alt='메뉴 이미지' />
+            </Carousel.Item>
+          ))}
+        </Carousel.List>
+        <Carousel.Pagination>
+          {({ page }) => (
+            <div className='absolute bottom-5 right-5 text-white text-xs p-[10px] flex justify-center items-center bg-black/60 rounded-[8px] h-7'>
+              {page} / {imageUrls.length}
+            </div>
+          )}
+        </Carousel.Pagination>
+      </Carousel.Region>
     </Carousel>
   );
 };

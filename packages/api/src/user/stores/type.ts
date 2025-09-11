@@ -25,11 +25,13 @@ export const DAY_OF_WEEK = [
 ] as const;
 export type DayOfWeek = (typeof DAY_OF_WEEK)[number];
 
+export const PROVIDE_TYPES = ['ALL', 'REGULAR_CUSTOMER'] as const;
+export type ProvideType = (typeof PROVIDE_TYPES)[number];
+
 export type Store = z.infer<typeof Store>;
 export const Store = z.object({
   id: z.number(),
   name: z.string(),
-  city: z.string(),
   visitCount: z.number(),
   reviewCount: z.number(),
   averageRating: z.number(),
@@ -46,20 +48,34 @@ const StoreImage = z.object({
   tags: z.array(z.string()).nullable(),
 });
 
+export enum STORE_CATEGORY {
+  PORK = '족발/보쌈',
+  MEAT = '고기',
+  CHICKEN = '치킨',
+  JAPANESE = '일식',
+  WESTERN = '양식',
+  CHINESE = '중식',
+  KOREAN = '한식',
+  ASIAN = '아시안 푸드',
+  LUNCHBOX_PORRIDGE = '도시락/죽',
+  CAFE_DESSERT = '카페/디저트',
+  BURGER = '햄버거',
+  SALAD = '샐러드',
+  SNACK = '분식',
+  SEAFOOD = '수산물',
+  SIDE_DISH = '술안주',
+}
+
 export type StoreInfo = z.infer<typeof StoreInfo>;
 export const StoreInfo = Store.omit({ mainImage: true }).extend({
   address: z.string(),
-  category: z.string(),
+  addressDetail: z.string().nullable(),
+  category: z.enum(Object.keys(STORE_CATEGORY) as (keyof typeof STORE_CATEGORY)[]),
   description: z.string(),
-  priceCategory: z.string(),
-  eventDescription: z.string().optional(),
   contactNumber: z.string(),
   direction: z.string(),
-  isParkingAvailable: z.boolean(),
-  isNewOpen: z.boolean(),
-  isTakeOut: z.boolean(),
-  latitude: z.number(),
-  longitude: z.number(),
+  latitude: z.number().nullable(),
+  longitude: z.number().nullable(),
   images: z.array(StoreImage),
   bookmarkCount: z.number(),
 });
@@ -89,6 +105,18 @@ export const Review = z.object({
   likeCount: z.number(),
   createdAt: z.iso.datetime({ local: true }),
   updatedAt: z.iso.datetime({ local: true }),
+});
+
+export type StoreMenu = z.infer<typeof StoreMenu>;
+export const StoreMenu = z.object({
+  id: z.number(),
+  name: z.string(),
+  description: z.string(),
+  imageUrl: z.string().nullable(),
+  price: z.number(),
+  sortOrder: z.number(),
+  signature: z.boolean(),
+  recommend: z.boolean(),
 });
 
 export type GetStoreReviewListRequest = {
@@ -128,18 +156,7 @@ export const GetStoreMenuListResponse = ApiResponse(
     z.object({
       id: z.number(),
       categoryName: z.string(),
-      menu: z.array(
-        z.object({
-          id: z.number(),
-          name: z.string(),
-          description: z.string(),
-          imageUrl: z.string(),
-          price: z.number(),
-          sortOrder: z.number(),
-          signature: z.boolean(),
-          recommend: z.boolean(),
-        }),
-      ),
+      menu: z.array(StoreMenu),
     }),
   ),
 );
@@ -200,4 +217,26 @@ export type CreateStoreReviewBody = {
   taste: number;
   mood: number;
   service: number;
+  imageUrls: string[];
 };
+
+export type StoreReward = z.infer<typeof StoreReward>;
+export const StoreReward = z.object({
+  id: z.number(),
+  name: z.string(),
+  point: z.number(),
+  provideType: z.enum(PROVIDE_TYPES),
+  conditions: z.string().nullable(),
+  quantity: z.number().nullable(),
+});
+
+export const RewardListResponse = <TListItem extends z.ZodType>(listItem: TListItem) =>
+  ApiResponse(
+    z.object({
+      point: z.number(),
+      pointShopItems: z.array(listItem),
+    }),
+  );
+
+export type GetStoreRewardListResponse = z.infer<typeof GetStoreRewardListResponse>;
+export const GetStoreRewardListResponse = RewardListResponse(StoreReward);

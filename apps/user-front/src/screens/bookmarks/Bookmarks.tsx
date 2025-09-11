@@ -10,7 +10,7 @@ import { BookmarkList } from './components/BookmarkList';
 import { LoadingToggle } from '@/components/Devtool/LoadingToggle';
 import { Header } from '@/components/Layout/Header';
 import { Screen } from '@/components/Layout/Screen';
-import { useGetBookmarkList } from '@/hooks/user/useGetBookmarkList';
+import { useGetBookmarkList } from '@/hooks/bookmark/useGetBookmarkList';
 
 export const BookmarkListScreen: ActivityComponentType<'BookmarkListScreen'> = () => {
   return (

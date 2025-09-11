@@ -30,9 +30,18 @@ const FullscreenBottomSheet = ({
   );
 };
 
-type DialogContentProps = React.ComponentPropsWithRef<typeof DialogPrimitives.Content>;
+type FullscreenBottomSheetContentProps = React.ComponentPropsWithRef<
+  typeof DialogPrimitives.Content
+> & {
+  hideCloseButton?: boolean;
+};
 
-const FullscreenBottomSheetContent = ({ className, children, ...props }: DialogContentProps) => {
+const FullscreenBottomSheetContent = ({
+  className,
+  children,
+  hideCloseButton = false,
+  ...props
+}: FullscreenBottomSheetContentProps) => {
   return (
     <DialogPrimitives.Portal>
       <DialogPrimitives.Content
@@ -49,9 +58,11 @@ const FullscreenBottomSheetContent = ({ className, children, ...props }: DialogC
         {...props}
       >
         {children}
-        <DialogPrimitives.Close className='absolute top-4 right-4 size-10 rounded-full flex justify-center items-center'>
-          <CloseIcon size={28} />
-        </DialogPrimitives.Close>
+        {hideCloseButton === false && (
+          <DialogPrimitives.Close className='absolute top-4 right-4 size-10 rounded-full flex justify-center items-center'>
+            <CloseIcon size={28} />
+          </DialogPrimitives.Close>
+        )}
       </DialogPrimitives.Content>
     </DialogPrimitives.Portal>
   );

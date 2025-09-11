@@ -70,6 +70,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setUser(userResponse.data);
     } catch (error) {
       console.error('Email login failed:', error);
+      throw error;
     } finally {
       setIsLoading(false);
     }

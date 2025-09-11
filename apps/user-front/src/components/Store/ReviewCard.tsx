@@ -27,9 +27,21 @@ export const ReviewCard = ({ review }: ReviewCardProps) => {
 
       <div className='flex flex-col pt-3 px-5 pb-10'>
         <div className='flex mb-3'>
-          <div className='flex justify-center items-center size-[56px] bg-gray-1 rounded-full'>
-            <FoodingIcon width={25} height={31} color='rgba(17, 17, 17, 0.1)' />
-          </div>
+          {review.profileUrl ? (
+            <div className='flex justify-center items-center w-[56px] h-[56px]'>
+              <Image
+                src={review.profileUrl}
+                alt='프로필 이미지'
+                width={56}
+                height={56}
+                className='w-full h-full object-cover rounded-full'
+              />
+            </div>
+          ) : (
+            <div className='flex bg-gray-1 justify-center items-center rounded-full w-[56px] h-[56px]'>
+              <FoodingIcon width={32} height={40} color='rgba(17, 17, 17, 0.1)' />
+            </div>
+          )}
           <div className='ml-3 flex flex-col justify-center flex-1'>
             <span className='subtitle-3 text-black'>{review.nickname ?? '닉네임 1'}</span>
           </div>

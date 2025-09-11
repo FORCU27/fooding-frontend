@@ -12,6 +12,7 @@ export default [
       ...pluginNext.configs.recommended.rules,
       ...pluginNext.configs["core-web-vitals"].rules,
       "react/prop-types": "off",
+      "@next/next/no-img-element": "off",
     },
   },
 ];

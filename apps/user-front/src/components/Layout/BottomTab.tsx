@@ -1,13 +1,14 @@
 'use client';
 
 import { Slot } from '@repo/design-system/components';
-import { HomeIcon, ListIcon, SearchIcon } from '@repo/design-system/icons';
+import { HomeIcon, SearchIcon } from '@repo/design-system/icons';
 import { Link } from '@stackflow/link/future';
 
-import { MyPageLink } from '../MyPage/MyPageLink';
+import { MyPageLink } from '../AuthTab/MyPageLink';
+import { PlanLink } from '../AuthTab/PlanLink';
 import { cn } from '@/utils/cn';
 
-type Tab = 'home' | 'search' | 'reservation' | 'mypage';
+type Tab = 'home' | 'search' | 'plan' | 'mypage';
 
 type BottomTabProps = {
   currentTab: Tab;
@@ -46,18 +47,11 @@ const BottomTab = ({ currentTab }: BottomTabProps) => {
           <BottomTabLabel>검색</BottomTabLabel>
         </Link>
       </BottomTabItem>
-      <BottomTabItem isActive={currentTab === 'reservation'}>
-        <Link
-          activityName='ReservationTab'
-          activityParams={{}}
-          replace
-          animate={false}
-          onClick={(e) => onTabClick(e, 'reservation')}
-        >
-          <ListIcon size={24} />
-          <BottomTabLabel>예약/웨이팅</BottomTabLabel>
-        </Link>
-      </BottomTabItem>
+      <PlanLink
+        BottomTabItem={BottomTabItem}
+        BottomTabLabel={BottomTabLabel}
+        isActive={currentTab === 'plan'}
+      />
 
       <MyPageLink
         BottomTabItem={BottomTabItem}

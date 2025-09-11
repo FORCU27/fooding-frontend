@@ -13,6 +13,7 @@ import {
   GetStoreOperatingHoursResponse,
   GetStoreReviewListRequest,
   GetStoreReviewListResponse,
+  GetStoreRewardListResponse,
 } from './type';
 import { api } from '../../shared';
 
@@ -53,5 +54,12 @@ export const storeApi = {
   getStoreImmediateEntryList: async (params: GetStoreListParams) => {
     const response = await api.get(`${ENDPOINT}/immediate-entry`, { params });
     return GetStoreListResponse.parse(response);
+  },
+  getStoreRewardList: async (storeId: number) => {
+    const response = await api.get(`${ENDPOINT}/${storeId}/rewards`);
+    return GetStoreRewardListResponse.parse(response);
+  },
+  purchaseStoreReward: async (storeId: number, id: number) => {
+    return await api.post(`${ENDPOINT}/${storeId}/rewards/${id}`);
   },
 };

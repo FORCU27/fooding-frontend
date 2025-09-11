@@ -10,7 +10,7 @@ import { useAuth } from '@/components/Provider/AuthProvider';
 import { cn } from '@/utils/cn';
 
 export const SettingScreen: ActivityComponentType<'SettingScreen'> = () => {
-  const { logout } = useAuth();
+  const { logout, user } = useAuth();
   const flow = useFlow();
 
   const handleLogoutClick = async () => {
@@ -25,12 +25,24 @@ export const SettingScreen: ActivityComponentType<'SettingScreen'> = () => {
     >
       <div className='flex flex-col justify-baseline items-baseline body-3'>
         <MenuItemGroup label={<MenuItemGroupLabel>계정</MenuItemGroupLabel>}>
-          <MenuItem>
+          <MenuItem onClick={() => flow.push('ProfileModifyScreen', {})}>
             <MenuItemText>프로필 수정</MenuItemText>
             <MenuItemChevronRight />
           </MenuItem>
-          <MenuItem>
-            <MenuItemText>내정보 수정</MenuItemText>
+          <MenuItem
+            onClick={() =>
+              flow.push('ProfileUserInfoScreen', {
+                isUpdateMode: true,
+                gender: user?.gender || 'NONE',
+                nickname: user?.nickname || null,
+                description: user?.description || null,
+                phoneNumber: user?.phoneNumber || null,
+                referralCode: user?.referralCode || null,
+                imageFile: null,
+              })
+            }
+          >
+            <MenuItemText>내 정보 수정</MenuItemText>
             <MenuItemChevronRight />
           </MenuItem>
         </MenuItemGroup>

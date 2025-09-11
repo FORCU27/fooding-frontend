@@ -1,28 +1,33 @@
-import { mockStoreReviewListResponse, StoreInfo } from '@repo/api/user';
+import { StoreInfo } from '@repo/api/user';
 import { EmptyState } from '@repo/design-system/components/b2c';
 import { ChevronDownIcon, StarIcon } from '@repo/design-system/icons';
 
 import { Section } from '@/components/Layout/Section';
 import { ReviewsDetailList } from '@/components/Store/ReviewsDetailList';
 import { useGetStoreDetail } from '@/hooks/store/useGetStoreDetail';
+import { useGetStoreReviewList } from '@/hooks/store/useGetStoreReviewList';
 import { getRatingRatios, RatingRatio } from '@/utils/rating';
 
 type StoreDetailReviewTabProps = {
   store: StoreInfo;
 };
 
-// FIXME: 가게상세 리뷰 API 나오면 수정
 export const StoreDetailReviewTab = ({ store }: StoreDetailReviewTabProps) => {
   const { data: storeInfo } = useGetStoreDetail(store.id);
-  const { data: reviews } = mockStoreReviewListResponse;
+  const { data: reviews } = useGetStoreReviewList(store.id);
 
-  const ratingCounts = {
-    5: 240,
-    4: 15,
-    3: 2,
-    2: 0,
-    1: 0,
-  };
+  const ratingCounts: { [score: number]: number } = (() => {
+    const counts: { [score: number]: number } = {};
+
+    if (!reviews?.list) return counts;
+
+    for (const review of reviews.list) {
+      const roundedScore = Math.round(review.score.total);
+      counts[roundedScore] = (counts[roundedScore] ?? 0) + 1;
+    }
+
+    return counts;
+  })();
 
   return (
     <Section className='flex flex-col'>
@@ -41,9 +46,11 @@ export const StoreDetailReviewTab = ({ store }: StoreDetailReviewTabProps) => {
         <p className='body-4'>베스트순</p>
         <ChevronDownIcon size={16} className='stroke-gray-5 cursor-pointer' />
       </div>
-      {reviews?.list.length === 0 && <EmptyState className='mt-10' title='등록된 리뷰가 없어요!' />}
+      {reviews?.list.length === 0 && (
+        <EmptyState className='mt-10 mb-25' title='등록된 리뷰가 없어요!' />
+      )}
       {reviews && reviews?.list.length > 0 && (
-        <ul className='flex flex-col mt-2'>
+        <ul className='flex flex-col mt-2 pb-24'>
           <ReviewsDetailList reviews={reviews?.list || []} />
         </ul>
       )}

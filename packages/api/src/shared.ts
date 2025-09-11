@@ -12,12 +12,13 @@ export const apiClient = axios.create({
 
 // 요청 인터셉터 설정
 apiClient.interceptors.request.use(
-  async (response) => {
+  async (config) => {
     const accessToken = Cookies.get(STORAGE_KEYS.ACCESS_TOKEN);
     if (accessToken) {
-      response.headers['Authorization'] = `Bearer ${accessToken}`;
+      config.headers['Authorization'] = `Bearer ${accessToken}`;
     }
-    return response;
+
+    return config;
   },
   (error) => {
     return Promise.reject(error);
@@ -28,6 +29,13 @@ apiClient.interceptors.request.use(
 apiClient.interceptors.response.use(
   (response) => response,
   (error) => {
+    if (error.response) {
+      console.error('API Error Response:', {
+        status: error.response.status,
+        data: error.response.data,
+        url: error.config?.url,
+      });
+    }
     return Promise.reject(error);
   },
 );
@@ -87,7 +95,7 @@ export const api = createApi(apiClient);
 
 export const ApiResponse = <TData extends z.ZodType>(data: TData) =>
   z.object({
-    status: z.string(),
+    status: z.string().nullable(),
     data,
   });
 
@@ -140,6 +148,25 @@ export const PaginatedResponse = <T extends z.ZodTypeAny>(item: T) =>
 export type PaginatedResponseType<T extends z.ZodTypeAny> = z.infer<
   ReturnType<typeof PaginatedResponse<T>>
 >;
+
+export const AuthErrorResponseSchema = z.object({
+  code: z.string(),
+  detailedErrors: z
+    .array(
+      z.object({
+        location: z.string(),
+        message: z.string(),
+      }),
+    )
+    .nullable(),
+  message: z.string(),
+  method: z.string(),
+  status: z.union([z.literal('OK'), z.number()]),
+  timestamp: z.string(),
+  url: z.string(),
+});
+
+export type AuthErrorResponse = z.infer<typeof AuthErrorResponseSchema>;
 
 export const SORT_TYPES = ['RECENT', 'AVERAGE_RATING', 'REVIEW', 'POPULARITY'] as const;
 export type SortType = (typeof SORT_TYPES)[number];

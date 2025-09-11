@@ -3,8 +3,8 @@ import React from 'react';
 
 import { BookmarkIcon, FoodingIcon, StarIcon } from '@repo/design-system/icons';
 
-import { useDeleteBookmark } from '@/hooks/user/useDeleteBookmark';
-import { useGetBookmarkList } from '@/hooks/user/useGetBookmarkList';
+import { useDeleteBookmark } from '@/hooks/bookmark/useDeleteBookmark';
+import { useGetBookmarkList } from '@/hooks/bookmark/useGetBookmarkList';
 
 export const BookmarkList = () => {
   const { data: bookmarks } = useGetBookmarkList();
@@ -40,7 +40,6 @@ export const BookmarkList = () => {
                   : '• 바로 입장가능'}
               </span>
             </div>
-            <div className='body-6 text-gray-5'>{bookmark.city}</div>
             <div>
               <div>
                 {bookmark.images.length > 0 ? (

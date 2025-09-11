@@ -1,0 +1,43 @@
+import { GetStoreList } from './type';
+
+export const mockStoreListResponse: GetStoreList = {
+  status: 'OK',
+  data: [
+    {
+      id: 1,
+      ownerId: 1,
+      name: '홍가네',
+      regionId: 'KR-11',
+      address: '서울특별시 마포구',
+      addressDetail: '홍대입구역 2번출구 앞',
+      category: 'KOREAN',
+      description: '설명설명',
+      contactNumber: '010-0000-0000',
+      direction: '홍대입구역 2번출구 앞',
+      latitude: 36.40947226931638,
+      longitude: 127.12345678901234,
+      visitCount: 0,
+      reviewCount: 0,
+      bookmarkCount: 0,
+      stations: [{id: 1, name: '개봉역', line: '3호선', address: '서울특별시 개봉동'}],
+    },
+    {
+      id: 2,
+      ownerId: 1,
+      name: '민서네 김밥 홍대점',
+      regionId: 'KR-11',
+      address: '서울특별시 마포구',
+      addressDetail: '홍대입구역 3번출구 100m 직진',
+      category: 'SNACK',
+      description: '김밥과 떡볶이가 맛있는 집',
+      contactNumber: '02-123-4567',
+      direction: '홍대입구역 3번출구 100m 직진',
+      latitude: 37.5585,
+      longitude: 126.925,
+      visitCount: 0,
+      reviewCount: 0,
+      bookmarkCount: 0,
+      stations: [{id: 1, name: '개봉역', line: '3호선', address: '서울특별시 개봉동'}],
+    },
+  ],
+};

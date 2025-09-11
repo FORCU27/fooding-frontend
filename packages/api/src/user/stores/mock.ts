@@ -1,5 +1,6 @@
 import {
   GetStoreByIdResponse,
+  GetStoreImageListResponse,
   GetStoreListResponse,
   GetStoreMenuListResponse,
   GetStoreReviewListResponse,
@@ -29,7 +30,6 @@ export const mockStoreListResponse: GetStoreListResponse = {
         name: '바다풍경 정육식당 흑돼지 용담탑동본점',
         mainImage: null,
         averageRating: 4.9,
-        city: '합정',
         estimatedWaitingTimeMinutes: 20,
         visitCount: 1000,
         reviewCount: 231,
@@ -41,7 +41,6 @@ export const mockStoreListResponse: GetStoreListResponse = {
         name: '엉터리 생고기 엉생 무한리필 아산테크노본점',
         mainImage: null,
         averageRating: 4.9,
-        city: '합정',
         estimatedWaitingTimeMinutes: 20,
         visitCount: 1000,
         reviewCount: 231,
@@ -53,7 +52,6 @@ export const mockStoreListResponse: GetStoreListResponse = {
         name: '민서네 김밥 홍대점',
         mainImage: null,
         averageRating: 4.9,
-        city: '합정',
         estimatedWaitingTimeMinutes: 20,
         visitCount: 1000,
         reviewCount: 231,
@@ -65,7 +63,6 @@ export const mockStoreListResponse: GetStoreListResponse = {
         name: '민서네 김밥 홍대점',
         mainImage: null,
         averageRating: 4.9,
-        city: '합정',
         estimatedWaitingTimeMinutes: 20,
         visitCount: 1000,
         reviewCount: 231,
@@ -77,7 +74,6 @@ export const mockStoreListResponse: GetStoreListResponse = {
         name: '민서네 김밥 홍대점',
         mainImage: null,
         averageRating: 4.9,
-        city: '합정',
         estimatedWaitingTimeMinutes: 20,
         visitCount: 1000,
         reviewCount: 231,
@@ -93,20 +89,15 @@ export const mockStoreByIdResponse: GetStoreByIdResponse = {
   data: {
     id: 1,
     name: '홍길동 식당',
-    city: '합정',
+    addressDetail: '마포',
     address: '서울특별시 마포구',
-    category: '한식',
+    category: 'KOREAN',
     description: '설명설명',
-    priceCategory: '15000 ~ 30000',
-    eventDescription: '이벤트없음',
     contactNumber: '010-0000-0000',
     direction: '홍대입구역 2번출구 앞',
     visitCount: 1000,
     reviewCount: 246,
     averageRating: 4.5,
-    isParkingAvailable: true,
-    isNewOpen: true,
-    isTakeOut: true,
     estimatedWaitingTimeMinutes: 20,
     latitude: 37.5665,
     longitude: 126.978,
@@ -207,7 +198,35 @@ export const mockStoreMenuListResponse: GetStoreMenuListResponse = {
   data: [
     {
       id: 1,
-      categoryName: '식사류',
+      categoryName: 'SET MENU',
+      menu: [
+        {
+          id: 1,
+          name: '딤섬 SET',
+          description:
+            '오이무침-마늘새우찜-찜딤섬5종-계절야채요리-춘권-식사(토마토당면or홍쇼육덮밥)-디저트딤섬',
+          imageUrl: null,
+          price: 40000,
+          sortOrder: 1,
+          signature: true,
+          recommend: true,
+        },
+        {
+          id: 2,
+          name: '딤섬 SET',
+          description:
+            '오이무침-마늘새우찜-찜딤섬5종-계절야채요리-춘권-식사(토마토당면or홍쇼육덮밥)-디저트딤섬',
+          imageUrl: null,
+          price: 40000,
+          sortOrder: 1,
+          signature: false,
+          recommend: true,
+        },
+      ],
+    },
+    {
+      id: 2,
+      categoryName: '일품메뉴',
       menu: [
         {
           id: 1,
@@ -222,4 +241,24 @@ export const mockStoreMenuListResponse: GetStoreMenuListResponse = {
       ],
     },
   ],
+};
+
+const DUMMY_IMAGES = ['/images/dummy/1.jpg', '/images/dummy/2.jpg', '/images/dummy/3.jpg'];
+
+export const mockStoreImageListResponse: GetStoreImageListResponse = {
+  status: 'OK',
+  data: {
+    list: Array.from({ length: 20 }, (_, index) => ({
+      id: index + 1,
+      imageUrl: DUMMY_IMAGES[(index + 1) % DUMMY_IMAGES.length] ?? '',
+      sortOrder: index + 1,
+      tags: [],
+    })),
+    pageInfo: {
+      pageNum: 1,
+      pageSize: 20,
+      totalCount: 100,
+      totalPages: 5,
+    },
+  },
 };

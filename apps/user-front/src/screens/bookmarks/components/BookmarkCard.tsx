@@ -4,7 +4,7 @@ import { Bookmark } from '@repo/api/user';
 import { BookmarkIcon, FoodingIcon, StarIcon } from '@repo/design-system/icons';
 import { useFlow } from '@stackflow/react/future';
 
-import { useDeleteBookmark } from '@/hooks/user/useDeleteBookmark';
+import { useDeleteBookmark } from '@/hooks/bookmark/useDeleteBookmark';
 
 interface BookmarkCardProps {
   bookmark: Bookmark;
@@ -65,7 +65,6 @@ export const BookmarkCard = ({ bookmark }: BookmarkCardProps) => {
               <span className='body-6 text-gray-5'>({bookmark.reviewCount})</span>
             </div>
             <p className='body-8 text-gray-5'>
-              {bookmark.city.length >= 3 ? bookmark.city.slice(0, 2) : bookmark.city} •{' '}
               {bookmark.estimatedWaitingTimeMinutes
                 ? `예상 대기시간 ${bookmark.estimatedWaitingTimeMinutes}분`
                 : '바로 입장가능'}

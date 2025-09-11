@@ -6,8 +6,6 @@ import {
   Button,
   Stack,
   Box,
-  FormControlLabel,
-  Switch,
   MenuItem,
   Select,
   FormControl,
@@ -45,18 +43,15 @@ export function StoreForm({ initialData, onSubmit, isLoading }: StoreFormProps) 
     defaultValues: initialData || {
       ownerId: 0,
       name: '',
-      city: '',
+      regionId: '',
       address: '',
       category: '',
       description: '',
-      priceCategory: '',
-      eventDescription: '',
       contactNumber: '',
       direction: '',
-      information: '',
-      isParkingAvailable: false,
-      isNewOpen: false,
-      isTakeOut: false,
+      latitude: 0,
+      longitude: 0,
+      stations: [],
     },
   });
 
@@ -87,12 +82,12 @@ export function StoreForm({ initialData, onSubmit, isLoading }: StoreFormProps) 
           {...form.register('name')}
         />
 
-        <TextField
+<TextField
           fullWidth
           label='도시'
-          error={!!form.formState.errors.city}
-          helperText={form.formState.errors.city?.message}
-          {...form.register('city')}
+          error={!!form.formState.errors.regionId}
+          helperText={form.formState.errors.regionId?.message}
+          {...form.register('regionId')}
         />
 
         <TextField
@@ -105,18 +100,18 @@ export function StoreForm({ initialData, onSubmit, isLoading }: StoreFormProps) 
 
         <TextField
           fullWidth
-          label='카테고리'
-          error={!!form.formState.errors.category}
-          helperText={form.formState.errors.category?.message}
-          {...form.register('category')}
+          label='상세주소'
+          error={!!form.formState.errors.addressDetail}
+          helperText={form.formState.errors.addressDetail?.message}
+          {...form.register('addressDetail')}
         />
 
         <TextField
           fullWidth
-          label='가격대'
-          error={!!form.formState.errors.priceCategory}
-          helperText={form.formState.errors.priceCategory?.message}
-          {...form.register('priceCategory')}
+          label='카테고리'
+          error={!!form.formState.errors.category}
+          helperText={form.formState.errors.category?.message}
+          {...form.register('category')}
         />
 
         <TextField
@@ -129,26 +124,10 @@ export function StoreForm({ initialData, onSubmit, isLoading }: StoreFormProps) 
 
         <TextField
           fullWidth
-          label='영업 정보'
-          error={!!form.formState.errors.information}
-          helperText={form.formState.errors.information?.message}
-          {...form.register('information')}
-        />
-
-        <TextField
-          fullWidth
           label='설명'
           error={!!form.formState.errors.description}
           helperText={form.formState.errors.description?.message}
           {...form.register('description')}
-        />
-
-        <TextField
-          fullWidth
-          label='이벤트 설명'
-          error={!!form.formState.errors.eventDescription}
-          helperText={form.formState.errors.eventDescription?.message}
-          {...form.register('eventDescription')}
         />
 
         <TextField
@@ -159,24 +138,22 @@ export function StoreForm({ initialData, onSubmit, isLoading }: StoreFormProps) 
           {...form.register('direction')}
         />
 
-        <FormControlLabel
-          control={
-            <Switch
-              {...form.register('isParkingAvailable')}
-              checked={form.watch('isParkingAvailable')}
-            />
-          }
-          label='주차 가능'
+        <TextField
+          fullWidth
+          label='위도'
+          type="number"
+          error={!!form.formState.errors.latitude}
+          helperText={form.formState.errors.latitude?.message}
+          {...form.register('latitude', { valueAsNumber: true })}
         />
 
-        <FormControlLabel
-          control={<Switch {...form.register('isNewOpen')} checked={form.watch('isNewOpen')} />}
-          label='신규 오픈'
-        />
-
-        <FormControlLabel
-          control={<Switch {...form.register('isTakeOut')} checked={form.watch('isTakeOut')} />}
-          label='포장 가능'
+        <TextField
+          fullWidth
+          label='경도'
+          type="number"
+          error={!!form.formState.errors.longitude}
+          helperText={form.formState.errors.longitude?.message}
+          {...form.register('longitude', { valueAsNumber: true })}
         />
 
         <Button type='submit' variant='contained' disabled={isLoading} fullWidth>

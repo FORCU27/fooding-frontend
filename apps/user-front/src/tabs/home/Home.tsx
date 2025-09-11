@@ -2,6 +2,7 @@
 
 import { Suspense } from 'react';
 
+import { STORE_CATEGORY } from '@repo/api/user';
 import { ErrorFallback } from '@repo/design-system/components/b2c';
 import { ActivityComponentType } from '@stackflow/react/future';
 import { ErrorBoundary, ErrorBoundaryFallbackProps } from '@suspensive/react';
@@ -19,8 +20,6 @@ import { useGetStoreList } from '@/hooks/store/useGetStoreList';
 import Header from '@/tabs/home/components/Header';
 import Menubar from '@/tabs/home/components/Menubar';
 import { noop } from '@/utils/noop';
-
-const CATEGORY_LIST = ['고깃집', '패스트푸드점', '카페', '레스토랑', '일식', '베이커리', '기타'];
 
 export const HomeTab: ActivityComponentType<'HomeTab'> = () => {
   return (
@@ -78,7 +77,7 @@ const ContentBody = () => {
       <div className='bg-white mb-3'>
         <Banner />
         <div className='flex flex-col  py-grid-margin mb-3'>
-          <CategoryTabs categories={CATEGORY_LIST} />
+          <CategoryTabs categories={Object.values(STORE_CATEGORY)} />
           <MainStoreList stores={stores.list} />
         </div>
         <StoresList

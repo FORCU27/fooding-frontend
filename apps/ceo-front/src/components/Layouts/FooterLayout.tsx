@@ -1,6 +1,6 @@
 const FooterLayout = () => {
   return (
-    <footer className='border-t border-gray-8 h-[180px] flex flex-col justify-center text-[12px]'>
+    <footer className='border-t border-gray-8 h-[180px] w-full flex flex-col justify-center text-[12px]'>
       <div className='flex items-center'>
         <div className='flex flex-col space-y-3 ml-10 mr-10 text-gray-6'>
           <div className='flex items-center space-x-2'>

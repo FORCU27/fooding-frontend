@@ -60,3 +60,29 @@ export const Controlled: Story = {
     );
   },
 };
+
+export const WithSelect: Story = {
+  render: () => {
+    const [selectValue, setSelectValue] = useState('1');
+
+    return (
+      <BottomSheet>
+        <BottomSheet.Trigger asChild>
+          <Button size='small'>열기</Button>
+        </BottomSheet.Trigger>
+        <BottomSheet.Content>
+          <BottomSheet.Header>
+            <BottomSheet.Title className='font-bold text-[24px]'>성별 선택</BottomSheet.Title>
+          </BottomSheet.Header>
+          <BottomSheet.Body>
+            <BottomSheet.SelectGroup value={selectValue} onChange={setSelectValue}>
+              <BottomSheet.SelectItem value='1'>남자</BottomSheet.SelectItem>
+              <BottomSheet.SelectItem value='2'>여자</BottomSheet.SelectItem>
+              <BottomSheet.SelectItem value='3'>선택안함</BottomSheet.SelectItem>
+            </BottomSheet.SelectGroup>
+          </BottomSheet.Body>
+        </BottomSheet.Content>
+      </BottomSheet>
+    );
+  },
+};

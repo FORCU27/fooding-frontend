@@ -1,6 +1,7 @@
 'use client';
 
 import { useRouter, usePathname } from 'next/navigation';
+import { useState } from 'react';
 
 import {
   B2BCeoSidebarStoreIcon,
@@ -32,7 +33,7 @@ const createMenuItems = () => [
     iconType: 'store' as const,
     subItems: [
       { id: '/store/basic', text: '기본정보', path: '/store/basic' },
-      { id: '/store/news', text: '부가정보', path: '/store/news' },
+      { id: '/store/additional', text: '부가정보', path: '/store/additional' },
       { id: '/store/menus', text: '메뉴', path: '/store/menus' },
       { id: '/store/seatGuide', text: '영업시간/휴뮤일', path: '/store/seatGuide' },
       { id: '/store/photo', text: '사진', path: '/store/photo' },
@@ -83,7 +84,7 @@ interface SideLayoutProps {
 const SideLayout = ({ isOpen, onClose }: SideLayoutProps) => {
   const router = useRouter();
   const pathname = usePathname();
-
+  
   // 모든 로직을 인라인으로 처리
   const allMenuItems = createMenuItems();
   const activeMenu = (() => {
@@ -101,6 +102,17 @@ const SideLayout = ({ isOpen, onClose }: SideLayoutProps) => {
   })();
 
   const activeMenuId = activeMenu?.menu.id || null;
+
+  // 초기 상태를 URL 기반으로 설정하여 서버/클라이언트 일치
+  const getInitialExpandedMenus = () => {
+    const initialSet = new Set<string>();
+    if (activeMenu?.menu.id && activeMenu.menu.subItems) {
+      initialSet.add(activeMenu.menu.id);
+    }
+    return initialSet;
+  };
+
+  const [expandedMenus, setExpandedMenus] = useState<Set<string>>(getInitialExpandedMenus);
 
   const menuItems = createMenuItems().map((menu) => {
     const IconComponent = MenuIcons[menu.iconType];
@@ -127,14 +139,28 @@ const SideLayout = ({ isOpen, onClose }: SideLayoutProps) => {
             className='border-r border-gray-8 bg-white h-full'
             menuList={menuItems}
             onMenuClick={(menu) => {
-              router.push(menu.path);
-              onClose?.();
+              // 하위 메뉴가 있으면 펼치기/접기, 없으면 페이지 이동
+              if (menu.subItems && menu.subItems.length > 0) {
+                setExpandedMenus(prev => {
+                  const newSet = new Set(prev);
+                  if (newSet.has(menu.id)) {
+                    newSet.delete(menu.id);
+                  } else {
+                    newSet.add(menu.id);
+                  }
+                  return newSet;
+                });
+              } else {
+                router.push(menu.path);
+                onClose?.();
+              }
             }}
             onSubMenuClick={(menu) => {
               router.push(menu.path);
               onClose?.();
             }}
             activeMenu={activeMenu}
+            expandedMenus={expandedMenus}
           />
         </div>
       </div>
