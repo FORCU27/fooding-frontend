@@ -19,10 +19,11 @@ export const PlanCard = ({ plan }: PlanCardProps) => {
   const { data: waitingInfo } = useGetStoreWaitingDetail(plan.originId);
 
   const handlePlanCardClick = (isWaiting: boolean, planId: string) => {
-    // eslint-disable-next-line @typescript-eslint/no-unused-expressions
-    isWaiting
-      ? flow.push('PlanDetailScreen', { planId })
-      : flow.push('WaitingDetailScreen', { waitingId: planId });
+    if (isWaiting) {
+      flow.push('PlanDetailScreen', { planId });
+    } else {
+      flow.push('WaitingDetailScreen', { waitingId: planId });
+    }
   };
   return (
     <div

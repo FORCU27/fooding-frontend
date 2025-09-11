@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/rules-of-hooks */
 import { useState } from 'react';
 
 import { Button } from '@repo/design-system/components/b2c';
@@ -9,7 +8,7 @@ import { RewardMonthGroup } from './components/RewardMonthGroup';
 import { Header } from '@/components/Layout/Header';
 import { Screen } from '@/components/Layout/Screen';
 import { useGetRewardPersonalLog } from '@/hooks/reward/useGetRewardPersonalLog';
-import { useGetStoreRewardList } from '@/hooks/store/useGetStoreRewardList';
+import { useGetStoreRewardLists } from '@/hooks/store/useGetStoreRewardLists';
 
 export const MyRewardListScreen: ActivityComponentType<'MyRewardListScreen'> = () => {
   const flow = useFlow();
@@ -18,10 +17,15 @@ export const MyRewardListScreen: ActivityComponentType<'MyRewardListScreen'> = (
   const { data: logs } = useGetRewardPersonalLog();
 
   const storeIds = Array.from(new Set(logs?.list.map((r) => r.storeId)));
+
+  const storeRewardListQueries = useGetStoreRewardLists(storeIds);
+
   const storePoints: Record<number, number> = {};
-  storeIds.forEach((id) => {
-    const pointData = useGetStoreRewardList(id);
-    storePoints[id] = pointData?.data?.point ?? 0;
+
+  storeRewardListQueries.forEach(({ data }) => {
+    const id = data.storeId;
+
+    storePoints[id] = data.point;
   });
 
   const sortedRewards = [...(logs?.list ?? [])].sort(
