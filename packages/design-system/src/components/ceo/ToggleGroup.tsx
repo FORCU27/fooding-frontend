@@ -18,6 +18,7 @@ const toggleGroupItemVariants = tv({
     variant: {
       default: '',
       selectedChip: 'border-fooding-purple bg-[rgba(99,102,241,0.05)]',
+      disabled: 'opacity-50 cursor-not-allowed bg-gray-100 text-gray-400 border-gray-200',
     },
   },
   defaultVariants: {
@@ -53,15 +54,19 @@ type ToggleGroupItemProps = ComponentProps<typeof ToggleGroupPrimitive.Item>;
 
 const ToggleGroupItem = forwardRef<
   React.ElementRef<typeof ToggleGroupPrimitive.Item>,
-  ToggleGroupItemProps
->(({ className, children, value, ...props }, ref) => {
+  ToggleGroupItemProps & { disabled?: boolean }
+>(({ className, children, value, disabled, ...props }, ref) => {
   const { variant } = useContext(ToggleGroupContext);
 
   return (
     <ToggleGroupPrimitive.Item
       ref={ref}
       value={value}
-      className={cn(toggleGroupItemVariants({ variant }), className)}
+      disabled={disabled}
+      className={cn(
+        toggleGroupItemVariants({ variant: disabled ? 'disabled' : variant }),
+        className,
+      )}
       {...props}
     >
       {children}

@@ -44,3 +44,35 @@ export const Chip: Story = {
     </ToggleGroup>
   ),
 };
+
+export const WithDescription: Story = {
+  render: (args: any) => (
+    <ToggleGroup {...args} type='single' className='w-[600px] grid grid-cols-2 gap-4'>
+      <ToggleGroupItem value='discount' className='flex-col items-start p-6 h-auto'>
+        <div className='text-lg font-medium mb-2'>할인</div>
+        <div className='text-sm text-gray-500'>
+          할인되는 쿠폰을 설정해 고객의 구매 부담을 줄여보세요
+        </div>
+      </ToggleGroupItem>
+      <ToggleGroupItem value='gift' disabled className='flex-col items-start p-6 h-auto'>
+        <div className='text-lg font-medium mb-2'>증정</div>
+        <div className='text-sm text-gray-500'>
+          정해진 조건에 따른 쿠폰으로 단골 고객을 만들어보세요
+        </div>
+      </ToggleGroupItem>
+    </ToggleGroup>
+  ),
+};
+
+export const Disabled: Story = {
+  render: (args: any) => (
+    <ToggleGroup {...args} type='single' defaultValue='possible' className='w-[400px]'>
+      <ToggleGroupItem value='possible' className='flex-1'>
+        가능해요
+      </ToggleGroupItem>
+      <ToggleGroupItem value='impossible' disabled className='flex-1'>
+        불가능해요
+      </ToggleGroupItem>
+    </ToggleGroup>
+  ),
+};
