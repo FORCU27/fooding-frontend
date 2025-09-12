@@ -11,6 +11,7 @@ import Cookies from 'js-cookie';
 export const useSelectedStoreId = () => {
   const [selectedStoreId, setSelectedStoreId] = useState<number | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [isInitialized, setIsInitialized] = useState(false);
 
   // 초기 로드 시 쿠키에서 값 읽기
   useEffect(() => {
@@ -23,6 +24,7 @@ export const useSelectedStoreId = () => {
         if (clientCookie) {
           setSelectedStoreId(Number(clientCookie));
           setIsLoading(false);
+          setIsInitialized(true);
           return;
         }
 
@@ -51,6 +53,7 @@ export const useSelectedStoreId = () => {
         console.error('Failed to load store ID:', error);
       } finally {
         setIsLoading(false);
+        setIsInitialized(true);
       }
     };
 
@@ -96,6 +99,7 @@ export const useSelectedStoreId = () => {
   return {
     selectedStoreId,
     isLoading,
+    isInitialized,
     selectStore,
     clearSelectedStore,
   };

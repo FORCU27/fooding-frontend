@@ -266,7 +266,7 @@ export function DatePickerWithDialog({
                       ? [selectedRanges]
                       : [];
               setTempRanges(rangeCopy);
-              if (rangeCopy.length > 0) {
+              if (rangeCopy.length > 0 && rangeCopy[0]) {
                 setTempStartDate(rangeCopy[0].startDate);
                 setTempEndDate(rangeCopy[0].endDate);
               }

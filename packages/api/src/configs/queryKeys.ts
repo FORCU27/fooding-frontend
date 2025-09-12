@@ -27,6 +27,13 @@ export const queryKeys = {
     storeInformation: {
       get: 'ceoStoreInformationGet',
     },
+    coupon: {
+      list: 'ceoCouponList',
+      detail: 'ceoCouponDetail',
+      create: 'ceoCouponCreate',
+      update: 'ceoCouponUpdate',
+      delete: 'ceoCouponDelete',
+    },
   },
   pos: {},
   user: {

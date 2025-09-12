@@ -56,64 +56,69 @@ const AdditionalPage = () => {
 
   // storeInformation 데이터로 폼 초기화
   useEffect(() => {
-    if (storeInformation && !isInitialized) {
-      // 주차 가능하고 모든 요금 필드가 null이면 무료 주차
-      const isFreeParking =
-        storeInformation.parkingAvailable &&
-        !storeInformation.parkingChargeType &&
-        !storeInformation.parkingBasicFee;
+    // 데이터 로딩이 완료되었고 아직 초기화되지 않은 경우
+    if (!isLoadingInfo && !isInitialized && selectedStoreId) {
+      // storeInformation이 있으면 데이터 바인딩
+      if (storeInformation) {
+        // 주차 가능하고 모든 요금 필드가 null이면 무료 주차
+        const isFreeParking =
+          storeInformation.parkingAvailable &&
+          !storeInformation.parkingChargeType &&
+          !storeInformation.parkingBasicFee;
 
-      const isPaidParking =
-        storeInformation.parkingChargeType === 'PAID' ||
-        storeInformation.parkingChargeType === 'HOURLY' ||
-        storeInformation.parkingChargeType === 'FLAT_RATE' ||
-        (storeInformation.parkingAvailable && storeInformation.parkingBasicFee);
+        const isPaidParking =
+          storeInformation.parkingChargeType === 'PAID' ||
+          storeInformation.parkingChargeType === 'HOURLY' ||
+          storeInformation.parkingChargeType === 'FLAT_RATE' ||
+          (storeInformation.parkingAvailable && storeInformation.parkingBasicFee);
 
-      // 유료 주차인 경우 parkingTimeType 결정
-      let parkingTimeType = '';
-      if (isPaidParking) {
-        // HOURLY면 시간당 과금, FLAT_RATE면 정액 과금
-        if (storeInformation.parkingChargeType === 'HOURLY') {
-          parkingTimeType = 'time';
-        } else if (storeInformation.parkingChargeType === 'FLAT_RATE') {
-          parkingTimeType = 'amount';
-        } else {
-          // 기본값은 시간당 과금
-          parkingTimeType = 'time';
+        // 유료 주차인 경우 parkingTimeType 결정
+        let parkingTimeType = '';
+        if (isPaidParking) {
+          // HOURLY면 시간당 과금, FLAT_RATE면 정액 과금
+          if (storeInformation.parkingChargeType === 'HOURLY') {
+            parkingTimeType = 'time';
+          } else if (storeInformation.parkingChargeType === 'FLAT_RATE') {
+            parkingTimeType = 'amount';
+          } else {
+            // 기본값은 시간당 과금
+            parkingTimeType = 'time';
+          }
         }
-      }
 
-      setFormData({
-        isParkingAvailable: storeInformation.parkingAvailable || false,
-        parkingFeeType: isFreeParking ? 'free' : isPaidParking ? 'paid' : '',
-        parkingTimeType: parkingTimeType,
-        maxParkingTime: '',
-        parkingTimeUnit: storeInformation.parkingBasicTimeMinutes
-          ? Math.floor(storeInformation.parkingBasicTimeMinutes / 60).toString()
-          : '1',
-        parkingTimeUnitMinutes: storeInformation.parkingBasicTimeMinutes
-          ? (storeInformation.parkingBasicTimeMinutes % 60).toString()
-          : '0',
-        parkingFee:
-          storeInformation.parkingBasicFee === 0
-            ? '0'
-            : storeInformation.parkingBasicFee?.toString() || '3000',
-        parkingBasicFree: storeInformation.parkingBasicFee === 0, // 0원이면 무료 체크
-        maxParkingFee: storeInformation.parkingMaxDailyFee?.toString() || '5000',
-        additionalTimeHour: storeInformation.parkingExtraMinutes
-          ? Math.floor(storeInformation.parkingExtraMinutes / 60).toString()
-          : '0',
-        additionalTimeMinutes: storeInformation.parkingExtraMinutes
-          ? (storeInformation.parkingExtraMinutes % 60).toString()
-          : '10',
-        additionalFee: storeInformation.parkingExtraFee?.toString() || '3000',
-        facilities: storeInformation.facilities || [],
-        paymentMethods: storeInformation.paymentMethods || [],
-        links: storeInformation.links || [], // API returns string array directly
-      });
+        setFormData({
+          isParkingAvailable: storeInformation.parkingAvailable || false,
+          parkingFeeType: isFreeParking ? 'free' : isPaidParking ? 'paid' : '',
+          parkingTimeType: parkingTimeType,
+          maxParkingTime: '',
+          parkingTimeUnit: storeInformation.parkingBasicTimeMinutes
+            ? Math.floor(storeInformation.parkingBasicTimeMinutes / 60).toString()
+            : '1',
+          parkingTimeUnitMinutes: storeInformation.parkingBasicTimeMinutes
+            ? (storeInformation.parkingBasicTimeMinutes % 60).toString()
+            : '0',
+          parkingFee:
+            storeInformation.parkingBasicFee === 0
+              ? '0'
+              : storeInformation.parkingBasicFee?.toString() || '3000',
+          parkingBasicFree: storeInformation.parkingBasicFee === 0, // 0원이면 무료 체크
+          maxParkingFee: storeInformation.parkingMaxDailyFee?.toString() || '5000',
+          additionalTimeHour: storeInformation.parkingExtraMinutes
+            ? Math.floor(storeInformation.parkingExtraMinutes / 60).toString()
+            : '0',
+          additionalTimeMinutes: storeInformation.parkingExtraMinutes
+            ? (storeInformation.parkingExtraMinutes % 60).toString()
+            : '10',
+          additionalFee: storeInformation.parkingExtraFee?.toString() || '3000',
+          facilities: storeInformation.facilities || [],
+          paymentMethods: storeInformation.paymentMethods || [],
+          links: storeInformation.links || [], // API returns string array directly
+        });
+      }
+      // 데이터가 없어도 초기화 완료 표시 (신규 가게의 경우)
       setIsInitialized(true);
     }
-  }, [storeInformation, isInitialized]);
+  }, [storeInformation, isInitialized, isLoadingInfo, selectedStoreId]);
 
   const handleSave = () => {
     if (!selectedStoreId) return;
@@ -253,11 +258,20 @@ const AdditionalPage = () => {
   }
 
   // 로딩 상태 처리
-  if (isLoadingStoreId || isLoadingInfo) {
+  if (isLoadingStoreId || isLoadingInfo || !isInitialized) {
     return (
       <CardForm className=''>
         <div className='headline-2'>부가 정보</div>
-        <div>부가정보를 불러오는 중...</div>
+        <Card>
+          <div className='flex items-center justify-center py-8'>
+            <div className='text-center'>
+              <div className='mb-4'>
+                <div className='inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-current border-r-transparent motion-reduce:animate-[spin_1.5s_linear_infinite]' />
+              </div>
+              <div className='text-gray-600'>부가정보를 불러오는 중...</div>
+            </div>
+          </div>
+        </Card>
       </CardForm>
     );
   }

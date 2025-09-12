@@ -167,7 +167,17 @@ export const RangeMode: Story = {
             ? `${selectedRanges.startDate.toLocaleDateString('ko-KR')} ~ ${selectedRanges.endDate.toLocaleDateString('ko-KR')}`
             : '없음'}
         </p>
-        <DatePickerWithDialog {...args} selectedRanges={selectedRanges} onRangeChange={setSelectedRanges} />
+        <DatePickerWithDialog 
+          {...args} 
+          selectedRanges={selectedRanges} 
+          onRangeChange={(value) => {
+            if (typeof value === 'function') {
+              setSelectedRanges(value as any);
+            } else if (value && !Array.isArray(value)) {
+              setSelectedRanges(value);
+            }
+          }} 
+        />
       </div>
     );
   },
@@ -200,7 +210,17 @@ export const RangeModeMultiple: Story = {
               ).join(', ')
             : '없음'}
         </p>
-        <DatePickerWithDialog {...args} selectedRanges={selectedRanges} onRangeChange={setSelectedRanges} />
+        <DatePickerWithDialog 
+          {...args} 
+          selectedRanges={selectedRanges} 
+          onRangeChange={(value) => {
+            if (value && Array.isArray(value)) {
+              setSelectedRanges(value);
+            } else if (value === null) {
+              setSelectedRanges([]);
+            }
+          }} 
+        />
       </div>
     );
   },
