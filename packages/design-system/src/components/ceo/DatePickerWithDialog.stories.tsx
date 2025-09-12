@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import { DatePickerWithDialog, SelectedItem } from './DatePickerWithDialog';
+import { DatePickerWithDialog, SelectedItem, SelectedRangeItem } from './DatePickerWithDialog';
 import { useState } from 'react';
 
 const meta: Meta<typeof DatePickerWithDialog> = {
@@ -13,14 +13,21 @@ const meta: Meta<typeof DatePickerWithDialog> = {
     title: { control: 'text' },
     placeholder: { control: 'text' },
     selectionMode: { control: 'radio', options: ['single', 'multiple'] },
+    datePickerMode: { control: 'radio', options: ['single', 'range'] },
     hasCloseBtn: { control: 'boolean' },
     hasRadioButtonGroup: { control: 'boolean' },
     radioOptions: { control: 'object' },
     selectedDates: {
       control: 'object',
     },
+    selectedRanges: {
+      control: 'object',
+    },
     onChange: {
       action: 'changed',
+    },
+    onRangeChange: {
+      action: 'rangeChanged',
     },
   },
 };
@@ -138,6 +145,62 @@ export const Controlled: Story = {
               : '없음'}
         </p>
         <DatePickerWithDialog {...args} selectedDates={selectedDates} onChange={setSelectedDates} />
+      </div>
+    );
+  },
+};
+
+export const RangeMode: Story = {
+  args: {
+    title: '프로모션 기간',
+    placeholder: '기간을 선택해주세요',
+    selectionMode: 'single',
+    datePickerMode: 'range',
+  },
+  render: ({ ...args }) => {
+    const [selectedRanges, setSelectedRanges] = useState<SelectedRangeItem | null>(null);
+
+    return (
+      <div className='w-[640px] h-full flex flex-col gap-4'>
+        <p className='mt-2'>
+          선택한 기간: {selectedRanges 
+            ? `${selectedRanges.startDate.toLocaleDateString('ko-KR')} ~ ${selectedRanges.endDate.toLocaleDateString('ko-KR')}`
+            : '없음'}
+        </p>
+        <DatePickerWithDialog {...args} selectedRanges={selectedRanges} onRangeChange={setSelectedRanges} />
+      </div>
+    );
+  },
+};
+
+export const RangeModeMultiple: Story = {
+  args: {
+    title: '할인 기간',
+    placeholder: '할인 기간을 선택해주세요',
+    selectionMode: 'multiple',
+    datePickerMode: 'range',
+    hasRadioButtonGroup: true,
+    radioOptions: [
+      { label: '주말만', value: 'weekend' },
+      { label: '평일만', value: 'weekday' },
+      { label: '매일', value: 'everyday' },
+    ],
+  },
+  render: ({ ...args }) => {
+    const [selectedRanges, setSelectedRanges] = useState<SelectedRangeItem[]>([]);
+
+    return (
+      <div className='w-[640px] h-full flex flex-col gap-4'>
+        <p className='mt-2'>
+          선택한 기간: {selectedRanges.length > 0
+            ? selectedRanges.map(r => 
+                r.option 
+                  ? `${r.option} ${r.startDate.toLocaleDateString('ko-KR')} ~ ${r.endDate.toLocaleDateString('ko-KR')}`
+                  : `${r.startDate.toLocaleDateString('ko-KR')} ~ ${r.endDate.toLocaleDateString('ko-KR')}`
+              ).join(', ')
+            : '없음'}
+        </p>
+        <DatePickerWithDialog {...args} selectedRanges={selectedRanges} onRangeChange={setSelectedRanges} />
       </div>
     );
   },

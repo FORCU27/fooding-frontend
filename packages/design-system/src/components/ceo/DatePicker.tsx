@@ -7,30 +7,61 @@ import { cn } from '../../utils';
 
 type DatePickerProps = {
   label?: string;
+  mode?: 'single' | 'range';
   value?: Date | null;
+  startDate?: Date | null;
+  endDate?: Date | null;
   onChange?: (date: Date | null) => void;
+  onRangeChange?: (startDate: Date | null, endDate: Date | null) => void;
   className?: string;
 } & Omit<InputHTMLAttributes<HTMLInputElement>, 'value' | 'onChange'>;
 
 const WEEK_DAYS = ['일', '월', '화', '수', '목', '금', '토'];
 
 const DatePicker = forwardRef<HTMLInputElement, DatePickerProps>(
-  ({ label, value, onChange, className, ...props }, ref) => {
+  ({ label, mode = 'single', value, startDate, endDate, onChange, onRangeChange, className, ...props }, ref) => {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
 
-    // 내부 선택 상태 (value가 없으면 오늘로 초기화)
+    // 단일 선택 모드 상태
     const [selectedDate, setSelectedDate] = useState<Date>(value ?? today);
-    const [month, setMonth] = useState(selectedDate.getMonth());
-    const [year, setYear] = useState(selectedDate.getFullYear());
+    
+    // 범위 선택 모드 상태
+    const [selectedStartDate, setSelectedStartDate] = useState<Date | null>(startDate ?? null);
+    const [selectedEndDate, setSelectedEndDate] = useState<Date | null>(endDate ?? null);
+    const [hoverDate, setHoverDate] = useState<Date | null>(null);
+    
+    const [month, setMonth] = useState(
+      mode === 'single' 
+        ? selectedDate.getMonth() 
+        : (startDate?.getMonth() ?? today.getMonth())
+    );
+    const [year, setYear] = useState(
+      mode === 'single' 
+        ? selectedDate.getFullYear() 
+        : (startDate?.getFullYear() ?? today.getFullYear())
+    );
 
     useEffect(() => {
-      if (value) {
+      if (mode === 'single' && value) {
         setSelectedDate(value);
         setMonth(value.getMonth());
         setYear(value.getFullYear());
       }
-    }, [value]);
+    }, [mode, value]);
+    
+    useEffect(() => {
+      if (mode === 'range') {
+        if (startDate) {
+          setSelectedStartDate(startDate);
+          setMonth(startDate.getMonth());
+          setYear(startDate.getFullYear());
+        }
+        if (endDate) {
+          setSelectedEndDate(endDate);
+        }
+      }
+    }, [mode, startDate, endDate]);
 
     const getDaysInMonth = (year: number, month: number) => new Date(year, month + 1, 0).getDate();
 
@@ -42,8 +73,52 @@ const DatePicker = forwardRef<HTMLInputElement, DatePickerProps>(
 
       if (selected < today) return; // 오늘 이전 날짜 선택 불가
 
-      setSelectedDate(selected);
-      onChange?.(selected);
+      if (mode === 'single') {
+        setSelectedDate(selected);
+        onChange?.(selected);
+      } else {
+        // 범위 선택 모드
+        if (!selectedStartDate || (selectedStartDate && selectedEndDate)) {
+          setSelectedStartDate(selected);
+          setSelectedEndDate(null);
+          onRangeChange?.(selected, null);
+        } else {
+          if (selected < selectedStartDate) {
+            setSelectedStartDate(selected);
+            setSelectedEndDate(selectedStartDate);
+            onRangeChange?.(selected, selectedStartDate);
+          } else {
+            setSelectedEndDate(selected);
+            onRangeChange?.(selectedStartDate, selected);
+          }
+        }
+      }
+    };
+    
+    const isDateInRange = (date: Date) => {
+      if (mode !== 'range' || !selectedStartDate) return false;
+      
+      if (selectedEndDate) {
+        return date >= selectedStartDate && date <= selectedEndDate;
+      }
+      
+      if (hoverDate && selectedStartDate && !selectedEndDate) {
+        const rangeStart = hoverDate < selectedStartDate ? hoverDate : selectedStartDate;
+        const rangeEnd = hoverDate < selectedStartDate ? selectedStartDate : hoverDate;
+        return date >= rangeStart && date <= rangeEnd;
+      }
+      
+      return false;
+    };
+    
+    const formatValue = () => {
+      if (mode === 'single') {
+        return value ? value.toISOString().substring(0, 10) : '';
+      } else {
+        if (!selectedStartDate) return '';
+        if (!selectedEndDate) return selectedStartDate.toISOString().substring(0, 10);
+        return `${selectedStartDate.toISOString().substring(0, 10)} ~ ${selectedEndDate.toISOString().substring(0, 10)}`;
+      }
     };
 
     return (
@@ -60,7 +135,7 @@ const DatePicker = forwardRef<HTMLInputElement, DatePickerProps>(
         <input
           type='hidden'
           ref={ref}
-          value={value ? value.toISOString().substring(0, 10) : ''}
+          value={formatValue()}
           readOnly
           {...props}
         />
@@ -136,10 +211,25 @@ const DatePicker = forwardRef<HTMLInputElement, DatePickerProps>(
                 dateObj.setHours(0, 0, 0, 0);
                 const dayOfWeek = dateObj.getDay();
 
-                const isSelected =
-                  selectedDate.getFullYear() === year &&
-                  selectedDate.getMonth() === month &&
-                  selectedDate.getDate() === day;
+                const isSelected = mode === 'single'
+                  ? selectedDate.getFullYear() === year &&
+                    selectedDate.getMonth() === month &&
+                    selectedDate.getDate() === day
+                  : false;
+                    
+                const isStartDate = mode === 'range' &&
+                  selectedStartDate &&
+                  selectedStartDate.getFullYear() === year &&
+                  selectedStartDate.getMonth() === month &&
+                  selectedStartDate.getDate() === day;
+                  
+                const isEndDate = mode === 'range' &&
+                  selectedEndDate &&
+                  selectedEndDate.getFullYear() === year &&
+                  selectedEndDate.getMonth() === month &&
+                  selectedEndDate.getDate() === day;
+                  
+                const isInRange = isDateInRange(dateObj);
 
                 const isToday = dateObj.getTime() === today.getTime();
 
@@ -153,22 +243,27 @@ const DatePicker = forwardRef<HTMLInputElement, DatePickerProps>(
                     type='button'
                     key={day}
                     onClick={() => onSelectDate(day)}
+                    onMouseEnter={() => mode === 'range' && setHoverDate(dateObj)}
+                    onMouseLeave={() => mode === 'range' && setHoverDate(null)}
                     disabled={isPast}
                     className={cn(
-                      'rounded-full w-8 h-8 flex body-5 items-center justify-center transition-colors',
-                      // 선택된 날짜일 때
-                      isSelected
-                        ? 'bg-fooding-purple text-white cursor-pointer'
-                        : // 선택 안 됐고, 과거 날짜인 경우
-                          isPast
-                          ? 'text-gray-4 cursor-not-allowed bg-transparent hover:bg-transparent hover:text-gray-4'
-                          : // 선택 안 됐고, 활성화된 날짜인 경우
-                            'text-black cursor-pointer hover:bg-fooding-purple hover:text-white',
-                      isSunday && !isSelected && !isPast && 'text-error-red',
-                      isSaturday && !isSelected && !isPast && 'text-info-blue',
-                      isToday && !isSelected && 'border border-fooding-purple',
+                      'rounded-full w-8 h-8 flex body-5 items-center justify-center transition-colors relative',
+                      // 선택된 날짜일 때 (단일 모드 또는 범위 모드의 시작/끝)
+                      isSelected || isStartDate || isEndDate
+                        ? 'bg-fooding-purple text-white cursor-pointer z-10'
+                        : // 범위 내 날짜
+                          isInRange
+                          ? 'bg-fooding-purple/20 text-black cursor-pointer'
+                          : // 과거 날짜
+                            isPast
+                            ? 'text-gray-4 cursor-not-allowed bg-transparent hover:bg-transparent hover:text-gray-4'
+                            : // 활성화된 날짜
+                              'text-black cursor-pointer hover:bg-fooding-purple hover:text-white',
+                      isSunday && !isSelected && !isStartDate && !isEndDate && !isInRange && !isPast && 'text-error-red',
+                      isSaturday && !isSelected && !isStartDate && !isEndDate && !isInRange && !isPast && 'text-info-blue',
+                      isToday && !isSelected && !isStartDate && !isEndDate && 'border border-fooding-purple',
                     )}
-                    aria-current={isSelected ? 'date' : undefined}
+                    aria-current={isSelected || isStartDate || isEndDate ? 'date' : undefined}
                     aria-disabled={isPast}
                   >
                     {day}
@@ -176,6 +271,21 @@ const DatePicker = forwardRef<HTMLInputElement, DatePickerProps>(
                 );
               })}
           </div>
+          
+          {mode === 'range' && (selectedStartDate || selectedEndDate) && (
+            <div className='mt-4 pt-4 border-t border-gray-1'>
+              <div className='text-sm text-gray-6'>
+                {selectedStartDate && !selectedEndDate && (
+                  <span>시작일: {selectedStartDate.toLocaleDateString('ko-KR')}</span>
+                )}
+                {selectedStartDate && selectedEndDate && (
+                  <span>
+                    {selectedStartDate.toLocaleDateString('ko-KR')} ~ {selectedEndDate.toLocaleDateString('ko-KR')}
+                  </span>
+                )}
+              </div>
+            </div>
+          )}
         </div>
       </div>
     );
