@@ -60,7 +60,7 @@ export function DatePickerWithDialog({
   const [internalSelectedDates, setInternalSelectedDates] = useState<
     SelectedItem[] | SelectedItem | null
   >(selectionMode === 'single' ? null : []);
-  
+
   const [internalSelectedRanges, setInternalSelectedRanges] = useState<
     SelectedRangeItem[] | SelectedRangeItem | null
   >(selectionMode === 'single' ? null : []);
@@ -68,7 +68,7 @@ export function DatePickerWithDialog({
   // 외부 상태가 있으면 외부 상태를 우선, 없으면 useState값 사용
   const selectedDates = externalSelectedDates ?? internalSelectedDates;
   const setSelectedDates = onChange ?? setInternalSelectedDates;
-  
+
   const selectedRanges = externalSelectedRanges ?? internalSelectedRanges;
   const setSelectedRanges = onRangeChange ?? setInternalSelectedRanges;
 
@@ -95,13 +95,15 @@ export function DatePickerWithDialog({
     if (!date) return;
     setTempDates([{ date, option: hasRadioButtonGroup ? selectedOption : undefined }]);
   };
-  
+
   // 범위 선택 시
   const handleTempRangeChange = (startDate: Date | null, endDate: Date | null) => {
     setTempStartDate(startDate);
     setTempEndDate(endDate);
     if (startDate && endDate) {
-      setTempRanges([{ startDate, endDate, option: hasRadioButtonGroup ? selectedOption : undefined }]);
+      setTempRanges([
+        { startDate, endDate, option: hasRadioButtonGroup ? selectedOption : undefined },
+      ]);
     }
   };
 
@@ -118,14 +120,17 @@ export function DatePickerWithDialog({
           // 이미 같은 범위+옵션 존재하면 추가하지 않음
           if (
             prevArray.some(
-              (d) => d.startDate.getTime() === newItem.startDate.getTime() && 
-                     d.endDate.getTime() === newItem.endDate.getTime() && 
-                     d.option === newItem.option,
+              (d) =>
+                d.startDate.getTime() === newItem.startDate.getTime() &&
+                d.endDate.getTime() === newItem.endDate.getTime() &&
+                d.option === newItem.option,
             )
           ) {
             return prevArray;
           }
-          return [...prevArray, newItem].sort((a, b) => a.startDate.getTime() - b.startDate.getTime());
+          return [...prevArray, newItem].sort(
+            (a, b) => a.startDate.getTime() - b.startDate.getTime(),
+          );
         });
       }
       setTempRanges([]);
@@ -161,68 +166,83 @@ export function DatePickerWithDialog({
   };
 
   // 임시 Chip 옵션/값
-  const tempChipOptions: { name: string; value: string }[] = datePickerMode === 'range'
-    ? (tempRanges ?? [])
-        .filter((r): r is SelectedRangeItem => !!r && !!r.startDate && !!r.endDate)
-        .slice()
-        .sort((a, b) => a.startDate.getTime() - b.startDate.getTime())
-        .map((r) => ({
-          name: r.option 
-            ? `${getOptionLabel(r.option)} ${formatDateRange(r.startDate, r.endDate)}` 
-            : formatDateRange(r.startDate, r.endDate),
-          value: formatDateRange(r.startDate, r.endDate),
-        }))
-    : (tempDates ?? [])
-        .filter((d): d is SelectedItem => !!d && !!d.date)
-        .slice()
-        .sort((a, b) => a.date.getTime() - b.date.getTime())
-        .map((d) => ({
-          name: d.option ? `${getOptionLabel(d.option)} ${formatDate(d.date)}` : formatDate(d.date),
-          value: formatDate(d.date),
-        }));
+  const tempChipOptions: { name: string; value: string }[] =
+    datePickerMode === 'range'
+      ? (tempRanges ?? [])
+          .filter((r): r is SelectedRangeItem => !!r && !!r.startDate && !!r.endDate)
+          .slice()
+          .sort((a, b) => a.startDate.getTime() - b.startDate.getTime())
+          .map((r) => ({
+            name: r.option
+              ? `${getOptionLabel(r.option)} ${formatDateRange(r.startDate, r.endDate)}`
+              : formatDateRange(r.startDate, r.endDate),
+            value: formatDateRange(r.startDate, r.endDate),
+          }))
+      : (tempDates ?? [])
+          .filter((d): d is SelectedItem => !!d && !!d.date)
+          .slice()
+          .sort((a, b) => a.date.getTime() - b.date.getTime())
+          .map((d) => ({
+            name: d.option
+              ? `${getOptionLabel(d.option)} ${formatDate(d.date)}`
+              : formatDate(d.date),
+            value: formatDate(d.date),
+          }));
 
-  const tempChipValue = datePickerMode === 'range'
-    ? tempRanges.length > 0 ? formatDateRange(tempRanges[tempRanges.length - 1]!.startDate, tempRanges[tempRanges.length - 1]!.endDate) : ''
-    : tempDates.length > 0 ? formatDate(tempDates[tempDates.length - 1]!.date) : '';
+  const tempChipValue =
+    datePickerMode === 'range'
+      ? tempRanges.length > 0
+        ? formatDateRange(
+            tempRanges[tempRanges.length - 1]!.startDate,
+            tempRanges[tempRanges.length - 1]!.endDate,
+          )
+        : ''
+      : tempDates.length > 0
+        ? formatDate(tempDates[tempDates.length - 1]!.date)
+        : '';
 
   // 확정 Chip 옵션/값
-  const finalArray = datePickerMode === 'range'
-    ? selectionMode === 'single'
-      ? []
-      : Array.isArray(selectedRanges)
-        ? selectedRanges
-        : selectedRanges
-          ? [selectedRanges]
-          : []
-    : selectionMode === 'single'
-      ? []
-      : Array.isArray(selectedDates)
-        ? selectedDates
-        : selectedDates
-          ? [selectedDates]
-          : [];
+  const finalArray =
+    datePickerMode === 'range'
+      ? selectionMode === 'single'
+        ? []
+        : Array.isArray(selectedRanges)
+          ? selectedRanges
+          : selectedRanges
+            ? [selectedRanges]
+            : []
+      : selectionMode === 'single'
+        ? []
+        : Array.isArray(selectedDates)
+          ? selectedDates
+          : selectedDates
+            ? [selectedDates]
+            : [];
 
-  const finalChipOptions = datePickerMode === 'range'
-    ? (finalArray as SelectedRangeItem[]).map((r) => ({
-        name: r.option 
-          ? `${getOptionLabel(r.option)} ${formatDateRange(r.startDate, r.endDate)}` 
-          : formatDateRange(r.startDate, r.endDate),
-        value: r.option 
-          ? `${getOptionLabel(r.option)} ${formatDateRange(r.startDate, r.endDate)}` 
-          : formatDateRange(r.startDate, r.endDate),
-      }))
-    : (finalArray as SelectedItem[]).map((d) => ({
-        name: d.option ? `${getOptionLabel(d.option)} ${formatDate(d.date)}` : formatDate(d.date),
-        value: d.option ? `${getOptionLabel(d.option)} ${formatDate(d.date)}` : formatDate(d.date),
-      }));
-      
+  const finalChipOptions =
+    datePickerMode === 'range'
+      ? (finalArray as SelectedRangeItem[]).map((r) => ({
+          name: r.option
+            ? `${getOptionLabel(r.option)} ${formatDateRange(r.startDate, r.endDate)}`
+            : formatDateRange(r.startDate, r.endDate),
+          value: r.option
+            ? `${getOptionLabel(r.option)} ${formatDateRange(r.startDate, r.endDate)}`
+            : formatDateRange(r.startDate, r.endDate),
+        }))
+      : (finalArray as SelectedItem[]).map((d) => ({
+          name: d.option ? `${getOptionLabel(d.option)} ${formatDate(d.date)}` : formatDate(d.date),
+          value: d.option
+            ? `${getOptionLabel(d.option)} ${formatDate(d.date)}`
+            : formatDate(d.date),
+        }));
+
   const finalChipValue =
     selectionMode === 'single'
       ? tempChipValue
       : datePickerMode === 'range'
         ? (finalArray as SelectedRangeItem[]).map((r) =>
-            r.option 
-              ? `${getOptionLabel(r.option)} ${formatDateRange(r.startDate, r.endDate)}` 
+            r.option
+              ? `${getOptionLabel(r.option)} ${formatDateRange(r.startDate, r.endDate)}`
               : formatDateRange(r.startDate, r.endDate),
           )
         : (finalArray as SelectedItem[]).map((d) =>
@@ -280,7 +300,10 @@ export function DatePickerWithDialog({
                 ? selectedRanges
                   ? (selectedRanges as SelectedRangeItem).option
                     ? `${getOptionLabel((selectedRanges as SelectedRangeItem).option)} ${formatDateRange((selectedRanges as SelectedRangeItem).startDate, (selectedRanges as SelectedRangeItem).endDate)}`
-                    : formatDateRange((selectedRanges as SelectedRangeItem).startDate, (selectedRanges as SelectedRangeItem).endDate)
+                    : formatDateRange(
+                        (selectedRanges as SelectedRangeItem).startDate,
+                        (selectedRanges as SelectedRangeItem).endDate,
+                      )
                   : tempRanges[0]
                     ? tempRanges[0].option
                       ? `${getOptionLabel(tempRanges[0].option)} ${formatDateRange(tempRanges[0].startDate, tempRanges[0].endDate)}`
@@ -323,11 +346,11 @@ export function DatePickerWithDialog({
 
             <div className='flex flex-col justify-center items-center gap-3'>
               {datePickerMode === 'range' ? (
-                <DatePicker 
+                <DatePicker
                   mode='range'
                   startDate={tempStartDate}
                   endDate={tempEndDate}
-                  onRangeChange={handleTempRangeChange} 
+                  onRangeChange={handleTempRangeChange}
                 />
               ) : (
                 <DatePicker value={null} onChange={handleTempDateChange} />
@@ -355,7 +378,12 @@ export function DatePickerWithDialog({
               )}
 
               <Dialog.Close asChild>
-                <Button onClick={handleConfirm} disabled={datePickerMode === 'single' ? tempDates.length === 0 : tempRanges.length === 0}>
+                <Button
+                  onClick={handleConfirm}
+                  disabled={
+                    datePickerMode === 'single' ? tempDates.length === 0 : tempRanges.length === 0
+                  }
+                >
                   선택
                 </Button>
               </Dialog.Close>
