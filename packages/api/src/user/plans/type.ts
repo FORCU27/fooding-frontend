@@ -19,13 +19,13 @@ export type GetPlanListParams = {
 
 export type Plan = z.infer<typeof Plan>;
 export const Plan = z.object({
-  id: z.number(),
+  id: z.string(),
   reservationType: reservationTypes,
   originId: z.number(),
   storeId: z.number(),
   visitStatus: visitStatus,
   reservationTime: z.iso.datetime({ local: true }),
-  createdAt: z.iso.datetime({ local: true }),
+  createdAt: z.iso.datetime({ local: true }).nullable(),
   infantChairCount: z.number(),
   infantCount: z.number(),
   adultCount: z.number(),

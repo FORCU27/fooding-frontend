@@ -15,16 +15,15 @@ export const StoreCard = ({ store }: StoreCardProps) => {
     <li key={store.id} className='flex flex-col min-h-[240px] relative'>
       <div className='h-full w-[140px]'>
         <div
-          className='relative h-[140px] mb-2 rounded-xl overflow-hidden'
+          className='relative h-[140px] w-[140px] mb-2 rounded-xl overflow-hidden'
           onClick={() => flow.push('StoreDetailScreen', { storeId: store.id })}
         >
           {store.mainImage !== null ? (
             <Image
-              width={140}
-              height={140}
-              src={`/${store.mainImage}`}
+              fill
+              src={store.mainImage}
               alt={store.name || 'store image'}
-              className='rounded-xl mb-4 object-center'
+              className='rounded-xl object-cover'
             />
           ) : (
             <div className='flex justify-center items-center w-full h-full bg-gray-1'>

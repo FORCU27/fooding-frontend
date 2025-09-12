@@ -27,11 +27,11 @@ const serviceTypeOptions: { value: StoreServiceType; label: string }[] = [
   { value: 'REWARD', label: '리워드' },
 ];
 
-export function CreateStoreServiceDialog({ 
-  open, 
-  onClose, 
-  onSubmit, 
-  loading 
+export function CreateStoreServiceDialog({
+  open,
+  onClose,
+  onSubmit,
+  loading,
 }: CreateStoreServiceDialogProps) {
   const [formData, setFormData] = useState({
     type: 'WAITING' as StoreServiceType,
@@ -56,7 +56,7 @@ export function CreateStoreServiceDialog({
   };
 
   return (
-    <Dialog open={open} onClose={handleClose} maxWidth="sm" fullWidth>
+    <Dialog open={open} onClose={handleClose} maxWidth='sm' fullWidth>
       <form onSubmit={handleSubmit}>
         <DialogTitle>스토어 서비스 등록</DialogTitle>
         <DialogContent>
@@ -65,11 +65,13 @@ export function CreateStoreServiceDialog({
               <InputLabel>서비스 타입</InputLabel>
               <Select
                 value={formData.type}
-                onChange={(e) => setFormData(prev => ({ 
-                  ...prev, 
-                  type: e.target.value as StoreServiceType 
-                }))}
-                label="서비스 타입"
+                onChange={(e) =>
+                  setFormData((prev) => ({
+                    ...prev,
+                    type: e.target.value as StoreServiceType,
+                  }))
+                }
+                label='서비스 타입'
               >
                 {serviceTypeOptions.map((option) => (
                   <MenuItem key={option.value} value={option.value}>
@@ -80,22 +82,24 @@ export function CreateStoreServiceDialog({
             </FormControl>
 
             <TextField
-              label="등록자 ID"
-              type="number"
+              label='등록자 ID'
+              type='number'
               value={formData.userId}
-              onChange={(e) => setFormData(prev => ({ 
-                ...prev, 
-                userId: Number(e.target.value) 
-              }))}
+              onChange={(e) =>
+                setFormData((prev) => ({
+                  ...prev,
+                  userId: Number(e.target.value),
+                }))
+              }
               required
               fullWidth
-              helperText="서비스를 등록하는 관리자의 ID를 입력하세요"
+              helperText='서비스를 등록하는 관리자의 ID를 입력하세요'
             />
           </Box>
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose}>취소</Button>
-          <Button type="submit" variant="contained" disabled={loading}>
+          <Button type='submit' variant='contained' disabled={loading}>
             {loading ? '등록 중...' : '등록'}
           </Button>
         </DialogActions>

@@ -19,3 +19,4 @@ export * from './ChipFilter';
 export * from './TextField';
 export * from './Select';
 export * from './BottomSheetSelect';
+export * from './Counter';

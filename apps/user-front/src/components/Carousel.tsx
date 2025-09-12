@@ -10,21 +10,28 @@ type CarouselProps = {
   initialPage?: number;
 };
 
-const Carousel = ({ children, initialPage }: CarouselProps) => {
+const Carousel = ({ children, initialPage = 1 }: CarouselProps) => {
   const [carouselRef, carousel] = useEmblaCarousel({
     loop: true,
-    startIndex: initialPage ? initialPage - 1 : undefined,
+    startIndex: initialPage >= 1 ? initialPage - 1 : 0,
   });
-  const [currentPage, setCurrentPage] = useState<number | null>(null);
+  const [currentPage, setCurrentPage] = useState<number>(initialPage >= 1 ? initialPage : 1);
 
   useEffect(() => {
     if (!carousel) return;
 
-    setCurrentPage(carousel.selectedScrollSnap() + 1);
+    const updateCurrentPage = () => {
+      const newPage = carousel.selectedScrollSnap() + 1;
+      setCurrentPage(newPage);
+    };
 
-    carousel.on('select', () => {
-      setCurrentPage(carousel.selectedScrollSnap() + 1);
-    });
+    updateCurrentPage();
+
+    carousel.on('select', updateCurrentPage);
+
+    return () => {
+      carousel.off('select', updateCurrentPage);
+    };
   }, [carousel]);
 
   return <CarouselContext value={{ currentPage, carouselRef }}>{children}</CarouselContext>;

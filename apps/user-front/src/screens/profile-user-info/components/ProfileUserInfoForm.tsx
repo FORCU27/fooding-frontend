@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 'use client';
 
 import { PropsWithoutRef, useState } from 'react';
@@ -12,7 +11,7 @@ import {
   TextField,
 } from '@repo/design-system/components/b2c';
 import { useFlow } from '@stackflow/react/future';
-import { Controller, useForm, UseFormSetError } from 'react-hook-form';
+import { Controller, useForm } from 'react-hook-form';
 import z from 'zod/v4';
 
 import { Header } from '@/components/Layout/Header';
@@ -40,7 +39,11 @@ export interface ProfileFormProps {
   editOriginValue: AuthUpdateUserBody;
   handleSubmit: (
     data: AuthUpdateUserBody & { imageFile?: File | null },
-    utils: { setError: UseFormSetError<any> },
+    {
+      onPhoneNumberAlreadyExists,
+    }: {
+      onPhoneNumberAlreadyExists: (message: string) => void;
+    },
   ) => void;
 }
 
@@ -92,7 +95,14 @@ export const ProfileUserInfoForm = ({
         description: data.description ? data.description : null,
         imageFile: data.imageFile ? data.imageFile : null,
       },
-      { setError },
+      {
+        onPhoneNumberAlreadyExists: (message: string) => {
+          setError('phoneNumber', {
+            type: 'server',
+            message,
+          });
+        },
+      },
     );
 
     setIsBottomSheetOpen(false);
