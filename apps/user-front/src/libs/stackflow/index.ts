@@ -1,5 +1,6 @@
 'use client';
 
+import { Review, StoreInfo } from '@repo/api/user';
 import { defineConfig } from '@stackflow/config';
 import { basicUIPlugin } from '@stackflow/plugin-basic-ui';
 import { basicRendererPlugin } from '@stackflow/plugin-renderer-basic';
@@ -16,7 +17,9 @@ import { PlanDetailScreen } from '@/screens/plan-detail/PlanDetail';
 import { ProfileModifyScreen } from '@/screens/profile/ProfileModify';
 import { ProfileCompleteScreen } from '@/screens/profile-user-info/ProfileCompleteScreen';
 import { ProfileUserInfoScreen } from '@/screens/profile-user-info/ProfileUserInfo';
+import { ReviewReportCreateScreen } from '@/screens/reports/ReivewReportCreate';
 import { ReviewCreateScreen } from '@/screens/reviews/ReviewCreate';
+import { ReviewModifyScreen } from '@/screens/reviews/ReviewModify';
 import { NotificationSettingScreen } from '@/screens/settings/Notifications';
 import { SettingScreen } from '@/screens/settings/Settings';
 import { StoreDetailScreen } from '@/screens/store-detail/StoreDetail';
@@ -41,6 +44,7 @@ declare module '@stackflow/config' {
     SettingScreen: object;
     NotificationSettingScreen: object;
     ReviewCreateScreen: { planId: string };
+    ReviewModifyScreen: { review: Review };
     WaitingDetailScreen: { waitingId: string };
     PlanDetailScreen: { planId: string };
     ProfileModifyScreen: object;
@@ -58,6 +62,7 @@ declare module '@stackflow/config' {
     MenuDetailScreen: MenuDetailScreenProps;
     MyRewardListScreen: object;
     MyRewardDetailScreen: { storeId: number };
+    ReviewReportCreateScreen: { review: Review; store: StoreInfo; type: 'REVIEW' | 'POST' };
   }
 }
 
@@ -75,6 +80,7 @@ const config = defineConfig({
     { name: 'SettingScreen' },
     { name: 'NotificationSettingScreen' },
     { name: 'ReviewCreateScreen' },
+    { name: 'ReviewModifyScreen' },
     { name: 'WaitingDetailScreen' },
     { name: 'PlanDetailScreen' },
     { name: 'ProfileModifyScreen' },
@@ -84,6 +90,7 @@ const config = defineConfig({
     { name: 'MenuDetailScreen' },
     { name: 'MyRewardListScreen' },
     { name: 'MyRewardDetailScreen' },
+    { name: 'ReviewReportCreateScreen' },
   ],
 
   transitionDuration: 350,
@@ -105,6 +112,7 @@ export const { Stack } = stackflow({
     SettingScreen,
     NotificationSettingScreen,
     ReviewCreateScreen,
+    ReviewModifyScreen,
     WaitingDetailScreen,
     PlanDetailScreen,
     ProfileModifyScreen,
@@ -114,6 +122,7 @@ export const { Stack } = stackflow({
     MenuDetailScreen,
     MyRewardListScreen,
     MyRewardDetailScreen,
+    ReviewReportCreateScreen,
   },
   plugins: [
     basicRendererPlugin(),

@@ -103,6 +103,7 @@ export const Review = z.object({
   }),
   purpose: z.string(),
   likeCount: z.number(),
+  userReviewCount: z.number(),
   createdAt: z.iso.datetime({ local: true }),
   updatedAt: z.iso.datetime({ local: true }),
 });
@@ -219,6 +220,20 @@ export type CreateStoreReviewBody = {
   service: number;
   imageUrls: string[];
 };
+
+export type ModifyStoreReviewBody = {
+  content: string;
+  visitPurpose: VisitPurpose;
+  taste: number;
+  mood: number;
+  service: number;
+};
+
+export type GetStoreReviewResponse = z.infer<typeof GetStoreReviewResponse>;
+export const GetStoreReviewResponse = z.object({
+  status: z.string(),
+  data: null,
+});
 
 export type StoreReward = z.infer<typeof StoreReward>;
 export const StoreReward = z.object({
