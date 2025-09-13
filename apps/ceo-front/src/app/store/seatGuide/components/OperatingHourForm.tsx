@@ -51,6 +51,7 @@ export const OperatingHoursForm = ({ handleSubmit }: PropsWithoutRef<OperatingHo
     mode: 'onSubmit',
     defaultValues: {
       customHolidays: [],
+      hasHoliday: false,
     },
   });
 
