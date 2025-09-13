@@ -16,7 +16,7 @@ const AppBarSection = ({ className }: Props) => {
       });
 
       if (response.ok) {
-        window.location.href = '/login';
+        window.location.href = '/';
       } else {
         console.error('로그아웃 실패');
       }
