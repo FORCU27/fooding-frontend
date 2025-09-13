@@ -2,7 +2,7 @@
 
 import { StoreOperatingHourBody } from '@repo/api/ceo';
 
-import { OperatingHoursForm } from '@/app/store/seatGuide/components/OperatingHourForm';
+import { OperatingHoursForm } from './components/OperatingHourForm';
 import { useCreateStoreOperatingHour } from '@/hooks/store/useCreateStoreOperatingHour';
 
 const SeatGuidePage = () => {
