@@ -87,7 +87,7 @@ export function useSocialLogin() {
           sameSite: 'lax',
         });
 
-        const returnTo = searchParams.get('returnTo') || '/';
+        const returnTo = searchParams.get('returnTo') || '/my';
         router.replace(returnTo);
       } catch (error) {
         console.error('Social login failed:', error);
