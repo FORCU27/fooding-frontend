@@ -1,20 +1,21 @@
 'use client';
 
-import { CreateStoreReviewBody, mockStoreReviewListResponse, VisitPurpose } from '@repo/api/user';
+import { CreateStoreReviewBody } from '@repo/api/user';
 import { ActivityComponentType, useFlow } from '@stackflow/react/future';
 
 import { ReviewForm } from './components/ReviewForm';
-import { ReviewStoreInfoCard } from './components/StoreInfoCard';
+import { ReviewStoreInfoCard } from './components/ReviewStoreInfoCard';
 import BottomTab from '@/components/Layout/BottomTab';
 import { Header } from '@/components/Layout/Header';
 import { Screen } from '@/components/Layout/Screen';
 import { useAuth } from '@/components/Provider/AuthProvider';
-import { useGetPlanList } from '@/hooks/plan/useGetPlanList';
+import { useGetPlanDetail } from '@/hooks/plan/useGetPlanDetail';
 import { useCreateStoreReview } from '@/hooks/store/useCreateStoreReview';
+import { useGetStoreWaitingDetail } from '@/hooks/store-waiting/useGetStoreWaitingDetail';
 
-export const ReviewCreateScreen: ActivityComponentType<'ReviewCreateScreen'> = () => {
-  const { data: reviews } = mockStoreReviewListResponse;
-  const { data: plans } = useGetPlanList();
+export const ReviewCreateScreen: ActivityComponentType<'ReviewCreateScreen'> = ({ params }) => {
+  const { data: planInfo } = useGetPlanDetail(params.planId);
+  const { data: waitingInfo } = useGetStoreWaitingDetail(planInfo.originId);
   const { user } = useAuth();
   const flow = useFlow();
 
@@ -24,9 +25,8 @@ export const ReviewCreateScreen: ActivityComponentType<'ReviewCreateScreen'> = (
     try {
       createReview({
         ...formData,
-        userId: user?.id || 1,
-        storeId: 1,
-        visitPurpose: reviews.list[0]?.purpose as VisitPurpose,
+        userId: user?.id || waitingInfo.userId,
+        storeId: planInfo.storeId,
       });
     } catch (error) {
       console.log(error);
@@ -35,15 +35,13 @@ export const ReviewCreateScreen: ActivityComponentType<'ReviewCreateScreen'> = (
     return flow.pop();
   };
 
-  const firstPlan = plans?.list?.[0]; //TODO: 예약상세 API 나오면 수정
-
   return (
     <Screen
       header={<Header title='리뷰쓰기' left={<Header.Back />} />}
       bottomTab={<BottomTab currentTab='plan' />}
     >
       <div className='flex flex-col justify-baseline items-center mx-grid-margin my-grid-margin'>
-        {firstPlan && <ReviewStoreInfoCard planInfo={firstPlan} />}
+        {planInfo && <ReviewStoreInfoCard planInfo={planInfo} />}
         <div className='flex flex-col w-full'>
           <div className='flex flex-col items-center gap-2 my-10'>
             <p className='subtitle-1'>식당은 어떠셨나요?</p>

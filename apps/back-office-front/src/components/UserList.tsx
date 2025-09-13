@@ -14,6 +14,7 @@ import {
   Pagination,
   Alert,
   CircularProgress,
+  Link,
 } from '@mui/material';
 import {
   AdminCreateUserRequest,
@@ -164,7 +165,16 @@ export default function UserList({ role }: { role: Role }) {
             {users.map((user: AdminUserResponse) => (
               <TableRow key={user.id}>
                 <TableCell>{user.id}</TableCell>
-                <TableCell>{user.email}</TableCell>
+                <TableCell>
+                  <Link 
+                    href={`/users/${user.id}`} 
+                    underline="hover"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    {user.email}
+                  </Link>
+                </TableCell>
                 <TableCell>{user.nickname || '-'}</TableCell>
                 <TableCell>{user.phoneNumber || '-'}</TableCell>
                 <TableCell>

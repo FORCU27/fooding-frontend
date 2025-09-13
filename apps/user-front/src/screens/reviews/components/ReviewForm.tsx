@@ -1,16 +1,33 @@
- 
 import { PropsWithoutRef, useRef } from 'react';
 
-import { CreateStoreReviewBody } from '@repo/api/user';
-import { Button } from '@repo/design-system/components/b2c';
+import { CreateStoreReviewBody, VISIT_PURPOSES } from '@repo/api/user';
+import { Button, Select } from '@repo/design-system/components/b2c';
 import { CloseIcon, ImageIcon } from '@repo/design-system/icons';
-import { useForm } from 'react-hook-form';
+import { Controller, useForm } from 'react-hook-form';
 
 import { StarRating } from '@/components/Store/StarRating';
 
 export interface ReviewFormProps {
   handleSubmit: (data: CreateStoreReviewBody & { imageFiles: File[] }) => void;
 }
+
+export enum VisitPurpose {
+  MEETING = 'MEETING',
+  DATE = 'DATE',
+  FRIEND = 'FRIEND',
+  FAMILY = 'FAMILY',
+  BUSINESS = 'BUSINESS',
+  PARTY = 'PARTY',
+}
+
+export const VisitPurposeLabels: Record<VisitPurpose, string> = {
+  [VisitPurpose.MEETING]: '미팅',
+  [VisitPurpose.DATE]: '데이트',
+  [VisitPurpose.FRIEND]: '친구와',
+  [VisitPurpose.FAMILY]: '가족과',
+  [VisitPurpose.BUSINESS]: '업무',
+  [VisitPurpose.PARTY]: '파티',
+};
 
 export const ReviewForm = ({ handleSubmit }: PropsWithoutRef<ReviewFormProps>) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -21,12 +38,14 @@ export const ReviewForm = ({ handleSubmit }: PropsWithoutRef<ReviewFormProps>) =
     handleSubmit: onSubmit,
     setValue,
     watch,
+    control,
   } = useForm<CreateStoreReviewBody & { imageFiles: File[] }>({
     mode: 'onSubmit',
     defaultValues: {
       content: '',
       imageUrls: [],
       imageFiles: [],
+      visitPurpose: 'DATE',
       taste: 0,
       mood: 0,
       service: 0,
@@ -62,12 +81,10 @@ export const ReviewForm = ({ handleSubmit }: PropsWithoutRef<ReviewFormProps>) =
     const files = Array.from(e.target.files || []);
     if (files.length === 0) return;
 
-    // 기존 파일들과 합치기
     const currentFiles = watch('imageFiles') || [];
     const updatedFiles = [...currentFiles, ...files];
     setValue('imageFiles', updatedFiles, { shouldValidate: true, shouldDirty: true });
 
-    // base64 변환하여 imageUrls에 추가 (미리보기용)
     const readers = files.map((file) => {
       return new Promise<string>((resolve) => {
         const reader = new FileReader();
@@ -108,6 +125,21 @@ export const ReviewForm = ({ handleSubmit }: PropsWithoutRef<ReviewFormProps>) =
           <p {...register('service')}>
             {serviceScore !== undefined ? serviceScore.toFixed(1) : '0.0'}
           </p>
+        </div>
+        <div className='w-full px-8'>
+          <Controller
+            name='visitPurpose'
+            control={control}
+            render={({ field }) => (
+              <Select {...field} label='방문 목적'>
+                {VISIT_PURPOSES.map((visitOption) => (
+                  <Select.Option key={visitOption} value={visitOption}>
+                    {VisitPurposeLabels[visitOption]}
+                  </Select.Option>
+                ))}
+              </Select>
+            )}
+          />
         </div>
       </div>
 

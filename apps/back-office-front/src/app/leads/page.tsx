@@ -23,7 +23,7 @@ import {
   Select,
   MenuItem,
 } from '@mui/material';
-import { leadApi, AdminLeadResponse } from '@repo/api/admin';
+import { leadApi } from '@repo/api/admin';
 import { useQuery } from '@tanstack/react-query';
 
 export default function LeadsPage() {
@@ -45,11 +45,11 @@ export default function LeadsPage() {
       name: error.name,
       message: error.message,
       cause: error.cause,
-      stack: error.stack
+      stack: error.stack,
     });
   }
 
-  const leads: AdminLeadResponse[] = data?.data.list ?? [];
+  const leads = data?.data.list ?? [];
   const pageInfo = data?.data.pageInfo;
   const totalPages = pageInfo?.totalPages || 1;
 
@@ -60,7 +60,7 @@ export default function LeadsPage() {
 
   return (
     <Box sx={{ p: 3 }}>
-       <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 3, alignItems: 'center' }}>
+      <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 3, alignItems: 'center' }}>
         <Typography variant='h4' component='h1'>
           Lead
         </Typography>
@@ -114,7 +114,9 @@ export default function LeadsPage() {
               </TableRow>
             ) : leads.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={5} align='center'>데이터가 없습니다</TableCell>
+                <TableCell colSpan={5} align='center'>
+                  데이터가 없습니다
+                </TableCell>
               </TableRow>
             ) : (
               leads.map((lead) => (

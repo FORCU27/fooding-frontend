@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 'use client';
 
 import { Suspense } from 'react';
@@ -10,12 +9,11 @@ import {
   UpdateProfileErrorResponse,
 } from '@repo/api/auth';
 import { ErrorFallback } from '@repo/design-system/components/b2c';
-import { ActivityComponentType } from '@stackflow/react';
+import { ActivityComponentType } from '@stackflow/react/future';
 import { useFlow } from '@stackflow/react/future';
 import { ErrorBoundary, ErrorBoundaryFallbackProps } from '@suspensive/react';
 import { QueryErrorResetBoundary } from '@tanstack/react-query';
 import { isAxiosError } from 'axios';
-import { UseFormSetError } from 'react-hook-form';
 
 import { ProfileUserInfoForm } from './components/ProfileUserInfoForm';
 import { Screen } from '@/components/Layout/Screen';
@@ -26,7 +24,7 @@ import { useUploadFile } from '@/hooks/file/useUploadFile';
 
 export const ProfileUserInfoScreen: ActivityComponentType<'ProfileUserInfoScreen'> = ({
   params,
-}: any) => {
+}) => {
   const flow = useFlow();
   const { user } = useAuth();
   if (!user) {
@@ -38,7 +36,11 @@ export const ProfileUserInfoScreen: ActivityComponentType<'ProfileUserInfoScreen
 
   const handleFormSubmit = async (
     formData: AuthUpdateUserBody & { imageFile?: File | null },
-    utils: { setError: UseFormSetError<any> },
+    {
+      onPhoneNumberAlreadyExists,
+    }: {
+      onPhoneNumberAlreadyExists: (message: string) => void;
+    },
   ) => {
     try {
       const profileInfo: AuthUpdateUserBody = {
@@ -74,10 +76,7 @@ export const ProfileUserInfoScreen: ActivityComponentType<'ProfileUserInfoScreen
 
       if (isAxiosError<UpdateProfileErrorResponse>(error)) {
         if (error.response?.data.code === UpdateProfileErrorCode.PHONE_NUMBER_ALREADY_EXISTS) {
-          utils.setError('phoneNumber', {
-            type: 'server',
-            message: UpdateProfileErrorMessages[error.response.data.code],
-          });
+          onPhoneNumberAlreadyExists(UpdateProfileErrorMessages[error.response.data.code]);
         }
       }
     }
