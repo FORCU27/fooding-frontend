@@ -1,9 +1,9 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+'use client';
+
 import { useEffect } from 'react';
 
 import { CreateReportBody } from '@repo/api/user';
-import { ActivityComponentType } from '@stackflow/react';
-import { useFlow } from '@stackflow/react/future';
+import { ActivityComponentType, useFlow } from '@stackflow/react/future';
 
 import { ReviewReportForm } from './components/ReviewReportForm';
 import { useLoginBottomSheet } from '@/components/Auth/LoginBottomSheet';
@@ -14,7 +14,7 @@ import { useCreateReport } from '@/hooks/report/useCreateReport';
 
 export const ReviewReportCreateScreen: ActivityComponentType<'ReviewReportCreateScreen'> = ({
   params,
-}: any) => {
+}) => {
   const { review, store, type } = params;
   const { mutate: createReport } = useCreateReport(review.reviewId);
   const loginBottomSheet = useLoginBottomSheet();

@@ -1,6 +1,6 @@
 import { PropsWithoutRef, useRef } from 'react';
 
-import { CreateStoreReviewBody, VISIT_PURPOSES } from '@repo/api/user';
+import { CreateStoreReviewBody, Review, VISIT_PURPOSES } from '@repo/api/user';
 import { Button, Select } from '@repo/design-system/components/b2c';
 import { CloseIcon, ImageIcon } from '@repo/design-system/icons';
 import { Controller, useForm } from 'react-hook-form';
@@ -8,6 +8,7 @@ import { Controller, useForm } from 'react-hook-form';
 import { StarRating } from '@/components/Store/StarRating';
 
 export interface ReviewFormProps {
+  review?: Review;
   handleSubmit: (data: CreateStoreReviewBody & { imageFiles: File[] }) => void;
 }
 
@@ -29,7 +30,7 @@ export const VisitPurposeLabels: Record<VisitPurpose, string> = {
   [VisitPurpose.PARTY]: '파티',
 };
 
-export const ReviewForm = ({ handleSubmit }: PropsWithoutRef<ReviewFormProps>) => {
+export const ReviewForm = ({ review, handleSubmit }: PropsWithoutRef<ReviewFormProps>) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const maxLength = 1000;
 
@@ -42,13 +43,13 @@ export const ReviewForm = ({ handleSubmit }: PropsWithoutRef<ReviewFormProps>) =
   } = useForm<CreateStoreReviewBody & { imageFiles: File[] }>({
     mode: 'onSubmit',
     defaultValues: {
-      content: '',
-      imageUrls: [],
+      content: review?.content || '',
+      imageUrls: review?.imageUrls || [],
       imageFiles: [],
-      visitPurpose: 'DATE',
-      taste: 0,
-      mood: 0,
-      service: 0,
+      visitPurpose: (review?.purpose as VisitPurpose) || 'DATE',
+      taste: review?.score.taste || 0,
+      mood: review?.score.mood || 0,
+      service: review?.score.service || 0,
     },
   });
 
@@ -111,17 +112,29 @@ export const ReviewForm = ({ handleSubmit }: PropsWithoutRef<ReviewFormProps>) =
       <div className='flex flex-col gap-10 mb-10 justify-center items-center'>
         <div className='flex subtitle-4 justify-around w-full'>
           <div className='min-w-[45px]'>음식</div>
-          <StarRating starSize={24} onChange={(val) => handleStarChange('taste', val)} />
+          <StarRating
+            starSize={24}
+            defaultValue={tasteScore}
+            onChange={(val) => handleStarChange('taste', val)}
+          />
           <p {...register('taste')}>{tasteScore !== undefined ? tasteScore.toFixed(1) : '0.0'}</p>
         </div>
         <div className='flex subtitle-4 justify-around w-full'>
           <div className='min-w-[45px]'>분위기</div>
-          <StarRating starSize={24} onChange={(val) => handleStarChange('mood', val)} />
+          <StarRating
+            starSize={24}
+            defaultValue={moodScore}
+            onChange={(val) => handleStarChange('mood', val)}
+          />
           <p {...register('mood')}>{moodScore !== undefined ? moodScore.toFixed(1) : '0.0'}</p>
         </div>
         <div className='flex subtitle-4 justify-around w-full'>
           <div className='min-w-[45px]'>서비스</div>
-          <StarRating starSize={24} onChange={(val) => handleStarChange('service', val)} />
+          <StarRating
+            starSize={24}
+            defaultValue={serviceScore}
+            onChange={(val) => handleStarChange('service', val)}
+          />
           <p {...register('service')}>
             {serviceScore !== undefined ? serviceScore.toFixed(1) : '0.0'}
           </p>
