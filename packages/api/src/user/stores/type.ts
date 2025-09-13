@@ -221,6 +221,20 @@ export type CreateStoreReviewBody = {
   imageUrls: string[];
 };
 
+export type ModifyStoreReviewBody = {
+  content: string;
+  visitPurpose: VisitPurpose;
+  taste: number;
+  mood: number;
+  service: number;
+};
+
+export type GetStoreReviewResponse = z.infer<typeof GetStoreReviewResponse>;
+export const GetStoreReviewResponse = z.object({
+  status: z.string(),
+  data: null,
+});
+
 export type StoreReward = z.infer<typeof StoreReward>;
 export const StoreReward = z.object({
   id: z.number(),

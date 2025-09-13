@@ -2,12 +2,13 @@ import Image from 'next/image';
 import { useState } from 'react';
 
 import { Review, StoreInfo } from '@repo/api/user';
-import { BottomSheet } from '@repo/design-system/components/b2c';
+import { BottomSheet, Button, Dialog } from '@repo/design-system/components/b2c';
 import { FoodingIcon, HeartIcon } from '@repo/design-system/icons';
 import { useFlow } from '@stackflow/react/future';
 
 import { StarRating } from './StarRating';
 import { useAuth } from '../Provider/AuthProvider';
+import { useDeleteStoreReview } from '@/hooks/store/useDeleteStoreReview';
 import { formatDotDate } from '@/utils/date';
 
 interface ReviewCardProps {
@@ -16,12 +17,15 @@ interface ReviewCardProps {
 }
 
 export const ReviewDetailCard = ({ review, store }: ReviewCardProps) => {
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isBottomSheetOpen, setIsBottomSheetOpen] = useState(false);
   const { user } = useAuth();
   const flow = useFlow();
 
   const { imageUrls = [] } = review;
   const isMine = user?.nickname === review.nickname;
+
+  const { mutate: deleteReview, isPending } = useDeleteStoreReview();
 
   return (
     <div className='flex flex-col w-full'>
@@ -104,8 +108,58 @@ export const ReviewDetailCard = ({ review, store }: ReviewCardProps) => {
             <div className='flex flex-col gap-4 px-5 mt-4 mb-5'>
               {isMine ? (
                 <>
-                  <button className='text-left'>수정</button>
-                  <button className='text-error-red text-left'>삭제</button>
+                  <button
+                    className='text-left'
+                    type='button'
+                    onClick={() => {
+                      flow.push('ReviewModifyScreen', { review });
+                      setIsBottomSheetOpen(false);
+                    }}
+                  >
+                    수정
+                  </button>
+                  <button
+                    className='text-error-red text-left'
+                    type='button'
+                    onClick={() => setIsDialogOpen(true)}
+                  >
+                    삭제
+                  </button>
+
+                  <Dialog isOpen={isDialogOpen}>
+                    <Dialog.Content className='p-5'>
+                      <Dialog.Title className='text-center'>리뷰 삭제</Dialog.Title>
+                      <Dialog.Body className='flex flex-col text-center py-10'>
+                        <p className='subtitle-1'>리뷰를 삭제하시겠습니까?</p>
+                        <p className='body-6 text-gray-5'>한번 삭제하면 복구할 수 없어요!</p>
+                        <div className='p-5 gap-3 rounded-xl bg-gray-1 mt-10'>
+                          <StoreCard review={review} store={store} />
+                        </div>
+                      </Dialog.Body>
+                      <Dialog.Footer className='gap-4'>
+                        <Dialog.Close asChild>
+                          <Button
+                            className='w-[136px]'
+                            variant='outlined'
+                            onClick={() => setIsDialogOpen(false)}
+                          >
+                            취소
+                          </Button>
+                        </Dialog.Close>
+                        <Button
+                          type='button'
+                          onClick={() => {
+                            deleteReview(review.reviewId);
+                            setIsDialogOpen(false);
+                            alert('삭제가 완료되었습니다.'); //FIXME: 추후 토스트 적용
+                            flow.pop();
+                          }}
+                        >
+                          삭제하기
+                        </Button>
+                      </Dialog.Footer>
+                    </Dialog.Content>
+                  </Dialog>
                 </>
               ) : (
                 <button

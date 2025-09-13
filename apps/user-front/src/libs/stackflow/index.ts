@@ -19,6 +19,7 @@ import { ProfileCompleteScreen } from '@/screens/profile-user-info/ProfileComple
 import { ProfileUserInfoScreen } from '@/screens/profile-user-info/ProfileUserInfo';
 import { ReviewReportCreateScreen } from '@/screens/reports/ReivewReportCreate';
 import { ReviewCreateScreen } from '@/screens/reviews/ReviewCreate';
+import { ReviewModifyScreen } from '@/screens/reviews/ReviewModify';
 import { NotificationSettingScreen } from '@/screens/settings/Notifications';
 import { SettingScreen } from '@/screens/settings/Settings';
 import { StoreDetailScreen } from '@/screens/store-detail/StoreDetail';
@@ -43,6 +44,7 @@ declare module '@stackflow/config' {
     SettingScreen: object;
     NotificationSettingScreen: object;
     ReviewCreateScreen: { planId: string };
+    ReviewModifyScreen: { review: Review };
     WaitingDetailScreen: { waitingId: string };
     PlanDetailScreen: { planId: string };
     ProfileModifyScreen: object;
@@ -78,6 +80,7 @@ const config = defineConfig({
     { name: 'SettingScreen' },
     { name: 'NotificationSettingScreen' },
     { name: 'ReviewCreateScreen' },
+    { name: 'ReviewModifyScreen' },
     { name: 'WaitingDetailScreen' },
     { name: 'PlanDetailScreen' },
     { name: 'ProfileModifyScreen' },
@@ -109,6 +112,7 @@ export const { Stack } = stackflow({
     SettingScreen,
     NotificationSettingScreen,
     ReviewCreateScreen,
+    ReviewModifyScreen,
     WaitingDetailScreen,
     PlanDetailScreen,
     ProfileModifyScreen,
