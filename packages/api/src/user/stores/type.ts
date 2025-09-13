@@ -103,6 +103,7 @@ export const Review = z.object({
   }),
   purpose: z.string(),
   likeCount: z.number(),
+  userReviewCount: z.number(),
   createdAt: z.iso.datetime({ local: true }),
   updatedAt: z.iso.datetime({ local: true }),
 });

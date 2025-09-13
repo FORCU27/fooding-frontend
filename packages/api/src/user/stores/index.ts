@@ -16,6 +16,7 @@ import {
   GetStoreRewardListResponse,
 } from './type';
 import { api } from '../../shared';
+import { CreateReportBody } from '../reports';
 
 const ENDPOINT = '/user/stores';
 
@@ -61,5 +62,8 @@ export const storeApi = {
   },
   purchaseStoreReward: async (storeId: number, id: number) => {
     return await api.post(`${ENDPOINT}/${storeId}/rewards/${id}`);
+  },
+  createStoreReviewReport: async (reveiwId: number, body: CreateReportBody) => {
+    await api.post(`${ENDPOINT}/${reveiwId}/report`, body);
   },
 };
