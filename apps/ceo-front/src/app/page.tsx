@@ -2,6 +2,7 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
+
 import { useQuery } from '@tanstack/react-query';
 
 export default function PortalLandingPage() {
