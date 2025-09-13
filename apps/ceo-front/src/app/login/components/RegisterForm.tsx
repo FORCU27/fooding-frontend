@@ -5,7 +5,7 @@ import { Input, Checkbox, Button } from '@repo/design-system/components/b2c';
 import { EyeOffIcon, EyeOnIcon } from '@repo/design-system/icons';
 import { AxiosError } from 'axios';
 
-import { AuthErrorResponse } from '../../../../../../../packages/api/src/shared';
+import { AuthErrorResponse } from '../../../../../../packages/api/src/shared';
 
 interface RegisterFormProps {
   onSignupSuccess: () => void;
