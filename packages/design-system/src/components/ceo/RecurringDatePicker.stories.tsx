@@ -25,16 +25,21 @@ type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
   render: () => {
-    const [date, setDate] = useState<Date | null>(null);
+    const [dates, setDates] = useState<Date[] | null>(null);
     const [recurrence, setRecurrence] = useState<RecurrenceType>(RecurrenceType.Once);
 
     return (
       <div className='w-full h-full flex flex-col items-center gap-4'>
-        <p>선택한 날짜: {date ? date.toLocaleDateString() : '없음'}</p>
+        <p>
+          선택한 날짜:{' '}
+          {dates && dates.length > 0
+            ? dates.map((date) => date.toLocaleDateString()).join(', ')
+            : '없음'}
+        </p>
         <p>반복 타입: {recurrence}</p>
         <RecurringDatePicker
-          value={date}
-          onChange={setDate}
+          values={dates}
+          onChange={setDates}
           recurrence={recurrence}
           onRecurrenceChange={setRecurrence}
         />
@@ -45,16 +50,21 @@ export const Default: Story = {
 
 export const WithInitialDateAndRecurrence: Story = {
   render: () => {
-    const [date, setDate] = useState<Date | null>(new Date(2025, 7, 30));
+    const [dates, setDates] = useState<Date[] | null>([new Date(2025, 7, 30)]);
     const [recurrence, setRecurrence] = useState<RecurrenceType>(RecurrenceType.Monthly);
 
     return (
       <div className='w-full h-full flex flex-col items-center gap-4'>
-        <p>선택한 날짜: {date ? date.toLocaleDateString() : '없음'}</p>
+        <p>
+          선택한 날짜:{' '}
+          {dates && dates.length > 0
+            ? dates.map((date) => date.toLocaleDateString()).join(', ')
+            : '없음'}
+        </p>
         <p>반복 타입: {recurrence}</p>
         <RecurringDatePicker
-          value={date}
-          onChange={setDate}
+          values={dates}
+          onChange={setDates}
           recurrence={recurrence}
           onRecurrenceChange={setRecurrence}
         />

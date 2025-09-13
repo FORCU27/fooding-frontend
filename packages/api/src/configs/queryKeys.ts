@@ -20,6 +20,7 @@ export const queryKeys = {
     devices: 'ceoDevices',
     store: {
       getStore: 'ceoStoreGetStore',
+      operatingHour: 'ceoStoreOperatingHour',
     },
   },
   pos: {},

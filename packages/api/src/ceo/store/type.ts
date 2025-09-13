@@ -2,6 +2,20 @@ import { z } from 'zod/v4';
 
 import { ApiResponse } from '../../shared';
 
+export const REGULAR_HOLIDAY_TYPES = ['WEEKLY', 'MONTHLY'] as const;
+export type RegularHolidayType = (typeof REGULAR_HOLIDAY_TYPES)[number];
+
+export const DAY_OF_WEEK = [
+  'MONDAY',
+  'TUESDAY',
+  'WEDNESDAY',
+  'THURSDAY',
+  'FRIDAY',
+  'SATURDAY',
+  'SUNDAY',
+] as const;
+export type DayOfWeek = (typeof DAY_OF_WEEK)[number];
+
 export type CreateStoreBody = {
   name: string;
 };
@@ -50,8 +64,55 @@ export const Store = z.object({
 
 export type Store = z.infer<typeof Store>;
 
+export const StoreOperatingHour = z.object({
+  id: z.number(),
+  hasHoliday: z.boolean(),
+  regularHolidayType: z.enum(REGULAR_HOLIDAY_TYPES),
+  regularHoliday: z.enum(DAY_OF_WEEK),
+  closedNationalHolidays: z.string().array(),
+  customHolidays: z.string().array(),
+  operatingNotes: z.string(),
+  dailyOperatingTimes: z.object({
+    dayOfWeek: z.enum(DAY_OF_WEEK),
+    openTime: z.string(),
+    closeTime: z.string(),
+    breakStartTime: z.string(),
+    breakEndTime: z.string(),
+  }),
+});
+
+export const StoreOperatingHourBody = z.object({
+  hasHoliday: z.boolean(),
+  regularHolidayType: z.enum(REGULAR_HOLIDAY_TYPES),
+  regularHoliday: z.enum(DAY_OF_WEEK).array(),
+  closedNationalHolidays: z.string().array(),
+  customHolidays: z.string().array(),
+  operatingNotes: z.string(),
+  dailyOperatingTimes: z.array(
+    z.object({
+      dayOfWeek: z.enum([
+        'MONDAY',
+        'TUESDAY',
+        'WEDNESDAY',
+        'THURSDAY',
+        'FRIDAY',
+        'SATURDAY',
+        'SUNDAY',
+      ]),
+      openTime: z.string(),
+      closeTime: z.string(),
+      breakStartTime: z.string(),
+      breakEndTime: z.string(),
+    }),
+  ),
+});
+
+export const GetStoreOperatingHourResponse = ApiResponse(StoreOperatingHour);
+
 export const GetStoreResponse = ApiResponse(Store);
 export const GetStoreListResponse = ApiResponse(z.array(Store));
 
 export type GetStore = z.infer<typeof GetStoreResponse>;
 export type GetStoreList = z.infer<typeof GetStoreListResponse>;
+
+export type StoreOperatingHourBody = z.infer<typeof StoreOperatingHourBody>;

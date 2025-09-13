@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 'use client';
 
 import { useState, Dispatch, SetStateAction } from 'react';
@@ -7,6 +8,7 @@ import RadioButtonGroup from './RadioButtonGroup';
 import { TimePicker } from './TimePicker';
 
 export type OperatingMode = 'same_everyday' | 'different_by_day' | 'open_24h';
+export type BreakMode = 'same_everyday' | 'different_by_day' | 'none';
 export type DayHours = { start: string; end: string; isClosed: boolean };
 export type HoursByDay = { [day: string]: DayHours };
 
@@ -14,23 +16,32 @@ const daysOfWeek = ['월', '화', '수', '목', '금', '토', '일'];
 
 export interface BusinessHoursProps {
   mode?: OperatingMode;
+  BreakMode?: BreakMode;
+  type?: 'operating' | 'breakTime';
+  name?: string;
   everydayHours?: { start: string; end: string };
   bydayHours?: HoursByDay;
   onModeChange?: Dispatch<SetStateAction<OperatingMode>>;
+  onBreakModeChange?: Dispatch<SetStateAction<BreakMode>>;
   onEverydayHoursChange?: Dispatch<SetStateAction<{ start: string; end: string }>>;
   onBydayHoursChange?: Dispatch<SetStateAction<HoursByDay>>;
 }
 
 export const BusinessHours = ({
   mode: externalMode,
+  BreakMode: externalBreakMode,
+  name,
+  type = 'operating',
   everydayHours: externalEverydayHours,
   bydayHours: externalBydayHours,
   onModeChange,
+  onBreakModeChange,
   onEverydayHoursChange,
   onBydayHoursChange,
 }: BusinessHoursProps) => {
-  // 내부 상태: 외부 prop이 없으면 내부 디폴트 상태 사용
+  // 내부 상태
   const [defaultMode, setDefaultMode] = useState<OperatingMode>('same_everyday');
+  const [defaultBreakMode, setDefaultBreakMode] = useState<BreakMode>('none');
   const [defaultEverydayHours, setDefaultEverydayHours] = useState({
     start: '09:00',
     end: '22:00',
@@ -41,18 +52,27 @@ export const BusinessHours = ({
     ),
   );
 
-  // 외부 상태 우선, 없으면 내부 디폴트 상태 사용
-  const mode = externalMode ?? defaultMode;
+  // 외부 prop 우선
+  const mode =
+    type === 'operating' ? (externalMode ?? defaultMode) : (externalBreakMode ?? defaultBreakMode);
+  const setModeFn =
+    type === 'operating'
+      ? (onModeChange ?? setDefaultMode)
+      : (onBreakModeChange ?? setDefaultBreakMode);
   const everydayHours = externalEverydayHours ?? defaultEverydayHours;
   const bydayHours = externalBydayHours ?? defaultBydayHours;
-  const setMode = onModeChange ?? setDefaultMode;
   const setEverydayHours = onEverydayHoursChange ?? setDefaultEverydayHours;
   const setBydayHours = onBydayHoursChange ?? setDefaultBydayHours;
 
   const handleDayOffToggle = (day: string) => {
     setBydayHours((prev) => ({
       ...prev,
-      [day]: { ...prev[day]!, isClosed: !prev[day]!.isClosed },
+      [day]: {
+        ...prev[day]!,
+        isClosed: !prev[day]!.isClosed,
+        start: prev[day]!.isClosed ? prev[day]!.start : '',
+        end: prev[day]!.isClosed ? prev[day]!.end : '',
+      },
     }));
   };
 
@@ -63,19 +83,26 @@ export const BusinessHours = ({
     }));
   };
 
-  const businessHourOption = [
-    { label: '매일 같아요', value: 'same_everyday' },
-    { label: '요일마다 달라요', value: 'different_by_day' },
-    { label: '24시간 영업', value: 'open_24h' },
-  ];
+  const options =
+    type === 'operating'
+      ? [
+          { label: '매일 같아요', value: 'same_everyday' },
+          { label: '요일마다 달라요', value: 'different_by_day' },
+          { label: '24시간 영업', value: 'open_24h' },
+        ]
+      : [
+          { label: '매일 같아요', value: 'same_everyday' },
+          { label: '요일마다 달라요', value: 'different_by_day' },
+          { label: '없어요', value: 'none' },
+        ];
 
   return (
     <div className='w-full'>
       <RadioButtonGroup
-        options={businessHourOption}
-        name='business-hours'
+        options={options}
+        name={name || 'business-hours'}
         selectedValue={mode}
-        onChange={(val) => setMode(val as OperatingMode)}
+        onChange={(val) => setModeFn(val as any)}
       />
 
       <div className='mt-6'>
@@ -92,12 +119,12 @@ export const BusinessHours = ({
             />
           </div>
         )}
+
         {mode === 'different_by_day' && (
           <ul className='space-y-4'>
             {daysOfWeek.map((day) => {
               const dayInfo = bydayHours[day];
               if (!dayInfo) return null;
-
               return (
                 <li key={day} className='flex items-center gap-6'>
                   <span className='w-8 font-medium'>{day}</span>
@@ -124,6 +151,7 @@ export const BusinessHours = ({
             })}
           </ul>
         )}
+
         {mode === 'open_24h' && (
           <div className='flex items-center gap-4'>
             <TimePicker value='00:00' onChange={() => {}} />
@@ -131,6 +159,8 @@ export const BusinessHours = ({
             <TimePicker value='24:00' onChange={() => {}} />
           </div>
         )}
+
+        {mode === 'none' && <div className='text-gray-400'>휴게시간 없음</div>}
       </div>
     </div>
   );
