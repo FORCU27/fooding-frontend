@@ -25,7 +25,7 @@ export const ReviewDetailCard = ({ review, store }: ReviewCardProps) => {
   const { imageUrls = [] } = review;
   const isMine = user?.nickname === review.nickname;
 
-  const { mutate: deleteReview, isPending } = useDeleteStoreReview();
+  const { mutate: deleteReview } = useDeleteStoreReview();
 
   return (
     <div className='flex flex-col w-full'>

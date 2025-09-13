@@ -198,7 +198,7 @@ export const ReviewForm = ({ review, handleSubmit }: PropsWithoutRef<ReviewFormP
           {text.length} / {maxLength}
         </div>
       </div>
-      <Button type='submit'>리뷰 등록</Button>
+      <Button type='submit'>리뷰 {review ? '수정' : '등록'}</Button>
     </form>
   );
 };
