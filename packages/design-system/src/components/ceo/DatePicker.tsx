@@ -8,14 +8,16 @@ import { cn } from '../../utils';
 type DatePickerProps = {
   label?: string;
   value?: Date | null;
-  onChange?: (date: Date | null) => void;
+  values?: Date[];
+  selectionMode?: 'single' | 'multiple';
+  onChange?: (date: Date | Date[] | null) => void;
   className?: string;
 } & Omit<InputHTMLAttributes<HTMLInputElement>, 'value' | 'onChange'>;
 
 const WEEK_DAYS = ['일', '월', '화', '수', '목', '금', '토'];
 
 export const DatePicker = forwardRef<HTMLInputElement, DatePickerProps>(
-  ({ label, value, onChange, className, ...props }, ref) => {
+  ({ label, value, values, selectionMode = 'single', onChange, className, ...props }, ref) => {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
 
@@ -25,12 +27,15 @@ export const DatePicker = forwardRef<HTMLInputElement, DatePickerProps>(
     const [year, setYear] = useState(selectedDate.getFullYear());
 
     useEffect(() => {
-      if (value) {
+      if (selectionMode === 'single' && value) {
         setSelectedDate(value);
         setMonth(value.getMonth());
         setYear(value.getFullYear());
+      } else if (selectionMode === 'multiple' && values && values.length > 0) {
+        setMonth(values[0]!.getMonth());
+        setYear(values[0]!.getFullYear());
       }
-    }, [value]);
+    }, [value, values, selectionMode]);
 
     const getDaysInMonth = (year: number, month: number) => new Date(year, month + 1, 0).getDate();
 
@@ -40,10 +45,20 @@ export const DatePicker = forwardRef<HTMLInputElement, DatePickerProps>(
       const selected = new Date(year, month, day);
       selected.setHours(0, 0, 0, 0);
 
-      if (selected < today) return; // 오늘 이전 날짜 선택 불가
+      if (selected < today) return;
 
-      setSelectedDate(selected);
-      onChange?.(selected);
+      if (selectionMode === 'single') {
+        setSelectedDate(selected);
+        onChange?.(selected);
+      } else if (selectionMode === 'multiple') {
+        let newDates = values ?? [];
+        const exists = newDates.some((d) => d.getTime() === selected.getTime());
+        newDates = exists
+          ? newDates.filter((d) => d.getTime() !== selected.getTime())
+          : [...newDates, selected].sort((a, b) => a.getTime() - b.getTime());
+
+        onChange?.(newDates);
+      }
     };
 
     return (
@@ -54,13 +69,15 @@ export const DatePicker = forwardRef<HTMLInputElement, DatePickerProps>(
           </label>
         )}
 
-        <input
-          type='hidden'
-          ref={ref}
-          value={value ? value.toISOString().substring(0, 10) : ''}
-          readOnly
-          {...props}
-        />
+        {selectionMode === 'single' && (
+          <input
+            type='hidden'
+            ref={ref}
+            value={value ? value.toISOString().substring(0, 10) : ''}
+            readOnly
+            {...props}
+          />
+        )}
 
         <div className='p-6 mt-1 rounded-lg border border-gray-1 bg-white w-full max-w-xs'>
           <div className='flex items-center justify-between mb-4'>
@@ -134,15 +151,18 @@ export const DatePicker = forwardRef<HTMLInputElement, DatePickerProps>(
                 const dayOfWeek = dateObj.getDay();
 
                 const isSelected =
-                  selectedDate.getFullYear() === year &&
-                  selectedDate.getMonth() === month &&
-                  selectedDate.getDate() === day;
+                  selectionMode === 'single'
+                    ? selectedDate.getFullYear() === year &&
+                      selectedDate.getMonth() === month &&
+                      selectedDate.getDate() === day
+                    : values?.some(
+                        (d) =>
+                          d.getFullYear() === year && d.getMonth() === month && d.getDate() === day,
+                      );
 
                 const isToday = dateObj.getTime() === today.getTime();
-
                 const isSunday = dayOfWeek === 0;
                 const isSaturday = dayOfWeek === 6;
-
                 const isPast = dateObj < today;
 
                 return (
@@ -153,14 +173,11 @@ export const DatePicker = forwardRef<HTMLInputElement, DatePickerProps>(
                     disabled={isPast}
                     className={cn(
                       'rounded-full w-8 h-8 flex body-5 items-center justify-center transition-colors',
-                      // 선택된 날짜일 때
                       isSelected
                         ? 'bg-fooding-purple text-white cursor-pointer'
-                        : // 선택 안 됐고, 과거 날짜인 경우
-                          isPast
+                        : isPast
                           ? 'text-gray-4 cursor-not-allowed bg-transparent hover:bg-transparent hover:text-gray-4'
-                          : // 선택 안 됐고, 활성화된 날짜인 경우
-                            'text-black cursor-pointer hover:bg-fooding-purple hover:text-white',
+                          : 'text-black cursor-pointer hover:bg-fooding-purple hover:text-white',
                       isSunday && !isSelected && !isPast && 'text-error-red',
                       isSaturday && !isSelected && !isPast && 'text-info-blue',
                       isToday && !isSelected && 'border border-fooding-purple',

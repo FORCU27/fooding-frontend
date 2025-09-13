@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { PropsWithoutRef, useState } from 'react';
 
 import { StoreOperatingHourBody } from '@repo/api/ceo';
@@ -10,20 +11,17 @@ import {
   ToolTip,
   Input,
   Button,
-  DatePicker,
   StoreStatusChip,
   OperatingMode,
   BreakMode,
   DatePickerWithDialog,
+  DatePicker,
 } from '@repo/design-system/components/ceo';
 import { ClockIcon } from '@repo/design-system/icons';
 import { Controller, useForm } from 'react-hook-form';
 
 import { BusinessHourForm } from './BusinessHourForm';
-type SelectedItem = {
-  date: Date;
-  option: 'once' | 'monthly' | 'annually';
-};
+
 export interface OperatingHoursFormProps {
   handleSubmit: (data: StoreOperatingHourBody) => void;
 }
@@ -51,6 +49,9 @@ export const OperatingHoursForm = ({ handleSubmit }: PropsWithoutRef<OperatingHo
     setValue,
   } = useForm<StoreOperatingHourBody>({
     mode: 'onSubmit',
+    defaultValues: {
+      customHolidays: [],
+    },
   });
 
   const hasHoliday = watch('hasHoliday');
@@ -64,7 +65,6 @@ export const OperatingHoursForm = ({ handleSubmit }: PropsWithoutRef<OperatingHo
     breakEndTime?: string;
   }) => {
     const now = new Date();
-
     const toDate = (time: string) => {
       const [hours, minutes] = time.split(':').map(Number);
       const date = new Date();
@@ -76,7 +76,6 @@ export const OperatingHoursForm = ({ handleSubmit }: PropsWithoutRef<OperatingHo
       const open = toDate(item.openTime);
       const close = toDate(item.closeTime);
       if (now >= open && now <= close) {
-        // 영업시간 안에 있음
         if (item.breakStartTime && item.breakEndTime) {
           const breakStart = toDate(item.breakStartTime);
           const breakEnd = toDate(item.breakEndTime);
@@ -85,20 +84,27 @@ export const OperatingHoursForm = ({ handleSubmit }: PropsWithoutRef<OperatingHo
         return '영업중';
       }
     }
-
     return '영업종료';
   };
 
   const todayIndex = new Date().getDay();
   const dayMap = ['SUNDAY', 'MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY'];
+
   const todayItem = watch('dailyOperatingTimes')?.find(
     (item: any) => item.dayOfWeek === dayMap[todayIndex],
   );
-
   const status = todayItem ? getStoreStatus(todayItem) : '영업종료';
 
+  const customHolidays = watch('customHolidays') as string[] | undefined;
+  const customHolidaysArr = customHolidays
+    ? customHolidays.map((date) => new Date(date)).filter((date) => !isNaN(date.getTime()))
+    : [];
+
   return (
-    <form onSubmit={formSubmit(handleSubmit)} className='space-y-6'>
+    <form
+      onSubmit={formSubmit(handleSubmit)}
+      className='flex flex-col items-center w-full gap-6 mb-20'
+    >
       <BusinessHourForm
         setValue={setValue}
         mode={mode}
@@ -107,7 +113,7 @@ export const OperatingHoursForm = ({ handleSubmit }: PropsWithoutRef<OperatingHo
         onBreakModeChange={setBreakMode}
       />
 
-      <Card>
+      <Card className='w-full'>
         <CardSubtitle label='영업 시간 관련 기타 정보'>
           <Input
             placeholder='예) 연중무휴, 100% 예약제 운영'
@@ -117,7 +123,7 @@ export const OperatingHoursForm = ({ handleSubmit }: PropsWithoutRef<OperatingHo
         </CardSubtitle>
       </Card>
 
-      <Card>
+      <Card className='w-full'>
         <CardSubtitle label='휴무일이 있나요?'>
           <ToggleGroup
             type='single'
@@ -137,7 +143,7 @@ export const OperatingHoursForm = ({ handleSubmit }: PropsWithoutRef<OperatingHo
       {hasHoliday && (
         <>
           {/* 정기 휴무일 */}
-          <Card>
+          <Card className='w-full'>
             <CardSubtitle label='정기 휴무일이 있나요?'>
               <div className='flex gap-3 items-center'>
                 <Controller
@@ -153,7 +159,6 @@ export const OperatingHoursForm = ({ handleSubmit }: PropsWithoutRef<OperatingHo
                     </Select>
                   )}
                 />
-
                 <Controller
                   name='regularHoliday'
                   control={control}
@@ -177,7 +182,7 @@ export const OperatingHoursForm = ({ handleSubmit }: PropsWithoutRef<OperatingHo
           </Card>
 
           {/* 공휴일 휴무 */}
-          <Card>
+          <Card className='w-full'>
             <CardSubtitle label='공휴일 중 휴무일이 있나요?'>
               <Controller
                 name='closedNationalHolidays'
@@ -201,10 +206,10 @@ export const OperatingHoursForm = ({ handleSubmit }: PropsWithoutRef<OperatingHo
           </Card>
 
           {/* 그 외 휴무일 */}
-          <Card>
+          <Card className='w-full'>
             <CardSubtitle label='그 외 휴무일이 있다면?'>
               <ToolTip>
-                임시 휴무일은 영업시간 조회에 표시되지 않습니다. 휴무일을 입력해주세요.
+                임시 휴무일은 영업시간 조회에 표시되지 않습니다. 휴무일을 선택해주세요.
               </ToolTip>
               <Controller
                 name='customHolidays'
@@ -214,15 +219,20 @@ export const OperatingHoursForm = ({ handleSubmit }: PropsWithoutRef<OperatingHo
                   <DatePickerWithDialog
                     title='휴무일'
                     placeholder='휴무일을 선택해주세요'
-                    hasRadioButtonGroup
-                    radioOptions={[
-                      { label: '한번만', value: 'once' },
-                      { label: '매달', value: 'monthly' },
-                      { label: '매년', value: 'annually' },
-                    ]}
                     selectionMode='multiple'
-                    selectedDates={field.value as unknown as SelectedItem[]}
-                    onChange={field.onChange}
+                    selectedDates={
+                      field.value?.map((date) => ({ date: new Date(date), option: undefined })) ||
+                      []
+                    }
+                    onChange={(selected) =>
+                      field.onChange(
+                        Array.isArray(selected)
+                          ? selected.map((item) => item.date.toISOString().substring(0, 10))
+                          : selected
+                            ? [selected.date.toISOString().substring(0, 10)]
+                            : [],
+                      )
+                    }
                   />
                 )}
               />
@@ -230,53 +240,67 @@ export const OperatingHoursForm = ({ handleSubmit }: PropsWithoutRef<OperatingHo
           </Card>
         </>
       )}
-      <Card className='flex gap-2'>
-        <DatePicker selectedDates={watch('customHolidays')} />
-        <div className='flex flex-col justify-center w-[320px] min-h-[320px] h-full py-3 px-6 bg-white border border-gray-2 rounded-xl body-2'>
-          <div className='flex gap-3 mb-6'>
-            <ClockIcon />
-            {mode === 'same_everyday' && <StoreStatusChip status={status} />}
-            {mode === 'same_everyday' ? '매일' : ''}
-            {watch('dailyOperatingTimes')?.[0] && (
-              <span>
-                {watch('dailyOperatingTimes')[0]!.openTime} -{' '}
-                {watch('dailyOperatingTimes')[0]!.closeTime}
-              </span>
-            )}
-          </div>
-          {watch('dailyOperatingTimes')?.map((item: any) => {
-            const dayMap: Record<string, string> = {
-              MONDAY: '월',
-              TUESDAY: '화',
-              WEDNESDAY: '수',
-              THURSDAY: '목',
-              FRIDAY: '금',
-              SATURDAY: '토',
-              SUNDAY: '일',
-            };
-            return (
-              <div key={item.dayOfWeek} className='flex gap-4 mb-2'>
-                <div>{dayMap[item.dayOfWeek]}</div>
-                <div className='flex flex-col'>
-                  <div>
-                    {item.openTime && item.closeTime
-                      ? `${item.openTime} - ${item.closeTime}`
-                      : '정기휴무'}
-                  </div>
-                  <div>
-                    {item.breakStartTime && item.breakEndTime
-                      ? `${item.breakStartTime} - ${item.breakEndTime} 브레이크 타임`
-                      : breakMode
-                        ? ''
+
+      <div className='w-full flex flex-col'>
+        <h1 className='headline-2 px-10'>미리보기</h1>
+        <ToolTip className='px-10 py-2'>
+          미리보기에서 설정한 정보가 정확히 반영되었는지 다시 확인해 주세요
+        </ToolTip>
+        <div className='flex items-center gap-5 p-3'>
+          <DatePicker
+            selectionMode='multiple'
+            values={customHolidaysArr}
+            className='pointer-events-none'
+          />
+          <div className='flex flex-col justify-center w-[320px] min-h-[320px] h-full py-3 px-6 bg-white border border-gray-2 rounded-lg body-2'>
+            <div className='flex gap-3 mb-6'>
+              <ClockIcon />
+              {mode === 'same_everyday' && <StoreStatusChip status={status} />}
+              {mode === 'same_everyday' ? '매일' : ''}
+              {watch('dailyOperatingTimes')?.[0] && (
+                <span>
+                  {watch('dailyOperatingTimes')[0]!.openTime} -{' '}
+                  {watch('dailyOperatingTimes')[0]!.closeTime}
+                </span>
+              )}
+            </div>
+            {watch('dailyOperatingTimes')?.map((item: any) => {
+              const dayMap: Record<string, string> = {
+                MONDAY: '월',
+                TUESDAY: '화',
+                WEDNESDAY: '수',
+                THURSDAY: '목',
+                FRIDAY: '금',
+                SATURDAY: '토',
+                SUNDAY: '일',
+              };
+
+              return (
+                <div key={item.dayOfWeek} className='flex gap-4 mb-2'>
+                  <div>{dayMap[item.dayOfWeek]}</div>
+                  <div className='flex flex-col'>
+                    <div>
+                      {item.openTime && item.closeTime
+                        ? `${item.openTime} - ${item.closeTime}`
                         : '정기휴무'}
+                    </div>
+                    <div>
+                      {item.breakStartTime && item.breakEndTime
+                        ? `${item.breakStartTime} - ${item.breakEndTime} 브레이크 타임`
+                        : breakMode
+                          ? ''
+                          : '정기휴무'}
+                    </div>
                   </div>
                 </div>
-              </div>
-            );
-          })}
+              );
+            })}
+          </div>
         </div>
-      </Card>
-      <Button type='submit'>저장</Button>
+      </div>
+      <Button type='submit' className='mt-5'>
+        저장
+      </Button>
     </form>
   );
 };

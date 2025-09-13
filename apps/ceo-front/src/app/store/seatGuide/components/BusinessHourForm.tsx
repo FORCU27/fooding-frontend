@@ -96,7 +96,7 @@ export const BusinessHourForm = ({
   }, [mode, everydayHours, bydayHours, breakMode, breakEverydayHours, breakBydayHours, setValue]);
 
   return (
-    <div className='flex flex-col gap-4'>
+    <div className='flex flex-col gap-4 w-full'>
       <Card>
         <CardSubtitle label='영업 시간을 알려주세요'>
           <BusinessHours
