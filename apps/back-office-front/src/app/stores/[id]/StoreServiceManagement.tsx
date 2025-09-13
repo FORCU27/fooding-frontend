@@ -174,8 +174,8 @@ export default function StoreServiceManagement({ storeId }: StoreServiceManageme
                   <TableCell>
                     <Chip
                       label={serviceTypeMap[service.type]}
-                      color="primary"
-                      variant="outlined"
+                      color='primary'
+                      variant='outlined'
                       onClick={() => router.push(`/stores/${storeId}/services/${service.id}`)}
                       sx={{ cursor: 'pointer' }}
                     />

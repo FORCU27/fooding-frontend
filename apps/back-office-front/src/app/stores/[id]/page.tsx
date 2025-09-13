@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable @typescript-eslint/no-unused-vars */
 'use client';
 
 import { useRouter } from 'next/navigation';
@@ -46,6 +44,8 @@ import {
   AdminStoreImageResponse,
   AdminStoreImageCreateRequest,
   AdminStoreImageUpdateRequest,
+} from '@repo/api/admin';
+import {
   adminPointShopApi,
   AdminPointShopResponse,
   AdminUpdatePointShopRequest,
@@ -111,8 +111,6 @@ export default function StoreDetailPage() {
   const [isCreatePointShopOpen, setIsCreatePointShopOpen] = useState(false);
   const [isEditPointShopOpen, setIsEditPointShopOpen] = useState(false);
   const [selectedPointShop, setSelectedPointShop] = useState<AdminPointShopResponse | null>(null);
-
-  
 
   const {
     data: storeResponse,
@@ -400,16 +398,16 @@ export default function StoreDetailPage() {
 
       {/* 탭 네비게이션 */}
       <Box sx={{ borderBottom: 1, borderColor: 'divider', mb: 3 }}>
-      <Tabs value={activeTab} onChange={handleTabChange} aria-label='store management tabs'>
-        <Tab label='기본 정보' />
-        <Tab label='메뉴' />
-        <Tab label='사진' />
-        <Tab label='소식' />
-        <Tab label='서비스' />
-        <Tab label='상태 관리' />
-        <Tab label='포인트샵' />
-      </Tabs>
-    </Box>
+        <Tabs value={activeTab} onChange={handleTabChange} aria-label='store management tabs'>
+          <Tab label='기본 정보' />
+          <Tab label='메뉴' />
+          <Tab label='사진' />
+          <Tab label='소식' />
+          <Tab label='서비스' />
+          <Tab label='상태 관리' />
+          <Tab label='포인트샵' />
+        </Tabs>
+      </Box>
 
       {/* 기본 정보 탭 */}
       <TabPanel value={activeTab} index={0}>
@@ -432,16 +430,16 @@ export default function StoreDetailPage() {
                 </Typography>
                 <Button
                   variant='text'
-                  color="primary"
+                  color='primary'
                   onClick={() => router.push(`/users/${store.ownerId}`)}
-                  sx={{ 
-                    p: 0, 
-                    minWidth: 'auto', 
+                  sx={{
+                    p: 0,
+                    minWidth: 'auto',
                     textTransform: 'none',
                     justifyContent: 'flex-start',
                     '&:hover': {
-                      textDecoration: 'underline'
-                    }
+                      textDecoration: 'underline',
+                    },
                   }}
                 >
                   {store.ownerId}
@@ -507,8 +505,8 @@ export default function StoreDetailPage() {
             </Stack>
           </Paper>
 
-      {/* 연락처 및 기타 정보 */}
-      <Paper sx={{ p: 3 }}>
+          {/* 연락처 및 기타 정보 */}
+          <Paper sx={{ p: 3 }}>
             <Typography variant='h6' gutterBottom>
               연락처 및 기타
             </Typography>
@@ -538,39 +536,44 @@ export default function StoreDetailPage() {
         </Stack>
       </TabPanel>
 
-    {/* 포인트샵 탭 */}
-    <TabPanel value={activeTab} index={6}>
-      <Stack spacing={3}>
-        <Paper sx={{ p: 3 }}>
-          <Box sx={{ display: 'flex', alignItems: 'center', mb: 2, gap: 2 }}>
-            <Typography variant='h6'>포인트샵 상품</Typography>
-            <Chip label={pointShopIsActive ? '판매중' : '판매중지'} color={pointShopIsActive ? 'primary' : 'default'} />
-            <Box sx={{ ml: 'auto', display: 'flex', gap: 1 }}>
-              <Button variant='outlined' onClick={() => setPointShopIsActive((v) => !v)}>
-                {pointShopIsActive ? '중지 상품 보기' : '판매중 상품 보기'}
-              </Button>
-              <Button variant='contained' onClick={() => setIsCreatePointShopOpen(true)}>등록</Button>
+      {/* 포인트샵 탭 */}
+      <TabPanel value={activeTab} index={6}>
+        <Stack spacing={3}>
+          <Paper sx={{ p: 3 }}>
+            <Box sx={{ display: 'flex', alignItems: 'center', mb: 2, gap: 2 }}>
+              <Typography variant='h6'>포인트샵 상품</Typography>
+              <Chip
+                label={pointShopIsActive ? '판매중' : '판매중지'}
+                color={pointShopIsActive ? 'primary' : 'default'}
+              />
+              <Box sx={{ ml: 'auto', display: 'flex', gap: 1 }}>
+                <Button variant='outlined' onClick={() => setPointShopIsActive((v) => !v)}>
+                  {pointShopIsActive ? '중지 상품 보기' : '판매중 상품 보기'}
+                </Button>
+                <Button variant='contained' onClick={() => setIsCreatePointShopOpen(true)}>
+                  등록
+                </Button>
+              </Box>
             </Box>
-          </Box>
-          <TableContainer component={Paper} variant='outlined'>
-            <Table>
-              <TableHead>
-                <TableRow>
-                  <TableCell>ID</TableCell>
-                  <TableCell>상품명</TableCell>
-                  <TableCell>포인트</TableCell>
-                  <TableCell>대상</TableCell>
-                  <TableCell>조건</TableCell>
-                  <TableCell>총수량</TableCell>
-                  <TableCell>발급</TableCell>
-                  <TableCell>시작일</TableCell>
-                  <TableCell>종료일</TableCell>
-                  <TableCell>상태</TableCell>
-                  <TableCell align="right">액션</TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {pointShopList?.data.list.map((item) => (
+            <TableContainer component={Paper} variant='outlined'>
+              <Table>
+                <TableHead>
+                  <TableRow>
+                    <TableCell>ID</TableCell>
+                    <TableCell>상품명</TableCell>
+                    <TableCell>포인트</TableCell>
+                    <TableCell>대상</TableCell>
+                    <TableCell>조건</TableCell>
+                    <TableCell>총수량</TableCell>
+                    <TableCell>발급</TableCell>
+                    <TableCell>시작일</TableCell>
+                    <TableCell>종료일</TableCell>
+                    <TableCell>상태</TableCell>
+                    <TableCell align='right'>액션</TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {pointShopList?.data.list.map((item) => (
                     <TableRow key={item.id} hover>
                       <TableCell>{item.id}</TableCell>
                       <TableCell>{item.name}</TableCell>
@@ -1245,10 +1248,15 @@ function PointShopDialog({ open, onClose, mode, initial, onSubmit }: PointShopDi
       <DialogTitle>{mode === 'create' ? '포인트샵 상품 등록' : '포인트샵 상품 수정'}</DialogTitle>
       <DialogContent dividers>
         <Stack spacing={2} sx={{ mt: 1 }}>
-          <TextField label='상품명' value={name} onChange={(e) => setName(e.target.value)} fullWidth />
+          <TextField
+            label='상품명'
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            fullWidth
+          />
           <TextField
             label='포인트'
-            type="number"
+            type='number'
             value={point}
             onChange={(e) => setPoint(Number(e.target.value))}
             fullWidth
@@ -1277,7 +1285,7 @@ function PointShopDialog({ open, onClose, mode, initial, onSubmit }: PointShopDi
           />
           <TextField
             label='총 수량 (빈값=무제한)'
-            type="number"
+            type='number'
             value={totalQuantity}
             onChange={(e) => setTotalQuantity(e.target.value)}
             fullWidth
@@ -1285,7 +1293,7 @@ function PointShopDialog({ open, onClose, mode, initial, onSubmit }: PointShopDi
           <Stack direction='row' spacing={2}>
             <TextField
               label='시작일'
-              type="date"
+              type='date'
               value={issueStartOn || ''}
               onChange={(e) => setIssueStartOn(e.target.value)}
               fullWidth
@@ -1293,7 +1301,7 @@ function PointShopDialog({ open, onClose, mode, initial, onSubmit }: PointShopDi
             />
             <TextField
               label='종료일'
-              type="date"
+              type='date'
               value={issueEndOn || ''}
               onChange={(e) => setIssueEndOn(e.target.value)}
               fullWidth

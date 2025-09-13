@@ -62,6 +62,7 @@ export const queryKeys = {
     plan: { list: 'userPlanList', detail: 'userPlanDetail' },
     region: { list: 'userRegionList' },
     reward: { list: 'userRewardList', log: 'userRewardLog' },
+    report: { detail: 'userReportDetail' },
   },
   me: {
     user: 'meUser',

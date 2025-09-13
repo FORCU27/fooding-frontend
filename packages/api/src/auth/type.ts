@@ -73,7 +73,7 @@ export type AuthUpdateUserProfileImageBody = {
 };
 
 export type UpdateProfileErrorResponse = {
-  code: string;
+  code: UpdateProfileErrorCode;
   message?: string;
 };
 
