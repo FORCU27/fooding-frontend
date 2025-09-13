@@ -29,7 +29,7 @@ export function useLoginForm(loginFn: (credentials: AuthLoginBody) => Promise<vo
         localStorage.removeItem('saved_email');
       }
 
-      router.replace('/');
+      router.replace('/my');
 
     } catch (error: unknown) {
       const axiosError = error as AxiosError<AuthErrorResponse>;

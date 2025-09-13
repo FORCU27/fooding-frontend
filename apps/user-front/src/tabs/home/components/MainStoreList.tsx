@@ -24,7 +24,7 @@ export const MainStoreList = ({ stores }: MainStoreListProps) => {
                 <Image
                   width={220}
                   height={140}
-                  src={`/${store.mainImage}`}
+                  src={`${store.mainImage}`}
                   alt={store.name || 'store image'}
                   className='rounded-xl object-cover w-[220px] h-[140px]'
                 />

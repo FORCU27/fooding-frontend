@@ -21,7 +21,35 @@ export const StoreRewardListTab = ({ storeId }: StoreRewardListTabProps) => {
   const { data: store } = useGetStoreDetail(storeId);
 
   if (!store || rewards.pointShopItems.length === 0) {
-    return <EmptyState className='mt-16 mb-30' title='등록된 리워드가 없어요.' />;
+    return (
+      <Section className='flex flex-col bg-gray-1 mt-[14px]'>
+        <div className='flex flex-col gap-5 py-4 mb-10'>
+          <div className='flex rounded-xl p-5 bg-white justify-between'>
+            <div className='flex gap-3 justify-center items-center'>
+              {store.images[0]?.imageUrl ? (
+                <Image src={store.images[0].imageUrl} width={40} height={40} alt='스토어 이미지' />
+              ) : (
+                <div className='flex justify-center items-center w-10 h-10 rounded-xl'>
+                  <FoodingIcon className='text-gray-2' />
+                </div>
+              )}
+              <div>
+                <p className='subtitle-4'>{store.name}</p>
+                <p className='subtitle-6 text-gray-5'>{rewards.point} 포인트</p>
+              </div>
+            </div>
+            <Button
+              variant='outlined'
+              size='small'
+              onClick={() => flow.push('MyRewardListScreen', {})}
+            >
+              적립내역
+            </Button>
+          </div>
+          <EmptyState className='mt-20' title='등록된 리워드가 없어요.' />
+        </div>
+      </Section>
+    );
   }
 
   return (

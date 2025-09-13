@@ -1,4 +1,6 @@
+import { useRouter } from 'next/navigation';
 import { useState } from 'react';
+
 import {
   Box,
   Button,
@@ -15,15 +17,11 @@ import {
   CircularProgress,
   Stack,
 } from '@mui/material';
-import {
-  StoreServiceResponse,
-  CreateStoreServiceRequest,
-  storeServiceApi,
-} from '@repo/api/admin';
+import { StoreServiceResponse, CreateStoreServiceRequest, storeServiceApi } from '@repo/api/admin';
 import { useQuery, useMutation } from '@tanstack/react-query';
 
-import { queryClient } from '../../providers';
 import { CreateStoreServiceDialog } from './CreateStoreServiceDialog';
+import { queryClient } from '../../providers';
 import { DeleteConfirmDialog } from '../DeleteConfirmDialog';
 
 interface StoreServiceManagementProps {
@@ -36,13 +34,18 @@ const serviceTypeMap = {
 };
 
 export default function StoreServiceManagement({ storeId }: StoreServiceManagementProps) {
+  const router = useRouter();
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [serviceToDelete, setServiceToDelete] = useState<StoreServiceResponse | null>(null);
 
   const queryKey = ['store-services', storeId];
-  
-  const { data: servicesResponse, isLoading, error } = useQuery({
+
+  const {
+    data: servicesResponse,
+    isLoading,
+    error,
+  } = useQuery({
     queryKey,
     queryFn: async () => {
       try {
@@ -80,7 +83,7 @@ export default function StoreServiceManagement({ storeId }: StoreServiceManageme
   });
 
   const deleteMutation = useMutation({
-    mutationFn: ({ id, deletedBy }: { id: number; deletedBy: number }) => 
+    mutationFn: ({ id, deletedBy }: { id: number; deletedBy: number }) =>
       storeServiceApi.deleteStoreService({ id, deletedBy }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey });
@@ -115,7 +118,9 @@ export default function StoreServiceManagement({ storeId }: StoreServiceManageme
   if (isLoading) {
     return (
       <Paper sx={{ p: 3 }}>
-        <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '200px' }}>
+        <Box
+          sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '200px' }}
+        >
           <CircularProgress />
         </Box>
       </Paper>
@@ -125,7 +130,7 @@ export default function StoreServiceManagement({ storeId }: StoreServiceManageme
   if (error) {
     return (
       <Paper sx={{ p: 3 }}>
-        <Alert severity="error">
+        <Alert severity='error'>
           서비스 목록을 불러오는 중 오류가 발생했습니다.
           <br />
           에러: {error.message}
@@ -139,20 +144,15 @@ export default function StoreServiceManagement({ storeId }: StoreServiceManageme
   return (
     <Paper sx={{ p: 3 }}>
       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
-        <Typography variant="h6">
-          스토어 서비스 관리
-        </Typography>
-        <Button 
-          variant='contained' 
-          onClick={() => setIsCreateDialogOpen(true)}
-        >
+        <Typography variant='h6'>스토어 서비스 관리</Typography>
+        <Button variant='contained' onClick={() => setIsCreateDialogOpen(true)}>
           서비스 등록
         </Button>
       </Box>
 
       {services.length === 0 ? (
         <Box sx={{ textAlign: 'center', py: 4 }}>
-          <Typography variant="body1" color="text.secondary">
+          <Typography variant='body1' color='text.secondary'>
             등록된 서비스가 없습니다.
           </Typography>
         </Box>
@@ -172,27 +172,34 @@ export default function StoreServiceManagement({ storeId }: StoreServiceManageme
               {services.map((service: StoreServiceResponse) => (
                 <TableRow key={service.id}>
                   <TableCell>
-                    <Chip 
-                      label={serviceTypeMap[service.type]} 
-                      color="primary"
-                      variant="outlined"
+                    <Chip
+                      label={serviceTypeMap[service.type]}
+                      color='primary'
+                      variant='outlined'
+                      onClick={() => router.push(`/stores/${storeId}/services/${service.id}`)}
+                      sx={{ cursor: 'pointer' }}
                     />
                   </TableCell>
                   <TableCell>
-                    <Chip 
-                      label={service.activation ? '활성' : '비활성'} 
+                    <Chip
+                      label={service.activation ? '활성' : '비활성'}
                       color={service.activation ? 'success' : 'error'}
-                      size="small"
+                      size='small'
                     />
                   </TableCell>
-                  <TableCell>
-                    {new Date(service.createdAt).toLocaleDateString()}
-                  </TableCell>
+                  <TableCell>{new Date(service.createdAt).toLocaleDateString()}</TableCell>
                   <TableCell>
                     {service.endedAt ? new Date(service.endedAt).toLocaleDateString() : '-'}
                   </TableCell>
                   <TableCell>
-                    <Stack direction="row" spacing={1}>
+                    <Stack direction='row' spacing={1}>
+                      <Button
+                        variant='outlined'
+                        size='small'
+                        onClick={() => router.push(`/stores/${storeId}/services/${service.id}`)}
+                      >
+                        상세
+                      </Button>
                       <Button
                         variant='outlined'
                         size='small'
@@ -231,10 +238,10 @@ export default function StoreServiceManagement({ storeId }: StoreServiceManageme
         onClose={() => setDeleteDialogOpen(false)}
         onConfirm={handleDeleteConfirm}
         loading={deleteMutation.isPending}
-        title="서비스 삭제 확인"
+        title='서비스 삭제 확인'
         description={
-          serviceToDelete 
-            ? `정말로 '${serviceTypeMap[serviceToDelete.type]}' 서비스를 삭제하시겠습니까?` 
+          serviceToDelete
+            ? `정말로 '${serviceTypeMap[serviceToDelete.type]}' 서비스를 삭제하시겠습니까?`
             : ''
         }
       />

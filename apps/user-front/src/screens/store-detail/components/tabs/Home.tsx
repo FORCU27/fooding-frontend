@@ -113,7 +113,11 @@ export const StoreDetailHomeTab = ({ store }: StoreDetailHomeTabProps) => {
           <Section.Title>매장 위치</Section.Title>
         </Section.Header>
         <div className='w-full mt-[14px] rounded-[12px] h-[300px]'>
-          <StoreInfoMap lat={store.latitude ?? 0} lng={store.longitude ?? 0} className='rounded-2xl' />
+          {store.latitude != null && store.longitude != null ? (
+            <StoreInfoMap lat={store.latitude} lng={store.longitude} className='rounded-2xl' />
+          ) : (
+            <EmptyState className='mt-20' title='등록된 위치정보가 없어요!' />
+          )}
         </div>
         <div className='mt-3 flex flex-col gap-1'>
           <span className='body-6 flex items-center gap-[10px]'>
@@ -127,17 +131,19 @@ export const StoreDetailHomeTab = ({ store }: StoreDetailHomeTabProps) => {
           </span>
         </div>
 
-        <Button
-          className='mt-5'
-          variant='gray'
-          onClick={() => {
-            const url = getKakaoMapDirectionUrl(store.latitude ?? 0, store.longitude ?? 0, store.name);
-            window.open(url, '_blank');
-          }}
-        >
-          <CompassIcon className='mr-1 size-[18px]' />
-          길찾기
-        </Button>
+        {store.latitude != null && store.longitude != null && (
+          <Button
+            variant='gray'
+            size='large'
+            onClick={() => {
+              const url = getKakaoMapDirectionUrl(store.latitude!, store.longitude!, store.name);
+              window.open(url, '_blank');
+            }}
+          >
+            <CompassIcon />
+            <span className='ml-1'>길찾기</span>
+          </Button>
+        )}
       </Section>
       <div className='mt-[10px]'>
         {/* TODO: 다른사람이 함께 본 식당 목록 조회 기능 추가 */}

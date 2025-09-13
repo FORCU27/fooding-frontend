@@ -2,7 +2,16 @@ import { z } from 'zod/v4';
 
 import { ApiResponse, PageInfo } from '../../shared';
 
-export const StoreCategory = z.enum(['KOREAN', 'JAPANESE', 'CHINESE', 'WESTERN', 'CAFE', 'DESSERT', 'BAR', 'ETC']);
+export const StoreCategory = z.enum([
+  'KOREAN',
+  'JAPANESE',
+  'CHINESE',
+  'WESTERN',
+  'CAFE',
+  'DESSERT',
+  'BAR',
+  'ETC',
+]);
 
 export const Store = z.object({
   id: z.number(),
