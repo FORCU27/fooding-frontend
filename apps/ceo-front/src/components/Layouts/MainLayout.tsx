@@ -14,7 +14,7 @@ interface LayoutProps {
 const Layout = ({ children }: LayoutProps) => {
   const pathname = usePathname();
   const isLoginPage = pathname === '/login';
-  const isStoreSelectPage = pathname === '/store/select';
+  const isStoreSelectPage = pathname === '/my/store/select';
 
   // 초기값을 함수로 설정
   const [isOpen, setIsOpen] = useState(() => false);

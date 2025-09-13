@@ -1,4 +1,4 @@
-import './globals.css';
+import '../globals.css';
 
 import Script from 'next/script';
 import { ReactNode, Suspense } from 'react';
@@ -86,8 +86,10 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
         <ReactQueryProvider dehydratedState={dehydratedState}>
           <Suspense fallback={<div>페이지를 불러오는 중입니다...</div>}>
             <AuthProvider>
+              <MainLayout>
                 {children}
                 <Analytics />
+              </MainLayout>
             </AuthProvider>
           </Suspense>
         </ReactQueryProvider>
