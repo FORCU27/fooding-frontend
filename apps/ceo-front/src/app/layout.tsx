@@ -8,7 +8,6 @@ import { Metadata } from 'next';
 
 import Analytics from '@/components/GA/Analytics';
 import KakaoMapScript from '@/components/KakaoMapScript';
-import MainLayout from '@/components/Layouts/MainLayout';
 import { AuthProvider } from '@/components/Provider/AuthProvider';
 import { ReactQueryProvider } from '@/components/Provider/ReactQueryProvider';
 import { GA_TRACKING_ID } from '@/libs/ga/gtag';
