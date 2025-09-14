@@ -84,16 +84,15 @@ const PhotoPage = () => {
       {!storeId || isFetching || images?.data?.list.length === 0 ? (
         <div>목록이 비어있습니다.</div>
       ) : (
-        <div className='grid grid-cols-3 gap-4 mt-4'>
-          {images?.data?.list.map((photo) => (
-            <PhotoCard
-              key={photo.id}
-              src={photo.imageUrl}
-              alt='photo image'
-              actions={{
-                onDelete: () => deleteImage.mutate({ storeId, photoId: photo.id }),
-              }}
-            />
+        <div className='columns-3 gap-[20px]'>
+          {images?.data.list.map((photo) => (
+            <div key={photo.id} className='mb-[20px] break-inside-avoid'>
+              <PhotoCard
+                src={photo.imageUrl}
+                alt='photo image'
+                actions={{ onDelete: () => deleteImage.mutate({ storeId, photoId: photo.id }) }}
+              />
+            </div>
           ))}
         </div>
       )}
