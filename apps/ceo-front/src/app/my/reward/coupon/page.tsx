@@ -15,12 +15,13 @@ const CouponListPage = () => {
 
   const { data: couponList, isLoading } = useQuery({
     queryKey: [queryKeys.ceo.coupon.list, selectedStoreId],
-    queryFn: () => couponApiV2.getCouponList({ 
-      storeId: selectedStoreId || 0,
-      pageNum: 1,
-      pageSize: 10,
-      status: 'ACTIVE'
-    }),
+    queryFn: () =>
+      couponApiV2.getCouponList({
+        storeId: selectedStoreId || 0,
+        pageNum: 1,
+        pageSize: 10,
+        status: 'ACTIVE',
+      }),
     enabled: !!selectedStoreId && isInitialized,
   });
 
@@ -53,9 +54,7 @@ const CouponListPage = () => {
     <div className='space-y-4'>
       <div className='flex justify-between items-center'>
         <h1 className='text-2xl font-bold'>쿠폰 관리</h1>
-        <Button onClick={() => router.push('/reward/coupon/create')}>
-          새 쿠폰 만들기
-        </Button>
+        <Button onClick={() => router.push('/my/reward/coupon/create')}>새 쿠폰 만들기</Button>
       </div>
 
       <div className='bg-white rounded-lg shadow'>
@@ -105,17 +104,19 @@ const CouponListPage = () => {
                     {formatDate(coupon.issueStartOn)} ~ {formatDate(coupon.issueEndOn)}
                   </td>
                   <td className='px-6 py-4 whitespace-nowrap'>
-                    <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
-                      coupon.status === 'ACTIVE' 
-                        ? 'bg-green-100 text-green-800' 
-                        : 'bg-gray-100 text-gray-800'
-                    }`}>
+                    <span
+                      className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
+                        coupon.status === 'ACTIVE'
+                          ? 'bg-green-100 text-green-800'
+                          : 'bg-gray-100 text-gray-800'
+                      }`}
+                    >
                       {coupon.status === 'ACTIVE' ? '활성' : '비활성'}
                     </span>
                   </td>
                   <td className='px-6 py-4 whitespace-nowrap text-sm font-medium'>
                     <button
-                      onClick={() => router.push(`/reward/coupon/${coupon.id}`)}
+                      onClick={() => router.push(`/my/reward/coupon/${coupon.id}`)}
                       className='text-indigo-600 hover:text-indigo-900'
                     >
                       수정

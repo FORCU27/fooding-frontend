@@ -68,8 +68,8 @@ const MenuItemComponent = memo(
       // 현재 활성화된 서브메뉴가 있거나, 현재 경로가 이 메뉴의 서브메뉴 중 하나와 일치하면 확장
       return menu.subItems.some((subItem) => {
         // 쿠폰 메뉴의 경우 특별 처리
-        if (subItem.path === '/reward/coupon') {
-          return pathname === subItem.path || pathname.startsWith('/reward/coupon/');
+        if (subItem.path === '/my/reward/coupon') {
+          return pathname === subItem.path || pathname.startsWith('/my/reward/coupon/');
         }
         return (
           pathname === subItem.path ||
@@ -131,7 +131,7 @@ const MenuItemComponent = memo(
                 key={subMenu.id}
                 onClick={() => handleSubMenuClick(subMenu)}
                 className={`body-2 cursor-pointer pt-[9px] pb-[12px] pl-[60px] hover:bg-primary-pink/5 rounded transition-colors
-    ${(subMenu.path === '/reward/coupon' && pathname.startsWith('/reward/coupon')) || pathname === subMenu.path ? 'text-black font-medium' : 'text-gray-5'}`}
+    ${(subMenu.path === '/my/reward/coupon' && pathname.startsWith('/my/reward/coupon')) || pathname === subMenu.path ? 'text-black font-medium' : 'text-gray-5'}`}
               >
                 {subMenu.text}
               </li>
