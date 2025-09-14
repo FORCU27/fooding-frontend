@@ -1,5 +1,6 @@
 'use client';
 
+import { Toaster } from '@repo/design-system/components/b2c';
 import { MSWProvider } from '@repo/msw';
 import { OverlayProvider } from 'overlay-kit';
 
@@ -15,6 +16,7 @@ export const Providers = ({ children }: { children: React.ReactNode }) => {
           <AuthProvider>
             <LoginBottomSheetProvider>{children}</LoginBottomSheetProvider>
           </AuthProvider>
+          <Toaster />
         </OverlayProvider>
       </ReactQueryProvider>
     </MSWProvider>
