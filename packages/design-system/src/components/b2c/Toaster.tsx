@@ -1,4 +1,4 @@
-import { Toaster as RhtToaster } from 'react-hot-toast';
+import { Toaster as RhtToaster, toast as RhtToast } from 'react-hot-toast';
 
 import { CheckIcon } from '../../icons';
 
@@ -25,3 +25,5 @@ export const Toaster = () => {
     />
   );
 };
+
+export const toast = RhtToast;
