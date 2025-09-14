@@ -10341,6 +10341,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"fooding-front@workspace:.":
+  version: 0.0.0-use.local
+  resolution: "fooding-front@workspace:."
+  dependencies:
+    prettier: "npm:3.5.3"
+    turbo: "npm:^2.4.0"
+    typescript: "npm:^5.7.3"
+  languageName: unknown
+  linkType: soft
+
 "for-each@npm:^0.3.3, for-each@npm:^0.3.5":
   version: 0.3.5
   resolution: "for-each@npm:0.3.5"
@@ -17681,16 +17691,6 @@ __metadata:
   checksum: 10/d731e3ba776a0ee19021d909787942933a6c2eafb2bbe85541f0c59aa5c7d475ce86fcb860d5803105e32244c3dd5ba875b87c4c6bf2d6f297da416aa54e556f
   languageName: node
   linkType: hard
-
-"zapp-front@workspace:.":
-  version: 0.0.0-use.local
-  resolution: "zapp-front@workspace:."
-  dependencies:
-    prettier: "npm:3.5.3"
-    turbo: "npm:^2.4.0"
-    typescript: "npm:^5.7.3"
-  languageName: unknown
-  linkType: soft
 
 "zod@npm:^3.24.2, zod@npm:^3.24.3, zod@npm:^3.24.4":
   version: 3.25.45
