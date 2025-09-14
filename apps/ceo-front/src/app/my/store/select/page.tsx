@@ -51,7 +51,7 @@ export default function StoreSelectPage() {
       console.error('');
       return;
     }
-    router.push('/');
+    router.push('/my');
   };
 
   return (
