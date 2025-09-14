@@ -6,6 +6,7 @@ import { useFlow } from '@stackflow/react/future';
 
 import { StarRating } from '@/components/Store/StarRating';
 import { useGetStoreDetail } from '@/hooks/store/useGetStoreDetail';
+import { useGetStoreWaitingDetail } from '@/hooks/store-waiting/useGetStoreWaitingDetail';
 import { formatDotDate } from '@/utils/date';
 
 interface PlanCompletedCardProps {
@@ -16,6 +17,7 @@ interface PlanCompletedCardProps {
 export const PlanCompletedCard = ({ plan, showEditButton }: PlanCompletedCardProps) => {
   const flow = useFlow();
   const { data: storeInfo } = useGetStoreDetail(plan.storeId);
+  const { data: waitingInfo } = useGetStoreWaitingDetail(plan.originId);
 
   const handleReviewCardClick = () => {
     flow.push('ReviewCreateScreen', {
@@ -42,7 +44,7 @@ export const PlanCompletedCard = ({ plan, showEditButton }: PlanCompletedCardPro
               fill
               style={{ objectFit: 'cover' }}
               src={storeInfo.images[0]?.imageUrl}
-              alt='리뷰 이미지'
+              alt='가게 이미지'
             />
           </div>
         ) : (
@@ -54,11 +56,12 @@ export const PlanCompletedCard = ({ plan, showEditButton }: PlanCompletedCardPro
           <span className='subtitle-5'>{storeInfo.name}</span>
           {plan.reservationType !== 'RESERVATION' ? (
             <span className='text-gray-5 body-8'>
-              웨이팅 번호 {plan.originId} • 매장 식사 {plan.adultCount} 명
+              웨이팅 번호 {waitingInfo.callNumber}번 • 매장 식사 {plan.adultCount} 명
             </span>
           ) : (
             <span className='text-gray-5 body-8'>
-              {formatDotDate(plan.createdAt)} • {plan.adultCount} 명
+              {plan.reservationTime !== null && formatDotDate(plan.reservationTime)} •{' '}
+              {plan.adultCount} 명
             </span>
           )}
         </div>

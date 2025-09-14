@@ -43,7 +43,15 @@ export default function RegionsPage() {
 
   return (
     <Box sx={{ p: 3 }}>
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 3, gap: 2, alignItems: 'center' }}>
+      <Box
+        sx={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          mb: 3,
+          gap: 2,
+          alignItems: 'center',
+        }}
+      >
         <Typography variant='h4' component='h1'>
           Regions
         </Typography>
@@ -97,7 +105,9 @@ export default function RegionsPage() {
               </TableRow>
             ) : regions.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={8} align='center'>데이터가 없습니다</TableCell>
+                <TableCell colSpan={8} align='center'>
+                  데이터가 없습니다
+                </TableCell>
               </TableRow>
             ) : (
               regions.map((region) => (

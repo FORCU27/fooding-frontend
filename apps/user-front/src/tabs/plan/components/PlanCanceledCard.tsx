@@ -4,6 +4,7 @@ import { Plan } from '@repo/api/user';
 import { CloseIcon, FoodingIcon } from '@repo/design-system/icons';
 
 import { useGetStoreDetail } from '@/hooks/store/useGetStoreDetail';
+import { useGetStoreWaitingDetail } from '@/hooks/store-waiting/useGetStoreWaitingDetail';
 import { formatDotDate } from '@/utils/date';
 
 interface PlanCanceledCardProps {
@@ -12,6 +13,7 @@ interface PlanCanceledCardProps {
 
 export const PlanCanceledCard = ({ plan }: PlanCanceledCardProps) => {
   const { data: storeInfo } = useGetStoreDetail(plan.storeId);
+  const { data: waitingInfo } = useGetStoreWaitingDetail(plan.originId);
   return (
     <div className='flex flex-col bg-white/80 rounded-xl p-4 gap-3'>
       <div className='flex justify-between'>
@@ -31,7 +33,7 @@ export const PlanCanceledCard = ({ plan }: PlanCanceledCardProps) => {
               fill
               style={{ objectFit: 'cover' }}
               src={storeInfo.images[0]?.imageUrl}
-              alt='리뷰 이미지'
+              alt='가게 이미지'
             />
           </div>
         ) : (
@@ -43,13 +45,16 @@ export const PlanCanceledCard = ({ plan }: PlanCanceledCardProps) => {
           <span className='subtitle-5'>{storeInfo.name}</span>
           {plan.reservationType !== 'RESERVATION' ? (
             <p className='text-gray-5 body-8'>
-              <span className='line-through decoration-gray-5'>웨이팅 번호 {plan.id}</span> •{' '}
-              <span className='line-through decoration-gray-5'>매장 식사 {plan.adultCount} 명</span>
+              <span className='line-through decoration-gray-5'>
+                웨이팅 번호 {waitingInfo.callNumber}번
+              </span>{' '}
+              •{' '}
+              <span className='line-through decoration-gray-5'>매장 식사 {plan.adultCount}명</span>
             </p>
           ) : (
             <p className='text-gray-5 body-8'>
               <span className='line-through decoration-gray-5'>
-                {formatDotDate(plan.createdAt)}
+                {plan.createdAt !== null && formatDotDate(plan.createdAt)}
               </span>{' '}
               • <span className='line-through decoration-gray-5'>{plan.adultCount} 명</span>
             </p>
