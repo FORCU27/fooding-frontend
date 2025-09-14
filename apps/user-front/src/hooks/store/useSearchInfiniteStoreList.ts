@@ -4,6 +4,7 @@ import { useSuspenseInfiniteQuery } from '@tanstack/react-query';
 
 export const useSearchInfiniteStoreList = (params: {
   keyword: SearchStoreListParams['searchString'];
+  regionIds: SearchStoreListParams['regionIds'];
   sortType: SearchStoreListParams['sortType'];
   sortDirection: SearchStoreListParams['sortDirection'];
 }) => {
@@ -14,6 +15,7 @@ export const useSearchInfiniteStoreList = (params: {
       return storeApi.searchStoreList({
         pageNum: pageParam,
         pageSize: 10,
+        regionIds: params.regionIds,
         searchString: params.keyword,
         sortType: params.sortType,
         sortDirection: params.sortDirection,

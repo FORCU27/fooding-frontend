@@ -14,29 +14,34 @@ import { isNonEmptyArray } from '@/utils/array';
 export const SearchScreen: ActivityComponentType<'SearchScreen'> = () => {
   const [searchInputFocused, setSearchInputFocused] = useState(false);
   const [searchInputValue, setSearchInputValue] = useState('');
-  const [selectedRegions, setSelectedRegions] = useState<string[]>([]);
+  const [selectedRegions, setSelectedRegions] = useState<{ id: string; name: string }[]>([]);
   const [recentSearchKeywords, setRecentSearchKeywords] =
     useState<readonly string[]>(RECENT_SEARCHES);
 
-  const { push } = useFlow();
+  const flow = useFlow();
 
   const removeRecentSearchKeyword = (keyword: string) => {
     setRecentSearchKeywords((prev) => prev.filter((item) => item !== keyword));
   };
 
   const search = (keyword: string) => {
-    push('SearchResultScreen', {
+    flow.push('SearchResultScreen', {
       keyword,
-      regionIds: selectedRegions,
+      regions: selectedRegions,
     });
   };
 
-  const filterLabel =
-    selectedRegions.length > 1
-      ? `${selectedRegions[0]}..외 ${selectedRegions.length - 1}개`
-      : isNonEmptyArray(selectedRegions)
-        ? selectedRegions[0]
-        : '지역';
+  const filterLabel = (() => {
+    if (isNonEmptyArray(selectedRegions)) {
+      if (selectedRegions.length > 1) {
+        return `${selectedRegions[0].name}..외 ${selectedRegions.length - 1}개`;
+      }
+
+      return selectedRegions[0].name;
+    }
+
+    return '지역';
+  })();
 
   return (
     <Screen
@@ -102,4 +107,4 @@ export const SearchScreen: ActivityComponentType<'SearchScreen'> = () => {
   );
 };
 
-const RECENT_SEARCHES = ['고기 맛집', '오마카세', '이자카야', '치킨', '피자'] as const;
+const RECENT_SEARCHES = ['홍가네', '고기 맛집', '오마카세', '이자카야', '치킨', '피자'] as const;

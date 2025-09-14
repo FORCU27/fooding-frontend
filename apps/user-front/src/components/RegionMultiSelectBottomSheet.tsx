@@ -13,11 +13,16 @@ type Province = {
   districts: string[];
 };
 
+type Region = {
+  id: string;
+  name: string;
+};
+
 type RegionMultiSelectBottomSheetProps = {
   isOpen?: boolean;
   onOpenChange?: (isOpen: boolean) => void;
-  value: string[];
-  onChange: (value: string[]) => void;
+  value: Region[];
+  onChange: (value: Region[]) => void;
   trigger?: React.ReactNode;
 };
 
@@ -35,7 +40,7 @@ const RegionMultiSelectBottomSheet = (props: RegionMultiSelectBottomSheetProps) 
 };
 
 const Content = ({ value: initialValue, onChange }: RegionMultiSelectBottomSheetProps) => {
-  const [value, setValue] = useState<string[]>(initialValue);
+  const [value, setValue] = useState<Region[]>(initialValue);
 
   // 시/도 리스트
   const { data: provinceData } = useGetRegionList({ level: 1 });
@@ -49,7 +54,7 @@ const Content = ({ value: initialValue, onChange }: RegionMultiSelectBottomSheet
     parentRegionId: selectedProvince?.id,
   });
 
-  const districts = districtData?.list.map((d) => d.name.replace(/^.*\s/, '')) ?? [];
+  const districts = districtData?.list ?? [];
 
   // 시/도 리스트 초기 선택
   useEffect(() => {
@@ -59,14 +64,16 @@ const Content = ({ value: initialValue, onChange }: RegionMultiSelectBottomSheet
     }
   }, [provinces, selectedProvince]);
 
-  const toggleDistrict = (district: string) => {
+  const toggleDistrict = (district: Region) => {
     setValue((prev) =>
-      prev.includes(district) ? prev.filter((v) => v !== district) : [...prev, district],
+      prev.find((v) => v.id === district.id)
+        ? prev.filter((v) => v.id !== district.id)
+        : [...prev, district],
     );
   };
 
-  const removeDistrict = (district: string) => {
-    setValue((prev) => prev.filter((v) => v !== district));
+  const removeDistrict = (district: Region) => {
+    setValue((prev) => prev.filter((v) => v.id !== district.id));
   };
 
   const onResetButtonClick = () => setValue([]);
@@ -78,8 +85,8 @@ const Content = ({ value: initialValue, onChange }: RegionMultiSelectBottomSheet
         <BottomSheet.Title className='font-bold text-[24px]'>관심지역 설정</BottomSheet.Title>
         <div className='mt-5 flex flex-wrap gap-2'>
           {value.map((v) => (
-            <DismissibleChipButton key={v} onClick={() => removeDistrict(v)}>
-              {v}
+            <DismissibleChipButton key={v.id} onClick={() => removeDistrict(v)}>
+              {v.name}
             </DismissibleChipButton>
           ))}
         </div>
@@ -104,15 +111,16 @@ const Content = ({ value: initialValue, onChange }: RegionMultiSelectBottomSheet
         <div className='flex flex-col overflow-y-auto scrollbar-hide flex-1'>
           {districts.map((district) => (
             <button
-              key={district}
+              key={district.id}
               className={cn(
                 'h-[47px] px-4 flex items-center shrink-0 text-gray-5 cursor-pointer',
-                value.includes(district) && 'bg-primary-pink/10 text-primary-pink font-semibold',
+                value.some((v) => v.id === district.id) &&
+                  'bg-primary-pink/10 text-primary-pink font-semibold',
               )}
               onClick={() => toggleDistrict(district)}
             >
-              <span className='flex-1 text-start'>{district}</span>
-              {value.includes(district) && <CheckIcon size={17} />}
+              <span className='flex-1 text-start'>{district.name.replace(/^.*\s/, '')}</span>
+              {value.some((v) => v.id === district.id) && <CheckIcon size={17} />}
             </button>
           ))}
         </div>

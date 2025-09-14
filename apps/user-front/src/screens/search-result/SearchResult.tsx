@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { Store, STORE_CATEOGORY_LABELS } from '@repo/api/user';
 import { BottomSheet, Button, ChipFilter, SearchInput } from '@repo/design-system/components/b2c';
 import { ChevronDownIcon, FoodingIcon, StarIcon } from '@repo/design-system/icons';
-import { ActivityComponentType } from '@stackflow/react/future';
+import { ActivityComponentType, useFlow } from '@stackflow/react/future';
 import { Suspense } from '@suspensive/react';
 
 import { AutoComplete } from '../search/components/AutoComplete';
@@ -19,7 +19,10 @@ const DUMMY_LOCATION = '제주 제주시 서해안로 654';
 
 export type SearchResultScreenParams = {
   keyword: string;
-  regionIds: string[];
+  regions: {
+    id: string;
+    name: string;
+  }[];
 };
 
 const SORT_OPTIONS = [
@@ -42,17 +45,24 @@ const SORT_OPTION_PARAMS = {
 
 export const SearchResultScreen: ActivityComponentType<'SearchResultScreen'> = ({ params }) => {
   const [searchInputFocused, setSearchInputFocused] = useState(false);
-  const [selectedRegions, setSelectedRegions] = useState<string[]>(params.regionIds);
+  const [selectedRegions, setSelectedRegions] = useState<{ id: string; name: string }[]>(
+    params.regions,
+  );
   const [searchInputValue, setSearchInputValue] = useState(params.keyword);
   const [searchKeyword, setSearchKeyword] = useState(params.keyword);
   const [sort, setSort] = useState<(typeof SORT_OPTIONS)[number]>(SORT_OPTIONS[0]);
 
-  const filterLabel =
-    selectedRegions.length > 1
-      ? `${selectedRegions[0]}..외 ${selectedRegions.length - 1}개`
-      : isNonEmptyArray(selectedRegions)
-        ? selectedRegions[0]
-        : '지역';
+  const filterLabel = (() => {
+    if (isNonEmptyArray(selectedRegions)) {
+      if (selectedRegions.length > 1) {
+        return `${selectedRegions[0].name}..외 ${selectedRegions.length - 1}개`;
+      }
+
+      return selectedRegions[0].name;
+    }
+
+    return '지역';
+  })();
 
   const search = (keyword: string) => {
     if (keyword.trim() === '') {
@@ -100,7 +110,12 @@ export const SearchResultScreen: ActivityComponentType<'SearchResultScreen'> = (
       </div>
       <div className='bg-gray-1 h-[10px]' />
       <Suspense>
-        <SearchResult sort={sort} onSortChange={setSort} keyword={searchKeyword} />
+        <SearchResult
+          sort={sort}
+          onSortChange={setSort}
+          keyword={searchKeyword}
+          regionIds={selectedRegions.map((region) => region.id)}
+        />
       </Suspense>
     </Screen>
   );
@@ -110,11 +125,13 @@ type SearchResultProps = {
   sort: (typeof SORT_OPTIONS)[number];
   onSortChange: (value: (typeof SORT_OPTIONS)[number]) => void;
   keyword: string;
+  regionIds: string[];
 };
 
-const SearchResult = ({ sort, onSortChange, keyword }: SearchResultProps) => {
+const SearchResult = ({ sort, onSortChange, keyword, regionIds }: SearchResultProps) => {
   const { stores, fetchNextPage, totalCount } = useSearchInfiniteStoreList({
     keyword,
+    regionIds,
     sortDirection: SORT_OPTION_PARAMS[sort].direction,
     sortType: SORT_OPTION_PARAMS[sort].type,
   });
@@ -161,8 +178,13 @@ type StoreCardProps = {
 };
 
 const StoreCard = ({ store }: StoreCardProps) => {
+  const flow = useFlow();
+
   return (
-    <div className='flex flex-col p-grid-margin'>
+    <div
+      className='flex flex-col p-grid-margin'
+      onClick={() => flow.push('StoreDetailScreen', { storeId: store.id })}
+    >
       <div className='flex items-center'>
         <span className='subtitle-2'>{store.name}</span>
         <span className='ml-2 text-gray-5 body-6'>{STORE_CATEOGORY_LABELS[store.category]}</span>

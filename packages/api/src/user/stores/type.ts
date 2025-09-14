@@ -263,6 +263,7 @@ export const GetStoreRewardListResponse = RewardListResponse(StoreReward);
 
 export type SearchStoreListParams = {
   searchString: string;
+  regionIds: string[];
   pageNum: number;
   pageSize: number;
   sortType: SortType;
