@@ -7,8 +7,8 @@
 
   /* Fooding */
   --color-fooding-yellow: oklch(0.88 0.2 100);
-  --color-fooding-green: oklch(0.74 0.19 145);
   --color-fooding-blue: oklch(0.7068 0.142 230.72);
+  --color-fooding-green: #0bb76d;
   --color-fooding-purple: #6366f1;
 
   /* Interaction */
