@@ -51,7 +51,7 @@ export const StoreDetailReviewTab = ({ store }: StoreDetailReviewTabProps) => {
       )}
       {reviews && reviews?.list.length > 0 && (
         <ul className='flex flex-col mt-2 pb-24'>
-          <ReviewsDetailList reviews={reviews?.list || []} />
+          <ReviewsDetailList reviews={reviews?.list || []} store={storeInfo} />
         </ul>
       )}
     </Section>

@@ -23,7 +23,8 @@ import {
   Public,
   CardGiftcard,
   Devices,
-  ViewCarousel
+  ViewCarousel,
+  Report
 } from '@mui/icons-material';
 import {
   Box,
@@ -66,6 +67,7 @@ const menu = [
       { label: '리뷰', path: '/reviews', icon: <RateReview /> },
       { label: '디바이스 목록', path: '/devices', icon: <Devices /> },
       { label: '배너 관리', path: '/banners', icon: <ViewCarousel /> },
+      { label: '신고', path: '/reports', icon: <Report /> },
     ],
   },
   {

@@ -1,15 +1,26 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import { StarIcon } from '@repo/design-system/icons';
 
 interface StarRatingProps {
+  defaultValue?: number;
   score?: number;
   starSize?: number;
   onChange?: (value: number) => void;
 }
 
-export const StarRating = ({ score, starSize = 18, onChange }: StarRatingProps) => {
-  const [selectedValue, setSelectedValue] = useState<number | null>(score ?? null);
+export const StarRating = ({
+  defaultValue = 0,
+  score,
+  starSize = 18,
+  onChange,
+}: StarRatingProps) => {
+  if (score) defaultValue = score;
+  const [selectedValue, setSelectedValue] = useState<number | null>(defaultValue);
+
+  useEffect(() => {
+    setSelectedValue(defaultValue);
+  }, [defaultValue]);
 
   const isEditable = score === undefined;
   const displayScore = selectedValue ?? 0;
