@@ -2,42 +2,66 @@ import { z } from 'zod';
 
 // Enum 타입들
 export const BenefitType = z.enum(['DISCOUNT', 'GIFT']);
-export const CouponType = z.enum(['FIRST_COME_FIRST_SERVED', 'REGULAR_ONLY']);
-export const DiscountType = z.enum(['PERCENTAGE', 'FIXED']);
-export const ProvideType = z.enum(['ALL', 'REGULAR']);
+// 생성시와 수정시 다른 enum 값
+export const CreateCouponType = z.enum(['FIRST_COME_FIRST_SERVED', 'REGULAR_ONLY']);
+export const UpdateCouponType = z.enum(['GENERAL', 'FIRST_COME_FIRST_SERVED']);
+export const DiscountType = z.enum(['PERCENT', 'FIXED']);
+// 생성시와 수정시 다른 enum 값  
+export const CreateProvideType = z.enum(['ALL', 'REGULAR']);
+export const UpdateProvideType = z.enum(['ALL', 'REGULAR_CUSTOMER']);
 export const CouponStatus = z.enum(['ACTIVE', 'INACTIVE', 'EXPIRED']);
 
-// 쿠폰 생성/수정 요청 바디
+// 쿠폰 생성 요청 바디
 export const CreateCouponBody = z.object({
   storeId: z.number(),
   benefitType: BenefitType,
-  type: CouponType,
-  discountType: DiscountType.optional(),
-  provideType: ProvideType,
-  name: z.string().min(1, '쿠폰 이름을 입력해주세요'),
-  conditions: z.string().optional(),
+  type: CreateCouponType,
+  discountType: DiscountType,
+  provideType: CreateProvideType,
+  name: z.string().min(0).max(50),
+  conditions: z.string().min(0).max(200).optional(),
   totalQuantity: z.number().optional(),
   discountValue: z.number().optional(),
   giftItem: z.string().optional(),
   minOrderAmount: z.number().optional(),
-  issueStartOn: z.string(), // YYYY-MM-DD
-  issueEndOn: z.string(), // YYYY-MM-DD
-  expiredOn: z.string(), // YYYY-MM-DD
+  issueStartOn: z.string().optional(),
+  issueEndOn: z.string().optional(),
+  expiredOn: z.string().optional(),
+  status: CouponStatus,
+});
+
+// 쿠폰 수정 요청 바디
+export const UpdateCouponBody = z.object({
+  storeId: z.number(),
+  benefitType: BenefitType,
+  type: UpdateCouponType,
+  discountType: DiscountType,
+  provideType: UpdateProvideType,
+  name: z.string().min(0).max(50),
+  conditions: z.string().min(0).max(200).optional(),
+  totalQuantity: z.number().optional(),
+  discountValue: z.number().optional(),
+  giftItem: z.string().optional(),
+  minOrderAmount: z.number().optional(),
+  issueStartOn: z.string(), // 필수값
+  issueEndOn: z.string().optional(),
+  expiredOn: z.string().optional(),
   status: CouponStatus,
 });
 
 export type CreateCouponBody = z.infer<typeof CreateCouponBody>;
+export type UpdateCouponBody = z.infer<typeof UpdateCouponBody>;
 
 
 
-// 쿠폰 스키마
+// 쿠폰 스키마 (조회용 - 모든 타입을 union으로 포함)
 export const CouponSchema = z.object({
   id: z.number(),
   storeId: z.number(),
   benefitType: BenefitType,
-  type: CouponType,
+  type: z.union([CreateCouponType, UpdateCouponType]),
   discountType: DiscountType.nullable(),
-  provideType: ProvideType,
+  provideType: z.union([CreateProvideType, UpdateProvideType]),
   name: z.string(),
   conditions: z.string().nullable(),
   totalQuantity: z.number().nullable(),
@@ -61,19 +85,23 @@ export type GetCouponResponse = CouponSchema; // 조회 응답
 
 // 쿠폰 목록 조회 응답 타입
 export type GetCouponListResponse = {
-  content: CouponSchema[];
-  totalElements: number;
-  totalPages: number;
-  size: number;
-  number: number;
-  hasNext: boolean;
+  status: string;
+  data: {
+    list: CouponSchema[];
+    pageInfo: {
+      pageNum: number;
+      pageSize: number;
+      totalCount: number;
+      totalPages: number;
+    };
+  };
 };
 
 // 쿠폰 목록 조회 파라미터
 export type GetCouponListParams = {
   storeId: number;
-  page?: number;
-  size?: number;
-  sort?: string;
-  status?: string;
+  pageNum?: number;
+  pageSize?: number;
+  searchString?: string;
+  status?: 'ACTIVE' | 'INACTIVE';
 };

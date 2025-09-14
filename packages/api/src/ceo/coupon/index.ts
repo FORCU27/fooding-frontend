@@ -1,5 +1,6 @@
 import {
   CreateCouponBody,
+  UpdateCouponBody,
   GetCouponListParams,
   GetCouponResponse,
   GetCouponListResponse,
@@ -23,13 +24,13 @@ export const couponApiV2 = {
   },
 
   // 쿠폰 목록 조회
-  getCouponList: async (params: GetCouponListParams): Promise<GetCouponListResponse> => {
+  getCouponList: async (params: GetCouponListParams): Promise<GetCouponListResponse['data']> => {
     const response = await api.get<GetCouponListResponse>(ENDPOINT, { params });
-    return response;
+    return response.data;
   },
 
   // 쿠폰 수정
-  updateCoupon: async (id: number, body: CreateCouponBody): Promise<null> => {
+  updateCoupon: async (id: number, body: UpdateCouponBody): Promise<null> => {
     const response = await api.put<null>(`${ENDPOINT}/${id}`, body);
     return response;
   },
