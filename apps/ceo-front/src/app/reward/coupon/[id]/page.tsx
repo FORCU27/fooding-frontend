@@ -2,7 +2,7 @@
 
 import { useParams, useRouter } from 'next/navigation';
 
-import { couponApiV2, CreateCouponBody } from '@repo/api/ceo';
+import { couponApiV2, UpdateCouponBody } from '@repo/api/ceo';
 import { queryKeys } from '@repo/api/configs/query-keys';
 import type { SelectedRangeItem } from '@repo/design-system/components/ceo';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
@@ -36,12 +36,13 @@ const CouponEditPage = () => {
   const initialFormData = couponData ? {
     couponName: couponData.name,
     benefitType: couponData.benefitType === 'DISCOUNT' ? 'discount' : 'gift',
-    discountType: couponData.discountType === 'PERCENTAGE' ? 'percentage' : 'fixed',
-    discountPercentage: couponData.discountType === 'PERCENTAGE' ? String(couponData.discountValue || '') : '',
+    discountType: couponData.discountType === 'PERCENT' ? 'percentage' : 'fixed',
+    discountPercentage: couponData.discountType === 'PERCENT' ? String(couponData.discountValue || '') : '',
     discountAmount: couponData.discountType === 'FIXED' ? String(couponData.discountValue || '') : '',
     giftItem: couponData.giftItem || '',
+    giftType: couponData.minOrderAmount ? 'threshold' : 'free',
     minOrderAmount: String(couponData.minOrderAmount || ''),
-    couponUsageType: couponData.provideType === 'REGULAR' ? 'regular' : 'all',
+    couponUsageType: couponData.provideType === 'REGULAR_CUSTOMER' ? 'regular' : 'all',
     issueType: couponData.totalQuantity ? 'limited' : 'unlimited',
     issueCount: couponData.totalQuantity ? String(couponData.totalQuantity) : '',
     startDate: couponData.issueStartOn,
@@ -56,7 +57,7 @@ const CouponEditPage = () => {
 
   // 쿠폰 수정 mutation
   const updateCoupon = useMutation({
-    mutationFn: (body: CreateCouponBody) => couponApiV2.updateCoupon(Number(couponId), body),
+    mutationFn: (body: UpdateCouponBody) => couponApiV2.updateCoupon(Number(couponId), body),
     mutationKey: [queryKeys.ceo.coupon.update],
     onSuccess: () => {
       queryClient.invalidateQueries({
@@ -66,7 +67,7 @@ const CouponEditPage = () => {
         queryKey: [queryKeys.ceo.coupon.detail, couponId],
       });
       alert('쿠폰이 수정되었습니다.');
-      router.push('/reward/coupon/list');
+      router.push('/reward/coupon');
     },
     onError: (error: unknown) => {
       console.error('쿠폰 수정 실패:', error);
@@ -89,17 +90,22 @@ const CouponEditPage = () => {
       return;
     }
 
-    const apiData: CreateCouponBody = {
+    if (!couponData) {
+      alert('쿠폰 데이터를 불러올 수 없습니다.');
+      return;
+    }
+
+    const apiData: UpdateCouponBody = {
       storeId: selectedStoreId || 0,
       benefitType: formData.benefitType === 'discount' ? 'DISCOUNT' : 'GIFT',
-      type: 'FIRST_COME_FIRST_SERVED',
+      type: couponData.type === 'FIRST_COME_FIRST_SERVED' ? 'FIRST_COME_FIRST_SERVED' : 'GENERAL',
       discountType:
         formData.benefitType === 'discount'
-          ? formData.discountPercentage
-            ? 'PERCENTAGE'
+          ? formData.discountType === 'percentage'
+            ? 'PERCENT'
             : 'FIXED'
-          : undefined,
-      provideType: formData.couponUsageType === 'regular' ? 'REGULAR' : 'ALL',
+          : 'FIXED', // 필수값이므로 기본값 설정
+      provideType: formData.couponUsageType === 'regular' ? 'REGULAR_CUSTOMER' : 'ALL',
       name: formData.couponName,
       conditions: formData.usageConditions || '',
       totalQuantity:
@@ -108,15 +114,17 @@ const CouponEditPage = () => {
           : undefined,
       discountValue:
         formData.benefitType === 'discount'
-          ? formData.discountPercentage
-            ? parseInt(formData.discountPercentage)
+          ? formData.discountType === 'percentage'
+            ? parseInt(formData.discountPercentage || '0')
             : parseInt(formData.discountAmount || '0')
           : undefined,
       giftItem: formData.benefitType === 'gift' ? formData.giftItem : undefined,
       minOrderAmount: formData.minOrderAmount ? parseInt(formData.minOrderAmount) : undefined,
-      issueStartOn: selectedDateRange.startDate.toISOString().split('T')[0] || '',
-      issueEndOn: selectedDateRange.endDate.toISOString().split('T')[0] || '',
-      expiredOn: selectedDateRange.endDate.toISOString().split('T')[0] || '',
+      issueStartOn: (selectedDateRange?.startDate 
+        ? selectedDateRange.startDate.toISOString().split('T')[0] 
+        : couponData.issueStartOn) as string,
+      issueEndOn: selectedDateRange ? selectedDateRange.endDate.toISOString().split('T')[0] : undefined,
+      expiredOn: selectedDateRange ? selectedDateRange.endDate.toISOString().split('T')[0] : undefined,
       status: 'ACTIVE',
     };
 
@@ -149,7 +157,7 @@ const CouponEditPage = () => {
       initialData={initialFormData}
       initialDateRange={initialDateRange}
       onSubmit={handleSubmit}
-      onCancel={() => router.push('/reward/coupon/list')}
+      onCancel={() => router.push('/reward/coupon')}
       submitText='수정하기'
       isSubmitting={updateCoupon.isPending}
     />

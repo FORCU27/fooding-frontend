@@ -84,7 +84,7 @@ interface SideLayoutProps {
 const SideLayout = ({ isOpen, onClose }: SideLayoutProps) => {
   const router = useRouter();
   const pathname = usePathname();
-  
+
   // 모든 로직을 인라인으로 처리
   const allMenuItems = createMenuItems();
   const activeMenu = (() => {
@@ -141,7 +141,7 @@ const SideLayout = ({ isOpen, onClose }: SideLayoutProps) => {
             onMenuClick={(menu) => {
               // 하위 메뉴가 있으면 펼치기/접기, 없으면 페이지 이동
               if (menu.subItems && menu.subItems.length > 0) {
-                setExpandedMenus(prev => {
+                setExpandedMenus((prev) => {
                   const newSet = new Set(prev);
                   if (newSet.has(menu.id)) {
                     newSet.delete(menu.id);

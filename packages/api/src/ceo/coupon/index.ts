@@ -4,6 +4,7 @@ import {
   GetCouponListParams,
   GetCouponResponse,
   GetCouponListResponse,
+  CouponSchema,
 } from './type';
 import { api } from '../../shared';
 
@@ -17,10 +18,10 @@ export const couponApiV2 = {
   },
 
   // 쿠폰 단일 조회
-  getCoupon: async (id: number): Promise<GetCouponResponse> => {
+  getCoupon: async (id: number): Promise<CouponSchema> => {
     const response = await api.get<GetCouponResponse>(`${ENDPOINT}/${id}`);
     console.log('getCoupon API response:', response);
-    return response;
+    return response.data;
   },
 
   // 쿠폰 목록 조회

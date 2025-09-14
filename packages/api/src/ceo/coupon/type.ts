@@ -3,11 +3,11 @@ import { z } from 'zod';
 // Enum 타입들
 export const BenefitType = z.enum(['DISCOUNT', 'GIFT']);
 // 생성시와 수정시 다른 enum 값
-export const CreateCouponType = z.enum(['FIRST_COME_FIRST_SERVED', 'REGULAR_ONLY']);
+export const CreateCouponType = z.enum(['GENERAL', 'FIRST_COME_FIRST_SERVED']);
 export const UpdateCouponType = z.enum(['GENERAL', 'FIRST_COME_FIRST_SERVED']);
 export const DiscountType = z.enum(['PERCENT', 'FIXED']);
-// 생성시와 수정시 다른 enum 값  
-export const CreateProvideType = z.enum(['ALL', 'REGULAR']);
+// 생성시와 수정시 다른 enum 값
+export const CreateProvideType = z.enum(['ALL', 'REGULAR_CUSTOMER']);
 export const UpdateProvideType = z.enum(['ALL', 'REGULAR_CUSTOMER']);
 export const CouponStatus = z.enum(['ACTIVE', 'INACTIVE', 'EXPIRED']);
 
@@ -61,7 +61,7 @@ export const CouponSchema = z.object({
   benefitType: BenefitType,
   type: z.union([CreateCouponType, UpdateCouponType]),
   discountType: DiscountType.nullable(),
-  provideType: z.union([CreateProvideType, UpdateProvideType]),
+  provideType: UpdateProvideType,
   name: z.string(),
   conditions: z.string().nullable(),
   totalQuantity: z.number().nullable(),
@@ -81,7 +81,10 @@ export const CouponSchema = z.object({
 export type CouponSchema = z.infer<typeof CouponSchema>;
 export type CreateCouponResponse = number; // 생성된 쿠폰 ID
 export type UpdateCouponResponse = null; // 수정 응답
-export type GetCouponResponse = CouponSchema; // 조회 응답
+export type GetCouponResponse = {
+  status: string;
+  data: CouponSchema;
+}; // 조회 응답
 
 // 쿠폰 목록 조회 응답 타입
 export type GetCouponListResponse = {

@@ -24,6 +24,7 @@ export interface CouponFormData {
   discountPercentage: string;
   discountAmount: string;
   giftItem: string;
+  giftType: string;
   minOrderAmount: string;
   couponUsageType: string;
   issueType: string;
@@ -55,10 +56,11 @@ export const CouponForm = ({
   const [formData, setFormData] = useState<CouponFormData>({
     couponName: '',
     benefitType: 'discount',
-    discountType: '',
+    discountType: 'fixed',
     discountPercentage: '',
     discountAmount: '',
     giftItem: '',
+    giftType: 'threshold',
     minOrderAmount: '',
     couponUsageType: 'all',
     issueType: 'unlimited',
@@ -70,14 +72,14 @@ export const CouponForm = ({
   });
 
   const [selectedDateRange, setSelectedDateRange] = useState<SelectedRangeItem | null>(
-    initialDateRange || null
+    initialDateRange || null,
   );
 
   // 초기 데이터가 변경되면 폼 업데이트
   useEffect(() => {
     if (initialData) {
       console.log('Setting form data with:', initialData);
-      setFormData(prev => ({ ...prev, ...initialData }));
+      setFormData((prev) => ({ ...prev, ...initialData }));
     }
   }, [initialData]); // initialData가 변경될 때마다 실행
 
@@ -92,10 +94,12 @@ export const CouponForm = ({
     setFormData((prev) => ({
       ...prev,
       benefitType: value,
-      discountType: value === 'discount' ? '' : prev.discountType,
+      discountType: value === 'discount' ? 'fixed' : prev.discountType,
       discountPercentage: '',
       discountAmount: '',
       giftItem: '',
+      giftType: 'threshold',
+      minOrderAmount: value === 'gift' ? prev.minOrderAmount : '',
     }));
   };
 
@@ -110,9 +114,11 @@ export const CouponForm = ({
         alert('할인율 또는 할인 금액을 입력해주세요.');
         return;
       }
-    } else if (formData.benefitType === 'gift' && !formData.giftItem) {
-      alert('증정 품목을 입력해주세요.');
-      return;
+    } else if (formData.benefitType === 'gift') {
+      if (formData.giftType === 'threshold' && !formData.minOrderAmount) {
+        alert('증정 조건 금액을 입력해주세요.');
+        return;
+      }
     }
 
     if (!selectedDateRange || !selectedDateRange.startDate || !selectedDateRange.endDate) {
@@ -126,35 +132,6 @@ export const CouponForm = ({
   return (
     <CardForm className=''>
       <div className='headline-2'>{title}</div>
-
-      <Card>
-        <CardSubtitle label='쿠폰 이름' required>
-          <Input
-            value={formData.couponName}
-            onChange={(e) => setFormData((prev) => ({ ...prev, couponName: e.target.value }))}
-            placeholder='가정의 달 쿠폰'
-          />
-        </CardSubtitle>
-      </Card>
-
-      <Card>
-        <CardSubtitle label='쿠폰 사용 대상' required>
-          <div className='flex gap-4'>
-            <RadioButton
-              label='모든 사용자'
-              value='all'
-              checked={formData.couponUsageType === 'all'}
-              onChange={() => setFormData((prev) => ({ ...prev, couponUsageType: 'all' }))}
-            />
-            <RadioButton
-              label='단골 전용'
-              value='regular'
-              checked={formData.couponUsageType === 'regular'}
-              onChange={() => setFormData((prev) => ({ ...prev, couponUsageType: 'regular' }))}
-            />
-          </div>
-        </CardSubtitle>
-      </Card>
 
       <Card>
         <CardSubtitle label='혜택 선택' required>
@@ -186,21 +163,30 @@ export const CouponForm = ({
                     <RadioButton
                       label='금액'
                       value='fixed'
-                      checked={formData.discountType === 'fixed' || !formData.discountPercentage}
-                      onChange={() => setFormData((prev) => ({ 
-                        ...prev, 
-                        discountType: 'fixed',
-                        discountPercentage: '',
-                      }))}
+                      checked={formData.discountType === 'fixed'}
+                      onChange={() =>
+                        setFormData((prev) => ({
+                          ...prev,
+                          discountType: 'fixed',
+                          discountPercentage: '',
+                        }))
+                      }
                     />
                   </div>
                   <Input
                     type='text'
-                    value={formData.discountAmount}
-                    onChange={(e) => setFormData((prev) => ({ ...prev, discountAmount: e.target.value }))}
+                    value={formData.discountAmount || ''}
+                    onChange={(e) =>
+                      setFormData((prev) => ({
+                        ...prev,
+                        discountAmount: e.target.value,
+                        discountType: 'fixed',
+                        discountPercentage: ''
+                      }))
+                    }
                     placeholder=''
                     suffix='원'
-                    disabled={formData.discountType === 'percentage' && !!formData.discountPercentage}
+                    disabled={formData.discountType === 'percentage'}
                   />
                 </div>
 
@@ -209,21 +195,30 @@ export const CouponForm = ({
                     <RadioButton
                       label='할인율'
                       value='percentage'
-                      checked={formData.discountType === 'percentage' || !!formData.discountPercentage}
-                      onChange={() => setFormData((prev) => ({ 
-                        ...prev, 
-                        discountType: 'percentage',
-                        discountAmount: '',
-                      }))}
+                      checked={formData.discountType === 'percentage'}
+                      onChange={() =>
+                        setFormData((prev) => ({
+                          ...prev,
+                          discountType: 'percentage',
+                          discountAmount: '',
+                        }))
+                      }
                     />
                   </div>
                   <Input
                     type='text'
-                    value={formData.discountPercentage}
-                    onChange={(e) => setFormData((prev) => ({ ...prev, discountPercentage: e.target.value }))}
+                    value={formData.discountPercentage || ''}
+                    onChange={(e) =>
+                      setFormData((prev) => ({
+                        ...prev,
+                        discountPercentage: e.target.value,
+                        discountType: 'percentage',
+                        discountAmount: ''
+                      }))
+                    }
                     placeholder=''
                     suffix='%'
-                    disabled={formData.discountType === 'fixed' && !!formData.discountAmount}
+                    disabled={formData.discountType === 'fixed'}
                   />
                 </div>
               </div>
@@ -234,15 +229,49 @@ export const CouponForm = ({
             <div className='mt-4 p-6'>
               <div className='space-y-4'>
                 <div className='flex items-center gap-4'>
-                  <div className='min-w-[100px]'>
-                    <label className='text-sm'>증정품목</label>
+                  <div className='min-w-[120px]'>
+                    <RadioButton
+                      label='일정금액 이상'
+                      value='threshold'
+                      checked={formData.giftType === 'threshold'}
+                      onChange={() =>
+                        setFormData((prev) => ({
+                          ...prev,
+                          giftType: 'threshold',
+                        }))
+                      }
+                    />
                   </div>
                   <Input
                     type='text'
-                    value={formData.giftItem}
-                    onChange={(e) => setFormData((prev) => ({ ...prev, giftItem: e.target.value }))}
-                    placeholder='예: 아메리카노 1잔'
+                    value={formData.minOrderAmount || ''}
+                    onChange={(e) =>
+                      setFormData((prev) => ({ ...prev, minOrderAmount: e.target.value }))
+                    }
+                    placeholder='10000'
+                    suffix='원'
+                    disabled={formData.giftType !== 'threshold'}
                   />
+                </div>
+
+                <div className='flex items-center gap-4'>
+                  <div className='min-w-[120px]'>
+                    <RadioButton
+                      label='무료증정'
+                      value='free'
+                      checked={formData.giftType === 'free'}
+                      onChange={() =>
+                        setFormData((prev) => ({
+                          ...prev,
+                          giftType: 'free',
+                          minOrderAmount: '',
+                        }))
+                      }
+                    />
+                  </div>
+                  <span className='text-sm text-gray-500'>
+                    조건 없이 무료로 증정하는 쿠폰입니다
+                  </span>
                 </div>
               </div>
             </div>
@@ -251,16 +280,39 @@ export const CouponForm = ({
       </Card>
 
       <Card>
-        <CardSubtitle label='최소 주문 금액'>
+        <CardSubtitle label='쿠폰 이름' required>
           <Input
-            type='text'
-            value={formData.minOrderAmount}
-            onChange={(e) => setFormData((prev) => ({ ...prev, minOrderAmount: e.target.value }))}
-            placeholder='0'
-            suffix='원'
+            value={formData.couponName || ''}
+            onChange={(e) => setFormData((prev) => ({ ...prev, couponName: e.target.value }))}
+            placeholder='가정의 달 쿠폰'
           />
         </CardSubtitle>
       </Card>
+
+      <Card>
+        <CardSubtitle label='쿠폰 사용 대상' required>
+          <ToggleGroup
+            type='single'
+            value={formData.couponUsageType}
+            onValueChange={(value) => setFormData((prev) => ({ ...prev, couponUsageType: value }))}
+            className='grid grid-cols-2 gap-4'
+          >
+            <ToggleGroupItem value='all' className='flex-col items-start p-6 h-auto'>
+              <div className='text-lg font-medium mb-2'>모든 사용자</div>
+              <div className='text-sm text-gray-500'>
+                모든 고객이 사용할 수 있는 쿠폰을 만들어보세요
+              </div>
+            </ToggleGroupItem>
+            <ToggleGroupItem value='regular' className='flex-col items-start p-6 h-auto'>
+              <div className='text-lg font-medium mb-2'>단골 전용</div>
+              <div className='text-sm text-gray-500'>
+                단골 고객만 사용할 수 있는 특별한 쿠폰을 만들어보세요
+              </div>
+            </ToggleGroupItem>
+          </ToggleGroup>
+        </CardSubtitle>
+      </Card>
+
 
       <Card>
         <CardSubtitle label='발급 개수'>
@@ -275,7 +327,9 @@ export const CouponForm = ({
               label='제한 없어요'
               value='unlimited'
               checked={formData.issueType === 'unlimited'}
-              onChange={() => setFormData((prev) => ({ ...prev, issueType: 'unlimited', issueCount: '' }))}
+              onChange={() =>
+                setFormData((prev) => ({ ...prev, issueType: 'unlimited', issueCount: '' }))
+              }
             />
           </div>
           {formData.issueType === 'limited' && (
@@ -283,7 +337,7 @@ export const CouponForm = ({
               <div className='w-32'>
                 <Input
                   type='text'
-                  value={formData.issueCount}
+                  value={formData.issueCount || ''}
                   onChange={(e) => setFormData((prev) => ({ ...prev, issueCount: e.target.value }))}
                   placeholder='100'
                   suffix='개'
@@ -333,7 +387,7 @@ export const CouponForm = ({
       <Card>
         <CardSubtitle label='사용 조건'>
           <TextArea
-            value={formData.usageConditions}
+            value={formData.usageConditions || ''}
             maxLength={1000}
             onChange={(e) => setFormData((prev) => ({ ...prev, usageConditions: e.target.value }))}
             placeholder='타 쿠폰과 중복 사용 불가, 한 테이블당 한번 사용 가능'
@@ -352,7 +406,7 @@ export const CouponForm = ({
                 : '기간 미설정'
             }
             statuses={formData.couponUsageType === 'regular' ? ['단골 전용', '발급중'] : ['발급중']}
-            receivedCount={0}
+            receivedCount={formData.issueType === 'limited' && formData.issueCount ? parseInt(formData.issueCount) : 0}
             purchaseCount={0}
             usedCount={0}
             canceledCount={0}
@@ -368,11 +422,7 @@ export const CouponForm = ({
             취소
           </Button>
         )}
-        <Button 
-          type='button' 
-          onClick={handleSubmit}
-          disabled={isSubmitting}
-        >
+        <Button type='button' onClick={handleSubmit} disabled={isSubmitting}>
           {isSubmitting ? '처리 중...' : submitText}
         </Button>
       </div>
