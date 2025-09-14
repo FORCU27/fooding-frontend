@@ -66,7 +66,7 @@ const ActionMenu = ({
   </div>
 );
 
-export default function PhotoCard({
+export function PhotoCard({
   src,
   alt,
   flags,
@@ -87,7 +87,7 @@ export default function PhotoCard({
   const onDelete = actions?.onDelete;
 
   return (
-    <div className='relative break-inside-avoid rounded-2xl overflow-hidden bg-white group'>
+    <div className='relative h-fit break-inside-avoid rounded-2xl overflow-hidden bg-white group'>
       {/* 이미지 */}
       <div className='relative w-full'>
         <ImageComponent src={src} alt={alt} className='w-full h-auto object-cover align-middle' />
