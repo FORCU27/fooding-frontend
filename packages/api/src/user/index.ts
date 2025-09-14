@@ -7,3 +7,4 @@ export * from './store-waitings';
 export * from './regions';
 export * from './bookmarks';
 export * from './rewards';
+export * from './reports';
