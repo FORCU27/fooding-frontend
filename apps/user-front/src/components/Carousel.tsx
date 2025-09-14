@@ -1,41 +1,58 @@
 import { useEffect, useState } from 'react';
 
 import { createContext } from '@repo/design-system/utils';
-import useEmblaCarousel from 'embla-carousel-react';
+import useEmblaCarousel, { EmblaViewportRefType } from 'embla-carousel-react';
 
 import { cn } from '@/utils/cn';
 
-type CarouselProps = React.ComponentPropsWithRef<'div'>;
+type CarouselProps = {
+  children: React.ReactNode;
+  initialPage?: number;
+};
 
-const Carousel = ({ className, children, ...props }: CarouselProps) => {
+const Carousel = ({ children, initialPage = 1 }: CarouselProps) => {
   const [carouselRef, carousel] = useEmblaCarousel({
     loop: true,
+    startIndex: initialPage >= 1 ? initialPage - 1 : 0,
   });
-  const [currentPage, setCurrentPage] = useState<number | null>(null);
+  const [currentPage, setCurrentPage] = useState<number>(initialPage >= 1 ? initialPage : 1);
 
   useEffect(() => {
     if (!carousel) return;
 
-    setCurrentPage(carousel.selectedScrollSnap() + 1);
+    const updateCurrentPage = () => {
+      const newPage = carousel.selectedScrollSnap() + 1;
+      setCurrentPage(newPage);
+    };
 
-    carousel.on('select', () => {
-      setCurrentPage(carousel.selectedScrollSnap() + 1);
-    });
+    updateCurrentPage();
+
+    carousel.on('select', updateCurrentPage);
+
+    return () => {
+      carousel.off('select', updateCurrentPage);
+    };
   }, [carousel]);
 
+  return <CarouselContext value={{ currentPage, carouselRef }}>{children}</CarouselContext>;
+};
+
+type CarouselViewportProps = React.ComponentPropsWithRef<'div'>;
+
+const CarouselRegion = ({ className, children, ...props }: CarouselViewportProps) => {
+  const { carouselRef } = useCarouselContext();
+
   return (
-    <CarouselContext value={{ currentPage }}>
-      <div
-        className={cn('relative', className)}
-        role='region'
-        aria-roledescription='carousel'
-        {...props}
-      >
-        <div ref={carouselRef} className={cn('overflow-hidden')}>
-          {children}
-        </div>
+    <div
+      className={cn('relative', className)}
+      role='region'
+      aria-roledescription='carousel'
+      {...props}
+    >
+      <div ref={carouselRef} className={cn('overflow-hidden')}>
+        {children}
       </div>
-    </CarouselContext>
+    </div>
   );
 };
 
@@ -78,10 +95,12 @@ const CarouselPagination = ({ children }: CarouselPaginationProps) => {
 
 type CarouselContextValue = {
   currentPage: number | null;
+  carouselRef: EmblaViewportRefType;
 };
 
 const [CarouselContext, useCarouselContext] = createContext<CarouselContextValue>('Carousel');
 
+Carousel.Region = CarouselRegion;
 Carousel.List = CarouselList;
 Carousel.Item = CarouselItem;
 Carousel.Pagination = CarouselPagination;

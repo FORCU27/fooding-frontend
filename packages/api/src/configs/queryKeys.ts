@@ -18,6 +18,9 @@ export const queryKeys = {
   },
   ceo: {
     devices: 'ceoDevices',
+    store: {
+      getStore: 'ceoStoreGetStore',
+    },
   },
   pos: {},
   user: {
@@ -29,19 +32,36 @@ export const queryKeys = {
       list: 'userStoreList',
       detail: 'userStoreDetail',
       menuList: 'userStoreMenuList',
+      review: 'userStoreReview',
       reviewList: 'userStoreReviewList',
       operatingHours: 'userStoreOperatingHours',
       additionalInfo: 'userStoreAdditionalInfo',
       immediateEntryList: 'userStoreImmediateEntryList',
+      imageList: 'userStoreImageList',
+      infiniteImageList: 'userStoreInfiniteImageList',
+      reward: 'userStoreReward',
+      rewardList: 'userStoreRewardList',
     },
     storePost: {
       list: 'userStorePostList',
       detail: 'userStorePostDetail',
     },
-    bookmark: 'userBookmark',
-    reservation: { reservationList: 'userReservationList' },
+    storeWaiting: {
+      detail: 'userStoreWaitingDetail',
+    },
+    coupon: {
+      infiniteList: 'userCouponInfiniteList',
+    },
+    bookmark: { list: 'userBookmarkList' },
+    plan: { list: 'userPlanList', detail: 'userPlanDetail' },
+    region: { list: 'userRegionList' },
+    reward: { list: 'userRewardList', log: 'userRewardLog' },
   },
   me: {
     user: 'meUser',
+    nicknameCheck: 'meUserNicknameCheck',
+  },
+  file: {
+    upload: 'fileUpload',
   },
 };

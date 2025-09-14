@@ -1,4 +1,4 @@
-import { mockStoreReviewListResponse, StoreInfo } from '@repo/api/user';
+import { StoreInfo } from '@repo/api/user';
 import { Button, EmptyState } from '@repo/design-system/components/b2c';
 import {
   ClockIcon,
@@ -7,6 +7,7 @@ import {
   PhoneIcon,
   TrainIcon,
 } from '@repo/design-system/icons';
+import { useFlow } from '@stackflow/react/future';
 
 import { Section } from '@/components/Layout/Section';
 import { MenuCard } from '@/components/Store/MenuCard';
@@ -15,6 +16,8 @@ import { StoresList } from '@/components/Store/StoresList';
 import { SubwayLineBadge } from '@/components/SubwayLineBadge';
 import { useGetStoreList } from '@/hooks/store/useGetStoreList';
 import { useGetStoreMenuList } from '@/hooks/store/useGetStoreMenuList';
+import { useGetStoreReviewList } from '@/hooks/store/useGetStoreReviewList';
+import { StoreInfoMap } from '@/screens/waiting-detail/components/StoreInfoMap';
 import { noop } from '@/utils/noop';
 
 const mock = {
@@ -30,17 +33,22 @@ type StoreDetailHomeTabProps = {
 };
 
 export const StoreDetailHomeTab = ({ store }: StoreDetailHomeTabProps) => {
+  const flow = useFlow();
   const { data: storeMenus } = useGetStoreMenuList(store.id);
-  // const { data: storeReviews } = useGetStoreReviewList(store.id);
-  const { data: reviews } = mockStoreReviewListResponse; //TODO: 추후 목데이터 제거
+  const { data: reviews } = useGetStoreReviewList(store.id);
   const { data: stores } = useGetStoreList({ sortType: 'RECENT' });
+
+  const getKakaoMapDirectionUrl = (latitude: number, longitude: number, name?: string) => {
+    const encodedName = encodeURIComponent(name ?? '목적지');
+    return `https://map.kakao.com/link/to/${encodedName},${latitude},${longitude}`;
+  };
 
   return (
     <div className='flex flex-col'>
       <Section className='mt-[10px] py-[20px] gap-[6px]'>
         <span className='body-6 flex items-center gap-[10px]'>
           <MarkPinIcon className='size-[18px] stroke-1' />
-          {mock.location}
+          {store.address}
         </span>
         <span className='body-6 flex items-center gap-[10px]'>
           <ClockIcon className='size-[18px] stroke-1' />
@@ -83,7 +91,13 @@ export const StoreDetailHomeTab = ({ store }: StoreDetailHomeTabProps) => {
             리뷰
             <span className='subtitle-6 text-gray-5'>({reviews.list.length})</span>
           </Section.Title>
-          {reviews.list.length > 0 && <Section.Link>더보기</Section.Link>}
+          {reviews.list.length > 0 && (
+            <Section.Link
+              onClick={() => flow.push('StoreDetailScreen', { storeId: store.id, tab: 'review' })}
+            >
+              더보기
+            </Section.Link>
+          )}
         </Section.Header>
         {reviews.list.length === 0 && (
           <EmptyState className='mt-10' title='등록된 리뷰가 없어요!' />
@@ -94,27 +108,42 @@ export const StoreDetailHomeTab = ({ store }: StoreDetailHomeTabProps) => {
           </ul>
         )}
       </Section>
-      {/* TODO: 매장 위치 조회 기능 추가 */}
       <Section className='mt-[10px] pb-8'>
         <Section.Header>
           <Section.Title>매장 위치</Section.Title>
         </Section.Header>
-        <div className='mt-[14px] rounded-[12px] bg-gray-1 h-[262px]' />
+        <div className='w-full mt-[14px] rounded-[12px] h-[300px]'>
+          {store.latitude != null && store.longitude != null ? (
+            <StoreInfoMap lat={store.latitude} lng={store.longitude} className='rounded-2xl' />
+          ) : (
+            <EmptyState className='mt-20' title='등록된 위치정보가 없어요!' />
+          )}
+        </div>
         <div className='mt-3 flex flex-col gap-1'>
           <span className='body-6 flex items-center gap-[10px]'>
             <MarkPinIcon className='size-[18px] stroke-1' />
-            제주 제주시 서해안로 654 바다풍경 정육식당
+            {store.address}
           </span>
           <span className='body-6 flex items-center'>
             <TrainIcon className='mr-[10px] size-[18px] stroke-1' />
             <SubwayLineBadge className='mr-1' line={6} />
-            제주역에서 847m
+            {store.direction}
           </span>
         </div>
-        <Button className='mt-5' variant='gray'>
-          <CompassIcon className='mr-1 size-[18px]' />
-          길찾기
-        </Button>
+
+        {store.latitude != null && store.longitude != null && (
+          <Button
+            variant='gray'
+            size='large'
+            onClick={() => {
+              const url = getKakaoMapDirectionUrl(store.latitude!, store.longitude!, store.name);
+              window.open(url, '_blank');
+            }}
+          >
+            <CompassIcon />
+            <span className='ml-1'>길찾기</span>
+          </Button>
+        )}
       </Section>
       <div className='mt-[10px]'>
         {/* TODO: 다른사람이 함께 본 식당 목록 조회 기능 추가 */}

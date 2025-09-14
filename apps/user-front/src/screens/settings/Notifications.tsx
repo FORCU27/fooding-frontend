@@ -1,58 +1,63 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
 import { Switch } from '@repo/design-system/components/b2c';
-import { ActivityComponentType, useFlow } from '@stackflow/react/future';
+import { ActivityComponentType } from '@stackflow/react/future';
 
 import BottomTab from '@/components/Layout/BottomTab';
+import { DefaultErrorBoundary } from '@/components/Layout/DefaultErrorBoundary';
 import { Header } from '@/components/Layout/Header';
 import { Screen } from '@/components/Layout/Screen';
-import { useAuth } from '@/components/Provider/AuthProvider';
-import { useUpdateUserInfo } from '@/hooks/auth/useUpdateUserInfo';
+import { useGetUserInfo } from '@/hooks/auth/useGetUserInfo';
+import { useUpdateUserNotificationStatus } from '@/hooks/auth/useUpdateUserNotificationStatus';
 
 export const NotificationSettingScreen: ActivityComponentType<'NotificationSettingScreen'> = () => {
-  const { user } = useAuth();
-  const { pop } = useFlow();
+  return (
+    <DefaultErrorBoundary>
+      <NotificationSettingScreenContent />
+    </DefaultErrorBoundary>
+  );
+};
 
-  const updateAgreeStatus = useUpdateUserInfo();
-  const [initialMarketingAgree] = useState(user?.marketingConsent ?? false);
-  const [initialPushAgree] = useState(user?.pushAgreed ?? false);
+const NotificationSettingScreenContent = () => {
+  const { data: user } = useGetUserInfo();
+  const updateNotificationStatus = useUpdateUserNotificationStatus();
 
-  const [marketingAgree, setMarketingAgree] = useState(initialMarketingAgree);
-  const [pushAgree, setPushAgree] = useState(initialPushAgree);
+  const [marketingAgreeChecked, setMarketingAgreeChecked] = useState(user.marketingConsent);
+  const [pushAgreeChecked, setPushAgreeChecked] = useState(user.pushAgreed);
 
-  const handleSwitchChange = (key: 'push' | 'marketing') => {
-    if (key === 'push') {
-      const next = !pushAgree;
-      setPushAgree(next);
-    }
-    if (key === 'marketing') {
-      const next = !marketingAgree;
-      setMarketingAgree(next);
-    }
+  const onMarketingConsentChange = (value: boolean) => {
+    setMarketingAgreeChecked(value);
+
+    updateNotificationStatus.mutate(
+      {
+        marketingConsent: value,
+        pushAgreed: user.pushAgreed,
+      },
+      {
+        onError: () => {
+          setMarketingAgreeChecked(!value);
+        },
+      },
+    );
   };
 
-  useEffect(() => {
-    const isChanged = marketingAgree !== initialMarketingAgree || pushAgree !== initialPushAgree;
+  const onPushAgreeChange = (value: boolean) => {
+    setPushAgreeChecked(value);
 
-    if (user && isChanged) {
-      updateAgreeStatus.mutate(
-        {
-          marketingConsent: marketingAgree,
-          pushAgreed: pushAgree,
-          nickname: user.nickname ?? undefined,
-          gender: user.gender ?? undefined,
+    updateNotificationStatus.mutate(
+      {
+        marketingConsent: user.marketingConsent,
+        pushAgreed: value,
+      },
+      {
+        onError: () => {
+          setPushAgreeChecked(!value);
         },
-        {
-          onSuccess: () => {
-            pop();
-          },
-        },
-      );
-    }
-  }, [marketingAgree, pushAgree]);
+      },
+    );
+  };
 
   return (
     <Screen
@@ -63,9 +68,8 @@ export const NotificationSettingScreen: ActivityComponentType<'NotificationSetti
         <div className='flex justify-between'>
           <span>서비스 알림 받기</span>
           <Switch
-            onClick={() => handleSwitchChange('push')}
-            checked={pushAgree}
-            disabled={updateAgreeStatus.isPending}
+            checked={pushAgreeChecked}
+            onChange={(pushAgreeChecked) => onPushAgreeChange(pushAgreeChecked)}
           />
         </div>
         <div className='flex justify-between'>
@@ -77,9 +81,8 @@ export const NotificationSettingScreen: ActivityComponentType<'NotificationSetti
             <span className='body-8 text-gray-5'>이벤트, 할인 등 다양한 혜택을 안내드려요!</span>
           </div>
           <Switch
-            onClick={() => handleSwitchChange('marketing')}
-            checked={marketingAgree}
-            disabled={updateAgreeStatus.isPending}
+            checked={marketingAgreeChecked}
+            onChange={(marketingAgreeChecked) => onMarketingConsentChange(marketingAgreeChecked)}
           />
         </div>
       </div>

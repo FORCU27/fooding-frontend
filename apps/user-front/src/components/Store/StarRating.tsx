@@ -1,56 +1,69 @@
+import { useState } from 'react';
+
 import { StarIcon } from '@repo/design-system/icons';
 
 interface StarRatingProps {
-  score: number;
+  score?: number;
   starSize?: number;
+  onChange?: (value: number) => void;
 }
 
-export const StarRating = ({ score, starSize = 18 }: StarRatingProps) => {
+export const StarRating = ({ score, starSize = 18, onChange }: StarRatingProps) => {
+  const [selectedValue, setSelectedValue] = useState<number | null>(score ?? null);
+
+  const isEditable = score === undefined;
+  const displayScore = selectedValue ?? 0;
   const totalStars = 5;
 
-  return (
-    <div className='flex justify-center items-center gap-[2px]'>
-      {Array.from({ length: totalStars }).map((_, idx) => {
-        const current = idx + 1;
+  const handleClick = (value: number) => {
+    if (!isEditable) return;
+    setSelectedValue(value);
+    onChange?.(value);
+  };
 
-        if (score >= current) {
-          return (
-            <StarIcon
-              key={idx}
-              size={starSize}
-              className='fill-fooding-yellow stroke-fooding-yellow'
-            />
-          );
-        } else if (score >= current - 0.5) {
-          return (
+  return (
+    <div className='flex items-center gap-1'>
+      {Array.from({ length: totalStars }).map((_, index) => {
+        const leftValue = index + 0.5;
+        const fullValue = index + 1;
+
+        const isFull = displayScore >= fullValue;
+        const isHalf = displayScore >= leftValue && displayScore < fullValue;
+
+        return (
+          <div
+            key={index}
+            className={`relative w-[${starSize}] h-[${starSize}] ${isEditable ? 'cursor-pointer' : 'cursor-default'}`}
+          >
             <div
-              key={idx}
-              style={{
-                position: 'relative',
-                width: `${starSize}px`,
-                height: `${starSize}px`,
-              }}
-            >
-              <StarIcon
-                size={starSize}
-                className='fill-gray-3 stroke-gray-3'
-                style={{ position: 'absolute' }}
-              />
-              <StarIcon
-                size={starSize}
-                className='fill-fooding-yellow stroke-fooding-yellow'
-                style={{
-                  position: 'absolute',
-                  top: 0,
-                  left: 0,
-                  clipPath: 'inset(0 50% 0 0)',
-                }}
-              />
-            </div>
-          );
-        } else {
-          return <StarIcon key={idx} size={starSize} className='fill-gray-3 stroke-gray-3' />;
-        }
+              className='absolute left-0 top-0 w-[50%] h-full z-10'
+              onClick={() => handleClick(leftValue)}
+            />
+            <div
+              className='absolute right-0 top-0 w-[50%] h-full z-10'
+              onClick={() => handleClick(fullValue)}
+            />
+
+            {isFull ? (
+              <StarIcon size={starSize} className='fill-fooding-yellow stroke-fooding-yellow' />
+            ) : isHalf ? (
+              <div style={{ position: 'relative', width: starSize, height: starSize }}>
+                <StarIcon
+                  size={starSize}
+                  className='fill-gray-3 stroke-gray-3'
+                  style={{ position: 'absolute' }}
+                />
+                <StarIcon
+                  size={starSize}
+                  className='fill-fooding-yellow stroke-fooding-yellow'
+                  style={{ position: 'absolute', top: 0, left: 0, clipPath: 'inset(0 50% 0 0)' }}
+                />
+              </div>
+            ) : (
+              <StarIcon size={starSize} className='fill-gray-3 stroke-gray-3' />
+            )}
+          </div>
+        );
       })}
     </div>
   );

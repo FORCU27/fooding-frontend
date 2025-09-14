@@ -25,3 +25,7 @@ dist
 .env
 
 .next
+
+.cursor
+CLAUDE.md
+docs
