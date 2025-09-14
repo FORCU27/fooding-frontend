@@ -7,7 +7,7 @@ import { stackflow } from '@stackflow/react/future';
 
 import { BookmarkListScreen } from '@/screens/bookmarks/Bookmarks';
 import { JoinFormScreen } from '@/screens/join/JoinFormScreen';
-import { MenuDetailScreen, MenuDetailScreenProps } from '@/screens/menu-detail/MenuDetail';
+import { MenuDetailScreen, MenuDetailScreenParams } from '@/screens/menu-detail/MenuDetail';
 import { MyCouponListScreen } from '@/screens/my-coupons/MyCoupons';
 import { MyRewardDetailScreen } from '@/screens/my-reward-detail/MyRewardDetail';
 import { MyRewardListScreen } from '@/screens/my-rewards/MyRewards';
@@ -18,6 +18,7 @@ import { ProfileCompleteScreen } from '@/screens/profile-user-info/ProfileComple
 import { ProfileUserInfoScreen } from '@/screens/profile-user-info/ProfileUserInfo';
 import { ReviewCreateScreen } from '@/screens/reviews/ReviewCreate';
 import { SearchScreen } from '@/screens/search/Search';
+import { SearchResultScreen, SearchResultScreenParams } from '@/screens/search-result/SearchResult';
 import { NotificationSettingScreen } from '@/screens/settings/Notifications';
 import { SettingScreen } from '@/screens/settings/Settings';
 import { StoreDetailScreen } from '@/screens/store-detail/StoreDetail';
@@ -42,6 +43,7 @@ declare module '@stackflow/config' {
     SettingScreen: object;
     NotificationSettingScreen: object;
     SearchScreen: object;
+    SearchResultScreen: SearchResultScreenParams;
     ReviewCreateScreen: { planId: string };
     WaitingDetailScreen: { waitingId: string };
     PlanDetailScreen: { planId: string };
@@ -57,7 +59,7 @@ declare module '@stackflow/config' {
     };
     ProfileCompleteScreen: { userName: string };
     JoinFormScreen: object;
-    MenuDetailScreen: MenuDetailScreenProps;
+    MenuDetailScreen: MenuDetailScreenParams;
     MyRewardListScreen: object;
     MyRewardDetailScreen: { storeId: number };
   }
@@ -77,6 +79,7 @@ const config = defineConfig({
     { name: 'SettingScreen' },
     { name: 'NotificationSettingScreen' },
     { name: 'SearchScreen' },
+    { name: 'SearchResultScreen' },
     { name: 'ReviewCreateScreen' },
     { name: 'WaitingDetailScreen' },
     { name: 'PlanDetailScreen' },
@@ -90,7 +93,7 @@ const config = defineConfig({
   ],
 
   transitionDuration: 350,
-  initialActivity: () => 'SearchScreen',
+  initialActivity: () => 'HomeTab',
 });
 
 export const { Stack } = stackflow({
@@ -108,6 +111,7 @@ export const { Stack } = stackflow({
     SettingScreen,
     NotificationSettingScreen,
     SearchScreen,
+    SearchResultScreen,
     ReviewCreateScreen,
     WaitingDetailScreen,
     PlanDetailScreen,

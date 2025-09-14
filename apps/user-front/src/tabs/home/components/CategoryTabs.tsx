@@ -1,7 +1,8 @@
+import { StoreCategory } from '@repo/api/user';
 import { ChipTabs } from '@repo/design-system/components/b2c';
 
 interface CategoryTabsProps {
-  categories: string[];
+  categories: readonly StoreCategory[];
 }
 
 export const CategoryTabs = ({ categories }: CategoryTabsProps) => (

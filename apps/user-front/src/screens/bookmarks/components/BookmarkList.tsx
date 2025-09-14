@@ -20,6 +20,7 @@ export const BookmarkList = () => {
             <div className='flex justify-between items-center'>
               <div className='flex items-center gap-2'>
                 <div className='subtitle-2 max-w-[300px] truncate'>{bookmark.name}</div>
+                {/* TODO: 하드코딩 수정 */}
                 <div className='body-6 text-gray-5'>고깃집</div>
               </div>
               <BookmarkIcon

@@ -35,6 +35,7 @@ export const mockStoreListResponse: GetStoreListResponse = {
         reviewCount: 231,
         isBookmarked: false,
         isFinished: false,
+        category: 'KOREAN',
       },
       {
         id: 2,
@@ -46,6 +47,7 @@ export const mockStoreListResponse: GetStoreListResponse = {
         reviewCount: 231,
         isBookmarked: false,
         isFinished: false,
+        category: 'KOREAN',
       },
       {
         id: 3,
@@ -57,6 +59,7 @@ export const mockStoreListResponse: GetStoreListResponse = {
         reviewCount: 231,
         isBookmarked: false,
         isFinished: false,
+        category: 'KOREAN',
       },
       {
         id: 4,
@@ -68,6 +71,7 @@ export const mockStoreListResponse: GetStoreListResponse = {
         reviewCount: 231,
         isBookmarked: false,
         isFinished: false,
+        category: 'KOREAN',
       },
       {
         id: 5,
@@ -79,6 +83,7 @@ export const mockStoreListResponse: GetStoreListResponse = {
         reviewCount: 231,
         isBookmarked: false,
         isFinished: false,
+        category: 'KOREAN',
       },
     ],
   },
