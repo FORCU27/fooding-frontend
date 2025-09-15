@@ -37,7 +37,7 @@ export const ReviewCreateScreen: ActivityComponentType<'ReviewCreateScreen'> = (
 
   return (
     <Screen
-      header={<Header title='리뷰쓰기' left={<Header.Back />} />}
+      header={<Header title='리뷰 쓰기' left={<Header.Back />} />}
       bottomTab={<BottomTab currentTab='plan' />}
     >
       <div className='flex flex-col justify-baseline items-center mx-grid-margin my-grid-margin'>
