@@ -65,6 +65,7 @@ const Content = () => {
     pageNum: 1,
     pageSize: 5,
   });
+
   const { data: stores } = useGetStoreList({
     pageNum: 1,
     pageSize: 5,
@@ -144,7 +145,7 @@ const Content = () => {
         <div className='flex flex-col py-grid-margin bg-white/80'>
           <div className='flex justify-between mb-4 px-grid-margin'>
             <div className='subtitle-3'>찜해 둔 식당</div>
-            {(bookmarks.list.length ?? 0) === 0 ? (
+            {bookmarks.list.length === 0 ? (
               <button
                 className='flex justify-center items-center body-5 text-gray-3'
                 onClick={() => flow.push('BookmarkListScreen', {})}
