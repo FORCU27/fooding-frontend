@@ -20,7 +20,9 @@ export const JoinFormScreen: ActivityComponentType<'JoinFormScreen'> = () => {
   const flow = useFlow();
 
   const { user } = useAuth();
-  assert(user, '로그인이 필요합니다.');
+  if (!user) {
+    throw new Error('로그인이 필요합니다.');
+  }
 
   const { mutateAsync: updateUserInfo } = useUpdateUserInfo();
   const { mutateAsync: uploadImageFile } = useUploadFile();

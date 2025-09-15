@@ -58,7 +58,10 @@ export const MyPageTab: ActivityComponentType<'MyPageTab'> = () => {
 
 const Content = () => {
   const { user } = useAuth();
-  assert(user, '로그인이 필요합니다');
+
+  if (!user) {
+    throw new Error('로그인이 필요합니다.');
+  }
 
   const flow = useFlow();
 
