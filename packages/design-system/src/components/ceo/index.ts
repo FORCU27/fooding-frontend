@@ -21,7 +21,6 @@ export * from './DataTable';
 
 // Re-export commonly used icons from lucide-react
 export { Calendar, ChevronLeft, ChevronRight, Check } from 'lucide-react';
-export * from './DatePicker';
 export * from './RadioButton';
 export * from './RadioButtonGroup';
 export * from './RecurringDatePicker';
@@ -32,3 +31,6 @@ export * from './ChipList';
 export * from './SortToggle';
 export * from './PhotoCard';
 export * from './ImageUploader';
+export * from './DatePicker';
+export * from './StoreStatusChip';
+export * from './DatePickerWithDialog';

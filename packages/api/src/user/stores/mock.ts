@@ -140,6 +140,7 @@ export const mockStoreReviewListResponse: GetStoreReviewListResponse = {
         likeCount: 10,
         nickname: '민수엄마',
         purpose: 'BUSINESS',
+        userReviewCount: 1,
         score: {
           mood: 4.5,
           service: 4.0,
@@ -157,6 +158,7 @@ export const mockStoreReviewListResponse: GetStoreReviewListResponse = {
         likeCount: 10,
         nickname: '민수',
         purpose: 'BUSINESS',
+        userReviewCount: 1,
         score: {
           mood: 3.5,
           service: 4.0,
@@ -173,6 +175,7 @@ export const mockStoreReviewListResponse: GetStoreReviewListResponse = {
         imageUrls: [],
         likeCount: 1,
         nickname: '리뷰~',
+        userReviewCount: 1,
         purpose: 'BUSINESS',
         score: {
           mood: 4.5,

@@ -113,31 +113,36 @@ export const Controlled: Story = {
     ],
   },
   render: ({ ...args }) => {
-    const [selectedDates, setSelectedDates] = useState<SelectedItem[] | SelectedItem | null>(
-      args.selectionMode === 'single' ? null : [],
+    const [selectedDates, setSelectedDates] = useState<SelectedItem[] | undefined>(
+      args.selectionMode === 'single' ? undefined : [],
     );
+
+    // onChange 핸들러에서 타입 변환
+    const handleDateChange = (dates: SelectedItem | SelectedItem[] | null) => {
+      if (dates === null) {
+        setSelectedDates(undefined); // null을 undefined로 변환
+      } else if (Array.isArray(dates)) {
+        setSelectedDates(dates); // 배열 그대로 설정
+      } else {
+        setSelectedDates([dates]); // 단일 항목을 배열로 변환
+      }
+    };
 
     return (
       <div className='w-[640px] h-full flex flex-col gap-4'>
         <p className='mt-2'>
           선택한 날짜:
-          {args.selectionMode === 'single'
+          {selectedDates && selectedDates.length > 0
             ? selectedDates
-              ? (selectedDates as SelectedItem).option
-                ? `${(selectedDates as SelectedItem).option} ${(selectedDates as SelectedItem).date.toLocaleDateString('ko-KR')}`
-                : (selectedDates as SelectedItem).date.toLocaleDateString('ko-KR')
-              : '없음'
-            : Array.isArray(selectedDates) && selectedDates.length > 0
-              ? selectedDates
-                  .map((d) =>
-                    d.option
-                      ? `${d.option} ${d.date.toLocaleDateString('ko-KR')}`
-                      : d.date.toLocaleDateString('ko-KR'),
-                  )
-                  .join(', ')
-              : '없음'}
+                .map((d) =>
+                  d.option
+                    ? `${d.option} ${d.date.toLocaleDateString('ko-KR')}`
+                    : d.date.toLocaleDateString('ko-KR'),
+                )
+                .join(', ')
+            : '없음'}
         </p>
-        <DatePickerWithDialog {...args} selectedDates={selectedDates} onChange={setSelectedDates} />
+        <DatePickerWithDialog {...args} selectedDates={selectedDates} onChange={handleDateChange} />
       </div>
     );
   },

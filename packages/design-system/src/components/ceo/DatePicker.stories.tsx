@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { useState } from 'react';
-import DatePicker from './DatePicker';
+import { DatePicker } from './DatePicker';
 
 const meta = {
   title: 'Components/ceo/DatePicker',
@@ -22,11 +22,17 @@ type Story = StoryObj<typeof meta>;
 export const Default: Story = {
   render: () => {
     const [date, setDate] = useState<Date | null>(null);
-
+    const handleDateChange = (selected: Date | Date[] | null) => {
+      if (Array.isArray(selected)) {
+        setDate(selected[0] || null);
+      } else {
+        setDate(selected);
+      }
+    };
     return (
       <div className='w-full h-full flex flex-col'>
         <p className='mt-2'>선택한 날짜: {date?.toLocaleDateString() ?? '없음'}</p>
-        <DatePicker value={date} onChange={setDate} />
+        <DatePicker value={date} onChange={handleDateChange} />
       </div>
     );
   },
@@ -35,10 +41,17 @@ export const Default: Story = {
 export const Selected: Story = {
   render: () => {
     const [date, setDate] = useState<Date | null>(new Date(2025, 7, 30));
+    const handleDateChange = (selected: Date | Date[] | null) => {
+      if (Array.isArray(selected)) {
+        setDate(selected[0] || null);
+      } else {
+        setDate(selected);
+      }
+    };
     return (
       <div className='w-full h-full flex flex-col'>
         <p className='mt-2'>선택한 날짜: {date?.toLocaleDateString() ?? '없음'}</p>
-        <DatePicker value={date} onChange={setDate} />
+        <DatePicker value={date} onChange={handleDateChange} />
       </div>
     );
   },
@@ -47,10 +60,17 @@ export const Selected: Story = {
 export const Controlled: Story = {
   render: () => {
     const [date, setDate] = useState<Date | null>(null);
+    const handleDateChange = (selected: Date | Date[] | null) => {
+      if (Array.isArray(selected)) {
+        setDate(selected[0] || null);
+      } else {
+        setDate(selected);
+      }
+    };
     return (
       <div className='w-full h-full flex flex-col'>
         <p className='mt-2'>선택한 날짜: {date?.toLocaleDateString() ?? '없음'}</p>
-        <DatePicker label='라벨 데이트피커' value={date} onChange={setDate} />
+        <DatePicker label='라벨 데이트피커' value={date} onChange={handleDateChange} />
       </div>
     );
   },
