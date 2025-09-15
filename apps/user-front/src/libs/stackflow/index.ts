@@ -19,9 +19,9 @@ import { ProfileCompleteScreen } from '@/screens/profile-user-info/ProfileComple
 import { ProfileUserInfoScreen } from '@/screens/profile-user-info/ProfileUserInfo';
 import { ReviewReportCreateScreen } from '@/screens/reports/ReivewReportCreate';
 import { ReviewCreateScreen } from '@/screens/reviews/ReviewCreate';
+import { ReviewModifyScreen } from '@/screens/reviews/ReviewModify';
 import { SearchScreen } from '@/screens/search/Search';
 import { SearchResultScreen, SearchResultScreenParams } from '@/screens/search-result/SearchResult';
-import { ReviewModifyScreen } from '@/screens/reviews/ReviewModify';
 import { NotificationSettingScreen } from '@/screens/settings/Notifications';
 import { SettingScreen } from '@/screens/settings/Settings';
 import { StoreDetailScreen } from '@/screens/store-detail/StoreDetail';
