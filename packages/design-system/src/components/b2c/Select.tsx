@@ -28,7 +28,7 @@ const Select = <TValue extends string>({
   const selectId = useId();
 
   return (
-    <div className='relative w-full'>
+    <div className='relative'>
       {label && (
         <label htmlFor={selectId} className={cn('mb-3 flex items-center subtitle-6', className)}>
           {label}
