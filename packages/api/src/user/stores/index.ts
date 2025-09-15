@@ -13,11 +13,14 @@ import {
   GetStoreOperatingHoursResponse,
   GetStoreReviewListRequest,
   GetStoreReviewListResponse,
+  GetStoreReviewResponse,
   GetStoreRewardListResponse,
   SearchStoreListParams,
   SearchStoreListResponse,
+  ModifyStoreReviewBody,
 } from './type';
 import { api } from '../../shared';
+import { CreateReportBody, GetUserReportResponse } from '../reports';
 
 const ENDPOINT = '/user/stores';
 
@@ -53,6 +56,14 @@ export const storeApi = {
   createStoreReview: async (body: CreateStoreReviewBody) => {
     await api.post(`${ENDPOINT}/reviews`, body);
   },
+  modifyStoreReview: async (reviewId: number, body: ModifyStoreReviewBody) => {
+    const response = await api.patch(`${ENDPOINT}/${reviewId}/update`, body);
+    return GetStoreReviewResponse.parse(response);
+  },
+  deleteStoreReview: async (reviewId: number) => {
+    const response = await api.delete(`${ENDPOINT}/${reviewId}`);
+    return GetStoreReviewResponse.parse(response);
+  },
   getStoreImmediateEntryList: async (params: GetStoreListParams) => {
     const response = await api.get(`${ENDPOINT}/immediate-entry`, { params });
     return GetStoreListResponse.parse(response);
@@ -67,5 +78,9 @@ export const storeApi = {
   searchStoreList: async (params: SearchStoreListParams) => {
     const response = await api.get(`${ENDPOINT}/elastic-search`, { params });
     return SearchStoreListResponse.parse(response);
+  },
+  createStoreReviewReport: async (reviewId: number, body: CreateReportBody) => {
+    const response = await api.post(`${ENDPOINT}/${reviewId}/report`, body);
+    return GetUserReportResponse.parse(response);
   },
 };
