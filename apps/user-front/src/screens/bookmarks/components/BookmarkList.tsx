@@ -7,14 +7,18 @@ import { useDeleteBookmark } from '@/hooks/bookmark/useDeleteBookmark';
 import { useGetBookmarkList } from '@/hooks/bookmark/useGetBookmarkList';
 
 export const BookmarkList = () => {
-  const { data: bookmarks } = useGetBookmarkList();
+  const {
+    data: { list: bookmarks },
+  } = useGetBookmarkList();
   const deleteBookMark = useDeleteBookmark();
+
   const handleDeleteBookmarkClick = (bookmarkId: number) => {
     deleteBookMark.mutate(bookmarkId);
   };
+
   return (
     <div className='p-grid-margin flex flex-col gap-5'>
-      {bookmarks.list.map((bookmark, idx) => (
+      {bookmarks.map((bookmark, idx) => (
         <React.Fragment key={bookmark.id}>
           <div className='flex flex-col gap-2 w-full'>
             <div className='flex justify-between items-center'>
@@ -40,32 +44,30 @@ export const BookmarkList = () => {
                   : '• 바로 입장가능'}
               </span>
             </div>
-            <div>
-              <div>
+            <div className='-mx-grid-margin'>
+              <div className='flex gap-2 overflow-x-auto w-full scrollbar-hide px-grid-margin'>
                 {bookmark.images.length > 0 ? (
-                  <div className='flex gap-2'>
+                  <>
                     {bookmark.images.map((image, i) => (
                       <Image
                         key={i}
                         width={128}
                         height={128}
                         src={image}
-                        alt={bookmark.name || 'store image'}
-                        className='rounded-xl mb-4 object-center'
+                        alt={bookmark.name}
+                        className='rounded-xl mb-4 object-center shrink-0'
                       />
                     ))}
-                  </div>
+                  </>
                 ) : (
-                  <div className='flex gap-2 justify-around'>
-                    <div className='flex justify-center items-center bg-gray-1 w-[128px] h-[128px] rounded-xl'>
-                      <FoodingIcon width={58} height={72} color='rgba(17, 17, 17, 0.1)' />
-                    </div>
+                  <div className='flex justify-center items-center bg-gray-1 w-[128px] h-[128px] rounded-xl shrink-0'>
+                    <FoodingIcon width={58} height={72} color='rgba(17, 17, 17, 0.1)' />
                   </div>
                 )}
               </div>
             </div>
           </div>
-          {idx < bookmarks.list.length - 1 ? (
+          {idx < bookmarks.length - 1 ? (
             <hr className='text-gray-2 my-3' />
           ) : (
             <div className='mb-6' />

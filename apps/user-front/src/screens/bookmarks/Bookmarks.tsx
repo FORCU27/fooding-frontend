@@ -61,7 +61,22 @@ const LoadingFallback = () => {
         <Skeleton shape='text' width={60} height={14} />
       </div>
       <Skeleton shape='text' className='mt-2' width={20} height={14} />
-
+      <div className='mt-4 flex gap-2 -mx-grid-margin px-grid-margin'>
+        {Array.from({ length: 3 }).map((_, index) => (
+          <div key={index} className='flex flex-col gap-1'>
+            <Skeleton width={120} height={120} />
+          </div>
+        ))}
+      </div>
+      <div className='flex gap-2 items-center pt-15'>
+        <Skeleton shape='text' width={100} height={32} />
+        <Skeleton shape='text' width={80} height={16} />
+      </div>
+      <div className='flex gap-2 items-center mt-2'>
+        <Skeleton shape='text' width={60} height={14} />
+        <Skeleton shape='text' width={60} height={14} />
+      </div>
+      <Skeleton shape='text' className='mt-2' width={20} height={14} />
       <div className='mt-4 flex justify-between -mx-grid-margin px-grid-margin'>
         {Array.from({ length: 3 }).map((_, index) => (
           <div key={index} className='flex flex-col gap-1'>
@@ -78,24 +93,6 @@ const LoadingFallback = () => {
         <Skeleton shape='text' width={60} height={14} />
       </div>
       <Skeleton shape='text' className='mt-2' width={20} height={14} />
-
-      <div className='mt-4 flex justify-between -mx-grid-margin px-grid-margin'>
-        {Array.from({ length: 3 }).map((_, index) => (
-          <div key={index} className='flex flex-col gap-1'>
-            <Skeleton width={120} height={120} />
-          </div>
-        ))}
-      </div>
-      <div className='flex gap-2 items-center pt-15'>
-        <Skeleton shape='text' width={100} height={32} />
-        <Skeleton shape='text' width={80} height={16} />
-      </div>
-      <div className='flex gap-2 items-center mt-2'>
-        <Skeleton shape='text' width={60} height={14} />
-        <Skeleton shape='text' width={60} height={14} />
-      </div>
-      <Skeleton shape='text' className='mt-2' width={20} height={14} />
-
       <div className='mt-4 flex justify-between -mx-grid-margin px-grid-margin'>
         {Array.from({ length: 3 }).map((_, index) => (
           <div key={index} className='flex flex-col gap-1'>
