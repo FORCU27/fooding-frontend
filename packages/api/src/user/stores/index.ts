@@ -76,7 +76,9 @@ export const storeApi = {
     return await api.post(`${ENDPOINT}/${storeId}/rewards/${id}`);
   },
   searchStoreList: async (params: SearchStoreListParams) => {
-    const response = await api.get(`${ENDPOINT}/elastic-search`, { params });
+    const response = await api.get(`${ENDPOINT}/elastic-search`, {
+      params,
+    });
     return SearchStoreListResponse.parse(response);
   },
   createStoreReviewReport: async (reviewId: number, body: CreateReportBody) => {

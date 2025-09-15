@@ -1,5 +1,6 @@
 import axios, { AxiosInstance, AxiosRequestConfig } from 'axios';
 import Cookies from 'js-cookie';
+import qs from 'qs';
 import { z } from 'zod/v4';
 
 import { STORAGE_KEYS } from './configs/storageKeys';
@@ -39,6 +40,8 @@ apiClient.interceptors.response.use(
     return Promise.reject(error);
   },
 );
+
+apiClient.defaults.paramsSerializer = (params) => qs.stringify(params);
 
 export const createApi = (apiClient: AxiosInstance) => ({
   get: async <TResponse = unknown>(url: string, config?: AxiosRequestConfig<unknown>) => {
