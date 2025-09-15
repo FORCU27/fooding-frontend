@@ -58,6 +58,7 @@ export const MyPageTab: ActivityComponentType<'MyPageTab'> = () => {
 
 const Content = () => {
   const { user } = useAuth();
+  assert(user, '로그인이 필요합니다');
 
   const flow = useFlow();
 
@@ -80,7 +81,7 @@ const Content = () => {
       <div className='flex-col bg-white/80 pb-5 py-grid-margin'>
         <div className='flex justify-between px-grid-margin'>
           <div className='flex justify-center items-center'>
-            {user?.profileImage ? (
+            {user.profileImage ? (
               <div className='flex justify-center items-center w-[64px] h-[64px]'>
                 <Image
                   src={user.profileImage}

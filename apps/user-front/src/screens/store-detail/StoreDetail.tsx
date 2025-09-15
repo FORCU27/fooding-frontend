@@ -205,7 +205,6 @@ const StoreDetail = ({ storeId, showHeader, initialTab = 'home' }: StoreDetailPr
       <div
         className={cn(
           'fixed bottom-0 left-0 right-0 flex items-center gap-4 px-grid-margin py-grid-margin bg-white rounded-t-[16px]',
-          // TODO: 임의로 설정한 그림자 효과 수정
           'shadow-[0_4px_24px_rgba(0,0,0,0.0.1)]',
         )}
       >

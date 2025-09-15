@@ -19,6 +19,7 @@ export const MyRewardDetailScreen: ActivityComponentType<'MyRewardDetailScreen'>
   const flow = useFlow();
 
   const { data: rewardLog } = useGetRewardLog({ storeId: params.storeId });
+  // TODO: 나의 리워드 상세 조회 API로 변경
   const { data: point } = useGetStoreRewardList(params.storeId);
   const { data: store } = useGetStoreDetail(params.storeId);
 

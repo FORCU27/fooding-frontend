@@ -7,6 +7,7 @@ import { isNonEmptyArray } from '@/utils/array';
 
 function Menubar() {
   const [selectedRegions, setSelectedRegions] = useState<string[]>([]);
+
   return (
     <div className='flex px-grid-margin pt-2 pb-4 bg-white w-full h-[44px]'>
       <RegionMultiSelectBottomSheet

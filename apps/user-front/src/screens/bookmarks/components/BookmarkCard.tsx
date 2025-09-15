@@ -29,7 +29,7 @@ export const BookmarkCard = ({ bookmark }: BookmarkCardProps) => {
                 width={140}
                 height={140}
                 src={image}
-                alt={bookmark.name || 'bookmark image'}
+                alt={bookmark.name}
                 className='rounded-xl mb-4 object-center'
               />
             ))

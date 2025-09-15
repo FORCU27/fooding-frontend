@@ -37,11 +37,9 @@ export const ProfileForm = ({
   isUpdateMode,
 }: PropsWithoutRef<ProfileFormProps>) => {
   const { user } = useAuth();
-  const flow = useFlow();
+  assert(user, '로그인이 필요합니다.');
 
-  if (!user) {
-    throw new Error('로그인이 필요합니다.');
-  }
+  const flow = useFlow();
 
   const [previewImage, setPreviewImage] = useState<string | null>(
     user.profileImage ?? editOriginValue.imageId ?? null,

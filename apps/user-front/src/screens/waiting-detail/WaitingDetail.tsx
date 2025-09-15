@@ -14,7 +14,6 @@ import {
 import { ActivityComponentType } from '@stackflow/react/future';
 import { Suspense } from '@suspensive/react';
 
-import { StoreInfoMap } from './components/StoreInfoMap';
 import { LoadingToggle } from '@/components/Devtool/LoadingToggle';
 import { DefaultErrorBoundary } from '@/components/Layout/DefaultErrorBoundary';
 import { Header } from '@/components/Layout/Header';
@@ -22,6 +21,7 @@ import { Screen } from '@/components/Layout/Screen';
 import { useGetPlanDetail } from '@/hooks/plan/useGetPlanDetail';
 import { useGetStoreDetail } from '@/hooks/store/useGetStoreDetail';
 import { useGetStoreWaitingDetail } from '@/hooks/store-waiting/useGetStoreWaitingDetail';
+import { StoreInfoMap } from '@/libs/kakao-map/StoreInfoMap';
 import { formatDotDateTime } from '@/utils/date';
 
 export const WaitingDetailScreen: ActivityComponentType<'WaitingDetailScreen'> = ({ params }) => {

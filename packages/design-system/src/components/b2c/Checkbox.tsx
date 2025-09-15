@@ -20,7 +20,6 @@ const Checkbox = ({ className, onChange, ...props }: CheckboxProps) => {
       {...props}
     >
       <CheckboxPrimitives.Indicator asChild>
-        {/* TODO: 피그마 확인 후 수정 */}
         <CheckIcon className='text-white size-3.5' />
       </CheckboxPrimitives.Indicator>
     </CheckboxPrimitives.Root>

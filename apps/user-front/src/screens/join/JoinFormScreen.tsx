@@ -3,7 +3,7 @@
 import { Suspense } from 'react';
 
 import { AuthUpdateUserBody, AuthUpdateUserProfileImageBody } from '@repo/api/auth';
-import { ErrorFallback } from '@repo/design-system/components/b2c';
+import { ErrorFallback, toast } from '@repo/design-system/components/b2c';
 import { ActivityComponentType } from '@stackflow/react';
 import { useFlow } from '@stackflow/react/future';
 import { ErrorBoundary, ErrorBoundaryFallbackProps } from '@suspensive/react';
@@ -20,9 +20,7 @@ export const JoinFormScreen: ActivityComponentType<'JoinFormScreen'> = () => {
   const flow = useFlow();
 
   const { user } = useAuth();
-  if (!user) {
-    throw new Error('로그인이 필요합니다.');
-  }
+  assert(user, '로그인이 필요합니다.');
 
   const { mutateAsync: updateUserInfo } = useUpdateUserInfo();
   const { mutateAsync: uploadImageFile } = useUploadFile();
@@ -57,14 +55,14 @@ export const JoinFormScreen: ActivityComponentType<'JoinFormScreen'> = () => {
           await updateUserProfileImage({
             imageId: uploadResult.data[0]?.id ? uploadResult.data[0]?.id : '',
           });
-        } catch (error) {
-          console.error('uploadImageFile 에러:', error);
+        } catch {
+          toast.error('프로필 이미지를 업로드하는 데 실패했어요. 잠시 후 다시 시도해주세요.');
         }
       }
 
       flow.pop();
-    } catch (error) {
-      console.error('프로필 입력 실패:', error);
+    } catch {
+      toast.error('프로필 정보를 수정하는 데 실패했어요. 잠시 후 다시 시도해주세요.');
     }
   };
 

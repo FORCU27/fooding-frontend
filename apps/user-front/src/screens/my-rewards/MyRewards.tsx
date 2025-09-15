@@ -25,8 +25,9 @@ export const MyRewardListScreen: ActivityComponentType<'MyRewardListScreen'> = (
 
   const { data: logs } = useGetRewardPersonalLog();
 
-  const storeIds = Array.from(new Set(logs?.list.map((r) => r.storeId)));
+  const storeIds = Array.from(new Set(logs.list.map((r) => r.storeId)));
 
+  // TODO: 나의 리워드 목록 조회 API로 변경
   const storeRewardListQueries = useGetStoreRewardLists(storeIds);
 
   const storePoints: Record<number, number> = {};
