@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-import { BottomSheet, Button, EmptyState } from '@repo/design-system/components/b2c';
+import { BottomSheet, Button } from '@repo/design-system/components/b2c';
 import { ChevronDownIcon, ChevronUpIcon, GiftIcon } from '@repo/design-system/icons';
 import { ActivityComponentType, useFlow } from '@stackflow/react/future';
 
