@@ -48,13 +48,13 @@ export const BookmarkList = () => {
               <div className='flex gap-2 overflow-x-auto w-full scrollbar-hide px-grid-margin'>
                 {bookmark.images.length > 0 ? (
                   <>
-                    {bookmark.images.map((image, i) => (
+                    {bookmark.images.map((image) => (
                       <Image
-                        key={i}
+                        key={image.id}
+                        src={image.imageUrl}
+                        alt={bookmark.name}
                         width={128}
                         height={128}
-                        src={image}
-                        alt={bookmark.name}
                         className='rounded-xl mb-4 object-center shrink-0'
                       />
                     ))}

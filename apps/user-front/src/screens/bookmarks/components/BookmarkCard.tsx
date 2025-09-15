@@ -23,14 +23,14 @@ export const BookmarkCard = ({ bookmark }: BookmarkCardProps) => {
       <div className='h-full w-[140px]'>
         <div className='relative h-[140px] mb-2 rounded-xl overflow-hidden'>
           {bookmark.images.length > 0 ? (
-            bookmark.images.map((image, idx) => (
+            bookmark.images.map((image) => (
               <Image
-                key={`${image}_${idx}}`}
+                key={image.id}
+                className='rounded-xl mb-4 object-center'
+                src={image.imageUrl}
+                alt={bookmark.name}
                 width={140}
                 height={140}
-                src={image}
-                alt={bookmark.name}
-                className='rounded-xl mb-4 object-center'
               />
             ))
           ) : (
