@@ -1,3 +1,5 @@
+const KAKAO_KEY = process.env.NEXT_PUBLIC_KAKAO_JS_KEY;
+
 export const getKakaoMapDirectionUrl = ({
   latitude,
   longitude,
@@ -24,3 +26,5 @@ export const openKakaoMapDirection = ({
 
   window.open(url, '_blank');
 };
+
+export const kakaoMapScriptSrc = `//dapi.kakao.com/v2/maps/sdk.js?appkey=${KAKAO_KEY}&libraries=services,clusterer&autoload=false`;
