@@ -40,7 +40,6 @@ export default function StoreSelectPage() {
   };
 
   const handleConfirmStore = async (id: number) => {
-    console.log('handleConfirmStore', selectedStoreId);
     const res = await fetch('/api/store/select', {
       method: 'POST',
       headers: { 'content-type': 'application/json' },

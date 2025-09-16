@@ -4,6 +4,7 @@ import Image from 'next/image';
 import { useMemo } from 'react';
 
 import { Store } from '@repo/api/ceo';
+import { queryKeys } from '@repo/api/configs/query-keys';
 import { SelectBox } from '@repo/design-system/components/ceo';
 import { CeoBellIcon } from '@repo/design-system/icons';
 import { useQuery, useQueryClient, useMutation } from '@tanstack/react-query';
@@ -19,7 +20,7 @@ const HeaderLayout = ({ className, isSidebarOpen, onToggleSidebar }: Props) => {
 
   const { data: me } = useQuery({
     // TODO 쿼리 키 config에 저장해서 활용
-    queryKey: ['me'],
+    queryKey: [queryKeys.ceo.me],
     queryFn: async () => {
       const res = await fetch('/api/auth/me', { cache: 'no-store' });
       if (!res.ok) {
@@ -31,7 +32,7 @@ const HeaderLayout = ({ className, isSidebarOpen, onToggleSidebar }: Props) => {
   });
 
   const { data: selectedStore, isFetching: fetchingStore } = useQuery({
-    queryKey: ['selectedStore'],
+    queryKey: [queryKeys.ceo.store.selectedStore],
     queryFn: async () => {
       const res = await fetch('/api/store/select', { cache: 'no-store' });
       if (!res.ok) {
@@ -43,7 +44,7 @@ const HeaderLayout = ({ className, isSidebarOpen, onToggleSidebar }: Props) => {
   });
 
   const { data: stores, isLoading: loadingStores } = useQuery({
-    queryKey: ['storeList'],
+    queryKey: [queryKeys.ceo.store.storeList],
     queryFn: async () => {
       const res = await fetch('/api/store/list', { cache: 'no-store' });
       if (!res.ok) {
@@ -76,7 +77,7 @@ const HeaderLayout = ({ className, isSidebarOpen, onToggleSidebar }: Props) => {
     },
     onSuccess: async () => {
       // 선택된 매장 정보 갱신
-      await qc.invalidateQueries({ queryKey: ['selectedStore'] });
+      await qc.invalidateQueries({ queryKey: [queryKeys.ceo.store.selectedStore] });
     },
   });
 
