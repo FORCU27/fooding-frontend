@@ -1,7 +1,7 @@
 import { bridge, createWebView, postMessageSchema } from '@webview-bridge/react-native';
 
 export const appBridge = bridge({
-  async sum(a: number, b: number) {
+  sum: async (a: number, b: number) => {
     return a + b;
   },
 });
