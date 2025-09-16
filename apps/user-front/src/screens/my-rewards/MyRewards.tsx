@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-import { Button } from '@repo/design-system/components/b2c';
+import { BottomSheet, Button } from '@repo/design-system/components/b2c';
 import { ChevronDownIcon, ChevronUpIcon, GiftIcon } from '@repo/design-system/icons';
 import { ActivityComponentType, useFlow } from '@stackflow/react/future';
 
@@ -10,14 +10,24 @@ import { Screen } from '@/components/Layout/Screen';
 import { useGetRewardPersonalLog } from '@/hooks/reward/useGetRewardPersonalLog';
 import { useGetStoreRewardLists } from '@/hooks/store/useGetStoreRewardLists';
 
+const MAX_VISIBLE_REWARDS = 4;
+
+// TODO: 필터 기능 추가
+const FILTER_OPTIONS = ['전체', '적립', '사용'] as const;
+const DATE_OPTIONS = ['1개월', '3개월', '6개월', '1년'] as const;
+
 export const MyRewardListScreen: ActivityComponentType<'MyRewardListScreen'> = () => {
   const flow = useFlow();
   const [isOpen, setIsOpen] = useState(false);
 
+  const [filter, setFilter] = useState('전체');
+  const [date, setDate] = useState('1개월');
+
   const { data: logs } = useGetRewardPersonalLog();
 
-  const storeIds = Array.from(new Set(logs?.list.map((r) => r.storeId)));
+  const storeIds = Array.from(new Set(logs.list.map((r) => r.storeId)));
 
+  // TODO: 나의 리워드 목록 조회 API로 변경
   const storeRewardListQueries = useGetStoreRewardLists(storeIds);
 
   const storePoints: Record<number, number> = {};
@@ -28,7 +38,7 @@ export const MyRewardListScreen: ActivityComponentType<'MyRewardListScreen'> = (
     storePoints[id] = data.point;
   });
 
-  const sortedRewards = [...(logs?.list ?? [])].sort(
+  const sortedRewards = [...logs.list].sort(
     (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
   );
 
@@ -63,11 +73,16 @@ export const MyRewardListScreen: ActivityComponentType<'MyRewardListScreen'> = (
   };
 
   const visibleRewards =
-    sortedRewards.length > 4 && !isOpen ? sortedRewards.slice(0, 4) : sortedRewards;
+    sortedRewards.length > MAX_VISIBLE_REWARDS && !isOpen
+      ? sortedRewards.slice(0, MAX_VISIBLE_REWARDS)
+      : sortedRewards;
 
   return (
     <Screen header={<Header left={<Header.Back />} title='리워드 목록' />}>
       <div className='flex flex-col gap-3 bg-gray-1 p-5'>
+        {visibleRewards.length === 0 && (
+          <p className='text-gray-4 text-center py-12'>사용 가능한 리워드가 없어요.</p>
+        )}
         {visibleRewards.map((reward) => (
           <div key={reward.id} className='flex p-5 bg-white rounded-xl justify-between'>
             <div
@@ -92,8 +107,7 @@ export const MyRewardListScreen: ActivityComponentType<'MyRewardListScreen'> = (
             </Button>
           </div>
         ))}
-
-        {sortedRewards.length > 4 && (
+        {sortedRewards.length > MAX_VISIBLE_REWARDS && (
           <Button variant='outlined' onClick={() => setIsOpen(!isOpen)}>
             {isOpen ? (
               <>
@@ -108,17 +122,49 @@ export const MyRewardListScreen: ActivityComponentType<'MyRewardListScreen'> = (
             )}
           </Button>
         )}
-
         <div className='flex gap-2 mt-3 justify-end'>
-          <select className='flex border border-none text-gray-5 body-5 p-1'>
-            <option>전체</option>
-          </select>
-          <select className='border border-none text-gray-5 body-5 p-0 flex justify-center'>
-            <option>1개월</option>
-          </select>
+          <BottomSheet>
+            <BottomSheet.Trigger className='text-gray-5 body-5 p-1 flex items-center gap-1'>
+              {filter}
+              <ChevronDownIcon className='size-4' />
+            </BottomSheet.Trigger>
+            <BottomSheet.Content>
+              <BottomSheet.Header>
+                <BottomSheet.Title className='font-bold text-[24px]'>필터 선택</BottomSheet.Title>
+              </BottomSheet.Header>
+              <BottomSheet.Body>
+                <BottomSheet.SelectGroup value={filter} onChange={setFilter}>
+                  {FILTER_OPTIONS.map((option) => (
+                    <BottomSheet.SelectItem key={option} value={option}>
+                      {option}
+                    </BottomSheet.SelectItem>
+                  ))}
+                </BottomSheet.SelectGroup>
+              </BottomSheet.Body>
+            </BottomSheet.Content>
+          </BottomSheet>
+          <BottomSheet>
+            <BottomSheet.Trigger className='text-gray-5 flex items-center gap-1 body-5 p-1'>
+              {date}
+              <ChevronDownIcon className='size-4' />
+            </BottomSheet.Trigger>
+            <BottomSheet.Content>
+              <BottomSheet.Header>
+                <BottomSheet.Title className='font-bold text-[24px]'>날짜 선택</BottomSheet.Title>
+              </BottomSheet.Header>
+              <BottomSheet.Body>
+                <BottomSheet.SelectGroup value={date} onChange={setDate}>
+                  {DATE_OPTIONS.map((option) => (
+                    <BottomSheet.SelectItem key={option} value={option}>
+                      {option}
+                    </BottomSheet.SelectItem>
+                  ))}
+                </BottomSheet.SelectGroup>
+              </BottomSheet.Body>
+            </BottomSheet.Content>
+          </BottomSheet>
         </div>
       </div>
-
       <div className='bg-white p-5'>
         {sortedGroupedKeys.map((ym) => (
           <RewardMonthGroup key={ym} ym={ym} rewards={groupedRewards[ym] ?? []} />

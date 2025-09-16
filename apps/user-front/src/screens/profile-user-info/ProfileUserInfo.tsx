@@ -8,7 +8,7 @@ import {
   UpdateProfileErrorMessages,
   UpdateProfileErrorResponse,
 } from '@repo/api/auth';
-import { ErrorFallback } from '@repo/design-system/components/b2c';
+import { ErrorFallback, toast } from '@repo/design-system/components/b2c';
 import { ActivityComponentType } from '@stackflow/react/future';
 import { useFlow } from '@stackflow/react/future';
 import { ErrorBoundary, ErrorBoundaryFallbackProps } from '@suspensive/react';
@@ -64,20 +64,20 @@ export const ProfileUserInfoScreen: ActivityComponentType<'ProfileUserInfoScreen
           await updateUserProfileImage({
             imageId: uploadResult.data[0]?.id || '',
           });
-        } catch (error) {
-          console.error('uploadImageFile 에러:', error);
+        } catch {
+          toast.error('프로필 이미지 업로드에 실패했어요. 잠시 후 다시 시도해주세요.');
         }
       }
 
       if (!params.isUpdateMode)
         return flow.push('ProfileCompleteScreen', { userName: formData.name || '' });
     } catch (error) {
-      console.error('내 정보 수정 실패:', error);
-
       if (isAxiosError<UpdateProfileErrorResponse>(error)) {
         if (error.response?.data.code === UpdateProfileErrorCode.PHONE_NUMBER_ALREADY_EXISTS) {
           onPhoneNumberAlreadyExists(UpdateProfileErrorMessages[error.response.data.code]);
         }
+      } else {
+        toast.error('프로필 수정에 실패했어요. 잠시 후 다시 시도해주세요.');
       }
     }
   };

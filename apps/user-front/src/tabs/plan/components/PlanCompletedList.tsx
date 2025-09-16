@@ -9,8 +9,8 @@ export const PlanCompletedList = () => {
 
   return (
     <div className='flex flex-col gap-5 px-grid-margin py-grid-margin'>
-      <p className='text-gray-5 body-6'>총 {plans.list.length}건</p>
-      {plans.pageInfo.totalCount === 0 && (
+      <p className='text-gray-5 body-6'>총 {plans.pageInfo.totalCount}건</p>
+      {plans.list.length === 0 && (
         <EmptyState className='flex-1 mt-25' title='방문한 식당이 없습니다.' />
       )}
       {plans.list.map((plan) => (

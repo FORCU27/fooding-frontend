@@ -3,6 +3,7 @@
 import { useEffect } from 'react';
 
 import { CreateReportBody } from '@repo/api/user';
+import { toast } from '@repo/design-system/components/b2c';
 import { ActivityComponentType, useFlow } from '@stackflow/react/future';
 
 import { ReviewReportForm } from './components/ReviewReportForm';
@@ -32,21 +33,25 @@ export const ReviewReportCreateScreen: ActivityComponentType<'ReviewReportCreate
   }, [flow, isLoggedIn, loginBottomSheet]);
 
   const handleFormSubmit = (formData: CreateReportBody & { reasons: string[] }) => {
-    try {
-      if (isLoggedIn) {
-        const body = {
-          referenceId: review.reviewId,
-          reporterId: user.id,
-          targetType: type,
-          description: `사유: ${formData.reasons.join(', ')}, 상세: ${formData.description}`,
-        };
-        createReport(body);
-        alert('신고가 완료되었습니다.'); //FIXME: 추후 토스트 변경
-        flow.pop();
-      }
-    } catch (error) {
-      console.log(error);
-    }
+    if (!isLoggedIn) return;
+
+    createReport(
+      {
+        referenceId: review.reviewId,
+        reporterId: user.id,
+        targetType: type,
+        description: `사유: ${formData.reasons.join(', ')}, 상세: ${formData.description}`,
+      },
+      {
+        onSuccess: () => {
+          flow.pop();
+          toast.success('신고가 완료되었습니다.');
+        },
+        onError: () => {
+          toast.error('에러가 발생했습니다. 잠시 후 다시 시도해주세요.');
+        },
+      },
+    );
   };
 
   return (

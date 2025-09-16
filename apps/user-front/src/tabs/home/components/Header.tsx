@@ -8,7 +8,7 @@ import { AuthGuard } from '@/components/Auth/AuthGuard';
 import { cn } from '@/utils/cn';
 
 function Header() {
-  const { push } = useFlow();
+  const flow = useFlow();
 
   return (
     <div className='flex flex-col fixed left-0 top-0 right-0'>
@@ -19,12 +19,12 @@ function Header() {
         <SearchInput className='mr-3' placeholder='지금 뜨는 이탈리안 레스토랑은?' />
         <div className='flex justify-between gap-4'>
           <AuthGuard>
-            <button onClick={() => push('BookmarkListScreen', {})}>
+            <button onClick={() => flow.push('BookmarkListScreen', {})}>
               <BookmarkIcon className='cursor-pointer' />
             </button>
           </AuthGuard>
           <AuthGuard>
-            <button onClick={() => push('NotificationListScreen', {})}>
+            <button onClick={() => flow.push('NotificationListScreen', {})}>
               <BellIcon className='cursor-pointer' />
             </button>
           </AuthGuard>

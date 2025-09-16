@@ -1,6 +1,7 @@
 'use client';
 
 import { ModifyStoreReviewBody } from '@repo/api/user';
+import { toast } from '@repo/design-system/components/b2c';
 import { ActivityComponentType, useFlow } from '@stackflow/react/future';
 
 import { ReviewForm } from './components/ReviewForm';
@@ -11,16 +12,25 @@ import { useModifyStoreReview } from '@/hooks/store/useModifyStoreReview';
 export const ReviewModifyScreen: ActivityComponentType<'ReviewModifyScreen'> = ({ params }) => {
   const flow = useFlow();
 
-  const { mutate: modifyReview } = useModifyStoreReview(params.review.reviewId);
+  const modifyReview = useModifyStoreReview();
 
   const handleFormSubmit = (formData: ModifyStoreReviewBody) => {
-    try {
-      modifyReview(formData);
-    } catch (error) {
-      console.log(error);
-    }
+    if (modifyReview.isPending) return;
 
-    return flow.pop();
+    modifyReview.mutate(
+      {
+        reviewId: params.review.reviewId,
+        body: formData,
+      },
+      {
+        onSuccess: () => {
+          flow.pop();
+        },
+        onError: () => {
+          toast.error('리뷰 수정에 실패했습니다. 잠시 후 다시 시도해주세요.');
+        },
+      },
+    );
   };
 
   return (

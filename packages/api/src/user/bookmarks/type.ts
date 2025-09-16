@@ -8,7 +8,12 @@ export const Bookmark = z.object({
   bookmarkCount: z.number(),
   estimatedWaitingTimeMinutes: z.number().nullable(),
   id: z.number(),
-  images: z.string().array(),
+  images: z
+    .object({
+      id: z.number(),
+      imageUrl: z.string(),
+    })
+    .array(),
   isFinished: z.boolean(),
   name: z.string(),
   reviewCount: z.number(),
