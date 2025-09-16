@@ -12,15 +12,16 @@ export const Screen = ({ header, bottomTab, className, children, ...props }: Scr
     <AppScreen>
       {header}
       <main
-        // TODO: Safe Area 영역 추가
         className={cn(
           'flex flex-col overflow-y-auto scrollbar-hide relative',
-          header && `mt-[60px]`, // 헤더 60px + Safe Area Top 40px
-          bottomTab && `mb-[64px]`, // 하단탭 64px + 하단 Safe Area Bottom 24px
-          header && !bottomTab && 'h-[calc(100dvh-60px)]',
-          header && bottomTab && `h-[calc(100dvh-124px)]`,
-          !header && bottomTab && `h-[calc(100dvh-64px)]`,
-          !header && !bottomTab && `h-dvh`,
+          header && 'mt-[calc(60px+env(safe-area-inset-top))]',
+          !header && 'mt-[env(safe-area-inset-top)]',
+          header && !bottomTab && 'h-[calc(100dvh-60px-env(safe-area-inset-top))]',
+          header && bottomTab && 'h-[calc(100dvh-124px-env(safe-area-inset-top))]',
+          !header && bottomTab && 'h-[calc(100dvh-64px-env(safe-area-inset-bottom))]',
+          !header &&
+            !bottomTab &&
+            `h-[calc(100dvh-env(safe-area-inset-top)-env(safe-area-inset-bottom))]`,
           className,
         )}
         {...props}
