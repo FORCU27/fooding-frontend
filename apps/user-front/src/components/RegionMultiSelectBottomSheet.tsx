@@ -29,46 +29,54 @@ type RegionMultiSelectBottomSheetProps = {
 };
 
 const RegionMultiSelectBottomSheet = (props: RegionMultiSelectBottomSheetProps) => {
-  const [value, setValue] = useState<Region[]>(props.value);
-
-  const { isOpen, onOpenChange, trigger, onChange } = props;
-
-  const removeDistrict = (district: Region) => {
-    setValue((prev) => prev.filter((v) => v.id !== district.id));
-  };
-
-  const onResetButtonClick = () => setValue([]);
-  const onConfirmButtonClick = () => onChange(value);
+  const { isOpen, onOpenChange, trigger } = props;
 
   return (
     <BottomSheet isOpen={isOpen} onOpenChange={onOpenChange}>
       {trigger && <BottomSheet.Trigger asChild>{trigger}</BottomSheet.Trigger>}
       <BottomSheet.Content>
-        <BottomSheet.Header>
-          <BottomSheet.Title className='font-bold text-[24px]'>관심지역 설정</BottomSheet.Title>
-          <div className='mt-5 flex flex-wrap gap-2'>
-            {value.map((v) => (
-              <DismissibleChipButton key={v.id} onClick={() => removeDistrict(v)}>
-                {v.name}
-              </DismissibleChipButton>
-            ))}
-          </div>
-        </BottomSheet.Header>
-        <Suspense fallback={<div className='h-[452px]' />}>
-          <RegionMultiSelectBottomSheetContext value={{ value, setValue }}>
-            <Content />
-          </RegionMultiSelectBottomSheetContext>
-        </Suspense>
-        <BottomSheet.Footer className='gap-[10px]'>
-          <Button className='w-[136px]' variant='outlined' onClick={onResetButtonClick}>
-            초기화
-          </Button>
-          <BottomSheet.Close asChild>
-            <Button onClick={onConfirmButtonClick}>설정 완료</Button>
-          </BottomSheet.Close>
-        </BottomSheet.Footer>
+        <BottomSheetContent {...props} />
       </BottomSheet.Content>
     </BottomSheet>
+  );
+};
+
+const BottomSheetContent = (props: RegionMultiSelectBottomSheetProps) => {
+  const [value, setValue] = useState<Region[]>(props.value);
+
+  const { onChange } = props;
+
+  const onResetButtonClick = () => setValue([]);
+  const onConfirmButtonClick = () => onChange(value);
+
+  const removeDistrict = (district: Region) => {
+    setValue((prev) => prev.filter((v) => v.id !== district.id));
+  };
+
+  return (
+    <RegionMultiSelectBottomSheetContext value={{ value, setValue }}>
+      <BottomSheet.Header>
+        <BottomSheet.Title className='font-bold text-[24px]'>관심지역 설정</BottomSheet.Title>
+        <div className='mt-5 flex flex-wrap gap-2'>
+          {value.map((v) => (
+            <DismissibleChipButton key={v.id} onClick={() => removeDistrict(v)}>
+              {v.name}
+            </DismissibleChipButton>
+          ))}
+        </div>
+      </BottomSheet.Header>
+      <Suspense fallback={<div className='h-[452px]' />}>
+        <Content />
+      </Suspense>
+      <BottomSheet.Footer className='gap-[10px]'>
+        <Button className='w-[136px]' variant='outlined' onClick={onResetButtonClick}>
+          초기화
+        </Button>
+        <BottomSheet.Close asChild>
+          <Button onClick={onConfirmButtonClick}>설정 완료</Button>
+        </BottomSheet.Close>
+      </BottomSheet.Footer>
+    </RegionMultiSelectBottomSheetContext>
   );
 };
 
