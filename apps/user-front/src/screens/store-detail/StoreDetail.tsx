@@ -222,7 +222,7 @@ const StoreDetail = ({ storeId, showHeader, initialTab = 'home' }: StoreDetailPr
           {store.isFinished ? '영업 종료' : '줄서기'}
         </Button>
       </div>
-      <BottomSheet isOpen={isBottomSheetOpen} onOpenChange={setIsBottomSheetOpen}>
+      <BottomSheet open={isBottomSheetOpen} onOpenChange={setIsBottomSheetOpen}>
         <BottomSheet.Content>
           <BottomSheet.Header>
             <BottomSheet.Title className='headline-3'>방문 인원을 선택하세요</BottomSheet.Title>

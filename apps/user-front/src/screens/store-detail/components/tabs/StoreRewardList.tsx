@@ -150,7 +150,7 @@ const StoreRewardItem = ({ reward, storeId, userPoint }: StoreRewardItemProps) =
         구매하기
       </Button>
 
-      <BottomSheet isOpen={isBottomSheetOpen} onOpenChange={setIsBottomSheetOpen}>
+      <BottomSheet open={isBottomSheetOpen} onOpenChange={setIsBottomSheetOpen}>
         <BottomSheet.Content>
           <BottomSheet.Header>
             <BottomSheet.Title className='headline-3'>쿠폰 구매</BottomSheet.Title>
@@ -215,7 +215,7 @@ const StoreRewardItem = ({ reward, storeId, userPoint }: StoreRewardItemProps) =
         </BottomSheet.Content>
       </BottomSheet>
 
-      <BottomSheet isOpen={isConfirmBottomSheetOpen} onOpenChange={setIsConfirmBottomSheetOpen}>
+      <BottomSheet open={isConfirmBottomSheetOpen} onOpenChange={setIsConfirmBottomSheetOpen}>
         <BottomSheet.Content>
           <BottomSheet.Body>
             <div className='flex flex-col justify-center items-center gap-6'>

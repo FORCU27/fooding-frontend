@@ -245,7 +245,7 @@ const ApplyCouponDialog = ({ isOpen, onOpenChange, coupon }: ApplyCouponDialogPr
   };
 
   return (
-    <Dialog isOpen={isOpen} onOpenChange={onOpenChange}>
+    <Dialog open={isOpen} onOpenChange={onOpenChange}>
       <Dialog.Content className='w-[400px]'>
         <>
           {!success && (
