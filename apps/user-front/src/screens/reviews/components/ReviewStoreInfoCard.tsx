@@ -5,6 +5,7 @@ import { FoodingIcon } from '@repo/design-system/icons';
 
 import { useGetStoreDetail } from '@/hooks/store/useGetStoreDetail';
 import { useGetStoreWaitingDetail } from '@/hooks/store-waiting/useGetStoreWaitingDetail';
+import { isNonEmptyArray } from '@/utils/array';
 import { formatDotDate } from '@/utils/date';
 
 interface ReviewStoreInfoCardProps {
@@ -14,9 +15,10 @@ interface ReviewStoreInfoCardProps {
 export const ReviewStoreInfoCard = ({ planInfo }: ReviewStoreInfoCardProps) => {
   const { data: waitingInfo } = useGetStoreWaitingDetail(planInfo.originId);
   const { data: storeInfo } = useGetStoreDetail(waitingInfo.storeId);
+
   return (
     <div className='flex bg-gray-1 items-center w-full h-[100px] p-5 rounded-xl'>
-      {storeInfo?.images?.[0]?.imageUrl ? (
+      {isNonEmptyArray(storeInfo.images) ? (
         <div className='relative w-[60px] h-[60px] rounded-lg overflow-hidden'>
           <Image
             fill

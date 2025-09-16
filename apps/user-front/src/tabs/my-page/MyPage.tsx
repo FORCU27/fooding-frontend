@@ -58,12 +58,18 @@ export const MyPageTab: ActivityComponentType<'MyPageTab'> = () => {
 
 const Content = () => {
   const { user } = useAuth();
+
+  if (!user) {
+    throw new Error('로그인이 필요합니다.');
+  }
+
   const flow = useFlow();
 
   const { data: bookmarks } = useGetBookmarkList({
     pageNum: 1,
     pageSize: 5,
   });
+
   const { data: stores } = useGetStoreList({
     pageNum: 1,
     pageSize: 5,
@@ -72,12 +78,13 @@ const Content = () => {
   const { coupons } = useGetInfiniteMyCouponList({ used: false });
 
   const { data: reward } = useGetRewardPersonalLog();
+
   return (
     <div className='w-full'>
       <div className='flex-col bg-white/80 pb-5 py-grid-margin'>
         <div className='flex justify-between px-grid-margin'>
           <div className='flex justify-center items-center'>
-            {user?.profileImage ? (
+            {user.profileImage ? (
               <div className='flex justify-center items-center w-[64px] h-[64px]'>
                 <Image
                   src={user.profileImage}
@@ -138,44 +145,41 @@ const Content = () => {
           </div>
         </div>
       </div>
-      {stores && (
-        <div className='mt-3'>
-          <div className='flex flex-col py-grid-margin bg-white/80'>
-            <div className='flex justify-between mb-4 px-grid-margin'>
-              <div className='subtitle-3'>찜해 둔 식당</div>
-              {(bookmarks.list.length ?? 0) === 0 ? (
-                <button
-                  className='flex justify-center items-center body-5 text-gray-3'
-                  onClick={() => flow.push('BookmarkListScreen', {})}
-                  disabled
-                >
-                  <span>전체보기</span>
-                  <ChevronRightIcon size={14} />
-                </button>
-              ) : (
-                <button
-                  className='flex justify-center items-center body-5 text-gray-5 cursor-pointer hover:text-black'
-                  onClick={() => flow.push('BookmarkListScreen', {})}
-                >
-                  <span>전체보기</span>
-                  <ChevronRightIcon size={14} />
-                </button>
-              )}
-            </div>
-            <ul className='flex px-grid-margin overflow-x-auto scrollbar-hide w-dvw gap-3'>
-              {bookmarks.list.map((bookmark: Bookmark) => (
-                <BookmarkCard bookmark={bookmark} key={bookmark.id} />
-              ))}
-            </ul>
+      <div className='mt-3'>
+        <div className='flex flex-col py-grid-margin bg-white/80'>
+          <div className='flex justify-between mb-4 px-grid-margin'>
+            <div className='subtitle-3'>찜해 둔 식당</div>
+            {bookmarks.list.length === 0 ? (
+              <button
+                className='flex justify-center items-center body-5 text-gray-3'
+                onClick={() => flow.push('BookmarkListScreen', {})}
+                disabled
+              >
+                <span>전체보기</span>
+                <ChevronRightIcon size={14} />
+              </button>
+            ) : (
+              <button
+                className='flex justify-center items-center body-5 text-gray-5 cursor-pointer hover:text-black'
+                onClick={() => flow.push('BookmarkListScreen', {})}
+              >
+                <span>전체보기</span>
+                <ChevronRightIcon size={14} />
+              </button>
+            )}
           </div>
-
-          <StoresList
-            stores={stores.list}
-            subtitle='최근 본 식당'
-            onClickTotalBtn={() => flow.push('MyPageTab', {})}
-          />
+          <ul className='flex px-grid-margin overflow-x-auto scrollbar-hide w-dvw gap-3'>
+            {bookmarks.list.map((bookmark: Bookmark) => (
+              <BookmarkCard bookmark={bookmark} key={bookmark.id} />
+            ))}
+          </ul>
         </div>
-      )}
+        <StoresList
+          stores={stores.list}
+          subtitle='최근 본 식당'
+          onClickTotalBtn={() => flow.push('MyPageTab', {})}
+        />
+      </div>
     </div>
   );
 };

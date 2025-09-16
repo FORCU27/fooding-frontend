@@ -56,7 +56,13 @@ export const storeApi = {
   createStoreReview: async (body: CreateStoreReviewBody) => {
     await api.post(`${ENDPOINT}/reviews`, body);
   },
-  modifyStoreReview: async (reviewId: number, body: ModifyStoreReviewBody) => {
+  modifyStoreReview: async ({
+    reviewId,
+    body,
+  }: {
+    reviewId: number;
+    body: ModifyStoreReviewBody;
+  }) => {
     const response = await api.patch(`${ENDPOINT}/${reviewId}/update`, body);
     return GetStoreReviewResponse.parse(response);
   },

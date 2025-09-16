@@ -54,7 +54,6 @@ const StorePostDetail = ({ storePostId }: StorePostDetailProps) => {
         </div>
       )}
       <p className='mt-5 whitespace-pre-wrap body-3-2'>{storePost.content}</p>
-      {/* TODO: 바텀 CTA 추가 */}
     </div>
   );
 };

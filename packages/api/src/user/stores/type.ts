@@ -121,7 +121,7 @@ export const Review = z.object({
     mood: z.number(),
     service: z.number(),
   }),
-  purpose: z.string(),
+  purpose: z.enum(VISIT_PURPOSES),
   likeCount: z.number(),
   userReviewCount: z.number(),
   createdAt: z.iso.datetime({ local: true }),

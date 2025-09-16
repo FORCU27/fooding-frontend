@@ -20,12 +20,12 @@ export const MainStoreList = ({ stores }: MainStoreListProps) => {
               className='relative mb-2 rounded-xl overflow-hidden w-[220px] h-[140px]'
               onClick={() => flow.push('StoreDetailScreen', { storeId: store.id })}
             >
-              {store.mainImage !== null ? (
+              {store.mainImage ? (
                 <Image
                   width={220}
                   height={140}
-                  src={`${store.mainImage}`}
-                  alt={store.name || 'store image'}
+                  src={store.mainImage}
+                  alt={store.name}
                   className='rounded-xl object-cover w-[220px] h-[140px]'
                 />
               ) : (
@@ -33,14 +33,12 @@ export const MainStoreList = ({ stores }: MainStoreListProps) => {
                   <FoodingIcon width={58} height={72} color='rgba(17, 17, 17, 0.1)' />
                 </div>
               )}
-
               {store.isFinished && (
                 <div className='absolute inset-0 bg-black/50 flex justify-center items-center rounded-xl'>
                   <p className='subtitle-3 text-white'>영업 종료</p>
                 </div>
               )}
             </div>
-
             <div className='flex flex-col p-1'>
               <div className='subtitle-5 flex items-center gap-1'>
                 <p className='subtitle-5 max-w-[125px] truncate'>{store.name}</p>
@@ -51,7 +49,6 @@ export const MainStoreList = ({ stores }: MainStoreListProps) => {
                 <span className='flex body-6 text-gray-5'>({store.reviewCount})</span>
               </div>
               <p className='body-8 text-gray-5'>
-                {/* {store.city.length >= 3 ? store.city.slice(0, 2) : store.city} •{' '} */}
                 {store.estimatedWaitingTimeMinutes
                   ? `예상 대기시간 ${store.estimatedWaitingTimeMinutes}분`
                   : '바로 입장가능'}
