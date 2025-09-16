@@ -9,7 +9,7 @@ export const useBridgeEvent = () => {
 
   useEffect(() => {
     return bridge.addEventListener('androidBackPress', () => {
-      flow.pop();
+      flow.pop(); // TODO: 스택이 비었을 경우 앱 종료 브릿지 메시지 전송
     });
   }, [flow]);
 };
