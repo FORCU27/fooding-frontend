@@ -14,7 +14,7 @@ function Header() {
       <button
         className='mr-3 relative w-full h-[44px] bg-gray-1 rounded-[8px] pl-11 pr-10 outline-none text-[14px] text-gray-5 flex items-center'
         aria-label='검색'
-        onClick={() => push('SearchScreen', {})}
+        onClick={() => flow.push('SearchScreen', {})}
       >
         <SearchIcon className='absolute top-1/2 left-3 -translate-y-1/2 text-gray-5' />
         지금 뜨는 이탈리안 레스토랑은?
