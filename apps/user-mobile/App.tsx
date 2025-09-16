@@ -2,6 +2,8 @@ import React from 'react';
 
 import { Text, View } from 'react-native';
 
+import { WebView } from './lib/webview-bridge';
+
 function App(): React.JSX.Element {
   return (
     <View
@@ -14,6 +16,7 @@ function App(): React.JSX.Element {
       }}
     >
       <Text style={{ fontSize: 36, fontWeight: 600 }}>user-mobile</Text>
+      <WebView />
     </View>
   );
 }
