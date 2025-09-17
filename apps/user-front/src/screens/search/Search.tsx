@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 import { Button, ChipFilter, SearchInput } from '@repo/design-system/components/b2c';
 import { CloseIcon } from '@repo/design-system/icons';
@@ -9,9 +9,12 @@ import { CTAContainer } from '@/components/CTAContainer';
 import { Header } from '@/components/Layout/Header';
 import { Screen } from '@/components/Layout/Screen';
 import { RegionMultiSelectBottomSheet } from '@/components/RegionMultiSelectBottomSheet';
+import { SCREEN_TRANSITION_DURATION } from '@/libs/stackflow/configs';
 import { isNonEmptyArray } from '@/utils/array';
 
 export const SearchScreen: ActivityComponentType<'SearchScreen'> = () => {
+  const searchInputRef = useRef<HTMLInputElement>(null);
+
   const [searchInputFocused, setSearchInputFocused] = useState(false);
   const [searchInputValue, setSearchInputValue] = useState('');
   const [selectedRegions, setSelectedRegions] = useState<{ id: string; name: string }[]>([]);
@@ -25,6 +28,7 @@ export const SearchScreen: ActivityComponentType<'SearchScreen'> = () => {
   };
 
   const search = (keyword: string) => {
+    setSearchInputValue('');
     flow.push('SearchResultScreen', {
       keyword,
       regions: selectedRegions,
@@ -43,22 +47,45 @@ export const SearchScreen: ActivityComponentType<'SearchScreen'> = () => {
     return '지역';
   })();
 
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      searchInputRef.current?.focus();
+    }, SCREEN_TRANSITION_DURATION + 150);
+
+    return () => {
+      clearTimeout(timeout);
+    };
+  }, []);
+
   return (
     <Screen
       header={
         <Header left={<Header.Back />}>
           <SearchInput
+            ref={searchInputRef}
             className='ml-4'
             value={searchInputValue}
             onChange={setSearchInputValue}
             onFocus={() => setSearchInputFocused(true)}
-            onBlur={() => setSearchInputFocused(false)}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' && !e.nativeEvent.isComposing) {
+                searchInputRef.current?.blur();
+                setSearchInputFocused(false);
+              }
+            }}
           />
         </Header>
       }
     >
       {searchInputValue && searchInputFocused && (
-        <AutoComplete keyword={searchInputValue} onSelect={search} />
+        <AutoComplete
+          className='absolute inset-0 z-10'
+          keyword={searchInputValue}
+          onSelect={search}
+          onSwipeStart={() => {
+            searchInputRef.current?.blur();
+          }}
+        />
       )}
       <div className='px-grid-margin py-[14px]'>
         <ChipFilter.List scrollable>

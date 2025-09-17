@@ -282,7 +282,28 @@ export type SearchStoreListParams = {
   pageNum: number;
   pageSize: number;
   sortType: SortType;
-  sortDirection: SortDirection;
+  sortDirection?: SortDirection;
 };
 
-export const SearchStoreListResponse = PageResponse(Store);
+export const SearchStoreListResponse = PageResponse(
+  z.object({
+    id: z.number(),
+    name: z.string(),
+    visitCount: z.number(),
+    reviewCount: z.number(),
+    averageRating: z.number(),
+    estimatedWaitingTimeMinutes: z.number().nullable(),
+    isBookmarked: z.boolean(),
+    isFinished: z.boolean(),
+    address: z.string(),
+    images: z
+      .object({
+        id: z.number(),
+        imageUrl: z.string(),
+        sortOrder: z.number(),
+        tags: z.array(z.string()).nullable(),
+      })
+      .array(),
+    category: z.enum(STORE_CATEGORIES),
+  }),
+);

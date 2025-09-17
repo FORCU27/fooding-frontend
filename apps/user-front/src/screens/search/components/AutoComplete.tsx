@@ -1,17 +1,21 @@
-import { CloseIcon, SearchIcon } from '@repo/design-system/icons';
+import { ArrowUpLeftIcon, SearchIcon } from '@repo/design-system/icons';
+
+import { cn } from '@/utils/cn';
 
 type AutoCompleteProps = {
+  className?: string;
   keyword: string;
   onSelect: (value: string) => void;
+  onSwipeStart?: () => void;
 };
 
-export const AutoComplete = ({ keyword, onSelect }: AutoCompleteProps) => {
+export const AutoComplete = ({ className, keyword, onSelect, onSwipeStart }: AutoCompleteProps) => {
   const suggestions = STORES.filter((store) => store.toLowerCase().includes(keyword.toLowerCase()));
 
   return (
-    <ul className='flex flex-col'>
+    <ul className={cn('flex flex-col bg-white pb-10 overflow-y-auto', className)}>
       {suggestions.map((suggestion) => (
-        <li key={suggestion}>
+        <li key={suggestion} onTouchMove={onSwipeStart}>
           <button
             className='h-[55px] flex justify-between items-center px-grid-margin w-full active:bg-gray-1'
             onClick={() => onSelect(suggestion)}
@@ -20,7 +24,7 @@ export const AutoComplete = ({ keyword, onSelect }: AutoCompleteProps) => {
               <SearchIcon className='text-gray-5' />
               <HighlightedText keyword={keyword} text={suggestion} />
             </div>
-            <CloseIcon className='text-gray-5' />
+            <ArrowUpLeftIcon className='text-gray-5' />
           </button>
         </li>
       ))}
@@ -52,6 +56,7 @@ const HighlightedText = ({ keyword, text }: HighlightedTextProps) => {
 };
 
 const STORES = [
+  '홍가네',
   '고기 맛집',
   '고기 집',
   '고기',

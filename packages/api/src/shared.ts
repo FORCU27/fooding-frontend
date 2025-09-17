@@ -171,7 +171,15 @@ export const AuthErrorResponseSchema = z.object({
 
 export type AuthErrorResponse = z.infer<typeof AuthErrorResponseSchema>;
 
-export const SORT_TYPES = ['RECENT', 'AVERAGE_RATING', 'REVIEW', 'POPULARITY'] as const;
+export const SORT_TYPES = [
+  'RECENT',
+  'RECOMMENDED',
+  'AVERAGE_RATING',
+  'REVIEW',
+  'PRICE',
+  'DISTANCE',
+  'POPULARITY',
+] as const;
 export type SortType = (typeof SORT_TYPES)[number];
 
 export const SORT_DIRECTIONS = ['ASCENDING', 'DESCENDING'] as const;

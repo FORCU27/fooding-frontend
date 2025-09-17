@@ -6,6 +6,7 @@ import { basicUIPlugin } from '@stackflow/plugin-basic-ui';
 import { basicRendererPlugin } from '@stackflow/plugin-renderer-basic';
 import { stackflow } from '@stackflow/react/future';
 
+import { SCREEN_TRANSITION_DURATION } from './configs';
 import { BookmarkListScreen } from '@/screens/bookmarks/Bookmarks';
 import { JoinFormScreen } from '@/screens/join/JoinFormScreen';
 import { MenuDetailScreen, MenuDetailScreenParams } from '@/screens/menu-detail/MenuDetail';
@@ -99,7 +100,7 @@ const config = defineConfig({
     { name: 'ReviewReportCreateScreen' },
   ],
 
-  transitionDuration: 350,
+  transitionDuration: SCREEN_TRANSITION_DURATION,
   initialActivity: () => 'HomeTab',
 });
 
