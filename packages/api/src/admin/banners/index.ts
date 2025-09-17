@@ -21,13 +21,19 @@ export const bannerApi = {
       searchParams.set('size', params.size.toString());
     }
     if (params?.name) {
-      searchParams.set('name', params.name);
+      searchParams.set('searchString', params.name);
     }
     if (params?.active !== undefined) {
       searchParams.set('active', params.active.toString());
     }
-    
-    const response = await api.get(`${ENDPOINT}?${searchParams.toString()}`);
+    if (params?.service) {
+      searchParams.set('service', params.service);
+    }
+    if (params?.placement) {
+      searchParams.set('placement', params.placement);
+    }
+    const query = searchParams.toString();
+    const response = await api.get(`${ENDPOINT}${query ? `?${query}` : ''}`);
     return GetBannerListResponse.parse(response);
   },
 

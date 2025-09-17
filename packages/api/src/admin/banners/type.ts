@@ -16,6 +16,10 @@ export const AdminBannerResponseSchema = z.object({
   priority: z.number(),
   link: z.string().optional(),
   linkType: z.enum(['INTERNAL', 'EXTERNAL']),
+  imageUrl: z.string().nullable().optional(),
+  service: z.string().nullable().optional(),
+  placement: z.string().nullable().optional(),
+  parameters: z.record(z.string(), z.any()).nullable().optional(),
 });
 
 export const AdminBannerCreateRequestSchema = z.object({
@@ -25,6 +29,10 @@ export const AdminBannerCreateRequestSchema = z.object({
   priority: z.number(),
   link: z.string().optional(),
   linkType: z.enum(['INTERNAL', 'EXTERNAL']),
+  imageId: z.string().optional(),
+  service: z.string().optional(),
+  placement: z.string().optional(),
+  parameters: z.record(z.string(), z.any()).optional(),
 });
 
 export const AdminBannerUpdateRequestSchema = z.object({
@@ -34,6 +42,10 @@ export const AdminBannerUpdateRequestSchema = z.object({
   priority: z.number(),
   link: z.string().optional(),
   linkType: z.enum(['INTERNAL', 'EXTERNAL']),
+  imageId: z.string().optional(),
+  service: z.string().optional(),
+  placement: z.string().optional(),
+  parameters: z.record(z.string(), z.any()).optional(),
 });
 
 export const AdminBannerPageRequestSchema = z.object({
@@ -41,6 +53,8 @@ export const AdminBannerPageRequestSchema = z.object({
   size: z.number().optional(),
   name: z.string().optional(),
   active: z.boolean().optional(),
+  service: z.string().optional(),
+  placement: z.string().optional(),
 });
 
 export type GetBannerListResponse = z.infer<typeof GetBannerListResponse>;
