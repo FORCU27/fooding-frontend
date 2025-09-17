@@ -20,6 +20,7 @@ export * from './RadioButtonV2';
 export * from './DataTable';
 export * from './Tag';
 export * from './TextField';
+export * from './RadioSelectBox';
 
 // Re-export commonly used icons from lucide-react
 export { Calendar, ChevronLeft, ChevronRight, Check } from 'lucide-react';
