@@ -378,7 +378,7 @@ const BasicInfoPage = () => {
                 ></DaumPostcode>
               </div>
               <DialogFooter>
-                <Button variant='outline' onClick={() => setIsAddressDialogOpen(false)}>
+                <Button variant='outlined' onClick={() => setIsAddressDialogOpen(false)}>
                   닫기
                 </Button>
               </DialogFooter>
