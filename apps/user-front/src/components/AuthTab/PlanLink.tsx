@@ -1,6 +1,6 @@
 import { JSX, useEffect, useState } from 'react';
 
-import { UserIcon } from '@repo/design-system/icons';
+import { MenuIcon } from '@repo/design-system/icons';
 import { Link } from '@stackflow/link/future';
 import { useFlow } from '@stackflow/react/future';
 
@@ -48,7 +48,7 @@ export const PlanLink = ({ BottomTabItem, BottomTabLabel, isActive }: PlanLinkPr
         animate={false}
         onClick={handleClick}
       >
-        <UserIcon size={24} />
+        <MenuIcon size={24} />
         <BottomTabLabel>예약/웨이팅</BottomTabLabel>
       </Link>
     </BottomTabItem>
