@@ -123,7 +123,7 @@ export const ReviewReportForm = ({
           신고하기
         </Button>
 
-        <Dialog isOpen={isOpen}>
+        <Dialog open={isOpen}>
           <Dialog.Content className='p-5'>
             <Dialog.Title className='text-center'>리뷰 신고</Dialog.Title>
             <Dialog.Body className='flex flex-col text-center py-10'>

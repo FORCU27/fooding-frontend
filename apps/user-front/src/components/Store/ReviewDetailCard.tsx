@@ -111,7 +111,7 @@ export const ReviewDetailCard = ({ review, store }: ReviewCardProps) => {
         </button>
       </div>
 
-      <BottomSheet isOpen={isBottomSheetOpen} onOpenChange={setIsBottomSheetOpen}>
+      <BottomSheet open={isBottomSheetOpen} onOpenChange={setIsBottomSheetOpen}>
         <BottomSheet.Content>
           <BottomSheet.Header>
             <BottomSheet.Title className='headline-3'>리뷰관리</BottomSheet.Title>
@@ -141,7 +141,7 @@ export const ReviewDetailCard = ({ review, store }: ReviewCardProps) => {
                     삭제
                   </button>
 
-                  <Dialog isOpen={isDialogOpen}>
+                  <Dialog open={isDialogOpen}>
                     <Dialog.Content className='p-5'>
                       <Dialog.Title className='text-center'>리뷰 삭제</Dialog.Title>
                       <Dialog.Body className='flex flex-col text-center py-10'>
