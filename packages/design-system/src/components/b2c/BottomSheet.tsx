@@ -48,7 +48,7 @@ const BottomSheetContent = ({ className, children, ...props }: DialogContentProp
       </Drawer.Description>
       <Drawer.Content
         className={cn(
-          'fixed bottom-0 left-0 right-0 z-50',
+          'fixed bottom-0 left-0 right-0 z-50 pb-[env(safe-area-inset-bottom)]',
           'flex w-full flex-col max-h-[calc(100%-20px)]',
           'bg-white outline-hidden rounded-t-[20px]',
           'data-[state=open]:animate-in data-[state=open]:slide-in-from-bottom',

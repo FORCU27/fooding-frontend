@@ -4,7 +4,7 @@ import '@stackflow/plugin-basic-ui/index.css';
 import Script from 'next/script';
 import { ReactNode, Suspense } from 'react';
 
-import { Metadata } from 'next';
+import { Metadata, Viewport } from 'next';
 
 import { Providers } from './providers';
 import Analytics from '@/components/GA/Analytics';
@@ -13,6 +13,11 @@ import { kakaoMapScriptSrc } from '@/libs/kakao-map/utils';
 export const metadata: Metadata = {
   title: '푸딩 | 당신의 한 끼가 특별해지는 순간',
   icons: [{ rel: 'icon', url: '/favicon.ico' }],
+};
+
+export const viewport: Viewport = {
+  viewportFit: 'cover', // safe-area-inset 활성화
+  userScalable: false, // 핀치 줌 비활성화
 };
 
 export default function RootLayout({ children }: { children: ReactNode }) {

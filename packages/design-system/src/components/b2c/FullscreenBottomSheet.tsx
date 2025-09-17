@@ -45,7 +45,7 @@ const FullscreenBottomSheetContent = ({
       <DialogPrimitives.Content
         onInteractOutside={(e) => e.preventDefault()}
         className={cn(
-          'fixed bottom-0 left-0 right-0 top-0 z-50',
+          'fixed bottom-0 left-0 right-0 top-[env(safe-area-inset-top)] z-50',
           'flex w-full flex-col',
           'bg-white outline-hidden',
           'data-[state=open]:animate-in data-[state=open]:slide-in-from-bottom',
