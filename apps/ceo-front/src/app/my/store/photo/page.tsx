@@ -3,7 +3,8 @@
 import { useRef } from 'react';
 
 import { queryKeys } from '@repo/api/configs/query-keys';
-import { CardForm, PhotoCard, Button } from '@repo/design-system/components/ceo';
+import { ChipTabs } from '@repo/design-system/components/b2c';
+import { CardForm, PhotoCard, Button, SortToggle } from '@repo/design-system/components/ceo';
 import { useQuery } from '@tanstack/react-query';
 
 import { useStoreImages, useCreateImage, useDeleteImage } from '@/hooks/store/useStoreImages';
@@ -58,10 +59,11 @@ const PhotoPage = () => {
   return (
     <CardForm>
       <div className='headline-2'>사진</div>
-      <div className='self-end'>
+      <div className='flex flex-col self-end w-full'>
+      <div className='self-end mb-[18px]'>
         <Button
           variant='primary'
-          className='py-[12px] px-[20px]'
+          className='py-[12px] px-[20px] h-auto'
           type='button'
           onClick={handleAddImage}
         >
@@ -75,9 +77,22 @@ const PhotoPage = () => {
           onChange={handleFileChange}
         />
       </div>
-
+      <div className='self-end mb-[20px]'>
+      <ChipTabs defaultValue='1'>
+        <ChipTabs.List className='gap-[8px]'>
+          <ChipTabs.Trigger value='1' className='h-[38px] px-[18px] body-2'>전체</ChipTabs.Trigger>
+          <ChipTabs.Trigger value='2' className='h-[38px] px-[18px] body-2'>외부</ChipTabs.Trigger>
+          <ChipTabs.Trigger value='3' className='h-[38px] px-[18px] body-2'>음식</ChipTabs.Trigger>
+          <SortToggle
+            keepSelectedOpen
+            onSortChange={function hX(){}}
+            value="LATEST"
+          />
+        </ChipTabs.List>
+      </ChipTabs>
+      </div>
       {!storeId || isFetching || images?.data?.list.length === 0 ? (
-        <div>목록이 비어있습니다.</div>
+        <div className='columns-3'>목록이 비어있습니다.</div>
       ) : (
         <div className='columns-3 gap-[20px]'>
           {images?.data.list.map((photo) => (
@@ -91,6 +106,7 @@ const PhotoPage = () => {
           ))}
         </div>
       )}
+      </div>
     </CardForm>
   );
 };
