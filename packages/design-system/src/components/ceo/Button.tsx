@@ -1,46 +1,46 @@
 import { type ComponentProps } from 'react';
 
+import { Slot } from 'radix-ui';
 import { tv, type VariantProps } from 'tailwind-variants';
 
 import { cn } from '../../utils';
 
-const baseButtonClass = cn(
-  'inline-flex items-center justify-center whitespace-nowrap',
-  'cursor-pointer rounded-md',
-  'subtitle-5',
-  'transition-colors',
-  'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
-  'disabled:pointer-events-none disabled:bg-gray-2 disabled:text-gray-4',
-);
-
 const buttonVariants = tv({
-  base: baseButtonClass,
+  base: cn(
+    'min-w-[96px] h-[43px] inline-flex items-center justify-center whitespace-nowrap cursor-pointer rounded-[8px] font-semibold px-5',
+    'disabled:pointer-events-none disabled:bg-gray-2 disabled:text-gray-4',
+  ),
   variants: {
     variant: {
-      primary:
-        'bg-fooding-purple text-white hover:bg-fooding-purple/80 active:bg-fooding-purple/90',
-      secondary: 'bg-gray-200 text-gray-800 hover:bg-gray-300 active:bg-gray-400',
-      outline: 'border border-gray-300 bg-white hover:bg-gray-100 hover:text-gray-900',
-      ghost: 'hover:bg-gray-100 hover:text-gray-900',
-      link: 'text-blue-600 underline-offset-4 hover:underline',
-    },
-    size: {
-      default: 'h-14 px-10 py-3',
-      sm: 'h-10 rounded-md px-3',
-      lg: 'h-16 rounded-md px-8',
-      icon: 'h-12 w-12',
+      primary: 'bg-fooding-purple text-white hover:bg-fooding-purple-press',
+      outlined: 'border border-gray-2 bg-white hover:bg-gray-1',
+      primaryOutlined:
+        'border border-fooding-purple bg-white text-fooding-purple hover:bg-fooding-purple/10',
+      ghost: 'hover:bg-gray-1',
     },
   },
   defaultVariants: {
     variant: 'primary',
-    size: 'default',
   },
 });
 
-type ButtonProps = ComponentProps<'button'> & VariantProps<typeof buttonVariants>;
+type ButtonProps = ComponentProps<'button'> &
+  VariantProps<typeof buttonVariants> & {
+    asChild?: boolean;
+  };
 
-const Button = ({ className, variant, size, ...props }: ButtonProps) => {
-  return <button className={buttonVariants({ variant, size, className })} {...props} />;
+const Button = ({ className, children, variant, asChild = false, ...props }: ButtonProps) => {
+  const Component = asChild ? Slot.Root : 'button';
+
+  return (
+    <Component
+      className={cn(buttonVariants({ variant }), className)}
+      type={asChild ? undefined : 'button'}
+      {...props}
+    >
+      {children}
+    </Component>
+  );
 };
 
 export { Button, buttonVariants };
