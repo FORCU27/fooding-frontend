@@ -8,16 +8,6 @@ const meta = {
     layout: 'centered',
   },
   tags: ['autodocs'],
-  argTypes: {
-    variant: {
-      control: 'select',
-      options: ['primary', 'secondary', 'outline', 'ghost', 'link'],
-    },
-    size: {
-      control: 'select',
-      options: ['default', 'sm', 'lg', 'icon'],
-    },
-  },
 } satisfies Meta<typeof Button>;
 
 export default meta;
@@ -25,36 +15,47 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const Primary: Story = {
-  args: {
-    variant: 'primary',
-    children: 'Button',
+  render: () => {
+    return <Button variant='primary'>버튼</Button>;
   },
 };
 
-export const Secondary: Story = {
-  args: {
-    variant: 'secondary',
-    children: 'Button',
+export const Outlined: Story = {
+  render: () => {
+    return <Button variant='outlined'>버튼</Button>;
   },
 };
 
-export const Outline: Story = {
-  args: {
-    variant: 'outline',
-    children: 'Button',
+export const PrimaryOutlined: Story = {
+  render: () => {
+    return <Button variant='primaryOutlined'>버튼</Button>;
   },
 };
 
-export const Large: Story = {
-  args: {
-    size: 'lg',
-    children: 'Button',
+export const Ghost: Story = {
+  render: () => {
+    return <Button variant='ghost'>버튼</Button>;
   },
 };
 
-export const Small: Story = {
-  args: {
-    size: 'sm',
-    children: 'Button',
+export const Disabled: Story = {
+  render: () => {
+    return <Button disabled>버튼</Button>;
+  },
+};
+
+export const LongText: Story = {
+  render: () => {
+    return <Button>매장 정보 관리</Button>;
+  },
+};
+
+export const AsChild: Story = {
+  render: () => {
+    return (
+      <Button asChild>
+        <a href='#'>링크</a>
+      </Button>
+    );
   },
 };
