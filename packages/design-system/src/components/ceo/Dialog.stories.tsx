@@ -3,6 +3,7 @@ import * as RadixDialog from '@radix-ui/react-dialog';
 import { Dialog } from './Dialog';
 import { Button } from './Button';
 import { useState } from 'react';
+import { Input } from './Input';
 
 const meta = {
   title: 'Components/ceo/Dialog',
@@ -117,6 +118,34 @@ export const Controlled: Story = {
           <Dialog.Footer>
             <Dialog.Close asChild>
               <Button>닫기</Button>
+            </Dialog.Close>
+          </Dialog.Footer>
+        </Dialog.Content>
+      </Dialog>
+    );
+  },
+};
+
+export const CategoryExample: Story = {
+  render: () => {
+    return (
+      <Dialog>
+        <Dialog.Trigger asChild>
+          <Button>열기</Button>
+        </Dialog.Trigger>
+        <Dialog.Content className='w-[400px]'>
+          <Dialog.Header>
+            <Dialog.Title>카테고리 수정</Dialog.Title>
+          </Dialog.Header>
+          <Dialog.Body>
+            <Input />
+          </Dialog.Body>
+          <Dialog.Footer className='gap-3'>
+            <Dialog.Close asChild>
+              <Button variant='outline'>삭제</Button>
+            </Dialog.Close>
+            <Dialog.Close asChild>
+              <Button>저장</Button>
             </Dialog.Close>
           </Dialog.Footer>
         </Dialog.Content>
