@@ -22,8 +22,8 @@ const DialogContent = ({ children, className, showCloseButton = true }: DialogCo
       <DialogPrimitives.Content
         className={cn(
           'fixed left-[50%] top-[50%] z-50 translate-x-[-50%] translate-y-[-50%]',
-          'max-h-[calc(100%-4rem)] max-w-[calc(100%-4rem)]',
-          'flex flex-col gap-6 w-full border bg-white rounded-[20px] py-8',
+          'w-[400px] max-h-[calc(100%-4rem)] max-w-[calc(100%-4rem)]',
+          'flex flex-col gap-6 border bg-white rounded-[20px] py-8',
           className,
         )}
       >

@@ -22,7 +22,7 @@ export const Default: Story = {
       <Dialog.Trigger asChild>
         <Button>열기</Button>
       </Dialog.Trigger>
-      <Dialog.Content className='w-[400px]'>
+      <Dialog.Content>
         <Dialog.Header>
           <Dialog.Title>모달 제목</Dialog.Title>
         </Dialog.Header>
@@ -42,7 +42,7 @@ export const WithoutCloseButton: Story = {
       <Dialog.Trigger asChild>
         <Button>열기</Button>
       </Dialog.Trigger>
-      <Dialog.Content showCloseButton={false} className='w-[400px]'>
+      <Dialog.Content showCloseButton={false}>
         <Dialog.Header>
           <Dialog.Title>모달 제목</Dialog.Title>
         </Dialog.Header>
@@ -62,7 +62,7 @@ export const ScrollableBody: Story = {
       <Dialog.Trigger asChild>
         <Button>열기</Button>
       </Dialog.Trigger>
-      <Dialog.Content showCloseButton={false} className='w-[400px]'>
+      <Dialog.Content showCloseButton={false}>
         <Dialog.Header>
           <Dialog.Title>모달 제목</Dialog.Title>
         </Dialog.Header>
@@ -85,7 +85,7 @@ export const ConfirmDialog: Story = {
       <Dialog.Trigger asChild>
         <Button>열기</Button>
       </Dialog.Trigger>
-      <Dialog.Content className='w-[400px]' showCloseButton={false}>
+      <Dialog.Content showCloseButton={false}>
         <Dialog.Header>
           <Dialog.Title>추가 휴무일을 삭제하시겠습니까?</Dialog.Title>
         </Dialog.Header>
@@ -111,7 +111,7 @@ export const Controlled: Story = {
         <Dialog.Trigger asChild>
           <Button>열기</Button>
         </Dialog.Trigger>
-        <Dialog.Content className='w-[400px]'>
+        <Dialog.Content>
           <Dialog.Header>
             <Dialog.Title>모달 제목</Dialog.Title>
           </Dialog.Header>
@@ -133,7 +133,7 @@ export const CategoryExample: Story = {
         <Dialog.Trigger asChild>
           <Button>열기</Button>
         </Dialog.Trigger>
-        <Dialog.Content className='w-[400px]'>
+        <Dialog.Content>
           <Dialog.Header>
             <Dialog.Title>카테고리 수정</Dialog.Title>
           </Dialog.Header>

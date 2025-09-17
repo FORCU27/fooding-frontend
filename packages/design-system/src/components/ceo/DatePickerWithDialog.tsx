@@ -129,7 +129,7 @@ export const DatePickerWithDialog = ({
             <Calendar className='w-6 h-6 text-gray-5' />
           </div>
         </Dialog.Trigger>
-        <Dialog.Content className='w-[400px] items-center'>
+        <Dialog.Content className='items-center'>
           <Dialog.Header>
             <Dialog.Title>{title}</Dialog.Title>
           </Dialog.Header>
