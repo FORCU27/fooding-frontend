@@ -203,7 +203,7 @@ export const ProfileUserInfoForm = ({
                 </Button>
               </div>
             )}
-            <BottomSheet isOpen={isBottomSheetOpen} onOpenChange={setIsBottomSheetOpen}>
+            <BottomSheet open={isBottomSheetOpen} onOpenChange={setIsBottomSheetOpen}>
               <BottomSheet.Content>
                 <BottomSheet.Header>
                   <BottomSheet.Title className='headline-3'>

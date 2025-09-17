@@ -5,10 +5,9 @@ import { Dialog as DialogPrimitives } from 'radix-ui';
 import { CloseIcon } from '../../icons';
 import { cn } from '../../utils';
 
-type FullscreenBottomSheetProps = Omit<DialogPrimitives.DialogProps, 'open'> & {
+type FullscreenBottomSheetProps = DialogPrimitives.DialogProps & {
   title?: string;
   description?: string;
-  isOpen?: boolean;
 };
 
 const DEFAULT_TITLE = '전체화면 바텀시트';
@@ -18,11 +17,10 @@ const FullscreenBottomSheet = ({
   children,
   title = DEFAULT_TITLE,
   description = DEFAULT_DESCRIPTION,
-  isOpen,
   ...props
 }: FullscreenBottomSheetProps) => {
   return (
-    <DialogPrimitives.Root open={isOpen} {...props}>
+    <DialogPrimitives.Root {...props}>
       <DialogPrimitives.Title className='sr-only'>{title}</DialogPrimitives.Title>
       <DialogPrimitives.Description className='sr-only'>{description}</DialogPrimitives.Description>
       {children}
@@ -47,7 +45,7 @@ const FullscreenBottomSheetContent = ({
       <DialogPrimitives.Content
         onInteractOutside={(e) => e.preventDefault()}
         className={cn(
-          'fixed bottom-0 left-0 right-0 top-0 z-50',
+          'fixed bottom-0 left-0 right-0 top-[env(safe-area-inset-top)] z-50',
           'flex w-full flex-col',
           'bg-white outline-hidden',
           'data-[state=open]:animate-in data-[state=open]:slide-in-from-bottom',

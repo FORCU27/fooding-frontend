@@ -21,7 +21,7 @@ export const ImageGallery = ({
   initialPage,
 }: ImageGalleryProps) => {
   return (
-    <FullscreenBottomSheet isOpen={isOpen} onOpenChange={(isOpen) => isOpen === false && onClose()}>
+    <FullscreenBottomSheet open={isOpen} onOpenChange={(isOpen) => isOpen === false && onClose()}>
       <FullscreenBottomSheet.Content className='bg-black' hideCloseButton>
         <Carousel initialPage={initialPage}>
           <div className='flex h-[60px] items-center text-white justify-between'>
