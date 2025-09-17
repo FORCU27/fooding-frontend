@@ -10,7 +10,7 @@ type HeaderProps = {
 
 export const Header = ({ left, title, right }: HeaderProps) => {
   return (
-    <header className='h-[calc(60px+env(safe-area-inset-top))] border-2 border-blue-500 fixed top-0 left-0 right-0 bg-white flex items-end z-10'>
+    <header className='h-[calc(60px+env(safe-area-inset-top))] fixed top-0 left-0 right-0 bg-white flex items-end z-10'>
       <div className='px-3 h-[60px] w-full relative flex items-center justify-between'>
         <div>{left}</div>
         <span className='absolute top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2 subtitle-1'>
