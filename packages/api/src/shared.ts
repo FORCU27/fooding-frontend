@@ -29,13 +29,6 @@ apiClient.interceptors.request.use(
 apiClient.interceptors.response.use(
   (response) => response,
   (error) => {
-    if (error.response) {
-      console.error('API Error Response:', {
-        status: error.response.status,
-        data: error.response.data,
-        url: error.config?.url,
-      });
-    }
     return Promise.reject(error);
   },
 );
