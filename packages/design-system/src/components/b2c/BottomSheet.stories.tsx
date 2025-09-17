@@ -42,7 +42,7 @@ export const Controlled: Story = {
     const [isOpen, setIsOpen] = useState(false);
 
     return (
-      <BottomSheet isOpen={isOpen} onOpenChange={setIsOpen}>
+      <BottomSheet open={isOpen} onOpenChange={setIsOpen}>
         <BottomSheet.Trigger asChild>
           <Button size='small'>열기</Button>
         </BottomSheet.Trigger>

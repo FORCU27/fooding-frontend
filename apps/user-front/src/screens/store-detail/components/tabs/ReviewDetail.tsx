@@ -6,7 +6,7 @@ import { Section } from '@/components/Layout/Section';
 import { ReviewsDetailList } from '@/components/Store/ReviewsDetailList';
 import { useGetStoreDetail } from '@/hooks/store/useGetStoreDetail';
 import { useGetStoreReviewList } from '@/hooks/store/useGetStoreReviewList';
-import { getRatingRatios, RatingRatio } from '@/utils/rating';
+import { getRatingRatios } from '@/utils/rating';
 
 type StoreDetailReviewTabProps = {
   store: StoreInfo;
@@ -18,8 +18,6 @@ export const StoreDetailReviewTab = ({ store }: StoreDetailReviewTabProps) => {
 
   const ratingCounts: { [score: number]: number } = (() => {
     const counts: { [score: number]: number } = {};
-
-    if (!reviews?.list) return counts;
 
     for (const review of reviews.list) {
       const roundedScore = Math.round(review.score.total);
@@ -41,17 +39,16 @@ export const StoreDetailReviewTab = ({ store }: StoreDetailReviewTabProps) => {
         </div>
       </div>
       <hr className='text-gray-2 w-full' />
-
       <div className='flex gap-1 items-center mt-5'>
         <p className='body-4'>베스트순</p>
         <ChevronDownIcon size={16} className='stroke-gray-5 cursor-pointer' />
       </div>
-      {reviews?.list.length === 0 && (
+      {reviews.list.length === 0 && (
         <EmptyState className='mt-10 mb-25' title='등록된 리뷰가 없어요!' />
       )}
-      {reviews && reviews?.list.length > 0 && (
+      {reviews.list.length > 0 && (
         <ul className='flex flex-col mt-2 pb-24'>
-          <ReviewsDetailList reviews={reviews?.list || []} store={storeInfo} />
+          <ReviewsDetailList reviews={reviews.list} store={storeInfo} />
         </ul>
       )}
     </Section>
@@ -63,7 +60,7 @@ interface RatingBarProps {
 }
 
 export const RatingBar = ({ ratingCounts }: RatingBarProps) => {
-  const ratingRatios: RatingRatio[] = getRatingRatios(ratingCounts);
+  const ratingRatios = getRatingRatios(ratingCounts);
 
   return (
     <div className='max-w-[310px] flex flex-col gap-2'>

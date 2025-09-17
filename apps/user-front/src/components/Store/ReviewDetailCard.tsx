@@ -2,7 +2,7 @@ import Image from 'next/image';
 import { useState } from 'react';
 
 import { Review, StoreInfo } from '@repo/api/user';
-import { BottomSheet, Button, Dialog } from '@repo/design-system/components/b2c';
+import { BottomSheet, Button, Dialog, toast } from '@repo/design-system/components/b2c';
 import { FoodingIcon, HeartIcon } from '@repo/design-system/icons';
 import { useFlow } from '@stackflow/react/future';
 
@@ -22,10 +22,25 @@ export const ReviewDetailCard = ({ review, store }: ReviewCardProps) => {
   const { user } = useAuth();
   const flow = useFlow();
 
-  const { imageUrls = [] } = review;
+  const { imageUrls } = review;
   const isMine = user?.nickname === review.nickname;
 
-  const { mutate: deleteReview } = useDeleteStoreReview();
+  const deleteStoreReview = useDeleteStoreReview();
+
+  const onDeleteButtonClick = () => {
+    if (deleteStoreReview.isPending) return;
+
+    deleteStoreReview.mutate(review.reviewId, {
+      onSuccess: () => {
+        setIsDialogOpen(false);
+        flow.pop();
+        toast.success('삭제가 완료되었습니다.');
+      },
+      onError: () => {
+        toast.error('에러가 발생했습니다. 잠시 후 다시 시도해주세요.');
+      },
+    });
+  };
 
   return (
     <div className='flex flex-col w-full'>
@@ -96,7 +111,7 @@ export const ReviewDetailCard = ({ review, store }: ReviewCardProps) => {
         </button>
       </div>
 
-      <BottomSheet isOpen={isBottomSheetOpen} onOpenChange={setIsBottomSheetOpen}>
+      <BottomSheet open={isBottomSheetOpen} onOpenChange={setIsBottomSheetOpen}>
         <BottomSheet.Content>
           <BottomSheet.Header>
             <BottomSheet.Title className='headline-3'>리뷰관리</BottomSheet.Title>
@@ -126,7 +141,7 @@ export const ReviewDetailCard = ({ review, store }: ReviewCardProps) => {
                     삭제
                   </button>
 
-                  <Dialog isOpen={isDialogOpen}>
+                  <Dialog open={isDialogOpen}>
                     <Dialog.Content className='p-5'>
                       <Dialog.Title className='text-center'>리뷰 삭제</Dialog.Title>
                       <Dialog.Body className='flex flex-col text-center py-10'>
@@ -146,15 +161,7 @@ export const ReviewDetailCard = ({ review, store }: ReviewCardProps) => {
                             취소
                           </Button>
                         </Dialog.Close>
-                        <Button
-                          type='button'
-                          onClick={() => {
-                            deleteReview(review.reviewId);
-                            setIsDialogOpen(false);
-                            alert('삭제가 완료되었습니다.'); //FIXME: 추후 토스트 적용
-                            flow.pop();
-                          }}
-                        >
+                        <Button type='button' onClick={onDeleteButtonClick}>
                           삭제하기
                         </Button>
                       </Dialog.Footer>

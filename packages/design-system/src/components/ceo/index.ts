@@ -18,6 +18,7 @@ export * from './DeviceCard';
 export * from './ToolTip';
 export * from './RadioButtonV2';
 export * from './DataTable';
+export * from './Tag';
 
 // Re-export commonly used icons from lucide-react
 export { Calendar, ChevronLeft, ChevronRight, Check } from 'lucide-react';
