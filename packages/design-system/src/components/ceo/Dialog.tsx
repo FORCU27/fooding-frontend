@@ -82,7 +82,7 @@ type DialogFooterProps = React.ComponentPropsWithRef<'div'>;
 
 const DialogFooter = ({ className, children, ...props }: DialogFooterProps) => {
   return (
-    <div className={cn('flex px-6 justify-center', className)} {...props}>
+    <div className={cn('flex px-6 justify-center gap-3', className)} {...props}>
       {children}
     </div>
   );

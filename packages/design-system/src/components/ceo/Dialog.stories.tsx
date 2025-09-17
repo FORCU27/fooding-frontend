@@ -89,7 +89,7 @@ export const ConfirmDialog: Story = {
         <Dialog.Header>
           <Dialog.Title>추가 휴무일을 삭제하시겠습니까?</Dialog.Title>
         </Dialog.Header>
-        <Dialog.Footer className='gap-3'>
+        <Dialog.Footer>
           <Dialog.Close asChild>
             <Button variant='outline'>취소</Button>
           </Dialog.Close>
@@ -140,7 +140,7 @@ export const CategoryExample: Story = {
           <Dialog.Body>
             <Input />
           </Dialog.Body>
-          <Dialog.Footer className='gap-3'>
+          <Dialog.Footer>
             <Dialog.Close asChild>
               <Button variant='outline'>삭제</Button>
             </Dialog.Close>

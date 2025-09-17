@@ -2,14 +2,7 @@
 
 import { useState, useEffect } from 'react';
 
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogFooter,
-  Button,
-} from '@repo/design-system/components/ceo';
+import { Dialog, Button } from '@repo/design-system/components/ceo';
 
 import KakaoMap from './KakoMap';
 import { useKakaoMap } from '@/hooks/useKakaoMap';
@@ -126,11 +119,11 @@ export default function LocationEditDialog({
 
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
-      <DialogContent>
-        <DialogHeader>
-          <DialogTitle>위치 수정</DialogTitle>
-        </DialogHeader>
-        <div className='py-4'>
+      <Dialog.Content>
+        <Dialog.Header>
+          <Dialog.Title>위치 수정</Dialog.Title>
+        </Dialog.Header>
+        <Dialog.Body>
           <div className='w-full h-[300px] relative mb-4'>
             {isOpen && (
               <>
@@ -205,8 +198,8 @@ export default function LocationEditDialog({
               )}
             </div>
           )}
-        </div>
-        <DialogFooter>
+        </Dialog.Body>
+        <Dialog.Footer>
           <Button variant='outline' onClick={() => onOpenChange(false)}>
             취소
           </Button>
@@ -220,8 +213,8 @@ export default function LocationEditDialog({
           >
             위치 저장
           </Button>
-        </DialogFooter>
-      </DialogContent>
+        </Dialog.Footer>
+      </Dialog.Content>
     </Dialog>
   );
 }
