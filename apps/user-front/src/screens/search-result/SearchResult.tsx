@@ -87,7 +87,7 @@ export const SearchResultScreen: ActivityComponentType<'SearchResultScreen'> = (
             value={searchInputValue}
             onChange={setSearchInputValue}
             onKeyDown={(e) => {
-              if (e.key === 'Enter') {
+              if (e.key === 'Enter' && !e.nativeEvent.isComposing) {
                 search(searchInputValue);
                 searchInputRef.current?.blur();
                 setSearchInputFocused(false);
