@@ -4,7 +4,7 @@ import Image from 'next/image';
 import { useRef, useState } from 'react';
 
 import { Coupon } from '@repo/api/user';
-import { Button, Dialog, EmptyState, Input, Tabs } from '@repo/design-system/components/b2c';
+import { Button, Dialog, EmptyState, Input, Tabs, toast } from '@repo/design-system/components/b2c';
 import { CheckIcon, CloseIcon, FoodingIcon, InfoCircleIcon } from '@repo/design-system/icons';
 import { ActivityComponentType } from '@stackflow/react/future';
 import { Suspense } from '@suspensive/react';
@@ -228,7 +228,7 @@ const ApplyCouponDialog = ({ isOpen, onOpenChange, coupon }: ApplyCouponDialogPr
           setSuccess(true);
         },
         onError: () => {
-          // TODO: 에러 처리
+          toast.error('쿠폰 사용에 실패했어요. 잠시 후 다시 시도해주세요.');
         },
       },
     );

@@ -4,9 +4,11 @@ import { PlanCompleted } from '@repo/api/user';
 import { CloseIcon, FoodingIcon } from '@repo/design-system/icons';
 import { useFlow } from '@stackflow/react/future';
 
+import { reservationTypeLabel } from '../utils';
 import { StarRating } from '@/components/Store/StarRating';
 import { useGetStoreDetail } from '@/hooks/store/useGetStoreDetail';
 import { useGetStoreWaitingDetail } from '@/hooks/store-waiting/useGetStoreWaitingDetail';
+import { isNonEmptyArray } from '@/utils/array';
 import { formatDotDate } from '@/utils/date';
 
 interface PlanCompletedCardProps {
@@ -16,6 +18,7 @@ interface PlanCompletedCardProps {
 
 export const PlanCompletedCard = ({ plan, showEditButton }: PlanCompletedCardProps) => {
   const flow = useFlow();
+
   const { data: storeInfo } = useGetStoreDetail(plan.storeId);
   const { data: waitingInfo } = useGetStoreWaitingDetail(plan.originId);
 
@@ -28,22 +31,16 @@ export const PlanCompletedCard = ({ plan, showEditButton }: PlanCompletedCardPro
   return (
     <div className='flex flex-col bg-white/80 rounded-xl p-4 gap-3'>
       <div className='flex justify-between'>
-        <p className='body-4'>
-          {plan.reservationType !== 'RESERVATION'
-            ? plan.reservationType === 'ONLINE_WAITING'
-              ? '온라인 웨이팅'
-              : '현장 웨이팅'
-            : '예약'}
-        </p>
+        <p className='body-4'>{reservationTypeLabel[plan.reservationType]}</p>
         <CloseIcon className='text-gray-5' />
       </div>
       <div className='flex'>
-        {storeInfo.images[0]?.imageUrl ? (
+        {isNonEmptyArray(storeInfo.images) ? (
           <div className='relative w-[80px] h-[80px] rounded-2xl overflow-hidden'>
             <Image
               fill
               style={{ objectFit: 'cover' }}
-              src={storeInfo.images[0]?.imageUrl}
+              src={storeInfo.images[0].imageUrl}
               alt='가게 이미지'
             />
           </div>
