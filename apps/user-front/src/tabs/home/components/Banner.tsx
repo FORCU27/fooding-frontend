@@ -1,9 +1,9 @@
 import Image from 'next/image';
 import NextLink from 'next/link';
 
+import { userBannerApi } from '@repo/api/user';
 import { Button } from '@repo/design-system/components/b2c';
 import { ChevronRightIcon } from '@repo/design-system/icons';
-import { userBannerApi } from '@repo/api/user';
 import { useQuery } from '@tanstack/react-query';
 
 import { Carousel } from '@/components/Carousel';
