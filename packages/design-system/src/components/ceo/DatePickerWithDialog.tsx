@@ -1,15 +1,14 @@
 'use client';
 
-import { useId, useState } from 'react';
+import { useState } from 'react';
 
-import * as Dialog from '@radix-ui/react-dialog';
 import { Calendar } from 'lucide-react';
 
 import { Button } from './Button';
 import { ChipList } from './ChipList';
 import { DatePicker } from './DatePicker';
+import { Dialog } from './Dialog';
 import RadioButtonGroup from './RadioButtonGroup';
-import { CloseIcon } from '../../icons';
 import { cn } from '../../utils';
 
 export type RadioOption = { label: string; value: string };
@@ -46,7 +45,6 @@ export const DatePickerWithDialog = ({
 }: DatePickerWithDialogProps) => {
   const [tempDates, setTempDates] = useState<SelectedItem[]>([]);
   const [selectedOption, setSelectedOption] = useState<string>(radioOptions?.[0]?.value || '');
-  const descriptionId = useId();
 
   const handleOptionChange = (value: string) => {
     setSelectedOption(value);
@@ -101,7 +99,7 @@ export const DatePickerWithDialog = ({
 
   return (
     <div className='flex flex-col gap-4'>
-      <Dialog.Root
+      <Dialog
         onOpenChange={(open) => {
           if (open) {
             setTempDates([...selectedDates]);
@@ -131,64 +129,46 @@ export const DatePickerWithDialog = ({
             <Calendar className='w-6 h-6 text-gray-5' />
           </div>
         </Dialog.Trigger>
-
-        <Dialog.Portal>
-          <Dialog.Overlay className='fixed inset-0 bg-black/40 z-40' />
-          <Dialog.Content className='fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 p-6 w-full max-w-md bg-white rounded-xl shadow-lg z-50'>
-            <Dialog.Title className='sr-only'>{title}</Dialog.Title>
-            {title && (
-              <div className='flex justify-center items-center mb-3 relative'>
-                <h1 className='subtitle-2 text-center'>{title}</h1>
-                <Dialog.Close asChild>
-                  <button
-                    type='button'
-                    className='absolute right-0 top-1/2 -translate-y-1/2 w-6 h-6'
-                  >
-                    <CloseIcon className='w-6 h-6' />
-                  </button>
-                </Dialog.Close>
-              </div>
-            )}
-            <Dialog.Description id={descriptionId} className='sr-only'>
-              {placeholder || '날짜 선택 다이얼로그'}
-            </Dialog.Description>
-
-            <div className='flex flex-col justify-center items-center gap-3'>
-              <DatePicker
-                selectionMode={selectionMode}
-                value={selectionMode === 'single' ? (tempDates[0]?.date ?? null) : undefined}
-                values={selectionMode === 'multiple' ? tempDates.map((t) => t.date) : undefined}
-                onChange={handleTempDateChange}
+        <Dialog.Content className='w-[400px] items-center'>
+          <Dialog.Header>
+            <Dialog.Title>{title}</Dialog.Title>
+          </Dialog.Header>
+          <Dialog.Body>
+            <DatePicker
+              selectionMode={selectionMode}
+              value={selectionMode === 'single' ? (tempDates[0]?.date ?? null) : undefined}
+              values={selectionMode === 'multiple' ? tempDates.map((t) => t.date) : undefined}
+              onChange={handleTempDateChange}
+            />
+            {hasRadioButtonGroup && radioOptions && (
+              <RadioButtonGroup
+                name='date-options'
+                options={radioOptions}
+                selectedValue={selectedOption}
+                onChange={handleOptionChange}
+                className='flex gap-6 mt-4 justify-center'
               />
-              {hasRadioButtonGroup && radioOptions && (
-                <RadioButtonGroup
-                  name='date-options'
-                  options={radioOptions}
-                  selectedValue={selectedOption}
-                  onChange={handleOptionChange}
-                  className='flex gap-6 mt-4 justify-center'
-                />
-              )}
+            )}
 
-              {tempDates.length > 0 && (
-                <ChipList
-                  value={tempChipValue}
-                  options={tempChipOptions}
-                  type='single'
-                  hasCloseBtn={false}
-                  onValueChange={() => {}}
-                  className='mt-4'
-                />
-              )}
-
-              <Dialog.Close asChild>
-                <Button onClick={handleConfirm} disabled={tempDates.length === 0}>
-                  선택
-                </Button>
-              </Dialog.Close>
-            </div>
-          </Dialog.Content>
-        </Dialog.Portal>
+            {tempDates.length > 0 && (
+              <ChipList
+                value={tempChipValue}
+                options={tempChipOptions}
+                type='single'
+                hasCloseBtn={false}
+                onValueChange={() => {}}
+                className='mt-4'
+              />
+            )}
+          </Dialog.Body>
+          <Dialog.Footer>
+            <Dialog.Close asChild>
+              <Button onClick={handleConfirm} disabled={tempDates.length === 0}>
+                선택
+              </Button>
+            </Dialog.Close>
+          </Dialog.Footer>
+        </Dialog.Content>
 
         {selectionMode === 'multiple' && selectedDates.length > 0 && (
           <ChipList
@@ -203,7 +183,7 @@ export const DatePickerWithDialog = ({
             }
           />
         )}
-      </Dialog.Root>
+      </Dialog>
     </div>
   );
 };

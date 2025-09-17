@@ -32,7 +32,7 @@ const DialogContent = ({ children, className, showCloseButton = true }: DialogCo
         {showCloseButton && (
           <DialogPrimitives.Close
             aria-label='닫기'
-            className='absolute right-6 top-8 flex justify-center items-center size-6'
+            className='absolute right-6 top-8 flex justify-center items-center size-6 cursor-pointer'
           >
             <XIcon />
           </DialogPrimitives.Close>
