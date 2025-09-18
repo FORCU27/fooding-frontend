@@ -1,35 +1,30 @@
 import { z } from 'zod/v4';
 
-import { PageResponse } from '../../shared';
+import { ApiResponse, PageResponse } from '../../shared';
 
-export type LinkType = (typeof LINK_TYPES)[number];
-export const LINK_TYPES = [
-  'INTERNAL',
-  'EXTERNAL',
-  'MODAL',
-  'DOWNLOAD',
-  'NONE',
-  'DEEPLINK',
-  'APP_STORE',
-  'PHONE',
-  'EMAIL',
-  'SMS',
-] as const;
+export const UserBannerResponseSchema = z.object({
+  id: z.string(),
+  name: z.string(),
+  description: z.string(),
+  active: z.boolean(),
+  priority: z.number(),
+  link: z.string().nullable().optional(),
+  linkType: z.string(),
+  imageUrl: z.string().nullable().optional(),
+  service: z.string().nullable().optional(),
+  placement: z.string().nullable().optional(),
+  parameters: z.record(z.string(), z.unknown()).nullable().optional(),
+});
+export type UserBannerResponse = z.infer<typeof UserBannerResponseSchema>;
 
-export type GetBannerListParams = {
-  searchString: string;
-  pageNum: number;
-  pageSize: number;
+export const GetUserBannerListResponse = PageResponse(UserBannerResponseSchema);
+export type GetUserBannerListResponse = z.infer<typeof GetUserBannerListResponse>;
+
+export const GetUserBannerResponse = ApiResponse(UserBannerResponseSchema);
+export type GetUserBannerResponse = z.infer<typeof GetUserBannerResponse>;
+
+export type UserBannerListParams = {
+  pageNum?: number;
+  pageSize?: number;
+  searchString?: string;
 };
-
-export const GetBannerListResponse = PageResponse(
-  z.object({
-    id: z.string(),
-    name: z.string(),
-    description: z.string(),
-    active: z.boolean(),
-    priority: z.number(),
-    link: z.string(),
-    linkType: z.enum(LINK_TYPES),
-  }),
-);

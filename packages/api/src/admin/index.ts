@@ -1,5 +1,6 @@
 export * from './stores';
 export * from './user-notifications';
+export * from './user-coupons';
 export * from './users';
 export * from './notifications';
 export * from './notification-templates';
@@ -16,6 +17,8 @@ export * from './point-shop';
 export * from './posts';
 export * from './devices';
 export * from './banners';
+export * from './coupons';
 export * from './waitings';
 export * from './waiting-settings';
 export * from './reports';
+export * from './file';

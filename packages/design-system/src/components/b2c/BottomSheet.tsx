@@ -2,28 +2,22 @@
 
 import { useId } from 'react';
 
-import { Dialog as DialogPrimitives } from 'radix-ui';
+import { Drawer } from 'vaul';
 
 import { CheckIcon } from '../../icons';
 import { cn, createContext } from '../../utils';
 
-type BottomSheetProps = Omit<DialogPrimitives.DialogProps, 'open'> & {
-  isOpen?: boolean;
+type BottomSheetProps = React.ComponentPropsWithRef<typeof Drawer.Root>;
+
+const BottomSheet = ({ children, ...props }: BottomSheetProps) => {
+  return <Drawer.Root {...props}>{children}</Drawer.Root>;
 };
 
-const BottomSheet = ({ children, isOpen, ...props }: BottomSheetProps) => {
-  return (
-    <DialogPrimitives.Root open={isOpen} {...props}>
-      {children}
-    </DialogPrimitives.Root>
-  );
-};
-
-type BottomSheetOverlayProps = React.ComponentPropsWithRef<typeof DialogPrimitives.Overlay>;
+type BottomSheetOverlayProps = React.ComponentPropsWithRef<typeof Drawer.Overlay>;
 
 const BottomSheetOverlay = ({ className, children, ...props }: BottomSheetOverlayProps) => {
   return (
-    <DialogPrimitives.Overlay
+    <Drawer.Overlay
       className={cn(
         'fixed inset-0 z-50 bg-black/50',
         'data-[state=open]:animate-in data-[state=open]:fade-in',
@@ -33,28 +27,28 @@ const BottomSheetOverlay = ({ className, children, ...props }: BottomSheetOverla
       {...props}
     >
       {children}
-    </DialogPrimitives.Overlay>
+    </Drawer.Overlay>
   );
 };
 
-type DialogContentProps = React.ComponentPropsWithRef<typeof DialogPrimitives.Content>;
+type DialogContentProps = React.ComponentPropsWithRef<typeof Drawer.Content>;
 
 const BottomSheetContent = ({ className, children, ...props }: DialogContentProps) => {
   const titleId = useId();
   const descriptionId = useId();
 
   return (
-    <DialogPrimitives.Portal>
+    <Drawer.Portal>
       <BottomSheetOverlay />
-      <DialogPrimitives.Title aria-labelledby={titleId} className='sr-only'>
+      <Drawer.Title aria-labelledby={titleId} className='sr-only'>
         Title
-      </DialogPrimitives.Title>
-      <DialogPrimitives.Description aria-describedby={descriptionId} className='sr-only'>
+      </Drawer.Title>
+      <Drawer.Description aria-describedby={descriptionId} className='sr-only'>
         Description
-      </DialogPrimitives.Description>
-      <DialogPrimitives.Content
+      </Drawer.Description>
+      <Drawer.Content
         className={cn(
-          'fixed bottom-0 left-0 right-0 z-50',
+          'fixed bottom-0 left-0 right-0 z-50 pb-[env(safe-area-inset-bottom)]',
           'flex w-full flex-col max-h-[calc(100%-20px)]',
           'bg-white outline-hidden rounded-t-[20px]',
           'data-[state=open]:animate-in data-[state=open]:slide-in-from-bottom',
@@ -68,8 +62,8 @@ const BottomSheetContent = ({ className, children, ...props }: DialogContentProp
           <span className='w-[40px] h-[4px] bg-[#D9D9D9] rounded-full' />
         </div>
         {children}
-      </DialogPrimitives.Content>
-    </DialogPrimitives.Portal>
+      </Drawer.Content>
+    </Drawer.Portal>
   );
 };
 
@@ -103,13 +97,13 @@ const BottomSheetFooter = ({ className, children, ...props }: BottomSheetFooterP
   );
 };
 
-type BottomSheetTriggerProps = React.ComponentPropsWithRef<typeof DialogPrimitives.Trigger>;
+type BottomSheetTriggerProps = React.ComponentPropsWithRef<typeof Drawer.Trigger>;
 
 const BottomSheetTrigger = ({ children, ...props }: BottomSheetTriggerProps) => {
   return (
-    <DialogPrimitives.Trigger aria-controls={undefined} {...props}>
+    <Drawer.Trigger aria-controls={undefined} {...props}>
       {children}
-    </DialogPrimitives.Trigger>
+    </Drawer.Trigger>
   );
 };
 
@@ -142,7 +136,7 @@ const BottomSheetSelectGroup = ({
   );
 };
 
-type BottomSheetSelectItemProps = React.ComponentPropsWithRef<typeof DialogPrimitives.Close> & {
+type BottomSheetSelectItemProps = React.ComponentPropsWithRef<typeof Drawer.Close> & {
   value: string;
 };
 
@@ -158,7 +152,7 @@ const BottomSheetSelectItem = ({
 
   return (
     <li className='flex'>
-      <DialogPrimitives.Close
+      <Drawer.Close
         className={cn(
           'text-gray-5 h-[60px] -mx-5 flex flex-1 items-center justify-between text-start text-base',
           'active:bg-gray-1 px-5',
@@ -170,15 +164,15 @@ const BottomSheetSelectItem = ({
       >
         {children}
         {isSelected && <CheckIcon className='text-primary-pink size-6' />}
-      </DialogPrimitives.Close>
+      </Drawer.Close>
     </li>
   );
 };
 
 BottomSheet.Trigger = BottomSheetTrigger;
-BottomSheet.Close = DialogPrimitives.Close;
-BottomSheet.Title = DialogPrimitives.Title;
-BottomSheet.Description = DialogPrimitives.Description;
+BottomSheet.Close = Drawer.Close;
+BottomSheet.Title = Drawer.Title;
+BottomSheet.Description = Drawer.Description;
 BottomSheet.Content = BottomSheetContent;
 BottomSheet.Header = BottomSheetHeader;
 BottomSheet.Body = BottomSheetBody;

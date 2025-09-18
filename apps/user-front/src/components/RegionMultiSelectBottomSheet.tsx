@@ -32,7 +32,7 @@ const RegionMultiSelectBottomSheet = (props: RegionMultiSelectBottomSheetProps) 
   const { isOpen, onOpenChange, trigger } = props;
 
   return (
-    <BottomSheet isOpen={isOpen} onOpenChange={onOpenChange}>
+    <BottomSheet open={isOpen} onOpenChange={onOpenChange}>
       {trigger && <BottomSheet.Trigger asChild>{trigger}</BottomSheet.Trigger>}
       <BottomSheet.Content>
         <BottomSheetContent {...props} />

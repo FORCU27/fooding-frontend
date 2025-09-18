@@ -11,7 +11,7 @@ type HeaderProps = {
 
 export const Header = ({ left, title, right, children }: HeaderProps) => {
   return (
-    <header className='h-[60px] fixed top-0 left-0 right-0 bg-white flex items-end z-10'>
+    <header className='h-[calc(60px+env(safe-area-inset-top))] fixed top-0 left-0 right-0 bg-white flex items-end z-10'>
       <div className='px-3 h-[60px] w-full relative flex items-center justify-between'>
         <div>{left}</div>
         {title && (
