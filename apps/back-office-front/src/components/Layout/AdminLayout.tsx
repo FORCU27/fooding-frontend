@@ -24,7 +24,8 @@ import {
   CardGiftcard,
   Devices,
   ViewCarousel,
-  Report
+  Report,
+  LocalOffer,
 } from '@mui/icons-material';
 import {
   Box,
@@ -66,7 +67,7 @@ const menu = [
       { label: '가게 심사', path: '/store-reviews', icon: <RateReview /> },
       { label: '리뷰', path: '/reviews', icon: <RateReview /> },
       { label: '디바이스 목록', path: '/devices', icon: <Devices /> },
-      { label: '배너 관리', path: '/banners', icon: <ViewCarousel /> },
+      { label: '배너', path: '/banners', icon: <ViewCarousel /> },
       { label: '신고', path: '/reports', icon: <Report /> },
     ],
   },
@@ -85,6 +86,7 @@ const menu = [
     sub: [
       { label: 'Lead', path: '/leads', icon: <ContactPage /> },
       { label: 'Regions', path: '/regions', icon: <Public /> },
+      { label: '쿠폰 관리', path: '/coupons', icon: <LocalOffer /> },
     ],
   },
   {

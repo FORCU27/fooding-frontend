@@ -8,3 +8,4 @@ export * from './regions';
 export * from './bookmarks';
 export * from './rewards';
 export * from './reports';
+export * from './banners';

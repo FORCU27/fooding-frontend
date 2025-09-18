@@ -1,5 +1,7 @@
+
 'use client';
 
+import NextLink from 'next/link';
 import { useState, useEffect } from 'react';
 import type React from 'react';
 
@@ -19,17 +21,14 @@ import {
   Select,
   MenuItem,
   SelectChangeEvent,
-  Chip,
   TextField,
-  Switch,
+  Chip,
 } from '@mui/material';
-import { Link } from '@mui/material';
-import { bannerApi, AdminBannerResponse, AdminBannerCreateRequest, AdminBannerUpdateRequest } from '@repo/api/admin';
+import { bannerApi, AdminBannerResponse, AdminBannerCreateRequest } from '@repo/api/admin';
 import { useQuery, useMutation } from '@tanstack/react-query';
 
 import { CreateBannerDialog } from './CreateBannerDialog';
 import { DeleteConfirmDialog } from './DeleteConfirmDialog';
-import { EditBannerDialog } from './EditBannerDialog';
 import { queryClient } from '../providers';
 
 type Banner = AdminBannerResponse;
@@ -38,13 +37,13 @@ export default function BannersPage() {
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
-  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
-  const [selectedBanner, setSelectedBanner] = useState<Banner | null>(null);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [bannerToDelete, setBannerToDelete] = useState<Banner | null>(null);
   const [search, setSearch] = useState('');
   const [debouncedSearch, setDebouncedSearch] = useState('');
   const [activeFilter, setActiveFilter] = useState<string>('all');
+  const [serviceFilter, setServiceFilter] = useState('');
+  const [placementFilter, setPlacementFilter] = useState('');
 
   // debounce search input
   useEffect(() => {
@@ -56,13 +55,15 @@ export default function BannersPage() {
   }, [search]);
 
   const { data: bannersResponse, isLoading } = useQuery({
-    queryKey: ['banners', page, pageSize, debouncedSearch, activeFilter],
+    queryKey: ['banners', page, pageSize, debouncedSearch, activeFilter, serviceFilter, placementFilter],
     queryFn: () =>
       bannerApi.list({
         page: page - 1,
         size: pageSize,
         name: debouncedSearch || undefined,
         active: activeFilter === 'all' ? undefined : activeFilter === 'active',
+        service: serviceFilter.trim() || undefined,
+        placement: placementFilter.trim() || undefined,
       }),
   });
 
@@ -71,15 +72,6 @@ export default function BannersPage() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['banners'] });
       setIsCreateDialogOpen(false);
-    },
-  });
-
-  const updateMutation = useMutation({
-    mutationFn: ({ id, body }: { id: string; body: AdminBannerUpdateRequest }) =>
-      bannerApi.update(id, body),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['banners'] });
-      setIsEditDialogOpen(false);
     },
   });
 
@@ -150,10 +142,35 @@ export default function BannersPage() {
           sx={{ flex: 1, minWidth: 240 }}
         />
 
+        <TextField
+          value={serviceFilter}
+          onChange={(event) => {
+            setServiceFilter(event.target.value);
+            setPage(1);
+          }}
+          placeholder="서비스"
+          size="small"
+          sx={{ minWidth: 160 }}
+        />
+
+        <TextField
+          value={placementFilter}
+          onChange={(event) => {
+            setPlacementFilter(event.target.value);
+            setPage(1);
+          }}
+          placeholder="노출 위치"
+          size="small"
+          sx={{ minWidth: 160 }}
+        />
+
         <FormControl size="small" sx={{ minWidth: 160 }}>
           <Select
             value={activeFilter}
-            onChange={(e) => setActiveFilter(e.target.value)}
+            onChange={(e) => {
+              setActiveFilter(e.target.value);
+              setPage(1);
+            }}
           >
             <MenuItem value="all">전체</MenuItem>
             <MenuItem value="active">활성화</MenuItem>
@@ -161,15 +178,15 @@ export default function BannersPage() {
           </Select>
         </FormControl>
 
-        <Button
-          variant="outlined"
-          onClick={() => {
-            setPage(1);
-            setDebouncedSearch(search);
-          }}
-        >
-          검색
-        </Button>
+          <Button
+            variant="outlined"
+            onClick={() => {
+              setPage(1);
+              setDebouncedSearch(search);
+            }}
+          >
+            검색
+          </Button>
       </Box>
 
       <TableContainer component={Paper}>
@@ -177,52 +194,48 @@ export default function BannersPage() {
           <TableHead>
             <TableRow>
               <TableCell>ID</TableCell>
-              <TableCell>이름</TableCell>
-              <TableCell>설명</TableCell>
+              <TableCell>배너명</TableCell>
+              <TableCell>이미지</TableCell>
+              <TableCell>서비스</TableCell>
               <TableCell>활성화</TableCell>
               <TableCell>우선순위</TableCell>
-              <TableCell>링크 타입</TableCell>
-              <TableCell>링크</TableCell>
-              <TableCell>작업</TableCell>
+              <TableCell align='right'>작업</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
             {banners.map((banner: Banner) => (
               <TableRow key={banner.id}>
                 <TableCell>{banner.id}</TableCell>
-                <TableCell>{banner.name}</TableCell>
-                <TableCell>{banner.description}</TableCell>
                 <TableCell>
-                  <Switch checked={banner.active} disabled size="small" />
-                </TableCell>
-                <TableCell>{banner.priority}</TableCell>
-                <TableCell>
-                  <Chip
-                    label={banner.linkType}
-                    color={banner.linkType === 'INTERNAL' ? 'primary' : 'secondary'}
-                    size="small"
-                  />
+                  <Button component={NextLink} href={`/banners/${banner.id}`} variant='text' size='small'>
+                    {banner.name}
+                  </Button>
                 </TableCell>
                 <TableCell>
-                  {banner.link ? (
-                    <Link href={banner.link} target="_blank" underline="hover">
-                      {banner.link.length > 30 ? `${banner.link.substring(0, 30)}...` : banner.link}
-                    </Link>
+                  {banner.imageUrl ? (
+                    <Box
+                      component='img'
+                      src={banner.imageUrl}
+                      alt={`${banner.name} 썸네일`}
+                      sx={{ width: 80, height: 45, objectFit: 'cover', borderRadius: 1 }}
+                    />
                   ) : (
-                    '-'
+                    <Typography variant='caption' color='text.secondary'>-</Typography>
                   )}
                 </TableCell>
+                <TableCell>{banner.service ?? '-'}</TableCell>
                 <TableCell>
-                  <Box sx={{ display: 'flex', gap: 1 }}>
-                    <Button
-                      variant='outlined'
-                      size='small'
-                      onClick={() => {
-                        setSelectedBanner(banner);
-                        setIsEditDialogOpen(true);
-                      }}
-                    >
-                      수정
+                  <Chip
+                    label={banner.active ? '활성화' : '비활성화'}
+                    color={banner.active ? 'success' : 'default'}
+                    size='small'
+                  />
+                </TableCell>
+                <TableCell>{banner.priority}</TableCell>
+                <TableCell align='right'>
+                  <Box sx={{ display: 'flex', gap: 1, justifyContent: 'flex-end' }}>
+                    <Button component={NextLink} href={`/banners/${banner.id}`} size='small' variant='outlined'>
+                      상세
                     </Button>
                     <Button
                       variant='outlined'
@@ -276,16 +289,6 @@ export default function BannersPage() {
         onClose={() => setIsCreateDialogOpen(false)}
         onSubmit={(data) => createMutation.mutate(data)}
         loading={createMutation.isPending}
-      />
-
-      <EditBannerDialog
-        open={isEditDialogOpen}
-        onClose={() => setIsEditDialogOpen(false)}
-        onSubmit={(data) =>
-          selectedBanner && updateMutation.mutate({ id: selectedBanner.id, body: data })
-        }
-        loading={updateMutation.isPending}
-        initialData={selectedBanner || undefined}
       />
 
       <DeleteConfirmDialog
