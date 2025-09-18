@@ -7293,6 +7293,44 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@webview-bridge/react-native@npm:^1.7.8":
+  version: 1.7.8
+  resolution: "@webview-bridge/react-native@npm:1.7.8"
+  dependencies:
+    "@webview-bridge/types": "npm:1.7.8"
+    "@webview-bridge/utils": "npm:1.7.8"
+    use-sync-external-store: "npm:^1.2.0"
+  peerDependencies:
+    react: "*"
+    react-native-webview: "*"
+  checksum: 10/72ea8b3b8b792e654b8fa1364bf3cb204caa662187ba4269a9b5e127eaac4c5df8c715bdaa22a782539ce02699329e2c2242ae69397720fd8d29d90bcc674653
+  languageName: node
+  linkType: hard
+
+"@webview-bridge/types@npm:1.7.8":
+  version: 1.7.8
+  resolution: "@webview-bridge/types@npm:1.7.8"
+  checksum: 10/5f3b3f466984728ce50c4de50c214bee57b900130a3397dcbd4ddf839414b86d6e29f2329cf84996f1788ce0ec81fce8d19c7c9074c351433bc4a5f437e3c7c8
+  languageName: node
+  linkType: hard
+
+"@webview-bridge/utils@npm:1.7.8":
+  version: 1.7.8
+  resolution: "@webview-bridge/utils@npm:1.7.8"
+  checksum: 10/d84dc31e48c150c06c982173c574d3dd3ccf06024f9ea6c95e8c3b51af0b98f307ff2f3fec6cfa590c5fee2c2a2da3bcce42990853057e0e161983ad3e660f65
+  languageName: node
+  linkType: hard
+
+"@webview-bridge/web@npm:^1.7.8":
+  version: 1.7.8
+  resolution: "@webview-bridge/web@npm:1.7.8"
+  dependencies:
+    "@webview-bridge/types": "npm:1.7.8"
+    "@webview-bridge/utils": "npm:1.7.8"
+  checksum: 10/f40f27aa07d9efa5cc4b09a71406bd2ea1cfad90b6a3c08f6c951ad564b9147d622f400e1ca5229430303cf085380e06f5f5dd095ff89204fe1219bca844d6a1
+  languageName: node
+  linkType: hard
+
 "AppMobile@workspace:apps/app-mobile":
   version: 0.0.0-use.local
   resolution: "AppMobile@workspace:apps/app-mobile"
@@ -7338,6 +7376,7 @@ __metadata:
     "@types/jest": "npm:^29.5.13"
     "@types/react": "npm:^19.0.0"
     "@types/react-test-renderer": "npm:^19.0.0"
+    "@webview-bridge/react-native": "npm:^1.7.8"
     eslint: "npm:^9.24.0"
     jest: "npm:^29.6.3"
     prettier: "npm:3.5.3"
@@ -7345,6 +7384,7 @@ __metadata:
     react-native: "npm:0.79.0"
     react-test-renderer: "npm:19.0.0"
     typescript: "npm:^5.8.3"
+    zod: "npm:^4.1.8"
   languageName: unknown
   linkType: soft
 
@@ -17138,7 +17178,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"use-sync-external-store@npm:^1.5.0":
+"use-sync-external-store@npm:^1.2.0, use-sync-external-store@npm:^1.5.0":
   version: 1.5.0
   resolution: "use-sync-external-store@npm:1.5.0"
   peerDependencies:
@@ -17177,6 +17217,7 @@ __metadata:
     "@types/react": "npm:^19.1.2"
     "@types/react-dom": "npm:^19.1.2"
     "@vitejs/plugin-react": "npm:^4.4.0"
+    "@webview-bridge/web": "npm:^1.7.8"
     axios: "npm:^1.8.4"
     clsx: "npm:^2.1.1"
     dayjs: "npm:^1.11.13"
@@ -17829,5 +17870,12 @@ __metadata:
   version: 3.25.71
   resolution: "zod@npm:3.25.71"
   checksum: 10/5467883fa8635ea0b88cdac1d494e84ee3dc1a4f0a5aaf0a1a0644d09a529bc3c6344114e95987981f47896f1743ee2677330ed0732ce2a448a4173ed31ce3a1
+  languageName: node
+  linkType: hard
+
+"zod@npm:^4.1.8":
+  version: 4.1.8
+  resolution: "zod@npm:4.1.8"
+  checksum: 10/1a317c26b39d145d7045be6775d30497545fd1c5a13ce0f3f373ec06676ff7b2e0715f522525c183aae01f18d05d4789ee19533c3e9203087a5adf6753e588e5
   languageName: node
   linkType: hard

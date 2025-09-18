@@ -6,6 +6,7 @@ import { basicUIPlugin } from '@stackflow/plugin-basic-ui';
 import { basicRendererPlugin } from '@stackflow/plugin-renderer-basic';
 import { stackflow } from '@stackflow/react/future';
 
+import { wrapPlugin } from './wrap-plugin';
 import { SCREEN_TRANSITION_DURATION } from './configs';
 import { BookmarkListScreen } from '@/screens/bookmarks/Bookmarks';
 import { JoinFormScreen } from '@/screens/join/JoinFormScreen';
@@ -138,5 +139,6 @@ export const { Stack } = stackflow({
     basicUIPlugin({
       theme: 'cupertino',
     }),
+    wrapPlugin(),
   ],
 });
