@@ -1,7 +1,8 @@
+import { STORE_CATEOGORY_LABELS, StoreCategory } from '@repo/api/user';
 import { ChipTabs } from '@repo/design-system/components/b2c';
 
 interface CategoryTabsProps {
-  categories: string[];
+  categories: readonly StoreCategory[];
 }
 
 export const CategoryTabs = ({ categories }: CategoryTabsProps) => (
@@ -11,7 +12,7 @@ export const CategoryTabs = ({ categories }: CategoryTabsProps) => (
       <ChipTabs.List>
         {categories.map((category, i) => (
           <ChipTabs.Trigger key={i} value={`${i + 1}`}>
-            {category}
+            {STORE_CATEOGORY_LABELS[category]}
           </ChipTabs.Trigger>
         ))}
       </ChipTabs.List>

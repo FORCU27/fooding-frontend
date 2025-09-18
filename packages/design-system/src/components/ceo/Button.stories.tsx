@@ -32,9 +32,27 @@ export const PrimaryOutlined: Story = {
   },
 };
 
+export const PrimaryPink: Story = {
+  render: () => {
+    return <Button variant='primaryPink'>버튼</Button>;
+  },
+};
+
 export const Ghost: Story = {
   render: () => {
     return <Button variant='ghost'>버튼</Button>;
+  },
+};
+
+export const Large: Story = {
+  render: () => {
+    return <Button size='large'>버튼</Button>;
+  },
+};
+
+export const Rounded: Story = {
+  render: () => {
+    return <Button rounded>버튼</Button>;
   },
 };
 
@@ -55,6 +73,16 @@ export const AsChild: Story = {
     return (
       <Button asChild>
         <a href='#'>링크</a>
+      </Button>
+    );
+  },
+};
+
+export const CtaExample: Story = {
+  render: () => {
+    return (
+      <Button className='w-full' variant='primaryPink' size='large' rounded>
+        매장 선택하기
       </Button>
     );
   },
