@@ -17,12 +17,19 @@ const MAX_PASSWORD_LENGTH = 20;
 const MAX_EMAIL_LENGTH = 50;
 const MAX_NAME_LENGTH = 20;
 const MAX_REFERRAL_CODE_LENGTH = 100;
+const EMAIL_REGEX =
+  /^(?!\.)(?!.*\.\.)([a-z0-9_'+\-.]*)[a-z0-9_+-]@([a-z0-9][a-z0-9-]*\.)+[a-z]{2,}$/i;
 
 const registerFormSchema = z
   .object({
-    email: z.email('유효한 이메일을 입력해주세요.').min(1, '이메일을 입력해주세요.'),
+    email: z
+      .string()
+      .min(1, '이메일을 입력해주세요.')
+      .regex(EMAIL_REGEX, '유효한 이메일 형식을 입력해주세요.')
+      .max(MAX_EMAIL_LENGTH, `이메일은 최대 ${MAX_EMAIL_LENGTH}자 이하로 입력해주세요.`),
     password: z
       .string()
+      .min(1, '비밀번호를 입력해주세요.')
       .min(MIN_PASSWORD_LENGTH, `비밀번호는 최소 ${MIN_PASSWORD_LENGTH}자 이상이어야 합니다.`),
     confirmPassword: z.string().min(1, '비밀번호를 한번 더 입력해주세요.'),
     name: z.string().min(1, '이름을 입력해주세요.'),
