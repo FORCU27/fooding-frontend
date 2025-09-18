@@ -20,6 +20,8 @@ import { userApi } from '@repo/api/admin';
 import { useQuery } from '@tanstack/react-query';
 import { useForm } from 'react-hook-form';
 
+import { RegionSearchSelect } from '../../components/RegionSearchSelect';
+
 interface StoreFormProps {
   initialData?: AdminStoreResponse;
   onSubmit: (data: AdminCreateStoreRequest) => void;
@@ -82,12 +84,15 @@ export function StoreForm({ initialData, onSubmit, isLoading }: StoreFormProps) 
           {...form.register('name')}
         />
 
-<TextField
-          fullWidth
+        <RegionSearchSelect
+          value={form.watch('regionId') || ''}
+          onChange={(regionId) => {
+            form.setValue('regionId', regionId);
+          }}
           label='도시'
           error={!!form.formState.errors.regionId}
           helperText={form.formState.errors.regionId?.message}
-          {...form.register('regionId')}
+          required
         />
 
         <TextField
