@@ -44,6 +44,18 @@ export const Ghost: Story = {
   },
 };
 
+export const Large: Story = {
+  render: () => {
+    return <Button size='large'>버튼</Button>;
+  },
+};
+
+export const Rounded: Story = {
+  render: () => {
+    return <Button rounded>버튼</Button>;
+  },
+};
+
 export const Disabled: Story = {
   render: () => {
     return <Button disabled>버튼</Button>;
@@ -61,6 +73,16 @@ export const AsChild: Story = {
     return (
       <Button asChild>
         <a href='#'>링크</a>
+      </Button>
+    );
+  },
+};
+
+export const CtaExample: Story = {
+  render: () => {
+    return (
+      <Button className='w-full' variant='primaryPink' size='large' rounded>
+        매장 선택하기
       </Button>
     );
   },
