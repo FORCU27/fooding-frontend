@@ -1,50 +1,50 @@
 'use client';
+
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
-import { Store, storeApi } from '@repo/api/ceo';
-import { useQuery, useQueryClient, useMutation } from '@tanstack/react-query';
+import { Button } from '@repo/design-system/components/b2c';
+import { Dialog, Input, RadioChoiceBox } from '@repo/design-system/components/ceo';
+import { Suspense } from '@suspensive/react';
 
-import StoreSetupCard from './components/StoreSetupCard';
-
-async function fetchStores(): Promise<Store[]> {
-  const res = await storeApi.getStores();
-  return res.data;
-}
+import { useCreateStore } from '@/hooks/store/useCreateStore';
+import { useGetStoreList } from '@/hooks/store/useGetStoreList';
+import { CirclePlusIcon } from '@repo/design-system/icons';
 
 export default function StoreSelectPage() {
+  return (
+    <Suspense>
+      <div className='flex flex-col min-h-screen relative'>
+        <div className='absolute inset-0 -z-10'>
+          <Image
+            src='/images/main-illust.png'
+            alt='메인 배경 일러스트'
+            fill
+            className='object-cover'
+            priority
+          />
+        </div>
+        <main className='flex-1 flex items-center justify-center'>
+          <StoreSetupCard />
+        </main>
+      </div>
+    </Suspense>
+  );
+}
+
+const StoreSetupCard = () => {
+  const { data: stores } = useGetStoreList();
+
   const router = useRouter();
 
-  const [storeName, setStoreName] = useState<string>('');
-  const [selectedStoreId, setSelectedStoreId] = useState<number | null>(null);
+  const [selectedStoreId, setSelectedStoreId] = useState<string | null>(null);
 
-  const qc = useQueryClient();
-  const {
-    data: stores = [],
-    isPending,
-    isFetching,
-  } = useQuery({ queryKey: ['stores'], queryFn: fetchStores });
-
-  const createStore = useMutation({
-    mutationFn: (name: string) => storeApi.createStore({ name }),
-    onSuccess: () => {
-      qc.invalidateQueries({ queryKey: ['stores'] });
-    },
-  });
-
-  const handleCreateStore = async () => {
-    if (!storeName.trim()) return;
-    createStore.mutateAsync(storeName.trim());
-    setStoreName('');
-  };
-
-  const handleConfirmStore = async (id: number) => {
-    console.log('handleConfirmStore', selectedStoreId);
+  const onStoreSelect = async () => {
     const res = await fetch('/api/store/select', {
       method: 'POST',
       headers: { 'content-type': 'application/json' },
-      body: JSON.stringify({ storeId: id }),
+      body: JSON.stringify({ storeId: selectedStoreId }),
     });
 
     if (!res.ok) {
@@ -55,28 +55,82 @@ export default function StoreSelectPage() {
   };
 
   return (
-    <div className='flex flex-col min-h-screen relative'>
-      <div className='absolute inset-0 -z-10'>
-        <Image
-          src='/images/main-illust.png'
-          alt='메인 배경 일러스트'
-          fill
-          className='object-cover'
-          priority
-        />
+    <div className='bg-white rounded-[30px] shadow-lg w-[571px] p-[60px] text-center flex flex-col items-center'>
+      <Image src='/images/fooding-ceo-logo.svg' alt='fooding logo' width={153} height={24} />
+      <h1 className='headline-3 text-center pt-[12px]'>
+        사장님을 위한 전용 공간에 오신 걸 환영합니다
+      </h1>
+      <div className='py-[32px] flex flex-col items-center w-full'>
+        <hr className='w-full border border-black/10' />
+        {stores.length === 0 && (
+          <button className='flex flex-col items-center justify-center py-[80px] cursor-pointer'>
+            <CirclePlusIcon />
+            <p className='mt-2 body-2'>관리할 매장을 등록해주세요.</p>
+          </button>
+        )}
+        {stores.length > 0 && (
+          <>
+            <div className='w-full py-[32px]'>
+              <div
+                className='w-full flex flex-col gap-[16px]'
+                role='radiogroup'
+                aria-label='매장 선택'
+              >
+                <RadioChoiceBox value={selectedStoreId} onValueChange={setSelectedStoreId}>
+                  {stores.map((store) => (
+                    <RadioChoiceBox.Item key={store.id} value={store.id.toString()}>
+                      {store.name}
+                    </RadioChoiceBox.Item>
+                  ))}
+                </RadioChoiceBox>
+              </div>
+            </div>
+          </>
+        )}
+        <hr className='w-full border border-black/10' />
       </div>
-      <main className='flex-1 flex items-center justify-center'>
-        <StoreSetupCard
-          storeName={storeName}
-          onChangeStoreName={setStoreName}
-          onCreateStore={handleCreateStore}
-          onConfirm={handleConfirmStore}
-          stores={stores}
-          selectedStoreId={selectedStoreId}
-          onSelectStore={setSelectedStoreId}
-          isLoading={isPending || isFetching}
-        />
-      </main>
+      <Button
+        className='w-full py-3 rounded-full subtitle-1'
+        onClick={onStoreSelect}
+        disabled={selectedStoreId === null}
+      >
+        매장 선택하기
+      </Button>
+      <Button
+        variant='outlined'
+        className='mt-4 w-full py-3 rounded-full subtitle-1 border-primary-pink text-primary-pink hover:bg-primary-pink/5 active:bg-primary-pink/10'
+      >
+        매장 생성하기
+      </Button>
     </div>
   );
-}
+};
+
+const StoreCreateDialog = () => {
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [storeName, setStoreName] = useState('');
+
+  const router = useRouter();
+
+  const createStoreMutation = useCreateStore();
+
+  const handleCreateStore = async () => {};
+
+  const onConfirmButtonClick = () => {
+    if (createStoreMutation.isPending) return;
+
+    createStoreMutation.mutate({ name: storeName.trim() });
+  };
+
+  return (
+    <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+      <Input
+        className='h-[58px] subtitle-1 mb-[12px] placeholder:font-bold'
+        placeholder='매장명을 입력해주세요'
+        value={storeName}
+        onChange={(e) => setStoreName(e.target.value)}
+      />
+      <Button onClick={onConfirmButtonClick}>매장 생성하기</Button>
+    </Dialog>
+  );
+};
