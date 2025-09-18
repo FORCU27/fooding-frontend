@@ -42,7 +42,7 @@ import {
   DISCOUNT_TYPE_LABEL,
   PROVIDE_TYPE_LABEL,
 } from './options';
-import { queryClient } from '../providers';
+import { queryClient } from '@/components/Provider/providers';
 
 type Coupon = AdminCouponResponse;
 
@@ -71,7 +71,11 @@ export default function CouponsPage() {
 
   const queryKey = ['coupons', page, pageSize, statusFilter, searchFilter, storeIdFilter] as const;
 
-  const { data: couponsResponse, isLoading, isError } = useQuery({
+  const {
+    data: couponsResponse,
+    isLoading,
+    isError,
+  } = useQuery({
     queryKey,
     queryFn: () => {
       const searchString = searchFilter.trim() ? searchFilter.trim() : undefined;
@@ -98,7 +102,8 @@ export default function CouponsPage() {
   });
 
   const updateMutation = useMutation({
-    mutationFn: ({ id, body }: { id: number; body: AdminUpdateCouponRequest }) => couponApi.update(id, body),
+    mutationFn: ({ id, body }: { id: number; body: AdminUpdateCouponRequest }) =>
+      couponApi.update(id, body),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['coupons'] });
       setIsEditDialogOpen(false);
@@ -291,10 +296,12 @@ export default function CouponsPage() {
                         {BENEFIT_TYPE_LABEL[coupon.benefitType] ?? coupon.benefitType}
                       </Typography>
                       <Typography variant='caption' color='text.secondary'>
-                        {COUPON_TYPE_LABEL[coupon.type] ?? coupon.type} / {PROVIDE_TYPE_LABEL[coupon.provideType] ?? coupon.provideType}
+                        {COUPON_TYPE_LABEL[coupon.type] ?? coupon.type} /{' '}
+                        {PROVIDE_TYPE_LABEL[coupon.provideType] ?? coupon.provideType}
                       </Typography>
                       <Typography variant='caption' sx={{ color: 'primary.main' }}>
-                        {DISCOUNT_TYPE_LABEL[coupon.discountType] ?? coupon.discountType} / {formatDiscountValue(coupon)}
+                        {DISCOUNT_TYPE_LABEL[coupon.discountType] ?? coupon.discountType} /{' '}
+                        {formatDiscountValue(coupon)}
                       </Typography>
                     </Box>
                   </TableCell>
@@ -322,7 +329,9 @@ export default function CouponsPage() {
                     />
                   </TableCell>
                   <TableCell align='right'>
-                    <Box sx={{ display: 'flex', gap: 1, justifyContent: 'flex-end', flexWrap: 'wrap' }}>
+                    <Box
+                      sx={{ display: 'flex', gap: 1, justifyContent: 'flex-end', flexWrap: 'wrap' }}
+                    >
                       <Button
                         component={NextLink}
                         href={`/coupons/${coupon.id}`}
@@ -421,7 +430,9 @@ export default function CouponsPage() {
         onConfirm={handleDeleteConfirm}
         loading={deleteMutation.isPending}
         title='쿠폰 삭제 확인'
-        description={couponToDelete ? `정말로 '${couponToDelete.name}' 쿠폰을 삭제하시겠습니까?` : ''}
+        description={
+          couponToDelete ? `정말로 '${couponToDelete.name}' 쿠폰을 삭제하시겠습니까?` : ''
+        }
       />
     </Box>
   );
