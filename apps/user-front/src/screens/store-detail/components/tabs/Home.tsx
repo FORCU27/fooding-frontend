@@ -17,9 +17,12 @@ import { SubwayLineBadge } from '@/components/SubwayLineBadge';
 import { useGetStoreList } from '@/hooks/store/useGetStoreList';
 import { useGetStoreMenuList } from '@/hooks/store/useGetStoreMenuList';
 import { useGetStoreReviewList } from '@/hooks/store/useGetStoreReviewList';
-import { StoreInfoMap } from '@/screens/waiting-detail/components/StoreInfoMap';
+import { StoreInfoMap } from '@/libs/kakao-map/StoreInfoMap';
+import { getKakaoMapDirectionUrl } from '@/libs/kakao-map/utils';
+import { isNonEmptyArray } from '@/utils/array';
 import { noop } from '@/utils/noop';
 
+// TODO: API 연동
 const mock = {
   location: '제주 제주시 서해안로 654 바다풍경 정육식당',
   subwayLocation: '제주역에서 847m',
@@ -34,14 +37,10 @@ type StoreDetailHomeTabProps = {
 
 export const StoreDetailHomeTab = ({ store }: StoreDetailHomeTabProps) => {
   const flow = useFlow();
+
   const { data: storeMenus } = useGetStoreMenuList(store.id);
   const { data: reviews } = useGetStoreReviewList(store.id);
   const { data: stores } = useGetStoreList({ sortType: 'RECENT' });
-
-  const getKakaoMapDirectionUrl = (latitude: number, longitude: number, name?: string) => {
-    const encodedName = encodeURIComponent(name ?? '목적지');
-    return `https://map.kakao.com/link/to/${encodedName},${latitude},${longitude}`;
-  };
 
   return (
     <div className='flex flex-col'>
@@ -64,17 +63,16 @@ export const StoreDetailHomeTab = ({ store }: StoreDetailHomeTabProps) => {
           {store.contactNumber}
         </span>
       </Section>
-      {/* TODO: 메뉴 목록 조회 기능 추가 */}
       <Section className='mt-[10px] pb-8'>
         <Section.Header>
           <Section.Title>메뉴</Section.Title>
           <Section.Link>더보기</Section.Link>
         </Section.Header>
-        {storeMenus.length === 0 && <EmptyState className='mt-10' title='등록된 메뉴가 없어요!' />}
-        {storeMenus.length > 0 && (
+        {!isNonEmptyArray(storeMenus) ? (
+          <EmptyState className='mt-10' title='등록된 메뉴가 없어요!' />
+        ) : (
           <ul className='mt-6 flex gap-3 -mx-grid-margin overflow-x-auto scrollbar-hide px-grid-margin'>
-            {/* TODO: 왜 배열일까 */}
-            {storeMenus[0]?.menu.map((menu) => (
+            {storeMenus[0].menu.map((menu) => (
               <MenuCard key={menu.id}>
                 <MenuCard.Image src={null} alt={menu.name} />
                 <MenuCard.Title>{menu.name}</MenuCard.Title>
@@ -84,7 +82,6 @@ export const StoreDetailHomeTab = ({ store }: StoreDetailHomeTabProps) => {
           </ul>
         )}
       </Section>
-      {/* TODO: 리뷰 목록 조회 기능 추가 */}
       <Section className='mt-[10px]'>
         <Section.Header>
           <Section.Title className='flex items-center gap-1'>
@@ -130,19 +127,12 @@ export const StoreDetailHomeTab = ({ store }: StoreDetailHomeTabProps) => {
             {store.direction}
           </span>
         </div>
-
-        {store.latitude != null && store.longitude != null && (
-          <Button
-            variant='gray'
-            size='large'
-            onClick={() => {
-              const url = getKakaoMapDirectionUrl(store.latitude!, store.longitude!, store.name);
-              window.open(url, '_blank');
-            }}
-          >
-            <CompassIcon />
-            <span className='ml-1'>길찾기</span>
-          </Button>
+        {store.latitude && store.longitude && (
+          <PathfindingButton
+            latitude={store.latitude}
+            longitude={store.longitude}
+            name={store.name}
+          />
         )}
       </Section>
       <div className='mt-[10px]'>
@@ -160,5 +150,24 @@ export const StoreDetailHomeTab = ({ store }: StoreDetailHomeTabProps) => {
         />
       </div>
     </div>
+  );
+};
+
+type PathfindingButtonProps = {
+  latitude: number;
+  longitude: number;
+  name: string;
+};
+
+const PathfindingButton = ({ latitude, longitude, name }: PathfindingButtonProps) => {
+  return (
+    <Button
+      variant='gray'
+      size='large'
+      onClick={() => getKakaoMapDirectionUrl({ latitude, longitude, name })}
+    >
+      <CompassIcon />
+      <span className='ml-1'>길찾기</span>
+    </Button>
   );
 };

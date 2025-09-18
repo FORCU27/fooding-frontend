@@ -1,10 +1,12 @@
 import { Tabs } from '@repo/design-system/components/b2c';
 import { ActivityComponentType } from '@stackflow/react/future';
+import { Suspense } from '@suspensive/react';
 
 import { PlanCanceledList } from './components/PlanCanceledList';
 import { PlanCompletedList } from './components/PlanCompletedList';
 import { PlanScheuledList } from './components/PlanScheuledList';
 import BottomTab from '@/components/Layout/BottomTab';
+import { DefaultErrorBoundary } from '@/components/Layout/DefaultErrorBoundary';
 import { Header } from '@/components/Layout/Header';
 import { Screen } from '@/components/Layout/Screen';
 
@@ -25,14 +27,15 @@ export const PlanTab: ActivityComponentType<'PlanTab'> = () => {
             </Tabs.Trigger>
           ))}
         </Tabs.List>
-
         {tabItems.map(({ value, content }) => (
           <Tabs.Content
             key={value}
             value={value}
-            className='flex-grow overflow-y-auto scrollbar-hide bg-gray-1'
+            className='overflow-y-auto scrollbar-hide bg-gray-1 flex-1 flex flex-col'
           >
-            <div className='h-full'>{content}</div>
+            <DefaultErrorBoundary>
+              <Suspense>{content}</Suspense>
+            </DefaultErrorBoundary>
           </Tabs.Content>
         ))}
       </Tabs>

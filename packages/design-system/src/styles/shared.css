@@ -8,12 +8,13 @@
   /* Fooding */
   --color-fooding-yellow: oklch(0.88 0.2 100);
   --color-fooding-green: #0bb76d;
-  --color-fooding-blue: oklch(0.92 0.23 200);
+  --color-fooding-blue: #00afe8;
   --color-fooding-purple: #6366f1;
+  --color-fooding-purple-press: #3f42b7;
 
   /* Interaction */
-  --color-error-red: oklch(0.61 0.21 25);
-  --color-info-blue: oklch(0.6038 0.2056 255.93);
+  --color-error-red: #e11300;
+  --color-info-blue: #007df8;
   --color-attention-yellow: oklch(0.85 0.18 95);
   --color-success-green: oklch(0.6 0.22 135);
 

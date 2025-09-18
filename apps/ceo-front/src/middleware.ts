@@ -17,6 +17,8 @@ export const pathConfig: Record<string, AuthType> = {
   '/my/store/select': AuthType.PRIVATE,
 };
 
+const PUBLIC_ROUTES = ['/login', '/register'];
+
 export async function middleware(request: NextRequest) {
   const path = request.nextUrl.pathname;
   const authType = pathConfig[path] || AuthType.PRIVATE;
@@ -27,10 +29,12 @@ export async function middleware(request: NextRequest) {
   const selectedStoreId = request.cookies.get(STORAGE_KEYS.SELECTED_STORE_ID)?.value;
 
   // NOTE: 로그인 필요 페이지에 접근 시 로그인 페이지로 이동
-  if (authType === AuthType.PRIVATE && !isAuthenticated) {
-    const url = new URL('/login', request.url);
-    url.searchParams.set('returnTo', path);
-    return NextResponse.redirect(url);
+  if (!PUBLIC_ROUTES.includes(path)) {
+    if (authType === AuthType.PRIVATE && !isAuthenticated) {
+      const url = new URL('/login', request.url);
+      url.searchParams.set('returnTo', path);
+      return NextResponse.redirect(url);
+    }
   }
 
   // NOTE: 비로그인 필요 시 메인 페이지로 이동

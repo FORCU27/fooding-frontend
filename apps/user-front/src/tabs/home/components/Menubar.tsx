@@ -6,7 +6,8 @@ import { RegionMultiSelectBottomSheet } from '@/components/RegionMultiSelectBott
 import { isNonEmptyArray } from '@/utils/array';
 
 function Menubar() {
-  const [selectedRegions, setSelectedRegions] = useState<string[]>([]);
+  const [selectedRegions, setSelectedRegions] = useState<{ id: string; name: string }[]>([]);
+
   return (
     <div className='flex px-grid-margin pt-2 pb-4 bg-white w-full h-[44px]'>
       <RegionMultiSelectBottomSheet
@@ -17,7 +18,7 @@ function Menubar() {
             <MarkPinIcon />
             <div className='flex p-1 gap-1 items-center'>
               <div className='subtitle-4'>
-                {isNonEmptyArray(selectedRegions) ? selectedRegions[0] : '전체'}
+                {isNonEmptyArray(selectedRegions) ? selectedRegions[0].name : '전체'}
               </div>
               {isNonEmptyArray(selectedRegions) && (
                 <span className='flex justify-center items-center px-[5px] rounded-full font-semibold text-xs bg-primary-pink text-white h-[18px]'>

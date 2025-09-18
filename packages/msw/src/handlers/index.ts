@@ -1,5 +1,6 @@
 import { couponHandlers } from './coupon';
 import { notificationHandlers } from './notification';
+import { rewardHandlers } from './reward';
 import { storeHandlers } from './store';
 import { storePostHandlers } from './store-post';
 import { MockHandlerGroup, registerHandler } from '../utils/mock';
@@ -9,6 +10,7 @@ export const mockHandlerGroups: MockHandlerGroup[] = [
   storeHandlers,
   storePostHandlers,
   couponHandlers,
+  rewardHandlers,
 ];
 
 export const handlers = mockHandlerGroups.flatMap((handler) =>
