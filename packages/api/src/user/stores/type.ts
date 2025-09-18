@@ -84,6 +84,7 @@ const StoreImage = z.object({
   imageUrl: z.string(),
   sortOrder: z.number(),
   tags: z.array(z.string()).nullable(),
+  isMain: z.boolean().optional(),
 });
 
 export type StoreInfo = z.infer<typeof StoreInfo>;
