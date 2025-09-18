@@ -26,6 +26,7 @@
     "@stackflow/react": "^1.5.2",
     "@suspensive/react": "^3.2.1",
     "@tanstack/react-query": "^5.74.3",
+    "@webview-bridge/react-native": "^1.7.8",
     "@webview-bridge/web": "^1.7.8",
     "axios": "^1.8.4",
     "clsx": "^2.1.1",
