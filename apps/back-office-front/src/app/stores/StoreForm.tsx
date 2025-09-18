@@ -20,6 +20,8 @@ import { userApi } from '@repo/api/admin';
 import { useQuery } from '@tanstack/react-query';
 import { useForm } from 'react-hook-form';
 
+import { RegionSearchSelect } from '../../components/RegionSearchSelect';
+
 interface StoreFormProps {
   initialData?: AdminStoreResponse;
   onSubmit: (data: AdminCreateStoreRequest) => void;
@@ -82,12 +84,15 @@ export function StoreForm({ initialData, onSubmit, isLoading }: StoreFormProps) 
           {...form.register('name')}
         />
 
-<TextField
-          fullWidth
+        <RegionSearchSelect
+          value={form.watch('regionId') || ''}
+          onChange={(regionId) => {
+            form.setValue('regionId', regionId);
+          }}
           label='도시'
           error={!!form.formState.errors.regionId}
           helperText={form.formState.errors.regionId?.message}
-          {...form.register('regionId')}
+          required
         />
 
         <TextField
@@ -106,13 +111,36 @@ export function StoreForm({ initialData, onSubmit, isLoading }: StoreFormProps) 
           {...form.register('addressDetail')}
         />
 
-        <TextField
-          fullWidth
-          label='카테고리'
-          error={!!form.formState.errors.category}
-          helperText={form.formState.errors.category?.message}
-          {...form.register('category')}
-        />
+        <FormControl required fullWidth error={!!form.formState.errors.category}>
+          <InputLabel id='category-select-label'>카테고리</InputLabel>
+          <Select
+            labelId='category-select-label'
+            label='카테고리'
+            value={form.watch('category')}
+            onChange={(e) => form.setValue('category', e.target.value)}
+          >
+            <MenuItem value="PORK">족발/보쌈</MenuItem>
+            <MenuItem value="MEAT">고기</MenuItem>
+            <MenuItem value="CHICKEN">치킨</MenuItem>
+            <MenuItem value="JAPANESE">일식</MenuItem>
+            <MenuItem value="WESTERN">양식</MenuItem>
+            <MenuItem value="CHINESE">중식</MenuItem>
+            <MenuItem value="KOREAN">한식</MenuItem>
+            <MenuItem value="ASIAN">아시안 푸드</MenuItem>
+            <MenuItem value="LUNCHBOX_PORRIDGE">도시락/죽</MenuItem>
+            <MenuItem value="CAFE_DESSERT">카페/디저트</MenuItem>
+            <MenuItem value="BURGER">햄버거</MenuItem>
+            <MenuItem value="SALAD">샐러드</MenuItem>
+            <MenuItem value="SNACK">분식</MenuItem>
+            <MenuItem value="SEAFOOD">수산물</MenuItem>
+            <MenuItem value="SIDE_DISH">술안주</MenuItem>
+          </Select>
+          {form.formState.errors.category && (
+            <Box sx={{ color: 'error.main', fontSize: '0.75rem', mt: 0.5, ml: 1.5 }}>
+              {form.formState.errors.category.message}
+            </Box>
+          )}
+        </FormControl>
 
         <TextField
           fullWidth
