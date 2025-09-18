@@ -25,7 +25,7 @@ export default function WaitingLogsPage() {
 
   const { data } = useQuery({
     queryKey: ['adminWaitingLogs', page],
-    queryFn: () => adminWaitingLogApi.getList(page - 1, 20),
+    queryFn: () => adminWaitingLogApi.getList(page, 20),
   });
 
   const deleteMutation = useMutation({

@@ -6,9 +6,9 @@ import { api } from '../../shared';
 const ENDPOINT = '/admin/waitings/logs';
 
 export const adminWaitingLogApi = {
-  getList: async (page: number = 0, size: number = 10) => {
+  getList: async (page: number = 1, size: number = 10) => {
     const params = new URLSearchParams({
-      pageNum: (page + 1).toString(),
+      pageNum: page.toString(),
       pageSize: size.toString(),
     });
     const response = await api.get(`${ENDPOINT}?${params.toString()}`);
