@@ -98,7 +98,7 @@ export default function LeadDetailPage() {
 
     setIsSearchingRegion(true);
     try {
-      const response = await regionApi.getRegionList(0, 10, { searchString: searchTerm });
+      const response = await regionApi.getRegionList(1, 10, { searchString: searchTerm });
       const results = response.data.list.map((region) => ({
         id: region.id,
         label: `${region.name} (${region.id})`,
