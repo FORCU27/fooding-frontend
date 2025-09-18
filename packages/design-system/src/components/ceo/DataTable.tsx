@@ -20,8 +20,7 @@ export function DataTable<TData, TValue = unknown>({
   });
 
   return (
-    <div className='w-[1080px]'>
-      <table className='w-full border-collapse table-auto'>
+      <table className='w-full border-collapse'>
         <thead className='bg-[#F8F9FA]'>
           {table.getHeaderGroups().map((headerGroup) => (
             <tr key={headerGroup.id}>
@@ -55,6 +54,5 @@ export function DataTable<TData, TValue = unknown>({
           )}
         </tbody>
       </table>
-    </div>
   );
 }
