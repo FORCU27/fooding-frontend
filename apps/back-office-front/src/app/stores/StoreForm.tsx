@@ -31,7 +31,7 @@ export function StoreForm({ initialData, onSubmit, isLoading }: StoreFormProps) 
     queryKey: ['users'],
     queryFn: () =>
       userApi.getUserList({
-        page: 0,
+        page: 1,
         size: 100,
         role: 'CEO',
       }),
@@ -142,6 +142,7 @@ export function StoreForm({ initialData, onSubmit, isLoading }: StoreFormProps) 
           fullWidth
           label='위도'
           type="number"
+          inputProps={{ step: "any" }}
           error={!!form.formState.errors.latitude}
           helperText={form.formState.errors.latitude?.message}
           {...form.register('latitude', { valueAsNumber: true })}
@@ -151,6 +152,7 @@ export function StoreForm({ initialData, onSubmit, isLoading }: StoreFormProps) 
           fullWidth
           label='경도'
           type="number"
+          inputProps={{ step: "any" }}
           error={!!form.formState.errors.longitude}
           helperText={form.formState.errors.longitude?.message}
           {...form.register('longitude', { valueAsNumber: true })}
