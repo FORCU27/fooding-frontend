@@ -16,6 +16,7 @@ const buttonVariants = tv({
       outlined: 'border border-gray-2 bg-white hover:bg-gray-1',
       primaryOutlined:
         'border border-fooding-purple bg-white text-fooding-purple hover:bg-fooding-purple/10',
+      primaryPink: 'bg-primary-pink text-white hover:bg-pink-putton-press',
       ghost: 'hover:bg-gray-1',
     },
   },

@@ -32,6 +32,12 @@ export const PrimaryOutlined: Story = {
   },
 };
 
+export const PrimaryPink: Story = {
+  render: () => {
+    return <Button variant='primaryPink'>버튼</Button>;
+  },
+};
+
 export const Ghost: Story = {
   render: () => {
     return <Button variant='ghost'>버튼</Button>;
