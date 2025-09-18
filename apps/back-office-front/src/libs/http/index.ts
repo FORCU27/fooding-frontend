@@ -2,10 +2,10 @@ import axios from 'axios';
 
 import { env } from '@/configs/env';
 
-console.log('env.publicEnv.apiUrl', env.publicEnv.apiUrl);
+console.log('env.publicEnv.apiUrl', env.API_URL);
 
 const httpClient = axios.create({
-  baseURL: env.publicEnv.apiUrl,
+  baseURL: env.API_URL,
   timeout: 5000,
   withCredentials: true, // 쿠키 포함
 });

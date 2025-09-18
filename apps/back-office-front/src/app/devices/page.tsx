@@ -25,7 +25,7 @@ import {
 import { deviceApi } from '@repo/api/admin';
 import { useQuery, useMutation } from '@tanstack/react-query';
 
-import { queryClient } from '../providers';
+import { queryClient } from '../../components/Provider/providers';
 
 export default function DevicesPage() {
   const [page, setPage] = useState(1);
@@ -114,31 +114,31 @@ export default function DevicesPage() {
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           onKeyDown={handleSearchKeyDown}
-          placeholder="디바이스명 또는 패키지명 검색"
-          size="small"
+          placeholder='디바이스명 또는 패키지명 검색'
+          size='small'
           sx={{ flex: 1, minWidth: 240 }}
         />
 
         <TextField
           value={storeId}
           onChange={(e) => setStoreId(e.target.value)}
-          placeholder="가게 ID"
-          size="small"
+          placeholder='가게 ID'
+          size='small'
           sx={{ minWidth: 120 }}
-          type="number"
+          type='number'
         />
 
         <TextField
           value={userId}
           onChange={(e) => setUserId(e.target.value)}
-          placeholder="사용자 ID"
-          size="small"
+          placeholder='사용자 ID'
+          size='small'
           sx={{ minWidth: 120 }}
-          type="number"
+          type='number'
         />
 
         <Button
-          variant="outlined"
+          variant='outlined'
           onClick={() => {
             setPage(1);
             setDebouncedSearch(search);
@@ -167,13 +167,19 @@ export default function DevicesPage() {
               <TableRow key={device.id}>
                 <TableCell>{device.id}</TableCell>
                 <TableCell>
-                  <Chip label={device.platform} color={getPlatformColor(device.platform)} size="small" />
+                  <Chip
+                    label={device.platform}
+                    color={getPlatformColor(device.platform)}
+                    size='small'
+                  />
                 </TableCell>
                 <TableCell>{device.name}</TableCell>
                 <TableCell>{device.osVersion}</TableCell>
                 <TableCell>{device.packageName}</TableCell>
                 <TableCell>{new Date(device.installedAt).toLocaleDateString('ko-KR')}</TableCell>
-                <TableCell>{new Date(device.lastConnectedAt).toLocaleDateString('ko-KR')}</TableCell>
+                <TableCell>
+                  {new Date(device.lastConnectedAt).toLocaleDateString('ko-KR')}
+                </TableCell>
                 <TableCell>
                   <Box sx={{ display: 'flex', gap: 1 }}>
                     <Button
@@ -195,30 +201,22 @@ export default function DevicesPage() {
 
       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mt: 2 }}>
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-          <Typography variant="body2">
-            페이지당 행 수:
-          </Typography>
-          <FormControl size="small" sx={{ minWidth: 80 }}>
-            <Select
-              value={pageSize}
-              onChange={handlePageSizeChange}
-              displayEmpty
-            >
+          <Typography variant='body2'>페이지당 행 수:</Typography>
+          <FormControl size='small' sx={{ minWidth: 80 }}>
+            <Select value={pageSize} onChange={handlePageSizeChange} displayEmpty>
               <MenuItem value={10}>10</MenuItem>
               <MenuItem value={20}>20</MenuItem>
               <MenuItem value={50}>50</MenuItem>
             </Select>
           </FormControl>
-          <Typography variant="body2">
-            총 {pageInfo?.totalCount || 0}개 항목
-          </Typography>
+          <Typography variant='body2'>총 {pageInfo?.totalCount || 0}개 항목</Typography>
         </Box>
-        
+
         <Pagination
           count={totalPages}
           page={page}
           onChange={handlePageChange}
-          color="primary"
+          color='primary'
           showFirstButton
           showLastButton
         />

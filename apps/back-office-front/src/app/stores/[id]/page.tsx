@@ -78,7 +78,7 @@ import {
 import { useQuery, useMutation } from '@tanstack/react-query';
 import { useQuery as useRQ, useMutation as useRMutation } from '@tanstack/react-query';
 
-import { queryClient } from '../../providers';
+import { queryClient } from '../../../components/Provider/providers';
 import { DeleteConfirmDialog } from '../DeleteConfirmDialog';
 import { EditStoreDialog } from '../EditStoreDialog';
 import StoreServiceManagement from './StoreServiceManagement';

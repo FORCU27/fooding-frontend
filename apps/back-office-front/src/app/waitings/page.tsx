@@ -34,7 +34,7 @@ import {
 } from '@repo/api/admin';
 import { useQuery, useMutation } from '@tanstack/react-query';
 
-import { queryClient } from '../providers';
+import { queryClient } from '../../components/Provider/providers';
 import { DeleteConfirmDialog } from '../stores/DeleteConfirmDialog';
 
 const STATUS_OPTIONS: AdminWaitingStatus[] = [
@@ -97,14 +97,16 @@ export default function AdminWaitingsPage() {
   return (
     <Box>
       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
-        <Typography variant="h5">웨이팅 관리</Typography>
-        <Button variant="contained" onClick={() => setIsCreateOpen(true)}>웨이팅 생성</Button>
+        <Typography variant='h5'>웨이팅 관리</Typography>
+        <Button variant='contained' onClick={() => setIsCreateOpen(true)}>
+          웨이팅 생성
+        </Button>
       </Box>
 
-      <Stack direction="row" spacing={2} sx={{ mb: 2 }}>
+      <Stack direction='row' spacing={2} sx={{ mb: 2 }}>
         <TextField
-          label="Store ID"
-          size="small"
+          label='Store ID'
+          size='small'
           value={storeIdFilter}
           onChange={(e) => {
             const val = e.target.value;
@@ -114,30 +116,35 @@ export default function AdminWaitingsPage() {
           }}
           sx={{ width: 160 }}
         />
-        <FormControl size="small" sx={{ minWidth: 180 }}>
-          <InputLabel id="waiting-status">상태</InputLabel>
+        <FormControl size='small' sx={{ minWidth: 180 }}>
+          <InputLabel id='waiting-status'>상태</InputLabel>
           <Select
-            labelId="waiting-status"
-            label="상태"
+            labelId='waiting-status'
+            label='상태'
             value={statusFilter}
-            onChange={(e) => { setStatusFilter(e.target.value); setPage(1); }}
+            onChange={(e) => {
+              setStatusFilter(e.target.value);
+              setPage(1);
+            }}
           >
-            <MenuItem value="">전체</MenuItem>
+            <MenuItem value=''>전체</MenuItem>
             {STATUS_OPTIONS.map((s) => (
-              <MenuItem key={s} value={s}>{s}</MenuItem>
+              <MenuItem key={s} value={s}>
+                {s}
+              </MenuItem>
             ))}
           </Select>
         </FormControl>
       </Stack>
 
-      <TableContainer component={Paper} variant="outlined">
-        <Table size="small">
+      <TableContainer component={Paper} variant='outlined'>
+        <Table size='small'>
           <TableHead>
             <TableRow>
               <TableCell>ID</TableCell>
               <TableCell>Store ID</TableCell>
               <TableCell>Status</TableCell>
-              <TableCell align="right">Actions</TableCell>
+              <TableCell align='right'>Actions</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -153,10 +160,27 @@ export default function AdminWaitingsPage() {
                 <TableCell>{item.id}</TableCell>
                 <TableCell>{item.storeId}</TableCell>
                 <TableCell>{item.status}</TableCell>
-                <TableCell align="right">
-                  <Stack direction="row" spacing={1} justifyContent="flex-end">
-                    <Button size="small" onClick={() => { setSelected(item); setIsEditOpen(true); }}>수정</Button>
-                    <Button size="small" color="error" onClick={() => { setSelected(item); setIsDeleteOpen(true); }}>삭제</Button>
+                <TableCell align='right'>
+                  <Stack direction='row' spacing={1} justifyContent='flex-end'>
+                    <Button
+                      size='small'
+                      onClick={() => {
+                        setSelected(item);
+                        setIsEditOpen(true);
+                      }}
+                    >
+                      수정
+                    </Button>
+                    <Button
+                      size='small'
+                      color='error'
+                      onClick={() => {
+                        setSelected(item);
+                        setIsDeleteOpen(true);
+                      }}
+                    >
+                      삭제
+                    </Button>
                   </Stack>
                 </TableCell>
               </TableRow>
@@ -166,19 +190,29 @@ export default function AdminWaitingsPage() {
       </TableContainer>
 
       <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 2, gap: 1 }}>
-        <Button disabled={page <= 1} onClick={() => setPage((p) => Math.max(1, p - 1))}>이전</Button>
-        <Button disabled={(pageInfo?.totalPages ?? 1) <= page} onClick={() => setPage((p) => p + 1)}>다음</Button>
+        <Button disabled={page <= 1} onClick={() => setPage((p) => Math.max(1, p - 1))}>
+          이전
+        </Button>
+        <Button
+          disabled={(pageInfo?.totalPages ?? 1) <= page}
+          onClick={() => setPage((p) => p + 1)}
+        >
+          다음
+        </Button>
       </Box>
 
       {/* Create Dialog */}
       <WaitingDialog
         open={isCreateOpen}
-        title="웨이팅 생성"
+        title='웨이팅 생성'
         initial={{ storeId: '', status: '' }}
         onClose={() => setIsCreateOpen(false)}
         onSubmit={(values) => {
           if (!values.storeId || !values.status) return;
-          const payload: AdminWaitingCreateRequest = { storeId: Number(values.storeId), status: values.status as AdminWaitingStatus };
+          const payload: AdminWaitingCreateRequest = {
+            storeId: Number(values.storeId),
+            status: values.status as AdminWaitingStatus,
+          };
           createMutation.mutate(payload);
         }}
         loading={createMutation.isPending}
@@ -187,13 +221,19 @@ export default function AdminWaitingsPage() {
       {/* Edit Dialog */}
       <WaitingDialog
         open={isEditOpen}
-        title="웨이팅 수정"
+        title='웨이팅 수정'
         initial={{ storeId: selected?.storeId?.toString() ?? '', status: selected?.status ?? '' }}
-        onClose={() => { setIsEditOpen(false); setSelected(null); }}
+        onClose={() => {
+          setIsEditOpen(false);
+          setSelected(null);
+        }}
         onSubmit={(values) => {
           if (!selected) return;
           if (!values.storeId || !values.status) return;
-          const payload: AdminWaitingUpdateRequest = { storeId: Number(values.storeId), status: values.status as AdminWaitingStatus };
+          const payload: AdminWaitingUpdateRequest = {
+            storeId: Number(values.storeId),
+            status: values.status as AdminWaitingStatus,
+          };
           updateMutation.mutate({ id: selected.id, body: payload });
         }}
         loading={updateMutation.isPending}
@@ -201,11 +241,16 @@ export default function AdminWaitingsPage() {
 
       <DeleteConfirmDialog
         open={isDeleteOpen}
-        onClose={() => { setIsDeleteOpen(false); setSelected(null); }}
-        onConfirm={() => { if (selected) deleteMutation.mutate(selected.id); }}
+        onClose={() => {
+          setIsDeleteOpen(false);
+          setSelected(null);
+        }}
+        onConfirm={() => {
+          if (selected) deleteMutation.mutate(selected.id);
+        }}
         loading={deleteMutation.isPending}
-        title="삭제 확인"
-        description="해당 웨이팅을 삭제하시겠습니까?"
+        title='삭제 확인'
+        description='해당 웨이팅을 삭제하시겠습니까?'
       />
     </Box>
   );
@@ -232,39 +277,41 @@ function WaitingDialog({
   loading: boolean;
 }) {
   const [values, setValues] = useState<WaitingFormValues>(initial);
-  
+
   // keep initial in sync when opening with different row
   React.useEffect(() => {
     if (open) setValues(initial);
   }, [open, initial]);
 
   return (
-    <Dialog open={open} onClose={onClose} fullWidth maxWidth="xs">
+    <Dialog open={open} onClose={onClose} fullWidth maxWidth='xs'>
       <DialogTitle>{title}</DialogTitle>
       <DialogContent sx={{ display: 'grid', gap: 2, mt: 1 }}>
         <TextField
-          label="Store ID"
+          label='Store ID'
           value={values.storeId}
           onChange={(e) => setValues((prev) => ({ ...prev, storeId: e.target.value }))}
           fullWidth
         />
         <FormControl fullWidth>
-          <InputLabel id="waiting-status-select">상태</InputLabel>
+          <InputLabel id='waiting-status-select'>상태</InputLabel>
           <Select
-            labelId="waiting-status-select"
-            label="상태"
+            labelId='waiting-status-select'
+            label='상태'
             value={values.status}
             onChange={(e) => setValues((prev) => ({ ...prev, status: e.target.value }))}
           >
             {STATUS_OPTIONS.map((s) => (
-              <MenuItem key={s} value={s}>{s}</MenuItem>
+              <MenuItem key={s} value={s}>
+                {s}
+              </MenuItem>
             ))}
           </Select>
         </FormControl>
       </DialogContent>
       <DialogActions>
         <Button onClick={onClose}>취소</Button>
-        <Button onClick={() => onSubmit(values)} variant="contained" disabled={loading}>
+        <Button onClick={() => onSubmit(values)} variant='contained' disabled={loading}>
           {loading ? '저장 중...' : '저장'}
         </Button>
       </DialogActions>
