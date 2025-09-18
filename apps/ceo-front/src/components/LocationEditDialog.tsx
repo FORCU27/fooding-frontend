@@ -207,7 +207,7 @@ export default function LocationEditDialog({
           )}
         </div>
         <DialogFooter>
-          <Button variant='outline' onClick={() => onOpenChange(false)}>
+          <Button variant='outlined' onClick={() => onOpenChange(false)}>
             취소
           </Button>
           <Button
