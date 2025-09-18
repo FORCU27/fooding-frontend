@@ -18,6 +18,7 @@
     "@mui/icons-material": "^7.1.0",
     "@mui/material": "^7.1.0",
     "@repo/api": "workspace:*",
+    "@repo/design-system": "workspace:*",
     "@tanstack/react-query": "^5.74.3",
     "axios": "^1.8.4",
     "clsx": "^2.1.1",
