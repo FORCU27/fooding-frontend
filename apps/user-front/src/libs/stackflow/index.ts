@@ -6,9 +6,11 @@ import { basicUIPlugin } from '@stackflow/plugin-basic-ui';
 import { basicRendererPlugin } from '@stackflow/plugin-renderer-basic';
 import { stackflow } from '@stackflow/react/future';
 
+import { wrapPlugin } from './wrap-plugin';
+import { SCREEN_TRANSITION_DURATION } from './configs';
 import { BookmarkListScreen } from '@/screens/bookmarks/Bookmarks';
 import { JoinFormScreen } from '@/screens/join/JoinFormScreen';
-import { MenuDetailScreen, MenuDetailScreenProps } from '@/screens/menu-detail/MenuDetail';
+import { MenuDetailScreen, MenuDetailScreenParams } from '@/screens/menu-detail/MenuDetail';
 import { MyCouponListScreen } from '@/screens/my-coupons/MyCoupons';
 import { MyRewardDetailScreen } from '@/screens/my-reward-detail/MyRewardDetail';
 import { MyRewardListScreen } from '@/screens/my-rewards/MyRewards';
@@ -20,6 +22,8 @@ import { ProfileUserInfoScreen } from '@/screens/profile-user-info/ProfileUserIn
 import { ReviewReportCreateScreen } from '@/screens/reports/ReivewReportCreate';
 import { ReviewCreateScreen } from '@/screens/reviews/ReviewCreate';
 import { ReviewModifyScreen } from '@/screens/reviews/ReviewModify';
+import { SearchScreen } from '@/screens/search/Search';
+import { SearchResultScreen, SearchResultScreenParams } from '@/screens/search-result/SearchResult';
 import { NotificationSettingScreen } from '@/screens/settings/Notifications';
 import { SettingScreen } from '@/screens/settings/Settings';
 import { StoreDetailScreen } from '@/screens/store-detail/StoreDetail';
@@ -43,6 +47,8 @@ declare module '@stackflow/config' {
     StorePostDetailScreen: { storePostId: number; storeName: string };
     SettingScreen: object;
     NotificationSettingScreen: object;
+    SearchScreen: object;
+    SearchResultScreen: SearchResultScreenParams;
     ReviewCreateScreen: { planId: string };
     ReviewModifyScreen: { review: Review };
     WaitingDetailScreen: { waitingId: string };
@@ -59,7 +65,7 @@ declare module '@stackflow/config' {
     };
     ProfileCompleteScreen: { userName: string };
     JoinFormScreen: object;
-    MenuDetailScreen: MenuDetailScreenProps;
+    MenuDetailScreen: MenuDetailScreenParams;
     MyRewardListScreen: object;
     MyRewardDetailScreen: { storeId: number };
     ReviewReportCreateScreen: { review: Review; store: StoreInfo; type: 'REVIEW' | 'POST' };
@@ -79,6 +85,8 @@ const config = defineConfig({
     { name: 'StoreDetailScreen' },
     { name: 'SettingScreen' },
     { name: 'NotificationSettingScreen' },
+    { name: 'SearchScreen' },
+    { name: 'SearchResultScreen' },
     { name: 'ReviewCreateScreen' },
     { name: 'ReviewModifyScreen' },
     { name: 'WaitingDetailScreen' },
@@ -93,7 +101,7 @@ const config = defineConfig({
     { name: 'ReviewReportCreateScreen' },
   ],
 
-  transitionDuration: 350,
+  transitionDuration: SCREEN_TRANSITION_DURATION,
   initialActivity: () => 'HomeTab',
 });
 
@@ -111,6 +119,8 @@ export const { Stack } = stackflow({
     StoreDetailScreen,
     SettingScreen,
     NotificationSettingScreen,
+    SearchScreen,
+    SearchResultScreen,
     ReviewCreateScreen,
     ReviewModifyScreen,
     WaitingDetailScreen,
@@ -129,5 +139,6 @@ export const { Stack } = stackflow({
     basicUIPlugin({
       theme: 'cupertino',
     }),
+    wrapPlugin(),
   ],
 });

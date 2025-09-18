@@ -14,7 +14,7 @@ export const AdminBannerResponseSchema = z.object({
   description: z.string(),
   active: z.boolean(),
   priority: z.number(),
-  link: z.string().optional(),
+  link: z.string().nullable().optional(),
   linkType: z.enum(['INTERNAL', 'EXTERNAL']),
   imageUrl: z.string().nullable().optional(),
   service: z.string().nullable().optional(),

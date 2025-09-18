@@ -46,7 +46,7 @@ export const Default: Story = {
         </div>
         <DialogFooter>
           <RadixDialog.Close asChild>
-            <Button variant='outline'>취소</Button>
+            <Button variant='outlined'>취소</Button>
           </RadixDialog.Close>
           <Button>확인</Button>
         </DialogFooter>
@@ -72,7 +72,7 @@ export const WithoutCloseButton: Story = {
         </div>
         <DialogFooter>
           <RadixDialog.Close asChild>
-            <Button variant='outline'>취소</Button>
+            <Button variant='outlined'>취소</Button>
           </RadixDialog.Close>
           <Button>확인</Button>
         </DialogFooter>
@@ -195,7 +195,7 @@ export const LargeContent: Story = {
         </div>
         <DialogFooter>
           <RadixDialog.Close asChild>
-            <Button variant='outline'>취소</Button>
+            <Button variant='outlined'>취소</Button>
           </RadixDialog.Close>
           <Button>저장</Button>
         </DialogFooter>
@@ -209,7 +209,7 @@ export const ConfirmationDialog: Story = {
   render: (args) => (
     <Dialog {...args}>
       <DialogTrigger asChild>
-        <Button variant='outline'>삭제</Button>
+        <Button variant='outlined'>삭제</Button>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
@@ -220,9 +220,9 @@ export const ConfirmationDialog: Story = {
         </DialogHeader>
         <DialogFooter>
           <RadixDialog.Close asChild>
-            <Button variant='outline'>취소</Button>
+            <Button variant='outlined'>취소</Button>
           </RadixDialog.Close>
-          <Button variant='secondary'>삭제</Button>
+          <Button variant='primary'>삭제</Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>

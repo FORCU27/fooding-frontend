@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 
 import { CloseIcon, SearchIcon } from '../../icons';
 import { cn } from '../../utils';
@@ -19,6 +19,7 @@ const SearchInput = ({
   defaultValue,
   ...props
 }: SearchInputProps) => {
+  const inputRef = useRef<HTMLInputElement>(null);
   const [internalValue, setInternalValue] = useState(defaultValue ?? '');
 
   const value = externalValue ?? internalValue;
@@ -36,6 +37,7 @@ const SearchInput = ({
     <div className={cn('relative w-full h-fit', className)}>
       <SearchIcon className='absolute top-1/2 left-3 -translate-y-1/2 text-gray-5' />
       <input
+        ref={inputRef}
         className={cn(
           'w-full h-[44px] bg-gray-1 rounded-[8px] pl-11 pr-10 outline-none',
           'text-[14px] text-black font-medium placeholder:text-gray-5 plcaceholder:font-normal',

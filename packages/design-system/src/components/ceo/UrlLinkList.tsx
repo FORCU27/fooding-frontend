@@ -4,7 +4,6 @@ import { useState } from 'react';
 
 import { LinkIcon, Trash2Icon } from 'lucide-react';
 
-import { Button } from './Button';
 import { Input } from './Input';
 
 type UrlLinkListProps = {
@@ -41,14 +40,12 @@ const UrlLinkList = ({ initialUrls = [], maxLinks = 5 }: UrlLinkListProps) => {
           onKeyDown={(e) => e.key === 'Enter' && (e.preventDefault(), handleAddUrl())}
           placeholder='https://example.com'
         />
-        <Button
-          size='icon'
-          variant='ghost'
-          className='absolute right-1 top-1/2 -translate-y-1/2'
+        <button
+          className='absolute right-4 top-1/2 -translate-y-1/2 size-8 cursor-pointer rounded-[6px] flex justify-center items-center'
           onClick={handleAddUrl}
         >
           <LinkIcon className='h-5 w-5 text-gray-500' />
-        </Button>
+        </button>
       </div>
 
       <div className='mt-2 flex justify-end'>
@@ -65,9 +62,12 @@ const UrlLinkList = ({ initialUrls = [], maxLinks = 5 }: UrlLinkListProps) => {
               <LinkIcon className='h-5 w-5 text-gray-700' />
               <span className='text-base text-gray-900'>{url}</span>
             </div>
-            <Button size='icon' variant='ghost' onClick={() => handleRemoveUrl(index)}>
+            <button
+              className='size-8 cursor-pointer rounded-[6px] flex justify-center items-center'
+              onClick={() => handleRemoveUrl(index)}
+            >
               <Trash2Icon className='h-5 w-5 text-gray-500' />
-            </Button>
+            </button>
           </li>
         ))}
       </ul>
