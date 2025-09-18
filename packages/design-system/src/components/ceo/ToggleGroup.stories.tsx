@@ -1,9 +1,9 @@
 import type { StoryObj } from '@storybook/react';
 import { ToggleGroup, ToggleGroupItem } from './ToggleGroup';
+import { useState } from 'react';
 
-const meta: any = {
+const meta = {
   title: 'Components/ceo/ToggleGroup',
-  component: ToggleGroup,
   parameters: {
     layout: 'centered',
   },
@@ -11,25 +11,20 @@ const meta: any = {
 };
 
 export default meta;
+type Story = StoryObj<typeof meta>;
 
-type Story = StoryObj<typeof ToggleGroup>;
-
-export const Default: Story = {
-  render: (args: any) => (
-    <ToggleGroup {...args} type='single' defaultValue='possible' className='w-[400px]'>
-      <ToggleGroupItem value='possible' className='flex-1'>
-        가능해요
-      </ToggleGroupItem>
-      <ToggleGroupItem value='impossible' className='flex-1'>
-        불가능해요
-      </ToggleGroupItem>
+export const Single: Story = {
+  render: () => (
+    <ToggleGroup type='single' defaultValue='possible' className='w-[400px]' fullWidth>
+      <ToggleGroupItem value='possible'>가능해요</ToggleGroupItem>
+      <ToggleGroupItem value='impossible'>불가능해요</ToggleGroupItem>
     </ToggleGroup>
   ),
 };
 
-export const Chip: Story = {
-  render: (args: any) => (
-    <ToggleGroup {...args} type='multiple' className='w-[600px]'>
+export const Multiple: Story = {
+  render: () => (
+    <ToggleGroup type='multiple' className='w-[600px]'>
       <ToggleGroupItem value='group'>단체이용 가능</ToggleGroupItem>
       <ToggleGroupItem value='takeout'>포장</ToggleGroupItem>
       <ToggleGroupItem value='delivery'>배달</ToggleGroupItem>
@@ -43,4 +38,23 @@ export const Chip: Story = {
       <ToggleGroupItem value='no-kids'>노키즈존</ToggleGroupItem>
     </ToggleGroup>
   ),
+};
+
+export const Controlled: Story = {
+  render: () => {
+    const [value, setValue] = useState<string>('possible');
+
+    return (
+      <ToggleGroup
+        type='single'
+        className='w-[400px]'
+        fullWidth
+        value={value}
+        onValueChange={setValue}
+      >
+        <ToggleGroupItem value='possible'>가능해요</ToggleGroupItem>
+        <ToggleGroupItem value='impossible'>불가능해요</ToggleGroupItem>
+      </ToggleGroup>
+    );
+  },
 };

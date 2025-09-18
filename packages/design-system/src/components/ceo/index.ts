@@ -19,6 +19,7 @@ export * from './ToolTip';
 export * from './RadioButtonV2';
 export * from './TextField';
 export * from './Tag';
+export * from './Form';
 export * from './RadioSelectBox';
 
 // Re-export commonly used icons from lucide-react
