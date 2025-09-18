@@ -7990,6 +7990,7 @@ __metadata:
     clsx: "npm:^2.1.1"
     dayjs: "npm:^1.11.13"
     eslint: "npm:^9.24.0"
+    js-cookie: "npm:^3.0.5"
     next: "npm:^15.3.0"
     next-intl: "npm:^4.0.2"
     postcss: "npm:^8.5.3"
