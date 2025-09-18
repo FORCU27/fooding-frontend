@@ -25,7 +25,7 @@ export function DataTable<TData, TValue = unknown>({
           {table.getHeaderGroups().map((headerGroup) => (
             <tr key={headerGroup.id}>
               {headerGroup.headers.map((header) => (
-                <th key={header.id} className='p-[20px] text-gray-5 body-2 text-left'>
+                <th key={header.id} className='p-[20px] text-gray-5 body-2'>
                   {header.isPlaceholder
                     ? null
                     : flexRender(header.column.columnDef.header, header.getContext())}
