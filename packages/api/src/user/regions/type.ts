@@ -1,6 +1,6 @@
 import { z } from 'zod/v4';
 
-import { PageResponse } from '../../shared';
+import { ApiResponse, PageInfo } from '../../shared';
 
 export type Region = z.infer<typeof Region>;
 export const Region = z.object({
@@ -23,4 +23,9 @@ export type GetRegionListParams = {
 };
 
 export type GetRegionListResponse = z.infer<typeof GetRegionListResponse>;
-export const GetRegionListResponse = PageResponse(Region);
+export const GetRegionListResponse = ApiResponse(
+  z.object({
+    list: z.tuple([Region], Region),
+    pageInfo: PageInfo,
+  }),
+);

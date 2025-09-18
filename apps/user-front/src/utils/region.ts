@@ -1,5 +1,7 @@
 import { Region } from '@repo/api/user';
 
+import { isNonEmptyArray, NonEmptyArray } from './array';
+
 export type Province = {
   label: string;
   id: string;
@@ -13,20 +15,23 @@ export type Province = {
  * "서울특별시" → "서울"
  *"서울특별시 종로구" → "종로구"
  */
-
-export const formatProvinces = (list: Region[] | undefined): Province[] => {
-  if (!list) return [];
-
+export const formatProvinces = (list: NonEmptyArray<Region>): NonEmptyArray<Province> => {
   // 시/도(레벨 1) 먼저 필터링
   const provinces = list.filter((region) => region.level === 1);
 
-  return provinces.map((province) => ({
+  const formattedProvinces = provinces.map((province) => ({
     label: province.name.replace(/특별시|광역시$/, ''),
     id: province.id,
     districts: list
       .filter((r) => r.parentRegionId === province.id)
       .map((d) => d.name.replace(new RegExp(`^${province.name}\\s`), '')),
   }));
+
+  if (!isNonEmptyArray(formattedProvinces)) {
+    throw new Error('지역 데이터가 올바르지 않습니다.');
+  }
+
+  return formattedProvinces;
 };
 
 export type ProvinceMap = Record<string, string[]>;
