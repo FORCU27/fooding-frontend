@@ -1,4 +1,10 @@
-import { GetStoreImagesParams, GetStoreImagesResponse, CreateStoreImageParams, PutStoreMainImageParams } from './type';
+import {
+  GetStoreImagesParams,
+  GetStoreImagesResponse,
+  CreateStoreImageParams,
+  PustStoreImageParams,
+  PutStoreMainImageParams,
+} from './type';
 import { api } from '../../shared';
 
 export * from './type';
@@ -16,7 +22,10 @@ export const storeImageApi = {
   deleteImage: async (storeId: number, photoId: number) => {
     await api.delete(`${ENDPOINT}/${storeId}/images/${photoId}`);
   },
+  putImage: async (storeId: number, photoId: number, body: PustStoreImageParams) => {
+    await api.put(`${ENDPOINT}/${storeId}/images/${photoId}`, body);
+  },
   putMainImage: async (storeId: number, photoId: number, body: PutStoreMainImageParams) => {
     await api.put(`${ENDPOINT}/${storeId}/images/${photoId}/main`, body);
-  }
+  },
 };
