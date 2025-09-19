@@ -2,7 +2,7 @@
 
 import { Suspense } from 'react';
 
-import { STORE_CATEGORY } from '@repo/api/user';
+import { STORE_CATEGORIES } from '@repo/api/user';
 import { ErrorFallback } from '@repo/design-system/components/b2c';
 import { ActivityComponentType } from '@stackflow/react/future';
 import { ErrorBoundary, ErrorBoundaryFallbackProps } from '@suspensive/react';
@@ -77,7 +77,7 @@ const ContentBody = () => {
       <div className='bg-white mb-3'>
         <Banner />
         <div className='flex flex-col  py-grid-margin mb-3'>
-          <CategoryTabs categories={Object.values(STORE_CATEGORY)} />
+          <CategoryTabs categories={STORE_CATEGORIES} />
           <MainStoreList stores={stores.list} />
         </div>
         <StoresList

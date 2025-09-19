@@ -16,7 +16,7 @@ const preview: Preview = {
   },
   decorators: [
     (Story) => (
-      <div className='w-auto flex flex-col justify-center items-center'>
+      <div className='flex flex-col justify-center items-center'>
         <Story />
       </div>
     ),

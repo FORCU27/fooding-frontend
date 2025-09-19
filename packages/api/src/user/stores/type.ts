@@ -28,6 +28,43 @@ export type DayOfWeek = (typeof DAY_OF_WEEK)[number];
 export const PROVIDE_TYPES = ['ALL', 'REGULAR_CUSTOMER'] as const;
 export type ProvideType = (typeof PROVIDE_TYPES)[number];
 
+export const STORE_CATEGORIES = [
+  'PORK',
+  'MEAT',
+  'CHICKEN',
+  'JAPANESE',
+  'WESTERN',
+  'CHINESE',
+  'KOREAN',
+  'ASIAN',
+  'LUNCHBOX_PORRIDGE',
+  'CAFE_DESSERT',
+  'BURGER',
+  'SALAD',
+  'SNACK',
+  'SEAFOOD',
+  'SIDE_DISH',
+] as const;
+export type StoreCategory = (typeof STORE_CATEGORIES)[number];
+
+export const STORE_CATEOGORY_LABELS: Record<(typeof STORE_CATEGORIES)[number], string> = {
+  PORK: '족발/보쌈',
+  MEAT: '고기',
+  CHICKEN: '치킨',
+  JAPANESE: '일식',
+  WESTERN: '양식',
+  CHINESE: '중식',
+  KOREAN: '한식',
+  ASIAN: '아시안 푸드',
+  LUNCHBOX_PORRIDGE: '도시락/죽',
+  CAFE_DESSERT: '카페/디저트',
+  BURGER: '햄버거',
+  SALAD: '샐러드',
+  SNACK: '분식',
+  SEAFOOD: '수산물',
+  SIDE_DISH: '술안주',
+};
+
 export type Store = z.infer<typeof Store>;
 export const Store = z.object({
   id: z.number(),
@@ -39,6 +76,7 @@ export const Store = z.object({
   isBookmarked: z.boolean(),
   isFinished: z.boolean(),
   mainImage: z.string().nullable(),
+  category: z.enum(STORE_CATEGORIES),
 });
 
 const StoreImage = z.object({
@@ -46,31 +84,14 @@ const StoreImage = z.object({
   imageUrl: z.string(),
   sortOrder: z.number(),
   tags: z.array(z.string()).nullable(),
+  isMain: z.boolean().optional(),
 });
-
-export enum STORE_CATEGORY {
-  PORK = '족발/보쌈',
-  MEAT = '고기',
-  CHICKEN = '치킨',
-  JAPANESE = '일식',
-  WESTERN = '양식',
-  CHINESE = '중식',
-  KOREAN = '한식',
-  ASIAN = '아시안 푸드',
-  LUNCHBOX_PORRIDGE = '도시락/죽',
-  CAFE_DESSERT = '카페/디저트',
-  BURGER = '햄버거',
-  SALAD = '샐러드',
-  SNACK = '분식',
-  SEAFOOD = '수산물',
-  SIDE_DISH = '술안주',
-}
 
 export type StoreInfo = z.infer<typeof StoreInfo>;
 export const StoreInfo = Store.omit({ mainImage: true }).extend({
   address: z.string(),
   addressDetail: z.string().nullable(),
-  category: z.enum(Object.keys(STORE_CATEGORY) as (keyof typeof STORE_CATEGORY)[]),
+  category: z.enum(STORE_CATEGORIES),
   description: z.string(),
   contactNumber: z.string(),
   direction: z.string(),
@@ -255,3 +276,35 @@ export const RewardListResponse = <TListItem extends z.ZodType>(listItem: TListI
 
 export type GetStoreRewardListResponse = z.infer<typeof GetStoreRewardListResponse>;
 export const GetStoreRewardListResponse = RewardListResponse(StoreReward);
+
+export type SearchStoreListParams = {
+  searchString: string;
+  regionIds: string[];
+  pageNum: number;
+  pageSize: number;
+  sortType: SortType;
+  sortDirection?: SortDirection;
+};
+
+export const SearchStoreListResponse = PageResponse(
+  z.object({
+    id: z.number(),
+    name: z.string(),
+    visitCount: z.number(),
+    reviewCount: z.number(),
+    averageRating: z.number(),
+    estimatedWaitingTimeMinutes: z.number().nullable(),
+    isBookmarked: z.boolean(),
+    isFinished: z.boolean(),
+    address: z.string(),
+    images: z
+      .object({
+        id: z.number(),
+        imageUrl: z.string(),
+        sortOrder: z.number(),
+        tags: z.array(z.string()).nullable(),
+      })
+      .array(),
+    category: z.enum(STORE_CATEGORIES),
+  }),
+);

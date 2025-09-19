@@ -5,6 +5,7 @@ import {
   AdminStoreImageUpdateRequest,
   GetAdminStoreImageListResponse,
   GetAdminStoreImageResponse,
+  AdminStoreImageMainRequest,
 } from './type';
 import { api } from '../../shared';
 
@@ -36,5 +37,9 @@ export const adminStoreImageApi = {
 
   delete: async (storeId: number, id: number) => {
     return api.delete(`${BASE}/images/${id}`);
+  },
+
+  updateMain: async (id: number, body: AdminStoreImageMainRequest) => {
+    return api.put(`${BASE}/images/${id}/main`, body);
   },
 };

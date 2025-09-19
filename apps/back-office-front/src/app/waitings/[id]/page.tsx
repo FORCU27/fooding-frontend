@@ -1,7 +1,7 @@
 'use client';
 
 import { useParams, useRouter } from 'next/navigation';
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 
 import {
   Box,
@@ -32,7 +32,7 @@ import {
 } from '@repo/api/admin';
 import { useQuery, useMutation } from '@tanstack/react-query';
 
-import { queryClient } from '../../providers';
+import { queryClient } from '../../../components/Provider/providers';
 import { DeleteConfirmDialog } from '../../stores/DeleteConfirmDialog';
 
 export default function WaitingDetailPage() {
@@ -90,35 +90,47 @@ export default function WaitingDetailPage() {
 
   return (
     <Box>
-      <Stack direction="row" justifyContent="space-between" alignItems="center" sx={{ mb: 2 }}>
-        <Typography variant="h5">웨이팅 상세</Typography>
-        <Stack direction="row" spacing={1}>
+      <Stack direction='row' justifyContent='space-between' alignItems='center' sx={{ mb: 2 }}>
+        <Typography variant='h5'>웨이팅 상세</Typography>
+        <Stack direction='row' spacing={1}>
           <Button onClick={() => router.push('/waitings')}>목록</Button>
-          <Button variant="contained" onClick={() => setIsCreateOpen(true)}>세팅 추가</Button>
+          <Button variant='contained' onClick={() => setIsCreateOpen(true)}>
+            세팅 추가
+          </Button>
         </Stack>
       </Stack>
 
       <Paper sx={{ p: 2, mb: 3 }}>
-        <Typography variant="subtitle1" gutterBottom>기본 정보</Typography>
-        <Stack direction="row" spacing={4}>
+        <Typography variant='subtitle1' gutterBottom>
+          기본 정보
+        </Typography>
+        <Stack direction='row' spacing={4}>
           <Box>
-            <Typography variant="body2" color="text.secondary">ID</Typography>
-            <Typography variant="body1">{waiting?.data.id}</Typography>
+            <Typography variant='body2' color='text.secondary'>
+              ID
+            </Typography>
+            <Typography variant='body1'>{waiting?.data.id}</Typography>
           </Box>
           <Box>
-            <Typography variant="body2" color="text.secondary">Store ID</Typography>
-            <Typography variant="body1">{waiting?.data.storeId}</Typography>
+            <Typography variant='body2' color='text.secondary'>
+              Store ID
+            </Typography>
+            <Typography variant='body1'>{waiting?.data.storeId}</Typography>
           </Box>
           <Box>
-            <Typography variant="body2" color="text.secondary">Status</Typography>
-            <Typography variant="body1">{waiting?.data.status}</Typography>
+            <Typography variant='body2' color='text.secondary'>
+              Status
+            </Typography>
+            <Typography variant='body1'>{waiting?.data.status}</Typography>
           </Box>
         </Stack>
       </Paper>
 
-      <Typography variant="h6" sx={{ mb: 1 }}>세팅 목록</Typography>
-      <TableContainer component={Paper} variant="outlined">
-        <Table size="small">
+      <Typography variant='h6' sx={{ mb: 1 }}>
+        세팅 목록
+      </Typography>
+      <TableContainer component={Paper} variant='outlined'>
+        <Table size='small'>
           <TableHead>
             <TableRow>
               <TableCell>ID</TableCell>
@@ -128,7 +140,7 @@ export default function WaitingDetailPage() {
               <TableCell>ETA(min)</TableCell>
               <TableCell>Active</TableCell>
               <TableCell>Entry Limit</TableCell>
-              <TableCell align="right">Actions</TableCell>
+              <TableCell align='right'>Actions</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -141,10 +153,27 @@ export default function WaitingDetailPage() {
                 <TableCell>{s.estimatedWaitingTimeMinutes ?? '-'}</TableCell>
                 <TableCell>{s.isActive ? 'Y' : 'N'}</TableCell>
                 <TableCell>{s.entryTimeLimitMinutes ?? '-'}</TableCell>
-                <TableCell align="right">
-                  <Stack direction="row" spacing={1} justifyContent="flex-end">
-                    <Button size="small" onClick={() => { setSelected(s); setIsEditOpen(true); }}>수정</Button>
-                    <Button size="small" color="error" onClick={() => { setSelected(s); setIsDeleteOpen(true); }}>삭제</Button>
+                <TableCell align='right'>
+                  <Stack direction='row' spacing={1} justifyContent='flex-end'>
+                    <Button
+                      size='small'
+                      onClick={() => {
+                        setSelected(s);
+                        setIsEditOpen(true);
+                      }}
+                    >
+                      수정
+                    </Button>
+                    <Button
+                      size='small'
+                      color='error'
+                      onClick={() => {
+                        setSelected(s);
+                        setIsDeleteOpen(true);
+                      }}
+                    >
+                      삭제
+                    </Button>
                   </Stack>
                 </TableCell>
               </TableRow>
@@ -153,14 +182,21 @@ export default function WaitingDetailPage() {
         </Table>
       </TableContainer>
       <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 2, gap: 1 }}>
-        <Button disabled={page <= 1} onClick={() => setPage((p) => Math.max(1, p - 1))}>이전</Button>
-        <Button disabled={(pageInfo?.totalPages ?? 1) <= page} onClick={() => setPage((p) => p + 1)}>다음</Button>
+        <Button disabled={page <= 1} onClick={() => setPage((p) => Math.max(1, p - 1))}>
+          이전
+        </Button>
+        <Button
+          disabled={(pageInfo?.totalPages ?? 1) <= page}
+          onClick={() => setPage((p) => p + 1)}
+        >
+          다음
+        </Button>
       </Box>
 
       {/* Create */}
       <SettingDialog
         open={isCreateOpen}
-        title="세팅 추가"
+        title='세팅 추가'
         initial={{
           label: '',
           minimumCapacity: '',
@@ -176,9 +212,13 @@ export default function WaitingDetailPage() {
             label: v.label,
             minimumCapacity: v.minimumCapacity === '' ? undefined : Number(v.minimumCapacity),
             maximumCapacity: Number(v.maximumCapacity),
-            estimatedWaitingTimeMinutes: v.estimatedWaitingTimeMinutes === '' ? undefined : Number(v.estimatedWaitingTimeMinutes),
+            estimatedWaitingTimeMinutes:
+              v.estimatedWaitingTimeMinutes === ''
+                ? undefined
+                : Number(v.estimatedWaitingTimeMinutes),
             isActive: v.isActive,
-            entryTimeLimitMinutes: v.entryTimeLimitMinutes === '' ? undefined : Number(v.entryTimeLimitMinutes),
+            entryTimeLimitMinutes:
+              v.entryTimeLimitMinutes === '' ? undefined : Number(v.entryTimeLimitMinutes),
           };
           createMutation.mutate(payload);
         }}
@@ -188,7 +228,7 @@ export default function WaitingDetailPage() {
       {/* Edit */}
       <SettingDialog
         open={isEditOpen}
-        title="세팅 수정"
+        title='세팅 수정'
         initial={{
           label: selected?.label ?? '',
           minimumCapacity: selected?.minimumCapacity?.toString() ?? '',
@@ -197,7 +237,10 @@ export default function WaitingDetailPage() {
           isActive: !!selected?.isActive,
           entryTimeLimitMinutes: selected?.entryTimeLimitMinutes?.toString() ?? '',
         }}
-        onClose={() => { setIsEditOpen(false); setSelected(null); }}
+        onClose={() => {
+          setIsEditOpen(false);
+          setSelected(null);
+        }}
         onSubmit={(v) => {
           if (!selected) return;
           const payload: AdminWaitingSettingUpdateRequest = {
@@ -216,11 +259,16 @@ export default function WaitingDetailPage() {
 
       <DeleteConfirmDialog
         open={isDeleteOpen}
-        onClose={() => { setIsDeleteOpen(false); setSelected(null); }}
-        onConfirm={() => { if (selected) deleteMutation.mutate(selected.id); }}
+        onClose={() => {
+          setIsDeleteOpen(false);
+          setSelected(null);
+        }}
+        onConfirm={() => {
+          if (selected) deleteMutation.mutate(selected.id);
+        }}
         loading={deleteMutation.isPending}
-        title="삭제 확인"
-        description="이 설정을 삭제하시겠습니까?"
+        title='삭제 확인'
+        description='이 설정을 삭제하시겠습니까?'
       />
     </Box>
   );
@@ -251,29 +299,63 @@ function SettingDialog({
   loading: boolean;
 }) {
   const [values, setValues] = useState<SettingValues>(initial);
-  useEffect(() => { if (open) setValues(initial); }, [open, initial]);
+  useEffect(() => {
+    if (open) setValues(initial);
+  }, [open, initial]);
 
   return (
-    <Dialog open={open} onClose={onClose} fullWidth maxWidth="sm">
+    <Dialog open={open} onClose={onClose} fullWidth maxWidth='sm'>
       <DialogTitle>{title}</DialogTitle>
       <DialogContent sx={{ display: 'grid', gap: 2, mt: 1 }}>
-        <TextField label="Label" value={values.label} onChange={(e) => setValues(v => ({ ...v, label: e.target.value }))} fullWidth />
+        <TextField
+          label='Label'
+          value={values.label}
+          onChange={(e) => setValues((v) => ({ ...v, label: e.target.value }))}
+          fullWidth
+        />
         <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
-          <TextField label="Min" value={values.minimumCapacity} onChange={(e) => setValues(v => ({ ...v, minimumCapacity: e.target.value }))} fullWidth />
-          <TextField label="Max" value={values.maximumCapacity} onChange={(e) => setValues(v => ({ ...v, maximumCapacity: e.target.value }))} fullWidth />
+          <TextField
+            label='Min'
+            value={values.minimumCapacity}
+            onChange={(e) => setValues((v) => ({ ...v, minimumCapacity: e.target.value }))}
+            fullWidth
+          />
+          <TextField
+            label='Max'
+            value={values.maximumCapacity}
+            onChange={(e) => setValues((v) => ({ ...v, maximumCapacity: e.target.value }))}
+            fullWidth
+          />
         </Stack>
         <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
-          <TextField label="ETA(min)" value={values.estimatedWaitingTimeMinutes} onChange={(e) => setValues(v => ({ ...v, estimatedWaitingTimeMinutes: e.target.value }))} fullWidth />
-          <TextField label="Entry Limit" value={values.entryTimeLimitMinutes} onChange={(e) => setValues(v => ({ ...v, entryTimeLimitMinutes: e.target.value }))} fullWidth />
+          <TextField
+            label='ETA(min)'
+            value={values.estimatedWaitingTimeMinutes}
+            onChange={(e) =>
+              setValues((v) => ({ ...v, estimatedWaitingTimeMinutes: e.target.value }))
+            }
+            fullWidth
+          />
+          <TextField
+            label='Entry Limit'
+            value={values.entryTimeLimitMinutes}
+            onChange={(e) => setValues((v) => ({ ...v, entryTimeLimitMinutes: e.target.value }))}
+            fullWidth
+          />
         </Stack>
         <FormControlLabel
-          control={<Switch checked={values.isActive} onChange={(e) => setValues(v => ({ ...v, isActive: e.target.checked }))} />}
-          label="Active"
+          control={
+            <Switch
+              checked={values.isActive}
+              onChange={(e) => setValues((v) => ({ ...v, isActive: e.target.checked }))}
+            />
+          }
+          label='Active'
         />
       </DialogContent>
       <DialogActions>
         <Button onClick={onClose}>취소</Button>
-        <Button onClick={() => onSubmit(values)} variant="contained" disabled={loading}>
+        <Button onClick={() => onSubmit(values)} variant='contained' disabled={loading}>
           {loading ? '저장 중...' : '저장'}
         </Button>
       </DialogActions>
