@@ -37,7 +37,6 @@ import {
 } from '@repo/api/admin';
 import { useMutation, useQuery } from '@tanstack/react-query';
 
-import { queryClient } from '../../providers';
 import { DeleteConfirmDialog } from '../DeleteConfirmDialog';
 import { EditCouponDialog } from '../EditCouponDialog';
 import {
@@ -49,6 +48,7 @@ import {
   USER_COUPON_STATUS_LABEL,
   USER_COUPON_STATUS_OPTIONS,
 } from '../options';
+import { queryClient } from '@/components/Provider/providers';
 
 const formatDate = (value?: string | null) => (value ? value : '-');
 const formatDateTime = (value?: string | null) => (value ? value.replace('T', ' ') : '-');
@@ -81,7 +81,8 @@ export default function CouponDetailPage() {
   const [issueForm, setIssueForm] = useState<IssueFormState>(INITIAL_ISSUE_FORM);
   const [userCouponsPage, setUserCouponsPage] = useState(1);
   const [userCouponsPageSize, setUserCouponsPageSize] = useState(10);
-  const [userCouponStatusFilter, setUserCouponStatusFilter] = useState<UserCouponStatusFilter>('all');
+  const [userCouponStatusFilter, setUserCouponStatusFilter] =
+    useState<UserCouponStatusFilter>('all');
 
   const {
     data: couponResponse,
@@ -98,13 +99,22 @@ export default function CouponDetailPage() {
     isLoading: isUserCouponLoading,
     isError: isUserCouponError,
   } = useQuery({
-    queryKey: ['coupon-user-coupons', couponId, userCouponsPage, userCouponsPageSize, userCouponStatusFilter],
+    queryKey: [
+      'coupon-user-coupons',
+      couponId,
+      userCouponsPage,
+      userCouponsPageSize,
+      userCouponStatusFilter,
+    ],
     queryFn: () =>
       adminUserCouponApi.list({
         pageNum: userCouponsPage,
         pageSize: userCouponsPageSize,
         couponId,
-        status: userCouponStatusFilter === 'all' ? undefined : (userCouponStatusFilter as UserCouponStatus),
+        status:
+          userCouponStatusFilter === 'all'
+            ? undefined
+            : (userCouponStatusFilter as UserCouponStatus),
       }),
     enabled: Number.isFinite(couponId),
     staleTime: 5_000,
@@ -143,7 +153,10 @@ export default function CouponDetailPage() {
       setIssueForm(INITIAL_ISSUE_FORM);
     },
     onError: () => {
-      setIssueForm((prev) => ({ ...prev, error: '쿠폰 발급에 실패했습니다. 입력값을 확인해 주세요.' }));
+      setIssueForm((prev) => ({
+        ...prev,
+        error: '쿠폰 발급에 실패했습니다. 입력값을 확인해 주세요.',
+      }));
     },
   });
 
@@ -203,7 +216,11 @@ export default function CouponDetailPage() {
   return (
     <Box sx={{ p: 3, display: 'flex', flexDirection: 'column', gap: 3 }}>
       <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-        <Button startIcon={<ArrowBack />} variant='outlined' onClick={() => router.push('/coupons')}>
+        <Button
+          startIcon={<ArrowBack />}
+          variant='outlined'
+          onClick={() => router.push('/coupons')}
+        >
           목록으로
         </Button>
         <Typography variant='h4' component='h1'>
@@ -216,11 +233,7 @@ export default function CouponDetailPage() {
           sx={{ ml: 1 }}
         />
         <Box sx={{ ml: 'auto', display: 'flex', gap: 1 }}>
-          <Button
-            startIcon={<Edit />}
-            variant='outlined'
-            onClick={() => setIsEditDialogOpen(true)}
-          >
+          <Button startIcon={<Edit />} variant='outlined' onClick={() => setIsEditDialogOpen(true)}>
             수정
           </Button>
           <Button
@@ -246,31 +259,51 @@ export default function CouponDetailPage() {
           }}
         >
           <Box>
-            <Typography variant='body2' color='text.secondary'>쿠폰 ID</Typography>
+            <Typography variant='body2' color='text.secondary'>
+              쿠폰 ID
+            </Typography>
             <Typography variant='body1'>{coupon.id}</Typography>
           </Box>
           <Box>
-            <Typography variant='body2' color='text.secondary'>혜택 유형</Typography>
-            <Typography variant='body1'>{BENEFIT_TYPE_LABEL[coupon.benefitType] ?? coupon.benefitType}</Typography>
+            <Typography variant='body2' color='text.secondary'>
+              혜택 유형
+            </Typography>
+            <Typography variant='body1'>
+              {BENEFIT_TYPE_LABEL[coupon.benefitType] ?? coupon.benefitType}
+            </Typography>
           </Box>
           <Box>
-            <Typography variant='body2' color='text.secondary'>쿠폰 유형</Typography>
+            <Typography variant='body2' color='text.secondary'>
+              쿠폰 유형
+            </Typography>
             <Typography variant='body1'>{COUPON_TYPE_LABEL[coupon.type] ?? coupon.type}</Typography>
           </Box>
           <Box>
-            <Typography variant='body2' color='text.secondary'>할인 유형</Typography>
-            <Typography variant='body1'>{DISCOUNT_TYPE_LABEL[coupon.discountType] ?? coupon.discountType}</Typography>
+            <Typography variant='body2' color='text.secondary'>
+              할인 유형
+            </Typography>
+            <Typography variant='body1'>
+              {DISCOUNT_TYPE_LABEL[coupon.discountType] ?? coupon.discountType}
+            </Typography>
           </Box>
           <Box>
-            <Typography variant='body2' color='text.secondary'>대상</Typography>
-            <Typography variant='body1'>{PROVIDE_TYPE_LABEL[coupon.provideType] ?? coupon.provideType}</Typography>
+            <Typography variant='body2' color='text.secondary'>
+              대상
+            </Typography>
+            <Typography variant='body1'>
+              {PROVIDE_TYPE_LABEL[coupon.provideType] ?? coupon.provideType}
+            </Typography>
           </Box>
           <Box>
-            <Typography variant='body2' color='text.secondary'>할인값</Typography>
+            <Typography variant='body2' color='text.secondary'>
+              할인값
+            </Typography>
             <Typography variant='body1'>{formatDiscountValue(coupon)}</Typography>
           </Box>
           <Box>
-            <Typography variant='body2' color='text.secondary'>발급 기간</Typography>
+            <Typography variant='body2' color='text.secondary'>
+              발급 기간
+            </Typography>
             <Typography variant='body1'>
               {coupon.issueStartOn
                 ? `${formatDate(coupon.issueStartOn)}${coupon.issueEndOn ? ` ~ ${formatDate(coupon.issueEndOn)}` : ''}`
@@ -278,11 +311,15 @@ export default function CouponDetailPage() {
             </Typography>
           </Box>
           <Box>
-            <Typography variant='body2' color='text.secondary'>사용 기한</Typography>
+            <Typography variant='body2' color='text.secondary'>
+              사용 기한
+            </Typography>
             <Typography variant='body1'>{formatDate(coupon.expiredOn)}</Typography>
           </Box>
           <Box>
-            <Typography variant='body2' color='text.secondary'>발급 수량</Typography>
+            <Typography variant='body2' color='text.secondary'>
+              발급 수량
+            </Typography>
             <Typography variant='body1'>
               총 {coupon.totalQuantity ?? '무제한'}
               <Typography component='span' variant='caption' color='text.secondary' sx={{ ml: 1 }}>
@@ -291,19 +328,27 @@ export default function CouponDetailPage() {
             </Typography>
           </Box>
           <Box>
-            <Typography variant='body2' color='text.secondary'>등록일</Typography>
+            <Typography variant='body2' color='text.secondary'>
+              등록일
+            </Typography>
             <Typography variant='body1'>{formatDateTime(coupon.createdAt)}</Typography>
           </Box>
           <Box>
-            <Typography variant='body2' color='text.secondary'>수정일</Typography>
+            <Typography variant='body2' color='text.secondary'>
+              수정일
+            </Typography>
             <Typography variant='body1'>{formatDateTime(coupon.updatedAt)}</Typography>
           </Box>
           <Box>
-            <Typography variant='body2' color='text.secondary'>사용 조건</Typography>
+            <Typography variant='body2' color='text.secondary'>
+              사용 조건
+            </Typography>
             <Typography variant='body1'>{coupon.conditions || '-'}</Typography>
           </Box>
           <Box>
-            <Typography variant='body2' color='text.secondary'>가게</Typography>
+            <Typography variant='body2' color='text.secondary'>
+              가게
+            </Typography>
             {coupon.storeId ? (
               <Button
                 component={NextLink}
@@ -349,7 +394,13 @@ export default function CouponDetailPage() {
       </Paper>
 
       <Paper sx={{ p: 3 }}>
-        <Stack direction={{ xs: 'column', md: 'row' }} spacing={2} alignItems={{ md: 'center' }} justifyContent='space-between' sx={{ mb: 2 }}>
+        <Stack
+          direction={{ xs: 'column', md: 'row' }}
+          spacing={2}
+          alignItems={{ md: 'center' }}
+          justifyContent='space-between'
+          sx={{ mb: 2 }}
+        >
           <Typography variant='h6'>발급 내역</Typography>
           <Stack direction='row' spacing={2} alignItems='center'>
             <FormControl size='small' sx={{ minWidth: 140 }}>
@@ -391,7 +442,9 @@ export default function CouponDetailPage() {
         <Divider sx={{ mb: 2 }} />
 
         {isUserCouponLoading ? (
-          <Typography sx={{ py: 4, textAlign: 'center' }}>발급 내역을 불러오는 중입니다...</Typography>
+          <Typography sx={{ py: 4, textAlign: 'center' }}>
+            발급 내역을 불러오는 중입니다...
+          </Typography>
         ) : isUserCouponError ? (
           <Alert severity='error'>발급 내역을 불러오지 못했습니다.</Alert>
         ) : issuedUserCoupons.length === 0 ? (
@@ -420,24 +473,34 @@ export default function CouponDetailPage() {
                     <TableCell>
                       <Stack spacing={0.5}>
                         <Typography variant='body2'>{userCoupon.nickname ?? '-'}</Typography>
-                        <Typography variant='caption' color='text.secondary'>ID: {userCoupon.userId}</Typography>
+                        <Typography variant='caption' color='text.secondary'>
+                          ID: {userCoupon.userId}
+                        </Typography>
                       </Stack>
                     </TableCell>
                     <TableCell>
                       {userCoupon.storeId ? (
                         <Stack spacing={0.5}>
                           <Typography variant='body2'>{userCoupon.storeName ?? '-'}</Typography>
-                          <Typography variant='caption' color='text.secondary'>ID: {userCoupon.storeId}</Typography>
+                          <Typography variant='caption' color='text.secondary'>
+                            ID: {userCoupon.storeId}
+                          </Typography>
                         </Stack>
                       ) : (
-                        '-' 
+                        '-'
                       )}
                     </TableCell>
                     <TableCell>
                       <Chip
                         label={USER_COUPON_STATUS_LABEL[userCoupon.status] ?? userCoupon.status}
                         size='small'
-                        color={userCoupon.status === 'AVAILABLE' ? 'success' : userCoupon.status === 'REQUESTED' ? 'warning' : 'default'}
+                        color={
+                          userCoupon.status === 'AVAILABLE'
+                            ? 'success'
+                            : userCoupon.status === 'REQUESTED'
+                              ? 'warning'
+                              : 'default'
+                        }
                       />
                     </TableCell>
                     <TableCell>{formatDateTime(userCoupon.createdDateAt)}</TableCell>

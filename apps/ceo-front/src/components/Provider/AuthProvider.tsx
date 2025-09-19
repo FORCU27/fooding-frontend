@@ -68,9 +68,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
       const userResponse = await authApi.getSelf();
       setUser(userResponse.data);
-    } catch (error) {
-      console.error('Email login failed:', error);
-      throw error;
     } finally {
       setIsLoading(false);
     }

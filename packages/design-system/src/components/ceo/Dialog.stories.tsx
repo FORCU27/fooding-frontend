@@ -91,7 +91,7 @@ export const ConfirmDialog: Story = {
         </Dialog.Header>
         <Dialog.Footer>
           <Dialog.Close asChild>
-            <Button variant='outline'>취소</Button>
+            <Button variant='outlined'>취소</Button>
           </Dialog.Close>
           <Dialog.Close asChild>
             <Button>확인</Button>
@@ -142,7 +142,7 @@ export const CategoryExample: Story = {
           </Dialog.Body>
           <Dialog.Footer>
             <Dialog.Close asChild>
-              <Button variant='outline'>삭제</Button>
+              <Button variant='outlined'>삭제</Button>
             </Dialog.Close>
             <Dialog.Close asChild>
               <Button>저장</Button>

@@ -273,10 +273,10 @@ const BasicInfoPage = () => {
                 <Dialog.Title>변경하실 주소를 알려주세요</Dialog.Title>
               </Dialog.Header>
               <Dialog.Body>
-                <DaumPostcode className='h-[500px]' onComplete={onCompletePost} />
+                <DaumPostcode style={{ height: '500px' }} onComplete={onCompletePost} />
               </Dialog.Body>
               <Dialog.Footer>
-                <Button variant='outline' onClick={() => setIsAddressDialogOpen(false)}>
+                <Button variant='outlined' onClick={() => setIsAddressDialogOpen(false)}>
                   닫기
                 </Button>
               </Dialog.Footer>

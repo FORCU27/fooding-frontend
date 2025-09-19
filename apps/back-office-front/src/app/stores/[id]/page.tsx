@@ -24,10 +24,12 @@ import {
   Tab,
   IconButton,
   FormControl,
+  FormControlLabel,
   InputLabel,
   MenuItem,
   Pagination,
   Select,
+  Checkbox,
 } from '@mui/material';
 import {
   Table,
@@ -68,8 +70,6 @@ import {
   AdminMenuCategoryResponse,
   AdminMenuCategoryCreateRequest,
   AdminMenuCategoryUpdateRequest,
-} from '@repo/api/admin';
-import {
   AdminCouponResponse,
   AdminCreateCouponRequest,
   AdminUpdateCouponRequest,
@@ -78,10 +78,12 @@ import {
 import { useQuery, useMutation } from '@tanstack/react-query';
 import { useQuery as useRQ, useMutation as useRMutation } from '@tanstack/react-query';
 
-import { queryClient } from '../../providers';
+import { queryClient } from '../../../components/Provider/providers';
 import { DeleteConfirmDialog } from '../DeleteConfirmDialog';
 import { EditStoreDialog } from '../EditStoreDialog';
 import StoreServiceManagement from './StoreServiceManagement';
+import { TagCheckboxGroup, StoreImageTag } from '../../../components/TagCheckboxGroup';
+import { TagInput } from '../../../components/TagInput';
 import { CreateCouponDialog } from '../../coupons/CreateCouponDialog';
 import { EditCouponDialog } from '../../coupons/EditCouponDialog';
 import {
@@ -908,6 +910,7 @@ export default function StoreDetailPage() {
                   <TableCell>이미지</TableCell>
                   <TableCell>태그</TableCell>
                   <TableCell>정렬</TableCell>
+                  <TableCell>대표</TableCell>
                   <TableCell>작업</TableCell>
                 </TableRow>
               </TableHead>
@@ -922,8 +925,9 @@ export default function StoreDetailPage() {
                         style={{ width: 80, height: 60, objectFit: 'cover', borderRadius: 4 }}
                       />
                     </TableCell>
-                    <TableCell>{img.tags || ''}</TableCell>
+                    <TableCell>{Array.isArray(img.tags) ? img.tags.join(', ') : ''}</TableCell>
                     <TableCell>{img.sortOrder}</TableCell>
+                    <TableCell>{img.isMain ? 'Y' : 'N'}</TableCell>
                     <TableCell>
                       <Box sx={{ display: 'flex', gap: 1 }}>
                         <Button
@@ -957,16 +961,26 @@ export default function StoreDetailPage() {
         <ImageDialog
           open={isCreateImageOpen}
           title='이미지 추가'
-          initial={{ imageUrl: '', sortOrder: 0, tags: '' }}
+          initial={{ imageUrl: '', sortOrder: 0, tags: [] as StoreImageTag[], isMain: false }}
           onClose={() => setIsCreateImageOpen(false)}
-          onSubmit={(values) =>
-            createImageMutation.mutate({
+          onSubmit={async (values) => {
+            // 1) 생성하고 ID를 받아온 뒤
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            const res: any = await createImageMutation.mutateAsync({
               storeId,
               imageUrl: values.imageUrl,
               sortOrder: values.sortOrder,
               tags: values.tags,
-            })
-          }
+            });
+            const newId = res?.data as number | undefined;
+            // 2) 체크박스가 선택된 경우 대표이미지 설정 API 호출
+            if (newId && values.isMain === true) {
+              await adminStoreImageApi.updateMain(newId, { isMain: true });
+            }
+            // 목록 갱신 및 다이얼로그 닫기
+            queryClient.invalidateQueries({ queryKey: ['storeImages', storeId] });
+            setIsCreateImageOpen(false);
+          }}
           loading={createImageMutation.isPending}
         />
 
@@ -976,15 +990,16 @@ export default function StoreDetailPage() {
           initial={{
             imageUrl: selectedImage?.imageUrl ?? '',
             sortOrder: selectedImage?.sortOrder ?? 0,
-            tags: selectedImage?.tags ?? '',
+            tags: (selectedImage?.tags as StoreImageTag[] | undefined) ?? [],
+            isMain: selectedImage?.isMain ?? false,
           }}
           onClose={() => {
             setIsEditImageOpen(false);
             setSelectedImage(null);
           }}
-          onSubmit={(values) => {
+          onSubmit={async (values) => {
             if (!selectedImage) return;
-            updateImageMutation.mutate({
+            await updateImageMutation.mutateAsync({
               id: selectedImage.id,
               body: {
                 imageUrl: values.imageUrl || undefined,
@@ -992,6 +1007,11 @@ export default function StoreDetailPage() {
                 tags: values.tags,
               },
             });
+            // 대표이미지 상태를 체크박스 값으로 설정 (true/false)
+            await adminStoreImageApi.updateMain(selectedImage.id, { isMain: !!values.isMain });
+            queryClient.invalidateQueries({ queryKey: ['storeImages', storeId] });
+            setIsEditImageOpen(false);
+            setSelectedImage(null);
           }}
           loading={updateImageMutation.isPending}
         />
@@ -1324,6 +1344,7 @@ export default function StoreDetailPage() {
 
       {/* 메뉴 생성 다이얼로그 */}
       <MenuDialog
+        key={`create-menu-${isCreateMenuOpen}`}
         open={isCreateMenuOpen}
         title='메뉴 생성'
         initial={{
@@ -1346,6 +1367,7 @@ export default function StoreDetailPage() {
       {/* 메뉴 수정 다이얼로그 */}
       {selectedMenu && (
         <MenuDialog
+          key={`edit-menu-${selectedMenu.id}-${isEditMenuOpen}`}
           open={isEditMenuOpen}
           title='메뉴 수정'
           initial={{
@@ -1371,6 +1393,7 @@ export default function StoreDetailPage() {
 
       {/* 카테고리 생성 다이얼로그 */}
       <CategoryDialog
+        key={`create-category-${isCreateCategoryOpen}`}
         open={isCreateCategoryOpen}
         title='카테고리 생성'
         initial={{
@@ -1387,6 +1410,7 @@ export default function StoreDetailPage() {
       {/* 카테고리 수정 다이얼로그 */}
       {selectedCategory && (
         <CategoryDialog
+          key={`edit-category-${selectedCategory.id}-${isEditCategoryOpen}`}
           open={isEditCategoryOpen}
           title='카테고리 수정'
           initial={{
@@ -1652,6 +1676,13 @@ function MenuDialog({
   const [uploadedFileName, setUploadedFileName] = useState<string>('');
   const [previewUrl, setPreviewUrl] = useState<string>('');
 
+  // initial 값이 변경될 때 폼 초기화
+  useEffect(() => {
+    setValues(initial);
+    setUploadedFileName('');
+    setPreviewUrl('');
+  }, [initial]);
+
   const handleChange = (key: keyof MenuFormValues) => (e: React.ChangeEvent<HTMLInputElement>) => {
     const val = e.target.value;
     setValues((prev) => ({
@@ -1869,6 +1900,11 @@ function CategoryDialog({
 }) {
   const [values, setValues] = useState<CategoryFormValues>(initial);
 
+  // initial 값이 변경될 때 폼 초기화
+  useEffect(() => {
+    setValues(initial);
+  }, [initial]);
+
   const handleChange =
     (key: keyof CategoryFormValues) => (e: React.ChangeEvent<HTMLInputElement>) => {
       const val = e.target.value;
@@ -1910,7 +1946,8 @@ function CategoryDialog({
 type ImageFormValues = {
   imageUrl: string;
   sortOrder: number;
-  tags: string;
+  tags: StoreImageTag[];
+  isMain?: boolean;
 };
 
 function ImageDialog({
@@ -1939,15 +1976,26 @@ function ImageDialog({
     setUploadedFileName('');
   }, [initial]);
 
-  const handleChange = (key: keyof ImageFormValues) => (e: React.ChangeEvent<HTMLInputElement>) => {
-    const val = e.target.value;
-    setValues(
-      (prev) =>
-        ({
-          ...prev,
-          [key]: key === 'sortOrder' ? Number(val) : val,
-        }) as ImageFormValues,
-    );
+  const handleChange = (key: keyof Omit<ImageFormValues, 'tags' | 'isMain'>) =>
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const val = e.target.value;
+      setValues(
+        (prev) =>
+          ({
+            ...prev,
+            [key]: key === 'sortOrder' ? Number(val) : val,
+          }) as ImageFormValues,
+      );
+    };
+
+  const handleBoolChange = (key: keyof Pick<ImageFormValues, 'isMain'>) =>
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const checked = e.target.checked;
+      setValues((prev) => ({ ...prev, [key]: checked }));
+    };
+
+  const handleTagsChange = (tags: StoreImageTag[]) => {
+    setValues((prev) => ({ ...prev, tags }));
   };
 
   const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -2033,7 +2081,16 @@ function ImageDialog({
           onChange={handleChange('sortOrder')}
           fullWidth
         />
-        <TextField label='태그' value={values.tags} onChange={handleChange('tags')} fullWidth />
+        <TagCheckboxGroup
+          value={values.tags}
+          onChange={handleTagsChange}
+          label='태그'
+          fullWidth
+        />
+        <FormControlLabel
+          control={<Checkbox checked={!!values.isMain} onChange={handleBoolChange('isMain')} />}
+          label='대표 이미지로 지정'
+        />
       </DialogContent>
       <DialogActions>
         <Button onClick={onClose}>취소</Button>
@@ -2085,12 +2142,7 @@ function PostDialog({
       setValues((prev) => ({ ...prev, [key]: val }));
     };
 
-  const handleTagsChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const raw = e.target.value;
-    const tags = raw
-      .split(',')
-      .map((t) => t.trim())
-      .filter((t) => t.length > 0);
+  const handleTagsChange = (tags: string[]) => {
     setValues((prev) => ({ ...prev, tags }));
   };
 
@@ -2112,10 +2164,11 @@ function PostDialog({
           multiline
           minRows={4}
         />
-        <TextField
-          label='태그 (쉼표로 구분)'
-          value={values.tags.join(', ')}
+        <TagInput
+          value={values.tags}
           onChange={handleTagsChange}
+          label='태그'
+          placeholder='태그를 입력하고 엔터를 누르세요'
           fullWidth
         />
         <Box sx={{ display: 'flex', gap: 2 }}>

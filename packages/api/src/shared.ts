@@ -1,5 +1,6 @@
 import axios, { AxiosInstance, AxiosRequestConfig } from 'axios';
 import Cookies from 'js-cookie';
+import qs from 'qs';
 import { z } from 'zod/v4';
 
 import { STORAGE_KEYS } from './configs/storageKeys';
@@ -32,6 +33,8 @@ apiClient.interceptors.response.use(
     return Promise.reject(error);
   },
 );
+
+apiClient.defaults.paramsSerializer = (params) => qs.stringify(params);
 
 export const createApi = (apiClient: AxiosInstance) => ({
   get: async <TResponse = unknown>(url: string, config?: AxiosRequestConfig<unknown>) => {
@@ -161,7 +164,15 @@ export const AuthErrorResponseSchema = z.object({
 
 export type AuthErrorResponse = z.infer<typeof AuthErrorResponseSchema>;
 
-export const SORT_TYPES = ['RECENT', 'AVERAGE_RATING', 'REVIEW', 'POPULARITY'] as const;
+export const SORT_TYPES = [
+  'RECENT',
+  'RECOMMENDED',
+  'AVERAGE_RATING',
+  'REVIEW',
+  'PRICE',
+  'DISTANCE',
+  'POPULARITY',
+] as const;
 export type SortType = (typeof SORT_TYPES)[number];
 
 export const SORT_DIRECTIONS = ['ASCENDING', 'DESCENDING'] as const;

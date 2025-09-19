@@ -1,4 +1,3 @@
-
 'use client';
 
 import NextLink from 'next/link';
@@ -29,7 +28,7 @@ import { useQuery, useMutation } from '@tanstack/react-query';
 
 import { CreateBannerDialog } from './CreateBannerDialog';
 import { DeleteConfirmDialog } from './DeleteConfirmDialog';
-import { queryClient } from '../providers';
+import { queryClient } from '@/components/Provider/providers';
 
 type Banner = AdminBannerResponse;
 
@@ -55,10 +54,18 @@ export default function BannersPage() {
   }, [search]);
 
   const { data: bannersResponse, isLoading } = useQuery({
-    queryKey: ['banners', page, pageSize, debouncedSearch, activeFilter, serviceFilter, placementFilter],
+    queryKey: [
+      'banners',
+      page,
+      pageSize,
+      debouncedSearch,
+      activeFilter,
+      serviceFilter,
+      placementFilter,
+    ],
     queryFn: () =>
       bannerApi.list({
-        page: page - 1,
+        page: page ,
         size: pageSize,
         name: debouncedSearch || undefined,
         active: activeFilter === 'all' ? undefined : activeFilter === 'active',
@@ -137,8 +144,8 @@ export default function BannersPage() {
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           onKeyDown={handleSearchKeyDown}
-          placeholder="배너명 검색"
-          size="small"
+          placeholder='배너명 검색'
+          size='small'
           sx={{ flex: 1, minWidth: 240 }}
         />
 
@@ -148,8 +155,8 @@ export default function BannersPage() {
             setServiceFilter(event.target.value);
             setPage(1);
           }}
-          placeholder="서비스"
-          size="small"
+          placeholder='서비스'
+          size='small'
           sx={{ minWidth: 160 }}
         />
 
@@ -159,12 +166,12 @@ export default function BannersPage() {
             setPlacementFilter(event.target.value);
             setPage(1);
           }}
-          placeholder="노출 위치"
-          size="small"
+          placeholder='노출 위치'
+          size='small'
           sx={{ minWidth: 160 }}
         />
 
-        <FormControl size="small" sx={{ minWidth: 160 }}>
+        <FormControl size='small' sx={{ minWidth: 160 }}>
           <Select
             value={activeFilter}
             onChange={(e) => {
@@ -172,21 +179,21 @@ export default function BannersPage() {
               setPage(1);
             }}
           >
-            <MenuItem value="all">전체</MenuItem>
-            <MenuItem value="active">활성화</MenuItem>
-            <MenuItem value="inactive">비활성화</MenuItem>
+            <MenuItem value='all'>전체</MenuItem>
+            <MenuItem value='active'>활성화</MenuItem>
+            <MenuItem value='inactive'>비활성화</MenuItem>
           </Select>
         </FormControl>
 
-          <Button
-            variant="outlined"
-            onClick={() => {
-              setPage(1);
-              setDebouncedSearch(search);
-            }}
-          >
-            검색
-          </Button>
+        <Button
+          variant='outlined'
+          onClick={() => {
+            setPage(1);
+            setDebouncedSearch(search);
+          }}
+        >
+          검색
+        </Button>
       </Box>
 
       <TableContainer component={Paper}>
@@ -207,7 +214,12 @@ export default function BannersPage() {
               <TableRow key={banner.id}>
                 <TableCell>{banner.id}</TableCell>
                 <TableCell>
-                  <Button component={NextLink} href={`/banners/${banner.id}`} variant='text' size='small'>
+                  <Button
+                    component={NextLink}
+                    href={`/banners/${banner.id}`}
+                    variant='text'
+                    size='small'
+                  >
                     {banner.name}
                   </Button>
                 </TableCell>
@@ -220,7 +232,9 @@ export default function BannersPage() {
                       sx={{ width: 80, height: 45, objectFit: 'cover', borderRadius: 1 }}
                     />
                   ) : (
-                    <Typography variant='caption' color='text.secondary'>-</Typography>
+                    <Typography variant='caption' color='text.secondary'>
+                      -
+                    </Typography>
                   )}
                 </TableCell>
                 <TableCell>{banner.service ?? '-'}</TableCell>
@@ -234,7 +248,12 @@ export default function BannersPage() {
                 <TableCell>{banner.priority}</TableCell>
                 <TableCell align='right'>
                   <Box sx={{ display: 'flex', gap: 1, justifyContent: 'flex-end' }}>
-                    <Button component={NextLink} href={`/banners/${banner.id}`} size='small' variant='outlined'>
+                    <Button
+                      component={NextLink}
+                      href={`/banners/${banner.id}`}
+                      size='small'
+                      variant='outlined'
+                    >
                       상세
                     </Button>
                     <Button
@@ -255,30 +274,22 @@ export default function BannersPage() {
 
       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mt: 2 }}>
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-          <Typography variant="body2">
-            페이지당 행 수:
-          </Typography>
-          <FormControl size="small" sx={{ minWidth: 80 }}>
-            <Select
-              value={pageSize}
-              onChange={handlePageSizeChange}
-              displayEmpty
-            >
+          <Typography variant='body2'>페이지당 행 수:</Typography>
+          <FormControl size='small' sx={{ minWidth: 80 }}>
+            <Select value={pageSize} onChange={handlePageSizeChange} displayEmpty>
               <MenuItem value={10}>10</MenuItem>
               <MenuItem value={20}>20</MenuItem>
               <MenuItem value={50}>50</MenuItem>
             </Select>
           </FormControl>
-          <Typography variant="body2">
-            총 {pageInfo?.totalCount || 0}개 항목
-          </Typography>
+          <Typography variant='body2'>총 {pageInfo?.totalCount || 0}개 항목</Typography>
         </Box>
-        
+
         <Pagination
           count={totalPages}
           page={page}
           onChange={handlePageChange}
-          color="primary"
+          color='primary'
           showFirstButton
           showLastButton
         />
@@ -297,7 +308,9 @@ export default function BannersPage() {
         onConfirm={handleDeleteConfirm}
         loading={deleteMutation.isPending}
         title='배너 삭제 확인'
-        description={bannerToDelete ? `정말로 '${bannerToDelete.name}' 배너를 삭제하시겠습니까?` : ''}
+        description={
+          bannerToDelete ? `정말로 '${bannerToDelete.name}' 배너를 삭제하시겠습니까?` : ''
+        }
       />
     </Box>
   );

@@ -24,8 +24,8 @@ import {
 } from '@repo/api/admin';
 import { useQuery, useMutation } from '@tanstack/react-query';
 
+import { queryClient } from './Provider/providers';
 import { DeleteConfirmDialog } from '@/app/notifications/DeleteConfirmDialog';
-import { queryClient } from '@/app/providers';
 import { CreateUserDialog } from '@/app/users/CreateUserDialog';
 import { EditUserDialog } from '@/app/users/EditUserDialog';
 
@@ -48,7 +48,11 @@ export default function UserList({ role }: { role: Role }) {
 
   const queryKey = [roleMap[role].queryKey ?? 'unknown', page];
   const roleName = roleMap[role].label;
-  const { data: usersResponse, isLoading, error } = useQuery({
+  const {
+    data: usersResponse,
+    isLoading,
+    error,
+  } = useQuery({
     queryKey,
     queryFn: async () => {
       try {
@@ -97,7 +101,9 @@ export default function UserList({ role }: { role: Role }) {
 
   if (isLoading) {
     return (
-      <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '200px' }}>
+      <Box
+        sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '200px' }}
+      >
         <CircularProgress />
       </Box>
     );
@@ -112,7 +118,7 @@ export default function UserList({ role }: { role: Role }) {
     });
     return (
       <Box sx={{ p: 3 }}>
-        <Alert severity="error">
+        <Alert severity='error'>
           사용자 목록을 불러오는 중 오류가 발생했습니다.
           <br />
           에러: {error.message}
@@ -166,11 +172,11 @@ export default function UserList({ role }: { role: Role }) {
               <TableRow key={user.id}>
                 <TableCell>{user.id}</TableCell>
                 <TableCell>
-                  <Link 
-                    href={`/users/${user.id}`} 
-                    underline="hover"
-                    target="_blank"
-                    rel="noopener noreferrer"
+                  <Link
+                    href={`/users/${user.id}`}
+                    underline='hover'
+                    target='_blank'
+                    rel='noopener noreferrer'
                   >
                     {user.email}
                   </Link>
@@ -181,10 +187,15 @@ export default function UserList({ role }: { role: Role }) {
                   {user.gender === 'NONE' ? '-' : user.gender === 'MALE' ? '남성' : '여성'}
                 </TableCell>
                 <TableCell>
-                  {user.provider === 'GOOGLE' ? '구글' : 
-                   user.provider === 'FOODING' ? '푸딩' : 
-                   user.provider === 'APPLE' ? '애플' : 
-                   user.provider === 'KAKAO' ? '카카오' : user.provider}
+                  {user.provider === 'GOOGLE'
+                    ? '구글'
+                    : user.provider === 'FOODING'
+                      ? '푸딩'
+                      : user.provider === 'APPLE'
+                        ? '애플'
+                        : user.provider === 'KAKAO'
+                          ? '카카오'
+                          : user.provider}
                 </TableCell>
                 <TableCell>{new Date(user.createdAt).toLocaleString()}</TableCell>
                 <TableCell>
@@ -224,7 +235,7 @@ export default function UserList({ role }: { role: Role }) {
             count={pageInfo.totalPages}
             page={page}
             onChange={(_, newPage) => setPage(newPage)}
-            color="primary"
+            color='primary'
             showFirstButton
             showLastButton
           />

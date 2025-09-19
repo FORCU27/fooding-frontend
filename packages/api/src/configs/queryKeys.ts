@@ -42,6 +42,7 @@ export const queryKeys = {
       infiniteImageList: 'userStoreInfiniteImageList',
       reward: 'userStoreReward',
       rewardList: 'userStoreRewardList',
+      searchInfiniteStoreList: 'userSearchInfiniteStoreList',
     },
     storePost: {
       list: 'userStorePostList',

@@ -15,6 +15,7 @@ const Input = ({
   className,
   disabled = false,
   suffix,
+  'aria-invalid': ariaInvalid,
   ...props
 }: InputProps) => {
   const renderIcon = () => {
@@ -42,6 +43,7 @@ const Input = ({
           { 'pl-6 pr-8': suffix }, // suffix가 있을 때 오른쪽 패딩 추가
           className,
           { 'opacity-50 cursor-pointer bg-gray-1 text-gray-5': disabled },
+          ariaInvalid && 'border-error-red focus-visible:border-error-red',
         )}
         {...props}
         disabled={disabled}
