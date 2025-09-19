@@ -23,9 +23,9 @@ const TextArea = ({ className, maxLength, value, onChange, ...props }: TextAreaP
     <div className='flex w-full flex-col gap-2'>
       <textarea
         className={cn(
-          'flex w-full rounded-[8px] border border-gray-3 bg-white px-[10px] py-[16px] text-[20px] font-bold text-black placeholder:text-gray-5 placeholder:font-normal',
-          'h-[120px] resize-none',
-          { 'pb-8': maxLength },
+          'flex w-full rounded-[8px] border border-gray-3 bg-white px-[20px] py-[18px] font-medium placeholder:text-gray-5',
+          'outline-hidden focus-visible:border-fooding-purple',
+          'resize-none field-sizing-content',
           className,
         )}
         maxLength={maxLength}
