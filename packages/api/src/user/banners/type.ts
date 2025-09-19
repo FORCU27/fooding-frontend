@@ -2,7 +2,7 @@ import { z } from 'zod/v4';
 
 import { ApiResponse, PageResponse } from '../../shared';
 
-export const UserBannerResponseSchema = z.object({
+export const Banner = z.object({
   id: z.string(),
   name: z.string(),
   description: z.string(),
@@ -13,18 +13,22 @@ export const UserBannerResponseSchema = z.object({
   imageUrl: z.string().nullable().optional(),
   service: z.string().nullable().optional(),
   placement: z.string().nullable().optional(),
-  parameters: z.record(z.string(), z.unknown()).nullable().optional(),
+  parameters: z
+    .object({
+      screenId: z.string().optional(),
+    })
+    .optional(),
 });
-export type UserBannerResponse = z.infer<typeof UserBannerResponseSchema>;
+export type UserBannerResponse = z.infer<typeof Banner>;
 
-export const GetUserBannerListResponse = PageResponse(UserBannerResponseSchema);
-export type GetUserBannerListResponse = z.infer<typeof GetUserBannerListResponse>;
+export const GetBannerListResponse = PageResponse(Banner);
+export type GetBannerListResponse = z.infer<typeof GetBannerListResponse>;
 
-export const GetUserBannerResponse = ApiResponse(UserBannerResponseSchema);
-export type GetUserBannerResponse = z.infer<typeof GetUserBannerResponse>;
+export const GetBannerByIdResponse = ApiResponse(Banner);
+export type GetBannerByIdResponse = z.infer<typeof GetBannerByIdResponse>;
 
-export type UserBannerListParams = {
-  pageNum?: number;
-  pageSize?: number;
-  searchString?: string;
+export type GetBannerListParams = {
+  pageNum: number;
+  pageSize: number;
+  searchString: string;
 };
