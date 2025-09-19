@@ -11,7 +11,8 @@ export const useStoreImages = (storeId?: number) => {
         pageNum: 1,
         pageSize: 20,
         searchString: '',
-        searchTag: '',
+        tag: 'PRICE_TAG',
+        isMain: false,
       });
     },
     enabled: !!storeId,
