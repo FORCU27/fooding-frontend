@@ -39,3 +39,5 @@ export { default as PinIcon } from './PinIcon';
 export { default as PlayVideoIcon } from './PlayVideoIcon';
 export { default as ArrowUpLeftIcon } from './ArrowUpLeftIcon';
 export { default as MenuIcon } from './MenuIcon';
+export { default as LinkIcon } from './LinkIcon';
+export { default as TrashIcon } from './TrashIcon';
