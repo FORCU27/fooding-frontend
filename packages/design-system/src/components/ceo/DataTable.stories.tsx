@@ -31,15 +31,14 @@ export default meta;
 const columns: ColumnDef<RowData>[] = [
   {
     accessorKey: 'thumbnail',
-    header: () => <span className='w-[68px] block'>사진</span>,
+    header: () => <span className='block'>사진</span>,
     cell: ({ row }) => (
       <img
         src={row.original.thumbnail}
         alt='썸네일'
-        className='w-[64px] h-[64px] rounded bg-gray-100 object-cover'
+        className='rounded bg-gray-100 object-cover'
       />
     ),
-    size: 60,
   },
   {
     accessorKey: 'content',

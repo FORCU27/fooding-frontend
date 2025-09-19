@@ -17,6 +17,12 @@ export function DataTable<TData, TValue = unknown>({
     data,
     columns,
     getCoreRowModel: getCoreRowModel(),
+    columnResizeMode: "onChange",
+    defaultColumn: {
+      size: 100,
+      minSize: 50,
+      maxSize: 539,
+    },
   });
 
   return (
@@ -25,7 +31,7 @@ export function DataTable<TData, TValue = unknown>({
           {table.getHeaderGroups().map((headerGroup) => (
             <tr key={headerGroup.id}>
               {headerGroup.headers.map((header) => (
-                <th key={header.id} className='p-[20px] text-gray-5 body-2'>
+                <th key={header.id} className='p-[20px] text-gray-5 body-2' style={{ width: header.getSize() }}>
                   {header.isPlaceholder
                     ? null
                     : flexRender(header.column.columnDef.header, header.getContext())}
@@ -39,7 +45,7 @@ export function DataTable<TData, TValue = unknown>({
             table.getRowModel().rows.map((row) => (
               <tr key={row.id}>
                 {row.getVisibleCells().map((cell) => (
-                  <td key={cell.id} className='px-[20px] py-[23px]'>
+                  <td key={cell.id} className='px-[20px] py-[23px]' style={{ width: cell.column.getSize() }}>
                     {flexRender(cell.column.columnDef.cell, cell.getContext())}
                   </td>
                 ))}
