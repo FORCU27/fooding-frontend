@@ -65,7 +65,7 @@ export default function BannersPage() {
     ],
     queryFn: () =>
       bannerApi.list({
-        page: page - 1,
+        page: page ,
         size: pageSize,
         name: debouncedSearch || undefined,
         active: activeFilter === 'all' ? undefined : activeFilter === 'active',

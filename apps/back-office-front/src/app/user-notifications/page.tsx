@@ -30,7 +30,7 @@ import { DeleteConfirmDialog } from './DeleteConfirmDialog';
 import { queryClient } from '../../components/Provider/providers';
 
 export default function UserNotificationsPage() {
-  const page = 0;
+  const page = 1;
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [createDialogOpen, setCreateDialogOpen] = useState(false);
   const [notificationToDelete, setNotificationToDelete] = useState<UserNotificationResponse | null>(

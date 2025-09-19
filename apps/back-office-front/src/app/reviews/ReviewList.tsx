@@ -41,7 +41,8 @@ const visitPurposeTypeMap = {
 };
 
 export default function ReviewList() {
-  const [page, setPage] = useState(0);
+  // 페이지는 1부터 시작하도록 변경
+  const [page, setPage] = useState(1);
   const size = 10;
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
@@ -239,8 +240,8 @@ export default function ReviewList() {
         <Box sx={{ display: 'flex', justifyContent: 'center', mt: 3 }}>
           <Pagination
             count={pageInfo.totalPages}
-            page={page + 1}
-            onChange={(_, newPage) => setPage(newPage - 1)}
+            page={page}
+            onChange={(_, newPage) => setPage(newPage)}
             color='primary'
             showFirstButton
             showLastButton

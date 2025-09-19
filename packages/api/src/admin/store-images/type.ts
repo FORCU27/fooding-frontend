@@ -7,7 +7,8 @@ export const AdminStoreImageResponseSchema = z.object({
   storeId: z.number().optional(),
   imageUrl: z.string(),
   sortOrder: z.number(),
-  tags: z.string().nullable().optional().transform((v) => v ?? ''),
+  tags: z.array(z.string()).optional().default([]),
+  isMain: z.boolean().optional(),
 });
 
 export type AdminStoreImageResponse = z.infer<typeof AdminStoreImageResponseSchema>;
@@ -16,7 +17,7 @@ export type AdminStoreImageResponse = z.infer<typeof AdminStoreImageResponseSche
 export const AdminStoreImageUpdateRequestSchema = z.object({
   imageUrl: z.string().optional(),
   sortOrder: z.number(),
-  tags: z.string().optional().default(''),
+  tags: z.array(z.string()).optional().default([]),
 });
 
 export type AdminStoreImageUpdateRequest = z.infer<typeof AdminStoreImageUpdateRequestSchema>;
@@ -29,7 +30,7 @@ export const AdminStoreImageCreateRequestSchema = z.object({
   storeId: z.number(),
   imageUrl: z.string(),
   sortOrder: z.number(),
-  tags: z.string().optional().default(''),
+  tags: z.array(z.string()).optional().default([]),
 });
 
 export type AdminStoreImageCreateRequest = z.infer<typeof AdminStoreImageCreateRequestSchema>;
@@ -38,7 +39,14 @@ export type AdminStoreImageCreateRequest = z.infer<typeof AdminStoreImageCreateR
 export const AdminStoreImageCreateNestedRequestSchema = z.object({
   imageId: z.string(),
   sortOrder: z.number(),
-  tags: z.string().optional().default(''),
+  tags: z.array(z.string()).optional().default([]),
 });
 
 export type AdminStoreImageCreateNestedRequest = z.infer<typeof AdminStoreImageCreateNestedRequestSchema>;
+
+// Update main flag payload
+export const AdminStoreImageMainRequestSchema = z.object({
+  isMain: z.boolean(),
+});
+
+export type AdminStoreImageMainRequest = z.infer<typeof AdminStoreImageMainRequestSchema>;
