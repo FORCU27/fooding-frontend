@@ -2,9 +2,8 @@
 
 import { useState } from 'react';
 
-import { LinkIcon, Trash2Icon } from 'lucide-react';
-
 import { Input } from './Input';
+import { LinkIcon, TrashIcon } from '../../icons';
 
 type UrlLinkListProps = {
   value?: string[];
@@ -62,24 +61,23 @@ const UrlLinkList = ({ value, onChange, initialUrls = [], maxLinks = 5 }: UrlLin
       </div>
 
       <div className='mt-2 flex justify-end'>
-        <span className='text-sm text-gray-500'>최대 {maxLinks}개</span>
+        <span className='subtitle-7 text-gray-5'>최대 {maxLinks}개</span>
       </div>
 
-      <ul className='mt-2 space-y-2'>
+      <ul className='mt-5 space-y-2'>
         {urls.map((url, index) => (
           <li
             key={index}
-            className='flex items-center justify-between rounded-lg border border-blue-600 bg-blue-50 p-4'
+            className='h-[60px] px-5 flex items-center justify-between rounded-[8px] bg-fooding-purple/5 border-fooding-purple border-2'
           >
-            <div className='flex items-center gap-2'>
-              <LinkIcon className='h-5 w-5 text-gray-700' />
-              <span className='text-base text-gray-900'>{url}</span>
-            </div>
+            <LinkIcon className='mr-2 size-5 text-gray-5' />
+            <span className='text-gray-5 body-2 truncate w-full flex-1'>{url}</span>
             <button
-              className='size-8 cursor-pointer rounded-[6px] flex justify-center items-center'
+              className='pl-3 shrink-0 cursor-pointer'
+              aria-label='삭제'
               onClick={() => handleRemoveUrl(index)}
             >
-              <Trash2Icon className='h-5 w-5 text-gray-500' />
+              <TrashIcon className='size-5 text-gray-5' />
             </button>
           </li>
         ))}

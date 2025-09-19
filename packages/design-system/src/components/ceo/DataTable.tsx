@@ -15,7 +15,7 @@ import {
   getFilteredRowModel,
 } from '@tanstack/react-table';
 
-interface DataTableOptions<TData> {
+interface DataTableOptions {
   manualPagination?: boolean;
   manualSorting?: boolean;
   manualFiltering?: boolean;
@@ -30,7 +30,7 @@ interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
   emptyRenderer?: React.ReactNode;
-  options?: DataTableOptions<TData>;
+  options?: DataTableOptions;
 }
 
 export function DataTable<TData, TValue = unknown>({
