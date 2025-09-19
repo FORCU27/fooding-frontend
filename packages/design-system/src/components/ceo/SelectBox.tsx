@@ -40,7 +40,10 @@ const SelectBox = ({
         <Select.Content
           position='popper'
           sideOffset={5}
-          className='z-50 w-[--radix-select-trigger-width] overflow-hidden rounded-[8px] border border-gray-3 bg-white min-w-[440xp]'
+          className={cn(
+            'z-50 w-[--radix-select-trigger-width] overflow-hidden rounded-[8px] border border-gray-3 bg-white',
+            'min-w-[var(--radix-select-trigger-width)]',
+          )}
         >
           <Select.ScrollUpButton className='flex h-6 cursor-default items-center justify-center bg-white'>
             <ChevronUpIcon />
@@ -58,7 +61,7 @@ const SelectBox = ({
               <Select.Item
                 key={option.value}
                 value={option.value}
-                className='flex body-2 cursor-pointer select-none items-center h-[46px] px-5 outline-hidden focus:bg-gray-7 min-w-[440px]'
+                className='flex body-2 cursor-pointer select-none items-center h-[46px] px-5 outline-hidden focus:bg-gray-7'
               >
                 <Select.ItemText>{option.label}</Select.ItemText>
               </Select.Item>
