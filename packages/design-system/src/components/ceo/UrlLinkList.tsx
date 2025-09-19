@@ -2,7 +2,6 @@
 
 import { useState } from 'react';
 
-import { Button } from './Button';
 import { Input } from './Input';
 import { LinkIcon, TrashIcon } from '../../icons';
 
@@ -40,14 +39,12 @@ const UrlLinkList = ({ initialUrls = [], maxLinks = 5 }: UrlLinkListProps) => {
           onKeyDown={(e) => e.key === 'Enter' && (e.preventDefault(), handleAddUrl())}
           placeholder='https://example.com'
         />
-        <Button
-          size='icon'
-          variant='ghost'
-          className='absolute right-1 top-1/2 -translate-y-1/2'
+        <button
+          className='absolute right-4 top-1/2 -translate-y-1/2 size-8 cursor-pointer rounded-[6px] flex justify-center items-center'
           onClick={handleAddUrl}
         >
           <LinkIcon className='h-5 w-5 text-gray-500' />
-        </Button>
+        </button>
       </div>
 
       <div className='mt-2 flex justify-end'>

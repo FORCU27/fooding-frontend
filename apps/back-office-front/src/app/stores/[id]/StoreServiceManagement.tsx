@@ -21,7 +21,7 @@ import { StoreServiceResponse, CreateStoreServiceRequest, storeServiceApi } from
 import { useQuery, useMutation } from '@tanstack/react-query';
 
 import { CreateStoreServiceDialog } from './CreateStoreServiceDialog';
-import { queryClient } from '../../providers';
+import { queryClient } from '../../../components/Provider/providers';
 import { DeleteConfirmDialog } from '../DeleteConfirmDialog';
 
 interface StoreServiceManagementProps {

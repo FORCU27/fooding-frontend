@@ -31,10 +31,10 @@ import {
 } from '@repo/api/admin';
 import { useQuery, useMutation } from '@tanstack/react-query';
 
-import { queryClient } from '../providers';
 import { CreatePostDialog } from './CreatePostDialog';
 import { EditPostDialog } from './EditPostDialog';
 import { DeleteConfirmDialog } from '../stores/DeleteConfirmDialog';
+import { queryClient } from '@/components/Provider/providers';
 
 const postTypeMap = {
   NOTICE: '공지사항',
@@ -55,8 +55,12 @@ export default function PostsPage() {
   const [postToDelete, setPostToDelete] = useState<AdminPostResponse | null>(null);
 
   const queryKey = ['posts', selectedType === 'ALL' ? undefined : selectedType];
-  
-  const { data: postsResponse, isLoading, error } = useQuery({
+
+  const {
+    data: postsResponse,
+    isLoading,
+    error,
+  } = useQuery({
     queryKey,
     queryFn: async () => {
       try {
@@ -122,7 +126,9 @@ export default function PostsPage() {
   if (isLoading) {
     return (
       <Paper sx={{ p: 3 }}>
-        <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '200px' }}>
+        <Box
+          sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '200px' }}
+        >
           <CircularProgress />
         </Box>
       </Paper>
@@ -132,7 +138,7 @@ export default function PostsPage() {
   if (error) {
     return (
       <Paper sx={{ p: 3 }}>
-        <Alert severity="error">
+        <Alert severity='error'>
           게시글 목록을 불러오는 중 오류가 발생했습니다.
           <br />
           에러: {(error as Error).message}
@@ -146,20 +152,20 @@ export default function PostsPage() {
   return (
     <Box sx={{ p: 3 }}>
       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
-        <Typography variant="h4" component="h1">
+        <Typography variant='h4' component='h1'>
           게시글 관리
         </Typography>
-        <Button variant="contained" onClick={() => setIsCreateDialogOpen(true)}>
+        <Button variant='contained' onClick={() => setIsCreateDialogOpen(true)}>
           게시글 작성
         </Button>
       </Box>
 
       <Box sx={{ display: 'flex', gap: 2, mb: 3 }}>
-        <FormControl size="small" sx={{ minWidth: 120 }}>
+        <FormControl size='small' sx={{ minWidth: 120 }}>
           <Select value={selectedType} onChange={handleTypeChange}>
-            <MenuItem value="ALL">전체</MenuItem>
-            <MenuItem value="NOTICE">공지사항</MenuItem>
-            <MenuItem value="EVENT">이벤트</MenuItem>
+            <MenuItem value='ALL'>전체</MenuItem>
+            <MenuItem value='NOTICE'>공지사항</MenuItem>
+            <MenuItem value='EVENT'>이벤트</MenuItem>
           </Select>
         </FormControl>
       </Box>
@@ -167,7 +173,7 @@ export default function PostsPage() {
       {posts.length === 0 ? (
         <Paper sx={{ p: 3 }}>
           <Box sx={{ textAlign: 'center', py: 4 }}>
-            <Typography variant="body1" color="text.secondary">
+            <Typography variant='body1' color='text.secondary'>
               등록된 게시글이 없습니다.
             </Typography>
           </Box>
@@ -191,58 +197,57 @@ export default function PostsPage() {
                 <TableRow key={post.id}>
                   <TableCell>
                     <Box>
-                      <Typography variant="subtitle2" noWrap sx={{ maxWidth: 200 }}>
+                      <Typography variant='subtitle2' noWrap sx={{ maxWidth: 200 }}>
                         {post.title}
                       </Typography>
-                      <Typography variant="body2" color="text.secondary" noWrap sx={{ maxWidth: 200 }}>
+                      <Typography
+                        variant='body2'
+                        color='text.secondary'
+                        noWrap
+                        sx={{ maxWidth: 200 }}
+                      >
                         {post.content}
                       </Typography>
                     </Box>
                   </TableCell>
                   <TableCell>
-                    <Chip 
-                      label={postTypeMap[post.type]} 
+                    <Chip
+                      label={postTypeMap[post.type]}
                       color={postTypeColors[post.type]}
-                      size="small"
+                      size='small'
                     />
                   </TableCell>
                   <TableCell>
-                    <Chip 
-                      label={post.isVisibleOnHomepage ? '노출' : '비노출'} 
+                    <Chip
+                      label={post.isVisibleOnHomepage ? '노출' : '비노출'}
                       color={post.isVisibleOnHomepage ? 'success' : 'default'}
-                      size="small"
+                      size='small'
                     />
                   </TableCell>
                   <TableCell>
-                    <Chip 
-                      label={post.isVisibleOnPos ? '노출' : '비노출'} 
+                    <Chip
+                      label={post.isVisibleOnPos ? '노출' : '비노출'}
                       color={post.isVisibleOnPos ? 'success' : 'default'}
-                      size="small"
+                      size='small'
                     />
                   </TableCell>
                   <TableCell>
-                    <Chip 
-                      label={post.isVisibleOnCeo ? '노출' : '비노출'} 
+                    <Chip
+                      label={post.isVisibleOnCeo ? '노출' : '비노출'}
                       color={post.isVisibleOnCeo ? 'success' : 'default'}
-                      size="small"
+                      size='small'
                     />
                   </TableCell>
+                  <TableCell>{new Date(post.createdAt).toLocaleDateString()}</TableCell>
                   <TableCell>
-                    {new Date(post.createdAt).toLocaleDateString()}
-                  </TableCell>
-                  <TableCell>
-                    <Stack direction="row" spacing={1}>
-                      <Button
-                        variant="outlined"
-                        size="small"
-                        onClick={() => handleEditClick(post)}
-                      >
+                    <Stack direction='row' spacing={1}>
+                      <Button variant='outlined' size='small' onClick={() => handleEditClick(post)}>
                         수정
                       </Button>
                       <Button
-                        variant="outlined"
-                        color="error"
-                        size="small"
+                        variant='outlined'
+                        color='error'
+                        size='small'
                         onClick={() => handleDeleteClick(post)}
                       >
                         삭제
@@ -276,11 +281,9 @@ export default function PostsPage() {
         onClose={() => setDeleteDialogOpen(false)}
         onConfirm={handleDeleteConfirm}
         loading={deleteMutation.isPending}
-        title="게시글 삭제 확인"
+        title='게시글 삭제 확인'
         description={
-          postToDelete 
-            ? `정말로 '${postToDelete.title}' 게시글을 삭제하시겠습니까?` 
-            : ''
+          postToDelete ? `정말로 '${postToDelete.title}' 게시글을 삭제하시겠습니까?` : ''
         }
       />
     </Box>

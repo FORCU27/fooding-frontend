@@ -5,6 +5,8 @@ import { ReactNode } from 'react';
 import { ThemeProvider, createTheme, CssBaseline } from '@mui/material';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
+import { AuthProvider } from '@/components/Provider/AuthProvider';
+
 export const queryClient = new QueryClient();
 
 const lightTheme = createTheme({
@@ -210,8 +212,8 @@ export function Providers({ children }: { children: ReactNode }) {
     <QueryClientProvider client={queryClient}>
       <ThemeProvider theme={lightTheme}>
         <CssBaseline />
-        {children}
+        <AuthProvider>{children}</AuthProvider>
       </ThemeProvider>
     </QueryClientProvider>
   );
-} 
+}

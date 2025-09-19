@@ -7,7 +7,7 @@ import { useQuery } from '@tanstack/react-query';
 const DevicesPage = () => {
   const { data: ceoDeviceResponse, isLoading } = useQuery({
     queryKey: [queryKeys.ceo.devices],
-    queryFn: () => deviceApi.getCeoDeviceList(0, 10, 1), //FIXME: storeId 추후 수정
+    queryFn: () => deviceApi.getCeoDeviceList(1, 10, 1), //FIXME: storeId 추후 수정
   });
 
   if (isLoading) {

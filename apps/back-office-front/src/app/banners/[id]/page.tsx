@@ -20,15 +20,12 @@ import {
   Stack,
   Typography,
 } from '@mui/material';
-import {
-  AdminBannerUpdateRequest,
-  bannerApi,
-} from '@repo/api/admin';
+import { AdminBannerUpdateRequest, bannerApi } from '@repo/api/admin';
 import { useMutation, useQuery } from '@tanstack/react-query';
 
-import { queryClient } from '../../providers';
 import { DeleteConfirmDialog } from '../DeleteConfirmDialog';
 import { EditBannerDialog } from '../EditBannerDialog';
+import { queryClient } from '@/components/Provider/providers';
 
 export default function BannerDetailPage() {
   const router = useRouter();
@@ -94,7 +91,10 @@ export default function BannerDetailPage() {
   }
 
   const renderParameters = () => {
-    if (!banner.parameters || Object.keys(banner.parameters as Record<string, unknown>).length === 0) {
+    if (
+      !banner.parameters ||
+      Object.keys(banner.parameters as Record<string, unknown>).length === 0
+    ) {
       return <Typography variant='body2'>파라미터 없음</Typography>;
     }
 
@@ -191,13 +191,22 @@ export default function BannerDetailPage() {
           <DetailRow label='링크 타입' value={banner.linkType} />
           <DetailRow
             label='링크'
-            value={banner.link ? (
-              <Button component={NextLink} href={banner.link} target='_blank' rel='noopener noreferrer' variant='text' size='small'>
-                {banner.link}
-              </Button>
-            ) : (
-              '링크 없음'
-            )}
+            value={
+              banner.link ? (
+                <Button
+                  component={NextLink}
+                  href={banner.link}
+                  target='_blank'
+                  rel='noopener noreferrer'
+                  variant='text'
+                  size='small'
+                >
+                  {banner.link}
+                </Button>
+              ) : (
+                '링크 없음'
+              )
+            }
           />
         </Stack>
       </Paper>
@@ -232,7 +241,9 @@ export default function BannerDetailPage() {
         maxWidth='lg'
         fullWidth
       >
-        <DialogTitle sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+        <DialogTitle
+          sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}
+        >
           배너 이미지
           <IconButton onClick={() => setIsImageDialogOpen(false)}>
             <DeleteIcon sx={{ visibility: 'hidden' }} />
