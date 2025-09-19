@@ -60,7 +60,7 @@ const UrlLinkList = ({ initialUrls = [], maxLinks = 5 }: UrlLinkListProps) => {
             <LinkIcon className='mr-2 size-5 text-gray-5' />
             <span className='text-gray-5 body-2 truncate w-full flex-1'>{url}</span>
             <button
-              className='pl-3 shrink-0'
+              className='pl-3 shrink-0 cursor-pointer'
               aria-label='삭제'
               onClick={() => handleRemoveUrl(index)}
             >
