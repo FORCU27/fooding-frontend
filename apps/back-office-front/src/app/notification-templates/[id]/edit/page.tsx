@@ -2,18 +2,12 @@
 
 import { useParams, useRouter } from 'next/navigation';
 
-import {
-  Box,
-  Button,
-  Paper,
-  Typography,
-} from '@mui/material';
+import { Box, Button, Paper, Typography } from '@mui/material';
 import { notificationTemplateApi, AdminUpdateNotificationTemplateRequest } from '@repo/api/admin';
 import { useQuery, useMutation } from '@tanstack/react-query';
 
-import { queryClient } from '../../../providers';
+import { queryClient } from '../../../../components/Provider/providers';
 import { NotificationTemplateForm } from '../../NotificationTemplateForm';
-
 
 export default function EditNotificationTemplatePage() {
   const params = useParams();

@@ -37,5 +37,6 @@ export { default as CeoBellIcon } from './CeoBellIcon';
 export { default as KebabButton } from './KebabButton';
 export { default as PinIcon } from './PinIcon';
 export { default as PlayVideoIcon } from './PlayVideoIcon';
+export { default as ArrowUpLeftIcon } from './ArrowUpLeftIcon';
 export { default as MenuIcon } from './MenuIcon';
 export { default as CirclePlusIcon } from './CirclePlusIcon';

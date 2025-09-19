@@ -34,10 +34,10 @@ import {
 } from '@repo/api/admin';
 import { useMutation, useQuery } from '@tanstack/react-query';
 
-import { queryClient } from '../providers';
 import { CreateReportDialog } from './CreateReportDialog';
 import { EditReportDialog } from './EditReportDialog';
 import { DeleteConfirmDialog } from '../stores/DeleteConfirmDialog';
+import { queryClient } from '@/components/Provider/providers';
 
 const statusLabel: Record<ReportStatus, string> = {
   REPORTED: '접수',
@@ -141,7 +141,9 @@ export default function ReportsPage() {
   if (isLoading) {
     return (
       <Paper sx={{ p: 3 }}>
-        <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '200px' }}>
+        <Box
+          sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '200px' }}
+        >
           <CircularProgress />
         </Box>
       </Paper>
@@ -151,7 +153,7 @@ export default function ReportsPage() {
   if (error) {
     return (
       <Paper sx={{ p: 3 }}>
-        <Alert severity="error">
+        <Alert severity='error'>
           신고 목록을 불러오는 중 오류가 발생했습니다.
           <br />
           에러: {(error as Error).message}
@@ -166,32 +168,44 @@ export default function ReportsPage() {
   return (
     <Box sx={{ p: 3 }}>
       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
-        <Typography variant="h4" component="h1">
+        <Typography variant='h4' component='h1'>
           신고 관리
         </Typography>
-        <Button variant="contained" onClick={() => setIsCreateOpen(true)}>
+        <Button variant='contained' onClick={() => setIsCreateOpen(true)}>
           신고 생성
         </Button>
       </Box>
 
       <Box sx={{ display: 'flex', gap: 2, mb: 3 }}>
-        <FormControl size="small" sx={{ minWidth: 140 }}>
+        <FormControl size='small' sx={{ minWidth: 140 }}>
           <InputLabel>상태</InputLabel>
-          <Select value={statusFilter} label="상태" onChange={(e: SelectChangeEvent<string>) => setStatusFilter(e.target.value as ReportStatus | 'ALL')}>
-            <MenuItem value="ALL">전체</MenuItem>
-            <MenuItem value="REPORTED">접수</MenuItem>
-            <MenuItem value="PROCESS">진행</MenuItem>
-            <MenuItem value="SUCCESS">완료</MenuItem>
-            <MenuItem value="DENY">반려</MenuItem>
+          <Select
+            value={statusFilter}
+            label='상태'
+            onChange={(e: SelectChangeEvent<string>) =>
+              setStatusFilter(e.target.value as ReportStatus | 'ALL')
+            }
+          >
+            <MenuItem value='ALL'>전체</MenuItem>
+            <MenuItem value='REPORTED'>접수</MenuItem>
+            <MenuItem value='PROCESS'>진행</MenuItem>
+            <MenuItem value='SUCCESS'>완료</MenuItem>
+            <MenuItem value='DENY'>반려</MenuItem>
           </Select>
         </FormControl>
 
-        <FormControl size="small" sx={{ minWidth: 140 }}>
+        <FormControl size='small' sx={{ minWidth: 140 }}>
           <InputLabel>대상</InputLabel>
-          <Select value={targetFilter} label="대상" onChange={(e: SelectChangeEvent<string>) => setTargetFilter(e.target.value as ReportTargetType | 'ALL')}>
-            <MenuItem value="ALL">전체</MenuItem>
-            <MenuItem value="REVIEW">리뷰</MenuItem>
-            <MenuItem value="POST">게시글</MenuItem>
+          <Select
+            value={targetFilter}
+            label='대상'
+            onChange={(e: SelectChangeEvent<string>) =>
+              setTargetFilter(e.target.value as ReportTargetType | 'ALL')
+            }
+          >
+            <MenuItem value='ALL'>전체</MenuItem>
+            <MenuItem value='REVIEW'>리뷰</MenuItem>
+            <MenuItem value='POST'>게시글</MenuItem>
           </Select>
         </FormControl>
       </Box>
@@ -216,35 +230,98 @@ export default function ReportsPage() {
               <TableRow key={item.id}>
                 <TableCell>{item.id}</TableCell>
                 <TableCell>
-                  <Chip label={targetLabel[item.targetType]} size="small" />
+                  <Chip label={targetLabel[item.targetType]} size='small' />
                 </TableCell>
                 <TableCell>{item.referenceId}</TableCell>
                 <TableCell>
-                  <Typography variant="body2">{item.reporterName || '-'} ({item.reporterId})</Typography>
+                  <Typography variant='body2'>
+                    {item.reporterName || '-'} ({item.reporterId})
+                  </Typography>
                 </TableCell>
                 <TableCell>
-                  <Chip label={statusLabel[item.status]} color={statusColor[item.status]} size="small" />
+                  <Chip
+                    label={statusLabel[item.status]}
+                    color={statusColor[item.status]}
+                    size='small'
+                  />
                 </TableCell>
                 <TableCell>
-                  <Typography variant="body2">{item.chargerName || '-'} {item.chargerId ? `(${item.chargerId})` : ''}</Typography>
+                  <Typography variant='body2'>
+                    {item.chargerName || '-'} {item.chargerId ? `(${item.chargerId})` : ''}
+                  </Typography>
                 </TableCell>
                 <TableCell>
-                  <Typography variant="body2" sx={{ maxWidth: 220, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                  <Typography
+                    variant='body2'
+                    sx={{
+                      maxWidth: 220,
+                      overflow: 'hidden',
+                      textOverflow: 'ellipsis',
+                      whiteSpace: 'nowrap',
+                    }}
+                  >
                     {item.description}
                   </Typography>
                 </TableCell>
                 <TableCell>
-                  <Typography variant="body2" sx={{ maxWidth: 220, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                  <Typography
+                    variant='body2'
+                    sx={{
+                      maxWidth: 220,
+                      overflow: 'hidden',
+                      textOverflow: 'ellipsis',
+                      whiteSpace: 'nowrap',
+                    }}
+                  >
                     {item.memo || '-'}
                   </Typography>
                 </TableCell>
                 <TableCell>
-                  <Stack direction="row" spacing={1}>
-                    <Button variant="outlined" size="small" onClick={() => { setSelected(item); setIsEditOpen(true); }}>수정</Button>
-                    <Button variant="outlined" color="error" size="small" onClick={() => { setToDelete(item); setDeleteOpen(true); }}>삭제</Button>
-                    <Button variant="outlined" size="small" onClick={() => approveMutation.mutate({ id: item.id, chargerId: 1 })}>승인</Button>
-                    <Button variant="outlined" size="small" color="warning" onClick={() => rejectMutation.mutate({ id: item.id, chargerId: 1 })}>반려</Button>
-                    <Button variant="outlined" size="small" color="success" onClick={() => successMutation.mutate({ id: item.id, chargerId: 1 })}>완료</Button>
+                  <Stack direction='row' spacing={1}>
+                    <Button
+                      variant='outlined'
+                      size='small'
+                      onClick={() => {
+                        setSelected(item);
+                        setIsEditOpen(true);
+                      }}
+                    >
+                      수정
+                    </Button>
+                    <Button
+                      variant='outlined'
+                      color='error'
+                      size='small'
+                      onClick={() => {
+                        setToDelete(item);
+                        setDeleteOpen(true);
+                      }}
+                    >
+                      삭제
+                    </Button>
+                    <Button
+                      variant='outlined'
+                      size='small'
+                      onClick={() => approveMutation.mutate({ id: item.id, chargerId: 1 })}
+                    >
+                      승인
+                    </Button>
+                    <Button
+                      variant='outlined'
+                      size='small'
+                      color='warning'
+                      onClick={() => rejectMutation.mutate({ id: item.id, chargerId: 1 })}
+                    >
+                      반려
+                    </Button>
+                    <Button
+                      variant='outlined'
+                      size='small'
+                      color='success'
+                      onClick={() => successMutation.mutate({ id: item.id, chargerId: 1 })}
+                    >
+                      완료
+                    </Button>
                   </Stack>
                 </TableCell>
               </TableRow>
@@ -259,7 +336,7 @@ export default function ReportsPage() {
             count={pageInfo.totalPages}
             page={pageNum}
             onChange={(_, newPage) => setPageNum(newPage)}
-            color="primary"
+            color='primary'
             showFirstButton
             showLastButton
           />
@@ -286,10 +363,9 @@ export default function ReportsPage() {
         onClose={() => setDeleteOpen(false)}
         onConfirm={() => toDelete && deleteMutation.mutate({ id: toDelete.id, deletedBy: 1 })}
         loading={deleteMutation.isPending}
-        title="신고 삭제 확인"
+        title='신고 삭제 확인'
         description={toDelete ? `정말로 ID ${toDelete.id} 신고를 삭제하시겠습니까?` : ''}
       />
     </Box>
   );
 }
-

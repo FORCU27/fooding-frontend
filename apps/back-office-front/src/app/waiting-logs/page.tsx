@@ -2,18 +2,30 @@
 
 import { useState } from 'react';
 
-import { Box, Button, Chip, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material';
+import {
+  Box,
+  Button,
+  Chip,
+  Paper,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Typography,
+} from '@mui/material';
 import { adminWaitingLogApi, AdminWaitingLogResponse } from '@repo/api/admin';
 import { useQuery, useMutation } from '@tanstack/react-query';
 
-import { queryClient } from '../providers';
+import { queryClient } from '../../components/Provider/providers';
 
 export default function WaitingLogsPage() {
   const [page, setPage] = useState(1);
 
   const { data } = useQuery({
     queryKey: ['adminWaitingLogs', page],
-    queryFn: () => adminWaitingLogApi.getList(page - 1, 20),
+    queryFn: () => adminWaitingLogApi.getList(page, 20),
   });
 
   const deleteMutation = useMutation({
@@ -28,15 +40,17 @@ export default function WaitingLogsPage() {
 
   return (
     <Box>
-      <Typography variant="h5" sx={{ mb: 2 }}>웨이팅 로그</Typography>
-      <TableContainer component={Paper} variant="outlined">
-        <Table size="small">
+      <Typography variant='h5' sx={{ mb: 2 }}>
+        웨이팅 로그
+      </Typography>
+      <TableContainer component={Paper} variant='outlined'>
+        <Table size='small'>
           <TableHead>
             <TableRow>
               <TableCell>ID</TableCell>
               <TableCell>StoreWaiting ID</TableCell>
               <TableCell>Type</TableCell>
-              <TableCell align="right">Actions</TableCell>
+              <TableCell align='right'>Actions</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -45,10 +59,12 @@ export default function WaitingLogsPage() {
                 <TableCell>{log.id}</TableCell>
                 <TableCell>{log.storeWaitingId}</TableCell>
                 <TableCell>
-                  <Chip label={log.type} size="small" />
+                  <Chip label={log.type} size='small' />
                 </TableCell>
-                <TableCell align="right">
-                  <Button size="small" color="error" onClick={() => deleteMutation.mutate(log.id)}>삭제</Button>
+                <TableCell align='right'>
+                  <Button size='small' color='error' onClick={() => deleteMutation.mutate(log.id)}>
+                    삭제
+                  </Button>
                 </TableCell>
               </TableRow>
             ))}
@@ -56,8 +72,15 @@ export default function WaitingLogsPage() {
         </Table>
       </TableContainer>
       <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 2, gap: 1 }}>
-        <Button disabled={page <= 1} onClick={() => setPage((p) => Math.max(1, p - 1))}>이전</Button>
-        <Button disabled={(pageInfo?.totalPages ?? 1) <= page} onClick={() => setPage((p) => p + 1)}>다음</Button>
+        <Button disabled={page <= 1} onClick={() => setPage((p) => Math.max(1, p - 1))}>
+          이전
+        </Button>
+        <Button
+          disabled={(pageInfo?.totalPages ?? 1) <= page}
+          onClick={() => setPage((p) => p + 1)}
+        >
+          다음
+        </Button>
       </Box>
     </Box>
   );

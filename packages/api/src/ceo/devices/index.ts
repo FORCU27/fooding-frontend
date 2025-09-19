@@ -5,13 +5,13 @@ export * from './type';
 
 export const deviceApi = {
   getCeoDeviceList: async (
-    page: number = 0,
+    page: number = 1,
     size: number = 10,
     storeId: number,
     searchString?: string,
   ) => {
     const params = new URLSearchParams({
-      pageNum: (page + 1).toString(),
+      pageNum: page.toString(),
       pageSize: size.toString(),
     });
 

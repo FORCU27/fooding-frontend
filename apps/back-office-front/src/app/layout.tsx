@@ -4,7 +4,7 @@ import React from 'react';
 
 import { Metadata } from 'next';
 
-import { Providers } from './providers';
+import { Providers } from '../components/Provider/providers';
 import AdminLayout from '@/components/Layout/AdminLayout';
 
 export const metadata: Metadata = {
