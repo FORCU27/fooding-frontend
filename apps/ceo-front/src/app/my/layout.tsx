@@ -84,7 +84,7 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
         )}
 
         <ReactQueryProvider dehydratedState={dehydratedState}>
-          <Suspense fallback={<div>페이지를 불러오는 중입니다...</div>}>
+          <Suspense>
             <AuthProvider>
               <MainLayout>
                 {children}

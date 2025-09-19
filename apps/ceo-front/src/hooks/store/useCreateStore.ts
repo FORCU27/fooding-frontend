@@ -6,8 +6,8 @@ export const useCreateStore = () => {
 
   return useMutation({
     mutationFn: storeApi.createStore,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['stores'] });
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: ['stores'] });
     },
   });
 };

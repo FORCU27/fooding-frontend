@@ -4,13 +4,18 @@ import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
-import { Button } from '@repo/design-system/components/b2c';
-import { Dialog, Input, RadioChoiceBox } from '@repo/design-system/components/ceo';
+import { Button, Dialog, Input, RadioChoiceBox } from '@repo/design-system/components/ceo';
+import { CirclePlusIcon } from '@repo/design-system/icons';
 import { Suspense } from '@suspensive/react';
+import { overlay } from 'overlay-kit';
 
 import { useCreateStore } from '@/hooks/store/useCreateStore';
 import { useGetStoreList } from '@/hooks/store/useGetStoreList';
-import { CirclePlusIcon } from '@repo/design-system/icons';
+
+// TODO: 매장이 많아졌을 때 UI 개선
+// TODO: 최대 매장 수 초과 시 UI 개선
+// TODO: 매장 이름 중복 시 UI 개선
+// TODO: 매장 이름 인풋 최소, 최대 길이 제한
 
 export default function StoreSelectPage() {
   return (
@@ -26,7 +31,9 @@ export default function StoreSelectPage() {
           />
         </div>
         <main className='flex-1 flex items-center justify-center'>
-          <StoreSetupCard />
+          <Suspense>
+            <StoreSetupCard />
+          </Suspense>
         </main>
       </div>
     </Suspense>
@@ -54,6 +61,12 @@ const StoreSetupCard = () => {
     router.push('/my');
   };
 
+  const onCreateStoreButtonClick = () => {
+    overlay.open(({ isOpen, close }) => (
+      <StoreCreateDialog isOpen={isOpen} onOpenChange={(open) => !open && close()} />
+    ));
+  };
+
   return (
     <div className='bg-white rounded-[30px] shadow-lg w-[571px] p-[60px] text-center flex flex-col items-center'>
       <Image src='/images/fooding-ceo-logo.svg' alt='fooding logo' width={153} height={24} />
@@ -63,7 +76,11 @@ const StoreSetupCard = () => {
       <div className='py-[32px] flex flex-col items-center w-full'>
         <hr className='w-full border border-black/10' />
         {stores.length === 0 && (
-          <button className='flex flex-col items-center justify-center py-[80px] cursor-pointer'>
+          <button
+            className='flex flex-col items-center justify-center py-[80px] cursor-pointer'
+            onClick={onCreateStoreButtonClick}
+            type='button'
+          >
             <CirclePlusIcon />
             <p className='mt-2 body-2'>관리할 매장을 등록해주세요.</p>
           </button>
@@ -90,15 +107,21 @@ const StoreSetupCard = () => {
         <hr className='w-full border border-black/10' />
       </div>
       <Button
-        className='w-full py-3 rounded-full subtitle-1'
+        size='large'
+        variant='primaryPink'
+        rounded
+        className='w-full'
         onClick={onStoreSelect}
         disabled={selectedStoreId === null}
       >
         매장 선택하기
       </Button>
       <Button
+        size='large'
         variant='outlined'
-        className='mt-4 w-full py-3 rounded-full subtitle-1 border-primary-pink text-primary-pink hover:bg-primary-pink/5 active:bg-primary-pink/10'
+        rounded
+        className='mt-4 w-full border-primary-pink text-primary-pink hover:bg-primary-pink/5'
+        onClick={onCreateStoreButtonClick}
       >
         매장 생성하기
       </Button>
@@ -106,31 +129,55 @@ const StoreSetupCard = () => {
   );
 };
 
-const StoreCreateDialog = () => {
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
+type StoreCreateDialogProps = {
+  isOpen: boolean;
+  onOpenChange: (open: boolean) => void;
+};
+
+const StoreCreateDialog = ({ isOpen, onOpenChange }: StoreCreateDialogProps) => {
   const [storeName, setStoreName] = useState('');
 
-  const router = useRouter();
-
   const createStoreMutation = useCreateStore();
-
-  const handleCreateStore = async () => {};
 
   const onConfirmButtonClick = () => {
     if (createStoreMutation.isPending) return;
 
-    createStoreMutation.mutate({ name: storeName.trim() });
+    createStoreMutation.mutate(
+      { name: storeName.trim() },
+      {
+        onSuccess: () => {
+          onOpenChange(false);
+        },
+        onError: () => {
+          // TODO: 에러 처리
+        },
+      },
+    );
   };
 
   return (
-    <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-      <Input
-        className='h-[58px] subtitle-1 mb-[12px] placeholder:font-bold'
-        placeholder='매장명을 입력해주세요'
-        value={storeName}
-        onChange={(e) => setStoreName(e.target.value)}
-      />
-      <Button onClick={onConfirmButtonClick}>매장 생성하기</Button>
+    <Dialog open={isOpen} onOpenChange={onOpenChange}>
+      <Dialog.Content>
+        <Dialog.Header>
+          <Dialog.Title>매장 등록</Dialog.Title>
+        </Dialog.Header>
+        <Dialog.Body>
+          <Input
+            placeholder='매장명을 입력해주세요'
+            value={storeName}
+            onChange={(e) => setStoreName(e.target.value)}
+          />
+        </Dialog.Body>
+        <Dialog.Footer>
+          <Button
+            variant='primaryPink'
+            onClick={onConfirmButtonClick}
+            disabled={storeName.trim().length === 0}
+          >
+            등록
+          </Button>
+        </Dialog.Footer>
+      </Dialog.Content>
     </Dialog>
   );
 };

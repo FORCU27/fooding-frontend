@@ -8388,6 +8388,7 @@ __metadata:
     eslint: "npm:^9.24.0"
     js-cookie: "npm:^3.0.5"
     next: "npm:^15.3.0"
+    overlay-kit: "npm:^1.8.5"
     postcss: "npm:^8.5.3"
     prettier: "npm:3.5.3"
     react: "npm:^19.1.0"
@@ -14016,6 +14017,16 @@ __metadata:
     react: ^16.8 || ^17 || ^18 || ^19
     react-dom: ^16.8 || ^17 || ^18 || ^19
   checksum: 10/c7b3d727e48fc380c3235d50fd561dbfcb64474aae9db4ad33708c58dd9a366a0fcdbe14f2414ad72aa7fd7ecde2fa52affd74ebb9a1ce0c36e0a4be8dfdf5db
+  languageName: node
+  linkType: hard
+
+"overlay-kit@npm:^1.8.5":
+  version: 1.8.5
+  resolution: "overlay-kit@npm:1.8.5"
+  peerDependencies:
+    react: ^16.8 || ^17 || ^18 || ^19
+    react-dom: ^16.8 || ^17 || ^18 || ^19
+  checksum: 10/13911a516d5fcf3a1042a95f9df2783029cff9f93cac57ce1232bb45e50fe60a9cc283599d7dc130d00c80582f635b4693aeb05b8de6497860025fd64efb1286
   languageName: node
   linkType: hard
 

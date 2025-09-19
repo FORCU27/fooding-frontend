@@ -5,6 +5,7 @@ import { ReactNode, Suspense } from 'react';
 
 import { QueryClient, dehydrate } from '@tanstack/react-query';
 import { Metadata } from 'next';
+import { OverlayProvider } from 'overlay-kit';
 
 import Analytics from '@/components/GA/Analytics';
 import KakaoMapScript from '@/components/KakaoMapScript';
@@ -83,11 +84,13 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
         )}
 
         <ReactQueryProvider dehydratedState={dehydratedState}>
-          <Suspense fallback={<div>페이지를 불러오는 중입니다...</div>}>
-            <AuthProvider>
-              {children}
-              <Analytics />
-            </AuthProvider>
+          <Suspense>
+            <OverlayProvider>
+              <AuthProvider>
+                {children}
+                <Analytics />
+              </AuthProvider>
+            </OverlayProvider>
           </Suspense>
         </ReactQueryProvider>
       </body>

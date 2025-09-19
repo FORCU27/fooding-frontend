@@ -1,10 +1,15 @@
 import { RadioGroup as RadioGroupPrimitives } from 'radix-ui';
+
 import { cn } from '../../utils';
 
 type RadioChoiceBoxProps = React.ComponentPropsWithRef<typeof RadioGroupPrimitives.Root>;
 
-const RadioChoiceBox = ({ children, ...props }: RadioChoiceBoxProps) => {
-  return <RadioGroupPrimitives.Root {...props}>{children}</RadioGroupPrimitives.Root>;
+const RadioChoiceBox = ({ className, children, ...props }: RadioChoiceBoxProps) => {
+  return (
+    <RadioGroupPrimitives.Root className={cn('flex flex-col gap-2', className)} {...props}>
+      {children}
+    </RadioGroupPrimitives.Root>
+  );
 };
 
 type RadioChoiceBoxItemProps = React.ComponentPropsWithRef<typeof RadioGroupPrimitives.Item>;
