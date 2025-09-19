@@ -159,7 +159,7 @@ export const CategoryExample: Story = {
 export const MenuExample: Story = {
   render: () => {
     return (
-      <Dialog open>
+      <Dialog>
         <Dialog.Trigger asChild>
           <Button>열기</Button>
         </Dialog.Trigger>
