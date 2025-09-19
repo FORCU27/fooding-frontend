@@ -33,6 +33,21 @@ const Calendar = ({ className, ...props }: CalendarProps) => {
           labelPrevious: () => '이전 달',
           labelNext: () => '다음 달',
         }}
+        formatters={{
+          formatDay: (day) => {
+            const today = new Date();
+            const isToday =
+              day.getDate() === today.getDate() &&
+              day.getMonth() === today.getMonth() &&
+              day.getFullYear() === today.getFullYear();
+
+            if (isToday) {
+              return '오늘';
+            }
+
+            return day.getDate().toString();
+          },
+        }}
         {...props}
       />
     </div>
