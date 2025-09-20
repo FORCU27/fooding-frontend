@@ -21,6 +21,17 @@ type Story = StoryObj<typeof meta>;
 export const Default: Story = {
   render: () => {
     return (
+      <RadioGroup>
+        <RadioGroup.Option value='1'>선택 1</RadioGroup.Option>
+        <RadioGroup.Option value='2'>선택 2</RadioGroup.Option>
+      </RadioGroup>
+    );
+  },
+};
+
+export const WithDefaultValue: Story = {
+  render: () => {
+    return (
       <RadioGroup defaultValue='1'>
         <RadioGroup.Option value='1'>선택 1</RadioGroup.Option>
         <RadioGroup.Option value='2'>선택 2</RadioGroup.Option>
@@ -32,7 +43,7 @@ export const Default: Story = {
 export const Disabled: Story = {
   render: () => {
     return (
-      <RadioGroup disabled defaultValue='1'>
+      <RadioGroup disabled>
         <RadioGroup.Option value='1'>선택 1</RadioGroup.Option>
         <RadioGroup.Option value='2'>선택 2</RadioGroup.Option>
       </RadioGroup>
@@ -43,7 +54,7 @@ export const Disabled: Story = {
 export const OptionDisabled: Story = {
   render: () => {
     return (
-      <RadioGroup defaultValue='1'>
+      <RadioGroup>
         <RadioGroup.Option value='1' disabled>
           선택 1
         </RadioGroup.Option>
@@ -56,7 +67,7 @@ export const OptionDisabled: Story = {
 export const Error: Story = {
   render: () => {
     return (
-      <RadioGroup aria-invalid defaultValue='1'>
+      <RadioGroup aria-invalid>
         <RadioGroup.Option value='1'>선택 1</RadioGroup.Option>
         <RadioGroup.Option value='2'>선택 2</RadioGroup.Option>
       </RadioGroup>
@@ -67,7 +78,7 @@ export const Error: Story = {
 export const Vertical: Story = {
   render: () => {
     return (
-      <RadioGroup orientation='vertical' defaultValue='1'>
+      <RadioGroup orientation='vertical'>
         <RadioGroup.Option value='1'>선택 1</RadioGroup.Option>
         <RadioGroup.Option value='2'>선택 2</RadioGroup.Option>
       </RadioGroup>
