@@ -6,12 +6,12 @@ import { useState } from 'react';
 
 import { Button, Dialog, Input, RadioChoiceBox } from '@repo/design-system/components/ceo';
 import { CirclePlusIcon } from '@repo/design-system/icons';
+import { cn } from '@repo/design-system/utils';
 import { Suspense } from '@suspensive/react';
 import { overlay } from 'overlay-kit';
 
 import { useCreateStore } from '@/hooks/store/useCreateStore';
 import { useGetStoreList } from '@/hooks/store/useGetStoreList';
-import { cn } from '@repo/design-system/utils';
 
 // TODO: 매장이 많아졌을 때 UI 개선
 // TODO: 최대 매장 수 초과 시 UI 개선
@@ -34,8 +34,8 @@ export default function StoreSelectPage() {
         <main className='flex-1 flex items-center justify-center'>
           <div
             className={cn(
-              'bg-white p-[60px] text-center flex flex-col items-center',
-              'tablet:max-w-[calc(100%-40px)] tablet:shadow-lg tablet:rounded-[30px] tablet:w-[571px] tablet:my-5',
+              'bg-white p-[60px] text-center flex flex-col items-center w-full',
+              'tablet:shadow-lg tablet:rounded-[30px] tablet:max-w-[571px] tablet:my-5',
             )}
           >
             <Suspense>
@@ -75,12 +75,12 @@ const StoreSetupCard = () => {
     ));
   };
 
+  const title = '사장님을 위한 전용 공간에 오신 걸 환영합니다';
+
   return (
     <>
       <Image src='/images/fooding-ceo-logo.svg' alt='fooding logo' width={153} height={24} />
-      <h1 className='headline-3 text-center pt-[12px]'>
-        사장님을 위한 전용 공간에 오신 걸 환영합니다
-      </h1>
+      <h1 className='font-semibold tablet:text-[24px] text-center pt-[12px]'>{title}</h1>
       <div className='py-[32px] flex flex-col items-center w-full'>
         <hr className='w-full border border-black/10' />
         {stores.length === 0 && (
