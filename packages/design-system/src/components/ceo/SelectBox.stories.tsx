@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { SelectBox } from './SelectBox';
+import { useState } from 'react';
 
 const meta = {
   title: 'Components/ceo/SelectBox',
@@ -57,5 +58,21 @@ export const LongOptions: Story = {
 export const Small: Story = {
   render: () => {
     return <SelectBox size='small' options={sampleOptions} placeholder='카테고리 선택' />;
+  },
+};
+
+export const Controlled: Story = {
+  render: () => {
+    const [value, setValue] = useState('');
+
+    return (
+      <SelectBox
+        value={value}
+        onValueChange={setValue}
+        size='small'
+        options={sampleOptions}
+        placeholder='카테고리 선택'
+      />
+    );
   },
 };
