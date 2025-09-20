@@ -58,7 +58,7 @@ export function RadioButton({
           ${v.borderChecked}
           before:content-[""] before:absolute before:top-1/2 before:left-1/2
           before:-translate-x-1/2 before:-translate-y-1/2 before:w-[60%] before:h-[60%]
-          before:rounded-full before:scale-0 before:transition-transform
+          before:rounded-full before:scale-0 before:cursor-pointer
           ${v.dot} checked:before:scale-100
         `}
       />
