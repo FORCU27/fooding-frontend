@@ -1,124 +1,99 @@
 'use client';
 
-import { type ReactNode } from 'react';
-
-import * as RadixDialog from '@radix-ui/react-dialog';
-import { X } from 'lucide-react';
+import { XIcon } from 'lucide-react';
+import { Dialog as DialogPrimitives } from 'radix-ui';
 
 import { cn } from '../../utils/cn';
 
-type DialogProps = {
-  open?: boolean;
-  onOpenChange?: (open: boolean) => void;
-  children: ReactNode;
-  className?: string;
+type DialogProps = React.ComponentPropsWithRef<typeof DialogPrimitives.Root>;
+
+const Dialog = ({ children, ...props }: DialogProps) => {
+  return <DialogPrimitives.Root {...props}>{children}</DialogPrimitives.Root>;
 };
 
-type DialogTriggerProps = {
-  children: ReactNode;
-  asChild?: boolean;
-};
-
-type DialogContentProps = {
-  children: ReactNode;
-  className?: string;
+type DialogContentProps = React.ComponentPropsWithRef<typeof DialogPrimitives.Content> & {
   showCloseButton?: boolean;
-};
-
-type DialogHeaderProps = {
-  children: ReactNode;
-  className?: string;
-};
-
-type DialogTitleProps = {
-  children: ReactNode;
-  className?: string;
-};
-
-type DialogDescriptionProps = {
-  children: ReactNode;
-  className?: string;
-};
-
-type DialogFooterProps = {
-  children: ReactNode;
-  className?: string;
-};
-
-const Dialog = ({ open, onOpenChange, children, className }: DialogProps) => {
-  return (
-    <RadixDialog.Root open={open} onOpenChange={onOpenChange}>
-      <div className={className}>{children}</div>
-    </RadixDialog.Root>
-  );
-};
-
-const DialogTrigger = ({ children, asChild = false }: DialogTriggerProps) => {
-  return <RadixDialog.Trigger asChild={asChild}>{children}</RadixDialog.Trigger>;
 };
 
 const DialogContent = ({ children, className, showCloseButton = true }: DialogContentProps) => {
   return (
-    <RadixDialog.Portal>
-      <RadixDialog.Overlay className='fixed inset-0 z-50 bg-black/80' />
-      <RadixDialog.Content
+    <DialogPrimitives.Portal>
+      <DialogPrimitives.Overlay className='fixed inset-0 z-50 bg-black/50' />
+      <DialogPrimitives.Content
         className={cn(
-          'fixed left-[50%] top-[50%] z-50 w-full max-w-lg translate-x-[-50%] translate-y-[-50%] max-h-[85vh] border bg-white shadow-lg rounded-[20px] overflow-y-auto p-6',
+          'fixed left-[50%] top-[50%] z-50 translate-x-[-50%] translate-y-[-50%]',
+          'w-[400px] max-h-[calc(100%-4rem)] max-w-[calc(100%-4rem)]',
+          'flex flex-col gap-6 border bg-white rounded-[20px] py-8',
           className,
         )}
       >
+        <DialogPrimitives.Description className='sr-only' />
         {children}
         {showCloseButton && (
-          <RadixDialog.Close className='absolute right-4 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground'>
-            <X className='h-4 w-4' />
-            <span className='sr-only'>닫기</span>
-          </RadixDialog.Close>
+          <DialogPrimitives.Close
+            aria-label='닫기'
+            className='absolute right-6 top-8 flex justify-center items-center size-6 cursor-pointer'
+          >
+            <XIcon />
+          </DialogPrimitives.Close>
         )}
-      </RadixDialog.Content>
-    </RadixDialog.Portal>
+      </DialogPrimitives.Content>
+    </DialogPrimitives.Portal>
   );
 };
 
-const DialogHeader = ({ children, className }: DialogHeaderProps) => {
+type DialogHeaderProps = React.ComponentPropsWithRef<'div'>;
+
+const DialogHeader = ({ className, children, ...props }: DialogHeaderProps) => {
   return (
-    <div className={cn('flex flex-col space-y-1.5 text-center sm:text-left', className)}>
+    <div className={cn('flex flex-col px-6', className)} {...props}>
       {children}
     </div>
   );
 };
 
-const DialogTitle = ({ children, className }: DialogTitleProps) => {
+type DialogTitleProps = React.ComponentPropsWithRef<typeof DialogPrimitives.Title>;
+
+const DialogTitle = ({ className, children, ...props }: DialogTitleProps) => {
   return (
-    <RadixDialog.Title
-      className={cn('text-lg font-semibold leading-none tracking-tight', className)}
+    <DialogPrimitives.Title
+      className={cn(
+        'text-[20px] font-semibold text-center h-[24px] flex justify-center items-center',
+        className,
+      )}
+      {...props}
     >
       {children}
-    </RadixDialog.Title>
+    </DialogPrimitives.Title>
   );
 };
 
-const DialogDescription = ({ children, className }: DialogDescriptionProps) => {
-  return (
-    <RadixDialog.Description className={cn('text-sm text-muted-foreground', className)}>
-      {children}
-    </RadixDialog.Description>
-  );
-};
+type DialogBodyProps = React.ComponentPropsWithRef<'div'>;
 
-const DialogFooter = ({ children, className }: DialogFooterProps) => {
+const DialogBody = ({ className, children, ...props }: DialogBodyProps) => {
   return (
-    <div className={cn('flex flex-col-reverse sm:flex-row sm:justify-end sm:space-x-2', className)}>
+    <div className={cn('flex px-6 flex-col flex-1 overflow-y-auto', className)} {...props}>
       {children}
     </div>
   );
 };
 
-export {
-  Dialog,
-  DialogTrigger,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogDescription,
-  DialogFooter,
+type DialogFooterProps = React.ComponentPropsWithRef<'div'>;
+
+const DialogFooter = ({ className, children, ...props }: DialogFooterProps) => {
+  return (
+    <div className={cn('flex px-6 justify-center gap-3', className)} {...props}>
+      {children}
+    </div>
+  );
 };
+
+Dialog.Content = DialogContent;
+Dialog.Body = DialogBody;
+Dialog.Header = DialogHeader;
+Dialog.Title = DialogTitle;
+Dialog.Footer = DialogFooter;
+Dialog.Trigger = DialogPrimitives.Trigger;
+Dialog.Close = DialogPrimitives.Close;
+
+export { Dialog };
