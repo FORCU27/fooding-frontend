@@ -23,6 +23,7 @@ export * from './Tag';
 export * from './Form';
 export * from './RadioSelectBox';
 export * from './BottomSheet';
+export * from './RadioGroup';
 
 // Re-export commonly used icons from lucide-react
 export { Calendar, ChevronLeft, ChevronRight, Check } from 'lucide-react';
