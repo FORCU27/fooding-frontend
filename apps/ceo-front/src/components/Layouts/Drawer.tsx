@@ -1,9 +1,9 @@
 import { CloseIcon } from '@repo/design-system/icons';
 import { cn } from '@repo/design-system/utils';
+import { Suspense } from '@suspensive/react';
 import { Dialog as DialogPrimitives } from 'radix-ui';
 
 import { Navigation } from './Navigation';
-import { Suspense } from '@suspensive/react';
 import { useGetSelf } from '@/hooks/auth/useGetSelf';
 
 type DrawerProps = {
