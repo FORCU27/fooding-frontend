@@ -1,7 +1,7 @@
 'use client';
 
 import * as Select from '@radix-ui/react-select';
-import { ChevronDownIcon, ChevronUpIcon } from 'lucide-react';
+import { ChevronDownIcon } from 'lucide-react';
 
 import { cn } from '../../utils/cn';
 
@@ -43,20 +43,15 @@ const SelectBox = ({
           className={cn(
             'z-50 w-[--radix-select-trigger-width] overflow-hidden rounded-[8px] border border-gray-3 bg-white',
             'min-w-[var(--radix-select-trigger-width)]',
+            'max-h-[var(--radix-select-content-available-height)]',
           )}
         >
-          <Select.ScrollUpButton className='flex h-6 cursor-default items-center justify-center bg-white'>
-            <ChevronUpIcon />
-          </Select.ScrollUpButton>
+          {label && (
+            <div className='flex subtitle-2 items-center subtitle-2 justify-between px-5 py-3 text-sm border-b border-gray-3'>
+              {label}
+            </div>
+          )}
           <Select.Viewport>
-            {label && (
-              <>
-                <div className='flex subtitle-2 items-center subtitle-2 justify-between px-5 py-3 text-sm'>
-                  {label}
-                </div>
-                <hr className='border-gray-3' />
-              </>
-            )}
             {options.map((option) => (
               <Select.Item
                 key={option.value}
@@ -67,9 +62,6 @@ const SelectBox = ({
               </Select.Item>
             ))}
           </Select.Viewport>
-          <Select.ScrollDownButton className='flex h-6 cursor-default items-center justify-center bg-white'>
-            <ChevronDownIcon />
-          </Select.ScrollDownButton>
         </Select.Content>
       </Select.Portal>
     </Select.Root>
