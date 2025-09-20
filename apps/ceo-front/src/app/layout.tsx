@@ -22,18 +22,6 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
   const qc = new QueryClient();
 
   await qc.prefetchQuery({
-    // TODO 쿼리 키 config에 저장해서 활용
-    // TODO 초기 렌더 시 깜박이는 현상 대응
-    queryKey: ['me'],
-    queryFn: async () => {
-      const res = await fetch('/api/auth/me', { cache: 'no-store' });
-      if (!res.ok) return null;
-      return res.json();
-    },
-    staleTime: 60_000,
-  });
-
-  await qc.prefetchQuery({
     queryKey: ['selectedStore'],
     queryFn: async () => {
       const res = await fetch('/api/store/select', { cache: 'no-store' });

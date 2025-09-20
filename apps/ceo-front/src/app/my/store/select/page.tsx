@@ -11,6 +11,7 @@ import { overlay } from 'overlay-kit';
 
 import { useCreateStore } from '@/hooks/store/useCreateStore';
 import { useGetStoreList } from '@/hooks/store/useGetStoreList';
+import { cn } from '@repo/design-system/utils';
 
 // TODO: 매장이 많아졌을 때 UI 개선
 // TODO: 최대 매장 수 초과 시 UI 개선
@@ -31,9 +32,16 @@ export default function StoreSelectPage() {
           />
         </div>
         <main className='flex-1 flex items-center justify-center'>
-          <Suspense>
-            <StoreSetupCard />
-          </Suspense>
+          <div
+            className={cn(
+              'bg-white p-[60px] text-center flex flex-col items-center',
+              'tablet:max-w-[calc(100%-40px)] tablet:shadow-lg tablet:rounded-[30px] tablet:w-[571px] tablet:my-5',
+            )}
+          >
+            <Suspense>
+              <StoreSetupCard />
+            </Suspense>
+          </div>
         </main>
       </div>
     </Suspense>
@@ -68,7 +76,7 @@ const StoreSetupCard = () => {
   };
 
   return (
-    <div className='bg-white rounded-[30px] shadow-lg w-[571px] p-[60px] text-center flex flex-col items-center'>
+    <>
       <Image src='/images/fooding-ceo-logo.svg' alt='fooding logo' width={153} height={24} />
       <h1 className='headline-3 text-center pt-[12px]'>
         사장님을 위한 전용 공간에 오신 걸 환영합니다
@@ -125,7 +133,7 @@ const StoreSetupCard = () => {
       >
         매장 생성하기
       </Button>
-    </div>
+    </>
   );
 };
 
