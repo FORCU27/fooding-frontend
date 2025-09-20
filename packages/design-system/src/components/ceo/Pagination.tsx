@@ -23,7 +23,7 @@ const PaginationItem = ({ page, ...props }: PaginationItem) => {
   return (
     <button
       className={cn(
-        'bg-white hover:bg-gray-1 flex size-[38px] rounded-[5px] items-center justify-center text-sm cursor-pointer',
+        'bg-white hover:bg-gray-7 flex size-[38px] rounded-[5px] items-center justify-center text-sm cursor-pointer',
         isActive && 'bg-gray-6 text-white hover:bg-gray-6',
       )}
       aria-label='페이지 이동'

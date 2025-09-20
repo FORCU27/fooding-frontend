@@ -89,13 +89,13 @@ const ImageUploader = ({
 
   const renderItem = (item: string | null, index: number) => {
     const baseClass =
-      'w-60 h-60 flex items-center justify-center rounded-2xl shadow-sm overflow-hidden bg-white relative';
+      'size-60 flex items-center justify-center rounded-[20px] overflow-hidden bg-white relative shadow-[0_0_2px_rgba(0,0,0,0.06),0_0_3px_rgba(0,0,0,0.1)]';
 
     if (item === null) {
       return (
         <div
           key='uploader'
-          className={`${baseClass} flex-col cursor-pointer text-gray-5 p-4 hover:bg-gray-2`}
+          className={`${baseClass} flex-col cursor-pointer text-gray-5 p-4 hover:bg-gray-7`}
           onClick={handleClick}
         >
           <ImagePlus size={24} />
@@ -122,10 +122,10 @@ const ImageUploader = ({
           type='button'
           onClick={() => handleRemove(imageIndex)}
           className={cn(
-            'w-6 h-6 p-1',
+            'size-6 p-1',
             'flex justify-between items-center cursor-pointer',
-            'text-white bg-gradient-to-r from-[#444444] to-[#bdbdbd] rounded-full shadow',
-            'absolute top-2 right-2',
+            'text-white rounded-full bg-[#444444]/30 hover:bg-[#444444]/50',
+            'absolute top-5 right-5',
           )}
         >
           <X />
@@ -135,8 +135,10 @@ const ImageUploader = ({
   };
 
   return (
-    <div className={`min-w-[1080px] p-8 shadow-sm rounded-xl ${className}`}>
-      <div className='flex flex-wrap gap-4'>{items.map((item, idx) => renderItem(item, idx))}</div>
+    <div
+      className={`min-w-[1080px] p-8 rounded-xl shadow-[0_0_2px_rgba(0,0,0,0.06),0_0_3px_rgba(0,0,0,0.1)] ${className}`}
+    >
+      <div className='flex flex-wrap gap-5'>{items.map((item, idx) => renderItem(item, idx))}</div>
     </div>
   );
 };

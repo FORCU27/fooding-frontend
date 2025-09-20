@@ -13,11 +13,11 @@ const buttonVariants = tv({
   variants: {
     variant: {
       primary: 'bg-fooding-purple text-white hover:bg-fooding-purple-press',
-      outlined: 'border border-gray-2 bg-white hover:bg-gray-1',
+      outlined: 'border border-gray-2 bg-white hover:bg-gray-7',
       primaryOutlined:
-        'border border-fooding-purple bg-white text-fooding-purple hover:bg-fooding-purple/10',
+        'border border-fooding-purple bg-white text-fooding-purple hover:bg-fooding-purple/5',
       primaryPink: 'bg-primary-pink text-white hover:bg-pink-putton-press',
-      ghost: 'hover:bg-gray-1',
+      ghost: 'hover:bg-gray-7',
     },
     size: {
       medium: 'min-w-[96px] h-[43px] rounded-[8px] px-5',
