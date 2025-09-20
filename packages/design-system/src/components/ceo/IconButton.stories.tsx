@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { IconButton } from './IconButton';
-import { ArrowRightIcon } from 'lucide-react';
+import { ArrowLeftIcon } from '../../icons';
 
 const meta = {
   title: 'Components/ceo/IconButton',
@@ -22,9 +22,9 @@ export const Primary: Story = {
 };
 
 export const RightPositionIcon: Story = {
-  render: () => <IconButton iconPosition='right'>아이콘버튼</IconButton>,
+  render: () => <IconButton iconPosition='right'>아이콘 버튼</IconButton>,
 };
 
 export const OptionIconWith: Story = {
-  render: () => <IconButton icon={<ArrowRightIcon />}>아이콘버튼</IconButton>,
+  render: () => <IconButton icon={<ArrowLeftIcon className='size-5' />}>아이콘 버튼</IconButton>,
 };

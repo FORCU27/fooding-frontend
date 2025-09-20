@@ -6,12 +6,10 @@ import { tv, type VariantProps } from 'tailwind-variants';
 import { cn } from '../../utils';
 
 const baseIconButtonClass = cn(
-  'inline-flex justify-center items-center',
+  'inline-flex justify-center items-center h-[38px]',
   'cursor-pointer rounded-full',
-  'px-3 py-2 gap-2',
+  'px-4 gap-2',
   'body-2',
-  'transition-colors',
-  'border border-fooding-purple text-fooding-purple hover:bg-fooding-purple hover:text-white active:bg-fooding-purple/90',
   'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
 );
 
@@ -19,7 +17,7 @@ const iconButtonVariants = tv({
   base: baseIconButtonClass,
   variants: {
     variant: {
-      primary: baseIconButtonClass,
+      primary: 'text-fooding-purple hover:bg-fooding-purple/10 border border-fooding-purple',
     },
   },
   defaultVariants: {
@@ -35,12 +33,17 @@ type IconButtonProps = ComponentProps<'button'> &
 
 const IconButton = forwardRef<HTMLButtonElement, IconButtonProps>(
   ({ children, className, variant, icon, iconPosition = 'left', ...props }, ref) => {
-    const iconElement = icon ?? <PlusIcon className='h-5 w-5' />;
+    const iconElement = icon ?? <PlusIcon className='size-5' />;
 
     return (
       <button
         ref={ref}
-        className={cn(iconButtonVariants({ variant, className }), children ? 'gap-1' : '')}
+        className={cn(
+          iconButtonVariants({ variant, className }),
+          iconPosition === 'left' && 'pl-3',
+          iconPosition === 'right' && 'pr-3',
+          children && 'gap-1',
+        )}
         {...props}
       >
         {iconPosition === 'left' && iconElement}
