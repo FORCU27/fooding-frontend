@@ -13,6 +13,7 @@ import { HomeLoadingFallback } from './components/HomeLoadingFallback';
 import { MainStoreList } from './components/MainStoreList';
 import { LoadingToggle } from '@/components/Devtool/LoadingToggle';
 import BottomTab from '@/components/Layout/BottomTab';
+import { Divider } from '@/components/Layout/Divider';
 import { Screen } from '@/components/Layout/Screen';
 import { StoresList } from '@/components/Store/StoresList';
 import { useGetStoreImmediateEntryList } from '@/hooks/store/useGetStoreImmediateEntryList';
@@ -76,17 +77,24 @@ const ContentBody = () => {
       <Menubar />
       <div className='bg-white mb-3'>
         <Banner />
-        <div className='flex flex-col  py-grid-margin mb-3'>
+        <div className='flex flex-col py-grid-margin'>
           <CategoryTabs categories={STORE_CATEGORIES} />
           <MainStoreList stores={stores.list} />
         </div>
+        <Divider />
         <StoresList
           subtitle='푸딩에서 인기 많은 식당이에요'
           stores={popularStores.list}
           onClickTotalBtn={noop}
         />
-        <StoresList subtitle='새로 오픈했어요!' stores={stores.list} onClickTotalBtn={noop} />
         <StoresList
+          className='pt-0'
+          subtitle='새로 오픈했어요!'
+          stores={stores.list}
+          onClickTotalBtn={noop}
+        />
+        <StoresList
+          className='pt-0'
           subtitle='지금 바로 입장하실 수 있어요!'
           stores={immediateEntryStores.list}
           onClickTotalBtn={noop}

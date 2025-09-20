@@ -1,4 +1,5 @@
 import { StoreInfo } from '@repo/api/user';
+import { EmptyState } from '@repo/design-system/components/b2c';
 import { overlay } from 'overlay-kit';
 import { Masonry } from 'react-plock';
 
@@ -27,6 +28,10 @@ export const StoreDetailPhotoTab = ({ store }: StoreDetailPhotoTabProps) => {
       />
     ));
   };
+
+  if (images.length === 0) {
+    return <EmptyState className='py-[100px]' title='올라온 사진이 없어요!' />;
+  }
 
   return (
     <Section className='flex flex-col'>
