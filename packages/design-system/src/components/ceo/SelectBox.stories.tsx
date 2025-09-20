@@ -1,23 +1,17 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { SelectBox } from './SelectBox';
+import { useState } from 'react';
 
-const meta: any = {
+const meta = {
   title: 'Components/ceo/SelectBox',
   component: SelectBox,
   parameters: {
     layout: 'centered',
   },
   tags: ['autodocs'],
-  argTypes: {
-    options: { control: 'object' },
-    placeholder: { control: 'text' },
-    disabled: { control: 'boolean' },
-    required: { control: 'boolean' },
-  },
-};
+} satisfies Meta<typeof SelectBox>;
 
 export default meta;
-
 type Story = StoryObj<typeof SelectBox>;
 
 const sampleOptions = [
@@ -26,9 +20,59 @@ const sampleOptions = [
   { value: '3', label: '일식' },
 ];
 
+const longOptions = Array.from({ length: 20 }, (_, i) => ({
+  value: `${i + 1}`,
+  label: `옵션 ${i + 1}`,
+}));
+
 export const Default: Story = {
-  args: {
-    options: sampleOptions,
-    placeholder: '업종을 선택해주세요',
+  render: () => {
+    return <SelectBox options={sampleOptions} placeholder='카테고리 선택' />;
+  },
+};
+
+export const Disabled: Story = {
+  render: () => {
+    return <SelectBox options={sampleOptions} placeholder='카테고리 선택' disabled />;
+  },
+};
+
+export const WithLabel: Story = {
+  render: () => {
+    return <SelectBox label='카테고리 선택' options={sampleOptions} placeholder='카테고리 선택' />;
+  },
+};
+
+export const Invalid: Story = {
+  render: () => {
+    return <SelectBox aria-invalid options={sampleOptions} placeholder='카테고리 선택' />;
+  },
+};
+
+export const LongOptions: Story = {
+  render: () => {
+    return <SelectBox label='카테고리 선택' options={longOptions} placeholder='카테고리 선택' />;
+  },
+};
+
+export const Small: Story = {
+  render: () => {
+    return <SelectBox size='small' options={sampleOptions} placeholder='카테고리 선택' />;
+  },
+};
+
+export const Controlled: Story = {
+  render: () => {
+    const [value, setValue] = useState('');
+
+    return (
+      <SelectBox
+        value={value}
+        onValueChange={setValue}
+        size='small'
+        options={sampleOptions}
+        placeholder='카테고리 선택'
+      />
+    );
   },
 };
