@@ -35,6 +35,7 @@ export default function StoreSelectPage() {
           <div
             className={cn(
               'bg-white p-[60px] text-center flex flex-col items-center w-full',
+              'max-tablet:min-h-dvh',
               'tablet:shadow-lg tablet:rounded-[30px] tablet:max-w-[571px] tablet:my-5',
             )}
           >
