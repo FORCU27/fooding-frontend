@@ -51,5 +51,7 @@ export const Drawer = ({ trigger, isOpen, onOpenChange }: DrawerProps) => {
 const UserProfile = () => {
   const { data: me } = useGetSelf();
 
-  return <h3 className='whitespace-pre-wrap headline-2'>{`안녕하세요\n${me.name} 사장님`}</h3>;
+  return (
+    <h3 className='whitespace-pre-wrap headline-2'>{`안녕하세요\n${me.name ? `${me.name} ` : ''}사장님`}</h3>
+  );
 };
