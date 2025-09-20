@@ -1,3 +1,53 @@
 @import 'tailwindcss';
 @import '@repo/design-system/styles/shared.css';
 @import '@repo/design-system/styles/b2c.css';
+
+@theme inline {
+  --spacing-sidebar-width: 240px;
+  --spacing-header-height: 76px;
+
+  --breakpoint-tablet: 768px;
+  --breakpoint-desktop: 1024px;
+
+  --animate-slide-in-from-left: slideInFromLeft 0.15s cubic-bezier(0.22, 0.61, 0.36, 1);
+  --animate-slide-out-to-left: slideOutToLeft 0.15s cubic-bezier(0.22, 0.61, 0.36, 1);
+
+  --animate-fade-in: fadeIn 0.2s ease-out;
+  --animate-fade-out: fadeOut 0.2s ease-out;
+
+  @keyframes slideInFromLeft {
+    from {
+      transform: translateX(-100%);
+    }
+    to {
+      transform: translateX(0);
+    }
+  }
+
+  @keyframes slideOutToLeft {
+    from {
+      transform: translateX(0);
+    }
+    to {
+      transform: translateX(-100%);
+    }
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
+  @keyframes fadeOut {
+    from {
+      opacity: 1;
+    }
+    to {
+      opacity: 0;
+    }
+  }
+}
