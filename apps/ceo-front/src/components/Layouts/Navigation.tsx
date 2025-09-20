@@ -15,7 +15,7 @@ import {
 } from '@repo/design-system/icons';
 import { cn, createContext } from '@repo/design-system/utils';
 
-const allMenus: Menu[] = [
+export const allMenus: Menu[] = [
   {
     type: 'group',
     id: 'store',

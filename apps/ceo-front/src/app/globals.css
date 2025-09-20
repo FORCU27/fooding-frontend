@@ -9,8 +9,8 @@
   --breakpoint-tablet: 768px;
   --breakpoint-desktop: 1024px;
 
-  --animate-slide-in-from-left: slideInFromLeft 0.2s ease-out;
-  --animate-slide-out-to-left: slideOutToLeft 0.2s ease-out;
+  --animate-slide-in-from-left: slideInFromLeft 0.15s cubic-bezier(0.22, 0.61, 0.36, 1);
+  --animate-slide-out-to-left: slideOutToLeft 0.15s cubic-bezier(0.22, 0.61, 0.36, 1);
 
   --animate-fade-in: fadeIn 0.2s ease-out;
   --animate-fade-out: fadeOut 0.2s ease-out;
