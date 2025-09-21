@@ -2,6 +2,8 @@
 
 import { useState, useEffect, useRef } from 'react';
 
+import { menuApi, type MenuItem as ApiMenuItem } from '@repo/api/ceo';
+import { queryKeys } from '@repo/api/configs/query-keys';
 import {
   CardForm,
   Card,
@@ -11,6 +13,7 @@ import {
   EditCategoryDialog,
   MenuButton,
 } from '@repo/design-system/components/ceo';
+import { useQueries } from '@tanstack/react-query';
 
 import { useCreateMenuCategory } from '@/hooks/menu-category/useCreateMenuCategory';
 import { useDeleteMenuCategory } from '@/hooks/menu-category/useDeleteMenuCategory';
@@ -18,10 +21,6 @@ import { useGetMenuCategories } from '@/hooks/menu-category/useGetMenuCategories
 import { useSortMenuCategories } from '@/hooks/menu-category/useSortMenuCategories';
 import { useUpdateMenuCategory } from '@/hooks/menu-category/useUpdateMenuCategory';
 import { useSelectedStoreId } from '@/hooks/useSelectedStoreId';
-import { useGetMenuList } from '@/hooks/menu/useGetMenuList';
-import { useQueries } from '@tanstack/react-query';
-import { menuApi } from '@repo/api/ceo';
-import { queryKeys } from '@repo/api/configs/query-keys';
 
 type BadgeType = '대표' | '추천' | '신규';
 
@@ -72,7 +71,6 @@ const MenusPage = () => {
   // 현재 선택된 카테고리의 메뉴 데이터
   const selectedCategoryIndex = menuCategories?.findIndex(cat => cat.id === selectedCategoryId) ?? -1;
   const menuData = selectedCategoryIndex >= 0 ? menuQueries[selectedCategoryIndex]?.data : undefined;
-  const isLoadingMenus = menuQueries.some(query => query.isLoading);
 
   // sortOrder가 가장 낮은 카테고리를 기본 선택
   useEffect(() => {
@@ -105,7 +103,7 @@ const MenusPage = () => {
 
       // 현재 선택된 카테고리의 메뉴 데이터가 있으면 캐시에 저장
       if (selectedCategoryId && menuData) {
-        const menuItems = menuData.list.map((menu: any) => ({
+        const menuItems = menuData.list.map((menu: ApiMenuItem) => ({
           id: menu.id.toString(),
           name: menu.name,
           description: menu.description || '',
@@ -119,8 +117,8 @@ const MenusPage = () => {
 
         // sortOrder로 정렬
         menuItems.sort((a, b) => {
-          const menuA = menuData.list.find((m: any) => m.id.toString() === a.id);
-          const menuB = menuData.list.find((m: any) => m.id.toString() === b.id);
+          const menuA = menuData.list.find((m: ApiMenuItem) => m.id.toString() === a.id);
+          const menuB = menuData.list.find((m: ApiMenuItem) => m.id.toString() === b.id);
           return (menuA?.sortOrder || 0) - (menuB?.sortOrder || 0);
         });
 

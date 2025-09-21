@@ -256,6 +256,7 @@ export const MenuBoard = ({
         setInternalSelectedCategoryId(initialCategories[0].id);
       }
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const sensors = useSensors(
