@@ -50,6 +50,8 @@ const mock = {
   bookmarkCount: 103,
 } as const;
 
+export type StoreDetailScreenParams = { storeId: number; tab?: Tab };
+
 export const StoreDetailScreen: ActivityComponentType<'StoreDetailScreen'> = ({ params }) => {
   const flow = useFlow();
 
@@ -78,13 +80,17 @@ export const StoreDetailScreen: ActivityComponentType<'StoreDetailScreen'> = ({ 
   );
 };
 
+type Tab = 'home' | 'news' | 'menu' | 'photo' | 'review' | 'reward' | 'info';
+
 type StoreDetailProps = {
   storeId: number;
   showHeader: boolean;
-  initialTab?: string;
+  initialTab?: Tab;
 };
 
 const StoreDetail = ({ storeId, showHeader, initialTab = 'home' }: StoreDetailProps) => {
+  const [currentTab, setCurrentTab] = useState<Tab>(initialTab);
+
   const { user } = useAuth();
   const { data: store } = useGetStoreDetail(storeId);
   const loginBottomSheet = useLoginBottomSheet();
@@ -108,12 +114,12 @@ const StoreDetail = ({ storeId, showHeader, initialTab = 'home' }: StoreDetailPr
 
     const bookmarkState = isBookmarked;
 
-    setIsBookmarked(!bookmarkState);
-
     const mutation = bookmarkState ? deleteBookMark : addBookMark;
 
+    if (mutation.isPending) return;
+
     mutation.mutate(store.id, {
-      onError: () => {
+      onSuccess: () => {
         setIsBookmarked(!bookmarkState);
       },
     });
@@ -170,7 +176,7 @@ const StoreDetail = ({ storeId, showHeader, initialTab = 'home' }: StoreDetailPr
         </div>
       </Section>
       <Section className='mt-[10px] pt-[14px] pb-[100px]'>
-        <ChipTabs defaultValue={initialTab} scrollable>
+        <ChipTabs value={currentTab} onChange={setCurrentTab} scrollable>
           <ChipTabs.List>
             <ChipTabs.Trigger value='home'>홈</ChipTabs.Trigger>
             <ChipTabs.Trigger value='news'>소식</ChipTabs.Trigger>
@@ -182,7 +188,7 @@ const StoreDetail = ({ storeId, showHeader, initialTab = 'home' }: StoreDetailPr
           </ChipTabs.List>
           <Suspense>
             <ChipTabs.Content value='home'>
-              <StoreDetailHomeTab store={store} />
+              <StoreDetailHomeTab store={store} onSeeMoreReviews={() => setCurrentTab('review')} />
             </ChipTabs.Content>
             <ChipTabs.Content value='news'>
               <StoreDetailPostListTab storeId={storeId} />
@@ -208,14 +214,18 @@ const StoreDetail = ({ storeId, showHeader, initialTab = 'home' }: StoreDetailPr
           'shadow-[0_4px_24px_rgba(0,0,0,0.0.1)]',
         )}
       >
-        <button className='flex flex-col size-[56px] justify-center items-center gap-1 shrink-0 cursor-pointer'>
+        <button
+          className='flex flex-col size-[56px] justify-center items-center gap-1 shrink-0 cursor-pointer'
+          onClick={handleBookmarkClick}
+        >
           <BookmarkIcon
             cursor='pointer'
             color={isBookmarked ? 'var(--color-primary-pink)' : 'var(--color-gray-5)'}
             fill={isBookmarked ? 'var(--color-primary-pink)' : 'none'}
-            onClick={handleBookmarkClick}
           />
-          <span className='subtitle-4 text-black h-[19px]'>{store.bookmarkCount}</span>
+          <span className='subtitle-4 text-black h-[19px]'>
+            {store.bookmarkCount + (!store.isBookmarked && isBookmarked ? 1 : 0)}
+          </span>
         </button>
         <Button disabled={store.isFinished} onClick={() => setIsBottomSheetOpen(true)}>
           {store.isFinished ? '영업 종료' : '줄서기'}

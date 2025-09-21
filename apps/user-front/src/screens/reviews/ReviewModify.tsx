@@ -1,6 +1,6 @@
 'use client';
 
-import { ModifyStoreReviewBody } from '@repo/api/user';
+import { ModifyStoreReviewBody, Review } from '@repo/api/user';
 import { toast } from '@repo/design-system/components/b2c';
 import { ActivityComponentType, useFlow } from '@stackflow/react/future';
 
@@ -8,6 +8,8 @@ import { ReviewForm } from './components/ReviewForm';
 import { Header } from '@/components/Layout/Header';
 import { Screen } from '@/components/Layout/Screen';
 import { useModifyStoreReview } from '@/hooks/store/useModifyStoreReview';
+
+export type ReviewModifyScreenParams = { review: Review };
 
 export const ReviewModifyScreen: ActivityComponentType<'ReviewModifyScreen'> = ({ params }) => {
   const flow = useFlow();

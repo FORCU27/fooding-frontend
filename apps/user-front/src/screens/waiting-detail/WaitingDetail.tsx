@@ -24,6 +24,8 @@ import { useGetStoreWaitingDetail } from '@/hooks/store-waiting/useGetStoreWaiti
 import { StoreInfoMap } from '@/libs/kakao-map/StoreInfoMap';
 import { formatDotDateTime } from '@/utils/date';
 
+export type WaitingDetailScreenParams = { waitingId: string };
+
 export const WaitingDetailScreen: ActivityComponentType<'WaitingDetailScreen'> = ({ params }) => {
   return (
     <Screen header={<Header title='웨이팅 상세정보' left={<Header.Back />} />}>
