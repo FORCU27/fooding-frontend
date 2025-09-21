@@ -13,6 +13,7 @@ import {
   ToggleGroup,
   ToggleGroupItem,
 } from '@repo/design-system/components/ceo';
+import { ImageIcon } from '@repo/design-system/icons';
 import { useQuery } from '@tanstack/react-query';
 
 import ConfirmModal from '@/components/ConfirmModal';
@@ -157,9 +158,27 @@ const PhotoPage = () => {
             </ChipTabs>
           </div>
           {!storeId || isFetching || images?.data?.list.length === 0 ? (
-            <div className='columns-3'>목록이 비어있습니다.</div>
+            <div className='pb-[200px]'>
+              <div
+                key='uploader'
+                className={`w-1/2 md:w-60 md:h-60 aspect-square flex items-center justify-center rounded-2xl shadow-sm overflow-hidden bg-white relative flex-col cursor-pointer text-gray-5 p-4 hover:bg-gray-2`}
+                onClick={handleAddImage}
+              >
+                <ImageIcon />
+                <p className='mt-[4px] subtitle-7'>
+                  <span className='text-gray-5'>사진을 추가해주세요</span>
+                </p>
+                <input
+                  ref={fileInputRef}
+                  type='file'
+                  accept='image/*'
+                  className='hidden'
+                  onChange={handleFileChange}
+                />
+              </div>
+            </div>
           ) : (
-            <div className='columns-2 md:columns-4 gap-[20px]'>
+            <div className='columns-2 md:columns-4 gap-[20px] pb-[200px]'>
               {images?.data.list.map((photo) => (
                 <div key={photo.id} className='mb-[20px] break-inside-avoid'>
                   <PhotoCard
