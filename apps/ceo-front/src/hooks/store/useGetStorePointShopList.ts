@@ -1,6 +1,6 @@
 import { storeApi } from '@repo/api/ceo';
 import { queryKeys } from '@repo/api/configs/query-keys';
-import { useSuspenseQuery } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 
 interface UseGetStorePointShopListParams {
   storeId: number;
@@ -11,7 +11,7 @@ export const useGetStorePointShopList = ({
   storeId,
   isActive = true,
 }: UseGetStorePointShopListParams) => {
-  return useSuspenseQuery({
+  return useQuery({
     queryKey: [queryKeys.ceo.store.pointShop.list, storeId, isActive],
     queryFn: async () => {
       const response = await storeApi.getStorePointShopList(storeId, {
@@ -21,5 +21,6 @@ export const useGetStorePointShopList = ({
       });
       return response.data;
     },
+    enabled: !!storeId,
   });
 };

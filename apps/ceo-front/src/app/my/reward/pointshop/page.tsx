@@ -3,21 +3,29 @@
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
-import { STORAGE_KEYS } from '@repo/api/configs/storage-keys';
 import { Button, SortOrder, SortToggle } from '@repo/design-system/components/ceo';
-import Cookies from 'js-cookie';
 
+import { useStore } from '@/context/StoreContext';
 import { useGetStorePointShopList } from '@/hooks/store/useGetStorePointShopList';
 
 const PointShopPage = () => {
-  const selectedStoreId = Cookies.get(STORAGE_KEYS.SELECTED_STORE_ID) ?? '1';
-  const [sortOrder, setSortOrder] = useState<SortOrder>('TOTAL');
   const router = useRouter();
+  const [sortOrder, setSortOrder] = useState<SortOrder>('TOTAL');
 
-  const { data: pointShopList } = useGetStorePointShopList({
-    storeId: Number(selectedStoreId),
+  const { storeId } = useStore();
+
+  const { data: pointShopList, isLoading } = useGetStorePointShopList({
+    storeId: Number(storeId),
     isActive: true,
   });
+
+  if (isLoading) {
+    return (
+      <div className='flex items-center justify-center h-dvh'>
+        <p className='body-2 text-gray-4'>불러오는 중...</p>
+      </div>
+    );
+  }
 
   if (!pointShopList || pointShopList.pageInfo.totalCount === 0) {
     return (
