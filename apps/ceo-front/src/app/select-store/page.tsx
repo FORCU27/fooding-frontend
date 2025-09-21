@@ -4,14 +4,17 @@ import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
-import { Button, Dialog, Input, RadioChoiceBox } from '@repo/design-system/components/ceo';
-import { CirclePlusIcon } from '@repo/design-system/icons';
+import { Store } from '@repo/api/ceo';
+import { Button, RadioChoiceBox, DropdownMenu } from '@repo/design-system/components/ceo';
+import { CirclePlusIcon, MoreVerticalIcon } from '@repo/design-system/icons';
 import { cn } from '@repo/design-system/utils';
 import { Suspense } from '@suspensive/react';
 import { overlay } from 'overlay-kit';
 
+import { StoreCreateDialog } from './_components/StoreCreateDialog';
+import { StoreDeleteDialog } from './_components/StoreDeleteDialog';
+import { StoreUpdateDialog } from './_components/StoreUpdateDialog';
 import { FoodingLogo } from '@/components/FoodingLogo';
-import { useCreateStore } from '@/hooks/store/useCreateStore';
 import { useGetStoreList } from '@/hooks/store/useGetStoreList';
 
 // TODO: 매장이 많아졌을 때 UI 개선
@@ -33,17 +36,9 @@ export default function StoreSelectPage() {
           />
         </div>
         <main className='flex-1 flex items-center justify-center'>
-          <div
-            className={cn(
-              'bg-white p-[60px] text-center flex flex-col items-center w-full',
-              'max-tablet:min-h-dvh',
-              'tablet:shadow-lg tablet:rounded-[30px] tablet:max-w-[571px] tablet:my-5',
-            )}
-          >
-            <Suspense>
-              <StoreSetupCard />
-            </Suspense>
-          </div>
+          <Suspense>
+            <StoreSetupCard />
+          </Suspense>
         </main>
       </div>
     </Suspense>
@@ -77,10 +72,32 @@ const StoreSetupCard = () => {
     ));
   };
 
+  const onUpdateStoreButtonClick = ({ store }: { store: Store }) => {
+    overlay.open(({ isOpen, close }) => (
+      <StoreUpdateDialog store={store} isOpen={isOpen} onOpenChange={(open) => !open && close()} />
+    ));
+  };
+
+  const onDeleteStoreButtonClick = (storeId: number) => {
+    overlay.open(({ isOpen, close }) => (
+      <StoreDeleteDialog
+        storeId={storeId}
+        isOpen={isOpen}
+        onOpenChange={(open) => !open && close()}
+      />
+    ));
+  };
+
   const title = '사장님을 위한 전용 공간에 오신 걸 환영합니다';
 
   return (
-    <>
+    <div
+      className={cn(
+        'bg-white p-[60px] text-center flex flex-col items-center w-full',
+        'max-tablet:min-h-dvh',
+        'tablet:shadow-lg tablet:rounded-[30px] tablet:max-w-[571px] tablet:my-5',
+      )}
+    >
       <FoodingLogo />
       <h1 className='font-semibold tablet:text-[24px] text-center pt-[12px]'>{title}</h1>
       <div className='py-[32px] flex flex-col items-center w-full'>
@@ -105,9 +122,30 @@ const StoreSetupCard = () => {
               >
                 <RadioChoiceBox value={selectedStoreId} onValueChange={setSelectedStoreId}>
                   {stores.map((store) => (
-                    <RadioChoiceBox.Item key={store.id} value={store.id.toString()}>
-                      {store.name}
-                    </RadioChoiceBox.Item>
+                    <div key={store.id} className='relative'>
+                      <RadioChoiceBox.Item value={store.id.toString()}>
+                        {store.name}
+                      </RadioChoiceBox.Item>
+                      {/* TODO: 모바일 레이아웃에서 바텀 시트 표시 */}
+                      <DropdownMenu>
+                        <DropdownMenu.Trigger asChild>
+                          <button className='absolute top-1/2 -translate-y-1/2 right-5 text-gray-5 cursor-pointer'>
+                            <MoreVerticalIcon />
+                          </button>
+                        </DropdownMenu.Trigger>
+                        <DropdownMenu.Content side='left' align='start'>
+                          <DropdownMenu.Item onClick={() => onUpdateStoreButtonClick({ store })}>
+                            수정
+                          </DropdownMenu.Item>
+                          <DropdownMenu.Item
+                            variant='danger'
+                            onClick={() => onDeleteStoreButtonClick(store.id)}
+                          >
+                            삭제
+                          </DropdownMenu.Item>
+                        </DropdownMenu.Content>
+                      </DropdownMenu>
+                    </div>
                   ))}
                 </RadioChoiceBox>
               </div>
@@ -135,59 +173,6 @@ const StoreSetupCard = () => {
       >
         매장 생성하기
       </Button>
-    </>
-  );
-};
-
-type StoreCreateDialogProps = {
-  isOpen: boolean;
-  onOpenChange: (open: boolean) => void;
-};
-
-const StoreCreateDialog = ({ isOpen, onOpenChange }: StoreCreateDialogProps) => {
-  const [storeName, setStoreName] = useState('');
-
-  const createStoreMutation = useCreateStore();
-
-  const onConfirmButtonClick = () => {
-    if (createStoreMutation.isPending) return;
-
-    createStoreMutation.mutate(
-      { name: storeName.trim() },
-      {
-        onSuccess: () => {
-          onOpenChange(false);
-        },
-        onError: () => {
-          // TODO: 에러 처리
-        },
-      },
-    );
-  };
-
-  return (
-    <Dialog open={isOpen} onOpenChange={onOpenChange}>
-      <Dialog.Content>
-        <Dialog.Header>
-          <Dialog.Title>매장 등록</Dialog.Title>
-        </Dialog.Header>
-        <Dialog.Body>
-          <Input
-            placeholder='매장명을 입력해주세요'
-            value={storeName}
-            onChange={(e) => setStoreName(e.target.value)}
-          />
-        </Dialog.Body>
-        <Dialog.Footer>
-          <Button
-            variant='primaryPink'
-            onClick={onConfirmButtonClick}
-            disabled={storeName.trim().length === 0}
-          >
-            등록
-          </Button>
-        </Dialog.Footer>
-      </Dialog.Content>
-    </Dialog>
+    </div>
   );
 };

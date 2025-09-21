@@ -24,6 +24,7 @@ export * from './RadioChoiceBox';
 export * from './Form';
 export * from './RadioSelectBox';
 export * from './BottomSheet';
+export * from './DropdownMenu';
 
 // Re-export commonly used icons from lucide-react
 export { Calendar, ChevronLeft, ChevronRight, Check } from 'lucide-react';

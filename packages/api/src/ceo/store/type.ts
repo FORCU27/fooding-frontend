@@ -20,6 +20,17 @@ export type CreateStoreBody = {
   name: string;
 };
 
+export type UpdateStoreBody = {
+  name: string;
+  contactNumber: string;
+  latitude: number | null;
+  longitude: number | null;
+  category: string;
+  address: string;
+  direction: string;
+  description: string;
+};
+
 export const SubwayStation = z.object({
   id: z.number(),
   name: z.string(),
