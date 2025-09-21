@@ -12,7 +12,7 @@ const buttonVariants = tv({
   ),
   variants: {
     variant: {
-      primary: 'bg-primary-pink text-white active:bg-pink-putton-press',
+      primary: 'bg-primary-pink text-white active:bg-pink-button-press',
       gray: 'bg-gray-1 text-black active:bg-[#D4D8DC]',
       outlined: 'border border-gray-3 text-black bg-white active:bg-gray-1',
     },
