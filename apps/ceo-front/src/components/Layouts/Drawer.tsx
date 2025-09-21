@@ -1,10 +1,13 @@
-import { CloseIcon } from '@repo/design-system/icons';
+import { useRouter } from 'next/navigation';
+
+import { CloseIcon, LogoutIcon } from '@repo/design-system/icons';
 import { cn } from '@repo/design-system/utils';
 import { Suspense } from '@suspensive/react';
 import { Dialog as DialogPrimitives } from 'radix-ui';
 
 import { Navigation } from './Navigation';
 import { useGetSelf } from '@/hooks/auth/useGetSelf';
+import { useLogout } from '@/hooks/auth/useLogout';
 
 type DrawerProps = {
   trigger: React.ReactNode;
@@ -13,6 +16,23 @@ type DrawerProps = {
 };
 
 export const Drawer = ({ trigger, isOpen, onOpenChange }: DrawerProps) => {
+  const router = useRouter();
+
+  const logout = useLogout();
+
+  const handleLogoutClick = async () => {
+    if (logout.isPending) return;
+
+    logout.mutate(undefined, {
+      onSuccess: () => {
+        router.push('/login');
+      },
+      onError: () => {
+        // TODO: 에러 처리
+      },
+    });
+  };
+
   return (
     <DialogPrimitives.Root open={isOpen} onOpenChange={onOpenChange}>
       <DialogPrimitives.Trigger asChild>{trigger}</DialogPrimitives.Trigger>
@@ -42,6 +62,15 @@ export const Drawer = ({ trigger, isOpen, onOpenChange }: DrawerProps) => {
             </Suspense>
           </div>
           <Navigation onNavigation={() => onOpenChange(false)} />
+          <div className='px-8 py-[18px] flex justify-end border-t border-gray-8 bg-gray-7'>
+            <button
+              className='flex items-center gap-2 text-gray-5 body-2 cursor-pointer'
+              onClick={handleLogoutClick}
+            >
+              <LogoutIcon className='size-5' strokeWidth={1.5} />
+              로그아웃
+            </button>
+          </div>
         </DialogPrimitives.Content>
       </DialogPrimitives.Portal>
     </DialogPrimitives.Root>

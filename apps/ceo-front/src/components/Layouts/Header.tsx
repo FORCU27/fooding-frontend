@@ -138,7 +138,7 @@ const UserProfile = () => {
 
     logout.mutate(undefined, {
       onSuccess: () => {
-        router.push('/');
+        router.push('/login');
       },
       onError: () => {
         // TODO: 에러 처리
