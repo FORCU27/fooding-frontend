@@ -13,6 +13,8 @@ import { useAuth } from '@/components/Provider/AuthProvider';
 import { useGetPlanDetail } from '@/hooks/plan/useGetPlanDetail';
 import { useCreateStoreReview } from '@/hooks/store/useCreateStoreReview';
 
+export type ReviewCreateScreenParams = { planId: string };
+
 export const ReviewCreateScreen: ActivityComponentType<'ReviewCreateScreen'> = ({ params }) => {
   const { data: planInfo } = useGetPlanDetail(params.planId);
 

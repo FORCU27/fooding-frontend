@@ -14,7 +14,7 @@ export const pathConfig: Record<string, AuthType> = {
   '/': AuthType.PUBLIC,
   '/my': AuthType.PRIVATE,
   '/login': AuthType.GUEST,
-  '/my/store/select': AuthType.PRIVATE,
+  '/select-store': AuthType.PRIVATE,
 };
 
 const PUBLIC_ROUTES = ['/login', '/register'];
@@ -49,13 +49,13 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(url);
   }
 
-  // 홈(/) 진입 시 매장 미선택이면 /store/select로 이동
+  // 홈(/) 진입 시 매장 미선택이면 매장 선택 페이지로 이동
   if (isAuthenticated && path === '/my' && !selectedStoreId) {
-    return NextResponse.redirect(new URL('/my/store/select', request.url));
+    return NextResponse.redirect(new URL('/select-store', request.url));
   }
 
-  // 이미 매장 선택된 상태에서 /store/select 들어오면 / 로 이동
-  if (isAuthenticated && path === '/my/store/select' && selectedStoreId) {
+  // 이미 매장 선택된 상태에서 매장 선택 페이지로 들어오면 / 로 이동
+  if (isAuthenticated && path === '/select-store' && selectedStoreId) {
     return NextResponse.redirect(new URL('/', request.url));
   }
 
