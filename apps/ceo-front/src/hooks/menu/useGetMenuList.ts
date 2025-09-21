@@ -1,10 +1,10 @@
-import { useQuery, UseQueryOptions } from '@tanstack/react-query';
-import { menuApi, GetMenuListParams } from '@repo/api/ceo';
+import { menuApi, type GetMenuListParams, type GetMenuListResponse } from '@repo/api/ceo';
 import { queryKeys } from '@repo/api/configs/query-keys';
+import { useQuery, type UseQueryOptions } from '@tanstack/react-query';
 
 export const useGetMenuList = (
   params: GetMenuListParams,
-  options?: Omit<UseQueryOptions<any, any, any, any>, 'queryKey' | 'queryFn'>
+  options?: Omit<UseQueryOptions<GetMenuListResponse['data'], Error, GetMenuListResponse['data'], readonly unknown[]>, 'queryKey' | 'queryFn'>
 ) => {
   return useQuery({
     queryKey: [queryKeys.ceo.menu.list, params],

@@ -1,6 +1,6 @@
-import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { menuApi, CreateMenuBody } from '@repo/api/ceo';
+import { menuApi, type CreateMenuBody } from '@repo/api/ceo';
 import { queryKeys } from '@repo/api/configs/query-keys';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 export const useCreateMenu = () => {
   const queryClient = useQueryClient();
