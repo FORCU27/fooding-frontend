@@ -27,23 +27,27 @@ const chipTabsVariants = tv({
   },
 });
 
-type ChipTabsProps = Omit<TabsPrimitives.TabsProps, 'onChange' | 'onValueChange'> & {
-  onChange?: (value: string) => void;
+type ChipTabsProps<TValue extends string> = Omit<
+  TabsPrimitives.TabsProps,
+  'value' | 'onChange' | 'onValueChange'
+> & {
+  value?: TValue;
+  onChange?: (value: TValue) => void;
   scrollable?: boolean;
 };
 
-const ChipTabs = ({
+const ChipTabs = <TValue extends string>({
   className,
   children,
   onChange,
   scrollable = false,
   ...props
-}: ChipTabsProps) => {
+}: ChipTabsProps<TValue>) => {
   return (
     <ChipTabsContext value={{ scrollable }}>
       <TabsPrimitives.Root
         className={cn('w-full', scrollable && '-mx-grid-margin w-auto', className)}
-        onValueChange={onChange}
+        onValueChange={onChange as (value: string) => void}
         {...props}
       >
         {children}
