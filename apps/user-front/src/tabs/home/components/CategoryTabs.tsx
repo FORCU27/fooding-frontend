@@ -6,7 +6,7 @@ interface CategoryTabsProps {
 }
 
 export const CategoryTabs = ({ categories }: CategoryTabsProps) => (
-  <div className='flex flex-col justify-between p-grid-margin gap-4'>
+  <div className='flex flex-col justify-between px-grid-margin pb-grid-margin gap-4'>
     <div className='subtitle-1'>오늘은 어디에서 식사할까요?</div>
     <ChipTabs defaultValue={`${1}`} scrollable>
       <ChipTabs.List>

@@ -9,6 +9,7 @@ import {
 } from '@repo/design-system/icons';
 import { useFlow } from '@stackflow/react/future';
 
+import { Divider } from '@/components/Layout/Divider';
 import { Section } from '@/components/Layout/Section';
 import { MenuCard } from '@/components/Store/MenuCard';
 import { ReviewsList } from '@/components/Store/ReviewsList';
@@ -24,7 +25,6 @@ import { noop } from '@/utils/noop';
 
 // TODO: API 연동
 const mock = {
-  location: '제주 제주시 서해안로 654 바다풍경 정육식당',
   subwayLocation: '제주역에서 847m',
   subwayNumber: 6,
   operatingHours: '매일 10:40 - 21:50',
@@ -44,7 +44,7 @@ export const StoreDetailHomeTab = ({ store }: StoreDetailHomeTabProps) => {
 
   return (
     <div className='flex flex-col'>
-      <Section className='mt-[10px] py-[20px] gap-[6px]'>
+      <Section className='py-[20px] gap-[6px]'>
         <span className='body-6 flex items-center gap-[10px]'>
           <MarkPinIcon className='size-[18px] stroke-1' />
           {store.address}
@@ -63,7 +63,8 @@ export const StoreDetailHomeTab = ({ store }: StoreDetailHomeTabProps) => {
           {store.contactNumber}
         </span>
       </Section>
-      <Section className='mt-[10px] pb-8'>
+      <Divider />
+      <Section className='pb-8'>
         <Section.Header>
           <Section.Title>메뉴</Section.Title>
           <Section.Link>더보기</Section.Link>
@@ -82,7 +83,8 @@ export const StoreDetailHomeTab = ({ store }: StoreDetailHomeTabProps) => {
           </ul>
         )}
       </Section>
-      <Section className='mt-[10px]'>
+      <Divider />
+      <Section>
         <Section.Header>
           <Section.Title className='flex items-center gap-1'>
             리뷰
@@ -105,7 +107,8 @@ export const StoreDetailHomeTab = ({ store }: StoreDetailHomeTabProps) => {
           </ul>
         )}
       </Section>
-      <Section className='mt-[10px] pb-8'>
+      <Divider />
+      <Section className='pb-8'>
         <Section.Header>
           <Section.Title>매장 위치</Section.Title>
         </Section.Header>
@@ -129,13 +132,15 @@ export const StoreDetailHomeTab = ({ store }: StoreDetailHomeTabProps) => {
         </div>
         {store.latitude && store.longitude && (
           <PathfindingButton
+            className='mt-5'
             latitude={store.latitude}
             longitude={store.longitude}
             name={store.name}
           />
         )}
       </Section>
-      <div className='mt-[10px]'>
+      <Divider />
+      <div>
         {/* TODO: 다른사람이 함께 본 식당 목록 조회 기능 추가 */}
         <StoresList
           subtitle='다른사람이 함께 본 비슷한 식당'
@@ -154,14 +159,16 @@ export const StoreDetailHomeTab = ({ store }: StoreDetailHomeTabProps) => {
 };
 
 type PathfindingButtonProps = {
+  className?: string;
   latitude: number;
   longitude: number;
   name: string;
 };
 
-const PathfindingButton = ({ latitude, longitude, name }: PathfindingButtonProps) => {
+const PathfindingButton = ({ className, latitude, longitude, name }: PathfindingButtonProps) => {
   return (
     <Button
+      className={className}
       variant='gray'
       size='large'
       onClick={() => getKakaoMapDirectionUrl({ latitude, longitude, name })}

@@ -3,24 +3,25 @@ import { EmptyState } from '@repo/design-system/components/b2c';
 import { ChevronRightIcon } from '@repo/design-system/icons';
 
 import { StoreCard } from './StoreCard';
+import { cn } from '@/utils/cn';
 
 interface StoresListProps {
+  className?: string;
   subtitle: string;
   onClickTotalBtn: () => void;
   stores: Store[];
 }
 
-export const StoresList = ({ subtitle, stores, onClickTotalBtn }: StoresListProps) => {
+export const StoresList = ({ className, subtitle, stores, onClickTotalBtn }: StoresListProps) => {
   const handleEmptyStoreList = (stores: Store[]) => {
     if (stores.length === 0) {
       return <EmptyState className='h-[240px]' title='해당하는 가게 목록이 없어요!' />;
     }
   };
   return (
-    <div className='flex flex-col py-grid-margin bg-white/80'>
+    <div className={cn('flex flex-col py-grid-margin bg-white/80', className)}>
       <div className='flex justify-between mb-4 px-grid-margin'>
         <div className='subtitle-3'>{subtitle}</div>
-
         {stores.length === 0 ? (
           <button
             className='flex justify-center items-center body-5 text-gray-3'
@@ -28,7 +29,7 @@ export const StoresList = ({ subtitle, stores, onClickTotalBtn }: StoresListProp
             disabled
           >
             <span>전체보기</span>
-            <ChevronRightIcon size={14} />
+            <ChevronRightIcon size={18} />
           </button>
         ) : (
           <button
@@ -36,7 +37,7 @@ export const StoresList = ({ subtitle, stores, onClickTotalBtn }: StoresListProp
             onClick={onClickTotalBtn}
           >
             <span>전체보기</span>
-            <ChevronRightIcon size={14} />
+            <ChevronRightIcon size={18} />
           </button>
         )}
       </div>
