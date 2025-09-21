@@ -1,8 +1,26 @@
-import { Toaster as RhtToaster, toast as RhtToast } from 'react-hot-toast';
+import { useEffect } from 'react';
+
+import {
+  Toaster as RhtToaster,
+  toast as RhtToast,
+  ToastBar,
+  useToasterStore,
+} from 'react-hot-toast';
 
 import { CheckIcon } from '../../icons';
 
+const TOAST_LIMIT = 2;
+
 export const Toaster = () => {
+  const { toasts } = useToasterStore();
+
+  useEffect(() => {
+    toasts
+      .filter((t) => t.visible)
+      .filter((_, i) => i >= TOAST_LIMIT)
+      .forEach((t) => toast.dismiss(t.id));
+  }, [toasts]);
+
   return (
     <RhtToaster
       position='bottom-center'
@@ -22,7 +40,17 @@ export const Toaster = () => {
           },
         },
       }}
-    />
+    >
+      {(t) => (
+        <ToastBar
+          toast={t}
+          style={{
+            ...t.style,
+            animation: t.visible ? 'toast-enter 0.2s' : 'toast-exit 0.2s forwards',
+          }}
+        />
+      )}
+    </RhtToaster>
   );
 };
 

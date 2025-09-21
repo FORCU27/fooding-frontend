@@ -62,6 +62,38 @@
   }
 
   --font-family-sans: var(--font-pretendard), sans-serif;
+
+  @keyframes toast-enter {
+    from {
+      opacity: 0;
+      transform: translateY(40px);
+    }
+
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes toast-exit {
+    from {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    to {
+      opacity: 0;
+      transform: translateY(40px);
+    }
+  }
+}
+
+@utility toast-enter {
+  animation: toast-enter var(--ease-out-cubic);
+}
+
+@utility toast-exit {
+  animation: toast-exit var(--ease-out-cubic);
 }
 
 @utility fade-in {
