@@ -1,12 +1,15 @@
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 
+import { CeoBellIcon } from '@repo/design-system/icons';
 import { CloseIcon, LogoutIcon } from '@repo/design-system/icons';
 import { cn } from '@repo/design-system/utils';
 import { Suspense } from '@suspensive/react';
 import { Dialog as DialogPrimitives } from 'radix-ui';
 
 import { allMenus, Menu } from './Navigation';
+import { FoodingLogo } from '@/components/FoodingLogo';
+import { StoreSelector } from '@/components/StoreSelector';
 import { useGetSelf } from '@/hooks/auth/useGetSelf';
 import { useLogout } from '@/hooks/auth/useLogout';
 
@@ -52,11 +55,15 @@ export const Drawer = ({ trigger, isOpen, onOpenChange }: DrawerProps) => {
         >
           <DialogPrimitives.Title className='sr-only'>메뉴</DialogPrimitives.Title>
           <DialogPrimitives.Description className='sr-only'>메뉴</DialogPrimitives.Description>
-          <div className='py-10 px-8 bg-gray-7 border-b border-gray-8 flex flex-col'>
-            <div className='flex justify-end'>
-              <DialogPrimitives.Close>
-                <CloseIcon />
-              </DialogPrimitives.Close>
+          <div className='pt-6 pb-[18px] px-8 bg-gray-7 border-b border-gray-8 flex flex-col'>
+            <div className='flex justify-between mb-6 items-center'>
+              <FoodingLogo className='w-[106px]' />
+              <div className='flex items-center gap-[18px]'>
+                <CeoBellIcon />
+                <DialogPrimitives.Close>
+                  <CloseIcon />
+                </DialogPrimitives.Close>
+              </div>
             </div>
             <Suspense>
               <UserProfile />
@@ -81,7 +88,12 @@ export const Drawer = ({ trigger, isOpen, onOpenChange }: DrawerProps) => {
 const UserProfile = () => {
   const { data: me } = useGetSelf();
 
-  return <h3 className='whitespace-pre-wrap headline-2'>{`안녕하세요\n${me.name} 사장님`}</h3>;
+  return (
+    <div className='flex justify-between items-end'>
+      <h3 className='whitespace-pre-wrap subtitle-2'>{`안녕하세요\n${me.name} 사장님`}</h3>
+      <StoreSelector />
+    </div>
+  );
 };
 
 type MenuGroupProps = {
