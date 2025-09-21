@@ -10,6 +10,8 @@ import { StoreTagList } from '@/components/Store/StoreTagList';
 import { useGetStorePostDetail } from '@/hooks/store-post/useGetStorePostDetail';
 import { formatDate } from '@/utils/date';
 
+export type StorePostDetailScreenParams = { storePostId: number; storeName: string };
+
 export const StorePostDetailScreen: ActivityComponentType<'StorePostDetailScreen'> = ({
   params,
 }) => {

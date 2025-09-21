@@ -10,6 +10,7 @@ import { cn } from '@repo/design-system/utils';
 import { Suspense } from '@suspensive/react';
 import { overlay } from 'overlay-kit';
 
+import { FoodingLogo } from '@/components/FoodingLogo';
 import { useCreateStore } from '@/hooks/store/useCreateStore';
 import { useGetStoreList } from '@/hooks/store/useGetStoreList';
 
@@ -80,7 +81,7 @@ const StoreSetupCard = () => {
 
   return (
     <>
-      <Image src='/images/fooding-ceo-logo.svg' alt='fooding logo' width={153} height={24} />
+      <FoodingLogo />
       <h1 className='font-semibold tablet:text-[24px] text-center pt-[12px]'>{title}</h1>
       <div className='py-[32px] flex flex-col items-center w-full'>
         <hr className='w-full border border-black/10' />

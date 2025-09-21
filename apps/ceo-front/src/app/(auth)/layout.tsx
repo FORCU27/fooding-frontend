@@ -2,6 +2,8 @@
 
 import Image from 'next/image';
 
+import { FoodingLogo } from '@/components/FoodingLogo';
+
 export default function AuthLayout({ children }: { children: React.ReactNode }) {
   return (
     <div className='flex h-dvh'>
@@ -20,10 +22,10 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
       <div className='flex flex-col items-center w-full desktop:w-[808px] relative shrink-0 overflow-y-auto'>
         <div className='w-full desktop:max-w-[450px] px-5 tablet:px-8 max-desktop:mb-[120px] desktop:my-[260px] flex flex-col'>
           <div className='my-[120px] justify-center desktop:hidden flex'>
-            <MobileLogo />
+            <FoodingMobileLogo />
           </div>
           <div className='top-[50px] right-[60px] absolute hidden desktop:flex justify-center'>
-            <Image src='/images/fooding-ceo-logo.svg' alt='logo' width={153} height={24} />
+            <FoodingLogo />
           </div>
           {children}
         </div>
@@ -32,7 +34,7 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
   );
 }
 
-const MobileLogo = () => {
+const FoodingMobileLogo = () => {
   return (
     <svg
       width='294'
