@@ -42,4 +42,4 @@ export * from './PhotoCard';
 export * from './ImageUploader';
 export * from './DatePicker';
 export * from './StoreStatusChip';
-export * from './DatePickerWithDialog';
+export { DatePickerWithDialog, type SelectedItem, type SelectedRangeItem } from './DatePickerWithDialog';

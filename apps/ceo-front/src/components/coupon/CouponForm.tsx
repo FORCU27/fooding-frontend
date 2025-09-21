@@ -418,7 +418,7 @@ export const CouponForm = ({
 
       <div className='flex justify-center gap-4 mb-17'>
         {onCancel && (
-          <Button type='button' variant='outline' onClick={onCancel}>
+          <Button type='button' variant='outlined' onClick={onCancel}>
             취소
           </Button>
         )}

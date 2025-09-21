@@ -3,14 +3,7 @@
 import { useState, type ReactNode } from 'react';
 
 import { Button } from './Button';
-import {
-  Dialog,
-  DialogTrigger,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogFooter,
-} from './Dialog';
+import { Dialog } from './Dialog';
 import { Input } from './Input';
 
 type AddCategoryDialogProps = {
@@ -38,16 +31,16 @@ export const AddCategoryDialog = ({ onAdd, trigger }: AddCategoryDialogProps) =>
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       {trigger && (
-        <DialogTrigger asChild>
+        <Dialog.Trigger asChild>
           {trigger}
-        </DialogTrigger>
+        </Dialog.Trigger>
       )}
-      <DialogContent className="w-[400px]" showCloseButton={false}>
-        <DialogHeader>
-          <DialogTitle className="text-center text-xl font-bold mb-6">
+      <Dialog.Content className="w-[400px]" showCloseButton={false}>
+        <Dialog.Header>
+          <Dialog.Title className="text-center text-xl font-bold mb-6">
             카테고리 등록
-          </DialogTitle>
-        </DialogHeader>
+          </Dialog.Title>
+        </Dialog.Header>
         
         <div className="py-4">
           <Input
@@ -63,10 +56,10 @@ export const AddCategoryDialog = ({ onAdd, trigger }: AddCategoryDialogProps) =>
           />
         </div>
 
-        <DialogFooter className="flex justify-center gap-3 mt-6">
+        <Dialog.Footer className="flex justify-center gap-3 mt-6">
           <Button
             type="button"
-            variant="outline"
+            variant="outlined"
             onClick={handleClose}
             className="w-[100px]"
           >
@@ -80,8 +73,8 @@ export const AddCategoryDialog = ({ onAdd, trigger }: AddCategoryDialogProps) =>
           >
             등록
           </Button>
-        </DialogFooter>
-      </DialogContent>
+        </Dialog.Footer>
+      </Dialog.Content>
     </Dialog>
   );
 };

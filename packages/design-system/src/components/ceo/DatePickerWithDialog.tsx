@@ -1,6 +1,6 @@
 'use client';
 
-import { useId, useState, Dispatch, SetStateAction } from 'react';
+import { useState, Dispatch, SetStateAction } from 'react';
 
 import { Calendar } from 'lucide-react';
 
@@ -329,10 +329,14 @@ export const DatePickerWithDialog = ({
           </Dialog.Header>
           <Dialog.Body>
             <DatePicker
+              mode={datePickerMode}
               selectionMode={selectionMode}
-              value={selectionMode === 'single' ? (tempDates[0]?.date ?? null) : undefined}
-              values={selectionMode === 'multiple' ? tempDates.map((t) => t.date) : undefined}
-              onChange={handleTempDateChange}
+              value={datePickerMode === 'single' && selectionMode === 'single' ? (tempDates[0]?.date ?? null) : undefined}
+              values={datePickerMode === 'single' && selectionMode === 'multiple' ? tempDates.map((t) => t.date) : undefined}
+              startDate={datePickerMode === 'range' ? tempStartDate : undefined}
+              endDate={datePickerMode === 'range' ? tempEndDate : undefined}
+              onChange={datePickerMode === 'single' ? handleTempDateChange : undefined}
+              onRangeChange={datePickerMode === 'range' ? handleTempRangeChange : undefined}
             />
             {hasRadioButtonGroup && radioOptions && (
               <RadioButtonGroup
@@ -344,7 +348,7 @@ export const DatePickerWithDialog = ({
               />
             )}
 
-            {tempDates.length > 0 && (
+            {((datePickerMode === 'single' && tempDates.length > 0) || (datePickerMode === 'range' && tempRanges.length > 0)) && (
               <ChipList
                 value={tempChipValue}
                 options={tempChipOptions}
@@ -357,7 +361,7 @@ export const DatePickerWithDialog = ({
           </Dialog.Body>
           <Dialog.Footer>
             <Dialog.Close asChild>
-              <Button onClick={handleConfirm} disabled={tempDates.length === 0}>
+              <Button onClick={handleConfirm} disabled={datePickerMode === 'single' ? tempDates.length === 0 : tempRanges.length === 0}>
                 선택
               </Button>
             </Dialog.Close>
@@ -365,18 +369,34 @@ export const DatePickerWithDialog = ({
         </Dialog.Content>
 
         {selectionMode === 'multiple' &&
-          Array.isArray(selectedDates) &&
-          selectedDates.length > 0 && (
+          ((datePickerMode === 'single' && Array.isArray(selectedDates) && selectedDates.length > 0) ||
+           (datePickerMode === 'range' && Array.isArray(selectedRanges) && selectedRanges.length > 0)) && (
             <ChipList
               value={Array.isArray(finalChipValue) ? finalChipValue : [finalChipValue]}
               options={finalChipOptions}
               type='multiple'
               hasCloseBtn={hasCloseBtn}
-              onValueChange={(vals) =>
-                onChange?.(
-                  vals.map((v) => ({ date: new Date(v.replace(/\./g, '-')), option: undefined })),
-                )
-              }
+              onValueChange={(vals) => {
+                if (datePickerMode === 'single') {
+                  onChange?.(
+                    vals.map((v) => ({ date: new Date(v.replace(/\./g, '-')), option: undefined })),
+                  );
+                } else {
+                  // Range 모드일 때는 날짜 범위를 파싱해서 처리
+                  const ranges = vals.map((v) => {
+                    const match = v.match(/(\d{4}\.\d{2}\.\d{2}) ~ (\d{4}\.\d{2}\.\d{2})/);
+                    if (match && match[1] && match[2]) {
+                      return {
+                        startDate: new Date(match[1].replace(/\./g, '-')),
+                        endDate: new Date(match[2].replace(/\./g, '-')),
+                        option: undefined,
+                      };
+                    }
+                    return null;
+                  }).filter(Boolean) as SelectedRangeItem[];
+                  onRangeChange?.(ranges);
+                }
+              }}
             />
           )}
       </Dialog>

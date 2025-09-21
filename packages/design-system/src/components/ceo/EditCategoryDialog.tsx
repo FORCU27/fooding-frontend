@@ -3,13 +3,7 @@
 import { useState, useEffect } from 'react';
 
 import { Button } from './Button';
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogFooter,
-} from './Dialog';
+import { Dialog } from './Dialog';
 import { Input } from './Input';
 
 type EditCategoryDialogProps = {
@@ -54,12 +48,12 @@ export const EditCategoryDialog = ({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="w-[400px]" showCloseButton={false}>
-        <DialogHeader>
-          <DialogTitle className="text-center text-xl font-bold mb-6">
+      <Dialog.Content className="w-[400px]" showCloseButton={false}>
+        <Dialog.Header>
+          <Dialog.Title className="text-center text-xl font-bold mb-6">
             카테고리 수정
-          </DialogTitle>
-        </DialogHeader>
+          </Dialog.Title>
+        </Dialog.Header>
         
         <div className="py-4">
           <Input
@@ -75,11 +69,11 @@ export const EditCategoryDialog = ({
           />
         </div>
 
-        <DialogFooter className="flex justify-center gap-3">
+        <Dialog.Footer className="flex justify-center gap-3">
           {onDelete && (
             <Button
               type="button"
-              variant="outline"
+              variant="outlined"
               onClick={handleDelete}
               className="w-[80px] text-red-500 border-red-500 hover:bg-red-50"
             >
@@ -88,7 +82,7 @@ export const EditCategoryDialog = ({
           )}
           <Button
             type="button"
-            variant="outline"
+            variant="outlined"
             onClick={handleClose}
             className="w-[80px]"
           >
@@ -102,8 +96,8 @@ export const EditCategoryDialog = ({
           >
             수정
           </Button>
-        </DialogFooter>
-      </DialogContent>
+        </Dialog.Footer>
+      </Dialog.Content>
     </Dialog>
   );
 };

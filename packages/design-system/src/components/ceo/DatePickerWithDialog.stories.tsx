@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { DatePickerWithDialog, SelectedItem, SelectedRangeItem } from './DatePickerWithDialog';
-import { useState } from 'react';
+import React, { useState } from 'react';
 
 const meta: Meta<typeof DatePickerWithDialog> = {
   title: 'Components/ceo/DatePicker/DatePickerWithDialog',
@@ -125,7 +125,8 @@ export const Controlled: Story = {
     );
 
     // onChange 핸들러에서 타입 변환
-    const handleDateChange = (dates: SelectedItem | SelectedItem[] | null) => {
+    const handleDateChange = React.useCallback((value: React.SetStateAction<SelectedItem | SelectedItem[] | null>) => {
+      const dates = typeof value === 'function' ? value(selectedDates || null) : value;
       if (dates === null) {
         setSelectedDates(undefined); // null을 undefined로 변환
       } else if (Array.isArray(dates)) {
@@ -133,7 +134,7 @@ export const Controlled: Story = {
       } else {
         setSelectedDates([dates]); // 단일 항목을 배열로 변환
       }
-    };
+    }, [selectedDates]);
 
     return (
       <div className='w-[640px] h-full flex flex-col gap-4'>
