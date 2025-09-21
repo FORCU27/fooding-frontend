@@ -21,7 +21,10 @@ export const BookmarkCard = ({ bookmark }: BookmarkCardProps) => {
 
   return (
     <li key={bookmark.id} className='flex flex-col min-h-[240px] relative'>
-      <div className='h-full w-[140px]'>
+      <div
+        className='h-full w-[140px]'
+        onClick={() => flow.push('StoreDetailScreen', { storeId: bookmark.storeId })}
+      >
         <div className='relative h-[140px] mb-2 rounded-xl overflow-hidden'>
           {isNonEmptyArray(bookmark.images) ? (
             <Image
@@ -37,7 +40,7 @@ export const BookmarkCard = ({ bookmark }: BookmarkCardProps) => {
             </div>
           )}
           {bookmark.isFinished && (
-            <div className='absolute inset-0 bg-black/50 flex justify-center items-center rounded-xl'>
+            <div className='absolute inset-0 bg-black/50 flex justify-center items-center rounded-xl pointer-events-none'>
               <p className='subtitle-3 text-white'>영업 종료</p>
             </div>
           )}
@@ -51,10 +54,7 @@ export const BookmarkCard = ({ bookmark }: BookmarkCardProps) => {
             />
           </div>
         </div>
-        <div
-          className='cursor-pointer'
-          onClick={() => flow.push('StoreDetailScreen', { storeId: bookmark.storeId })}
-        >
+        <div>
           <div className='break-words line-clamp-2 subtitle-5 w-[144px]'>{bookmark.name}</div>
           <div className='flex flex-col gap-1'>
             <div className='subtitle-5 flex items-center gap-1 h-[17px]'>
