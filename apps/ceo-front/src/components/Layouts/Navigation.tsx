@@ -188,9 +188,8 @@ const MenuGroupItem = ({ item }: MenuGroupItemProps) => {
     <Link
       href={item.path}
       className={cn(
-        'px-15 flex items-center cursor-pointer text-gray-5 body-2 h-[43px]',
+        'px-15 flex items-center cursor-pointer text-gray-5 body-2 h-[43px] hover:bg-gray-50',
         isActive && 'text-black',
-        !isActive && 'hover:bg-gray-50',
       )}
       onClick={onNavigation}
     >

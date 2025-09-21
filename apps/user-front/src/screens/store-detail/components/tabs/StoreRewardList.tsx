@@ -23,7 +23,7 @@ export const StoreRewardListTab = ({ storeId }: StoreRewardListTabProps) => {
   const { data: store } = useGetStoreDetail(storeId);
 
   return (
-    <Section className='flex flex-col bg-gray-1 mt-[14px]'>
+    <Section className='flex flex-col bg-gray-1'>
       <div className='flex flex-col gap-5 py-4 mb-25'>
         <div className='flex rounded-xl p-5 bg-white justify-between'>
           <div className='flex gap-3 justify-center items-center'>
