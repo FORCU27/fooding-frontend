@@ -1,37 +1,61 @@
 'use client';
 
-import { useEffect, useState, useRef } from 'react';
+import { useRef, useState } from 'react';
 
-import { CardForm, PhotoCard, Button } from '@repo/design-system/components/ceo';
+import { ImageTag } from '@repo/api/ceo';
+import { queryKeys } from '@repo/api/configs/query-keys';
+import { ChipTabs } from '@repo/design-system/components/b2c';
+import {
+  CardForm,
+  PhotoCard,
+  Button,
+  SortToggle,
+  ToggleGroup,
+  ToggleGroupItem,
+} from '@repo/design-system/components/ceo';
+import { ImageIcon } from '@repo/design-system/icons';
+import { useQuery } from '@tanstack/react-query';
 
-import { useStoreImages, useCreateImage, useDeleteImage } from '@/hooks/store/useStoreImages';
+import ConfirmModal from '@/components/ConfirmModal';
+import {
+  useStoreImages,
+  useCreateImage,
+  useDeleteImage,
+  useEditImage,
+  useRegisterMainImage,
+} from '@/hooks/store/useStoreImages';
 import { useUploadFile } from '@/hooks/useUploadFile';
 
 const PhotoPage = () => {
-  const [storeId, setStoreId] = useState<number | undefined>(undefined);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const { data: images, isFetching } = useStoreImages(storeId);
+  const [selectedChip, setSelectedChip] = useState<'ALL' | ImageTag>('ALL');
+  const [modalType, setModalType] = useState<null | {
+    type: 'editTag' | 'delete';
+    photoId: number;
+  }>(null);
+  const [selectedTags, setSelectedTags] = useState<string[]>([]);
+
+  const { data: selectedStore } = useQuery({
+    queryKey: [queryKeys.ceo.store.selectedStore],
+    queryFn: async () => {
+      const res = await fetch('/api/store/select', { cache: 'no-store' });
+      if (!res.ok) return null;
+      return res.json();
+    },
+  });
+
+  const storeId = selectedStore?.data?.id;
+
+  const { data: images, isFetching } = useStoreImages(
+    storeId,
+    selectedChip === 'ALL' ? null : selectedChip,
+  );
   const uploadFile = useUploadFile();
   const createImage = useCreateImage();
   const deleteImage = useDeleteImage();
-
-  // 마운트 시 선택된 storeId 가져오기
-  useEffect(() => {
-    const fetchStore = async () => {
-      const res = await fetch('/api/store/select');
-      if (!res.ok) {
-        console.error('스토어 조회 실패', res.status);
-        return;
-      }
-      const data = await res.json();
-      const id = data.data.id;
-
-      setStoreId(typeof id === 'number' && !Number.isNaN(id) ? id : undefined);
-    };
-
-    fetchStore();
-  }, []);
+  const editImage = useEditImage();
+  const registerMainImage = useRegisterMainImage();
 
   const handleAddImage = () => {
     fileInputRef.current?.click();
@@ -60,43 +84,156 @@ const PhotoPage = () => {
     }
   };
 
-  return (
-    <CardForm className=''>
-      <div className='headline-2'>사진</div>
-      <div className='self-end'>
-        <Button
-          variant='primary'
-          type='button'
-          onClick={handleAddImage}
-          className='py-[12px] px-[20px]'
-        >
-          사진추가
-        </Button>
-        <input
-          ref={fileInputRef}
-          type='file'
-          accept='image/*'
-          style={{ display: 'none' }}
-          onChange={handleFileChange}
-        />
-      </div>
+  // 삭제 확인 핸들러
+  const handleConfirmDelete = async (photoId: number) => {
+    if (!storeId) return;
+    await deleteImage.mutateAsync({ storeId, photoId });
+    setModalType(null);
+  };
 
-      {!storeId || isFetching || images?.data?.list.length === 0 ? (
-        <div>목록이 비어있습니다.</div>
-      ) : (
-        <div className='columns-3 gap-[20px]'>
-          {images?.data.list.map((photo) => (
-            <div key={photo.id} className='mb-[20px] break-inside-avoid'>
-              <PhotoCard
-                src={photo.imageUrl}
-                alt='photo image'
-                actions={{ onDelete: () => deleteImage.mutate({ storeId, photoId: photo.id }) }}
-              />
+  const handleConfirmEdit = async (photoId: number) => {
+    if (!storeId || !modalType?.photoId) return;
+
+    // 현재 수정할 대상 사진 찾기
+    const targetPhoto = images?.data?.list.find((p) => p.id === modalType.photoId);
+    if (!targetPhoto) return;
+
+    editImage.mutate({
+      storeId,
+      photoId: photoId,
+      body: {
+        tags: selectedTags as ImageTag[],
+      },
+    });
+
+    setModalType(null);
+  };
+
+  // 태그 수정 핸들러
+  const handleEditTag = (photoId: number) => {
+    setModalType({ type: 'editTag', photoId });
+  };
+  console.log('modalType', modalType);
+
+  return (
+    <>
+      <CardForm>
+        <div className='headline-2'>사진</div>
+        <div className='flex flex-col self-end w-full'>
+          <div className='self-end mb-[18px]'>
+            <Button
+              variant='primary'
+              className='py-[12px] px-[20px] h-auto'
+              type='button'
+              onClick={handleAddImage}
+            >
+              사진추가
+            </Button>
+            <input
+              ref={fileInputRef}
+              type='file'
+              accept='image/*'
+              style={{ display: 'none' }}
+              onChange={handleFileChange}
+            />
+          </div>
+          <div className='self-end mb-[20px]'>
+            <ChipTabs
+              defaultValue='1'
+              value={selectedChip}
+              onChange={(value) => setSelectedChip(value as 'ALL' | ImageTag)}
+            >
+              <ChipTabs.List className='gap-[8px]'>
+                <ChipTabs.Trigger value='ALL' className='h-[38px] px-[18px] body-2'>
+                  전체
+                </ChipTabs.Trigger>
+                <ChipTabs.Trigger value='EXTERIOR' className='h-[38px] px-[18px] body-2'>
+                  외부
+                </ChipTabs.Trigger>
+                <ChipTabs.Trigger value='FOOD' className='h-[38px] px-[18px] body-2'>
+                  음식
+                </ChipTabs.Trigger>
+                <SortToggle keepSelectedOpen onSortChange={function hX() {}} value='LATEST' />
+              </ChipTabs.List>
+            </ChipTabs>
+          </div>
+          {!storeId || isFetching || images?.data?.list.length === 0 ? (
+            <div className='pb-[200px]'>
+              <div
+                key='uploader'
+                className={`w-1/2 md:w-60 md:h-60 aspect-square flex items-center justify-center rounded-2xl shadow-sm overflow-hidden bg-white relative flex-col cursor-pointer text-gray-5 p-4 hover:bg-gray-2`}
+                onClick={handleAddImage}
+              >
+                <ImageIcon />
+                <p className='mt-[4px] subtitle-7'>
+                  <span className='text-gray-5'>사진을 추가해주세요</span>
+                </p>
+                <input
+                  ref={fileInputRef}
+                  type='file'
+                  accept='image/*'
+                  className='hidden'
+                  onChange={handleFileChange}
+                />
+              </div>
             </div>
-          ))}
+          ) : (
+            <div className='columns-2 md:columns-4 gap-[20px] pb-[200px]'>
+              {images?.data.list.map((photo) => (
+                <div key={photo.id} className='mb-[20px] break-inside-avoid'>
+                  <PhotoCard
+                    src={photo.imageUrl}
+                    alt='photo image'
+                    flags={{ isRepresentative: photo.isMain }}
+                    actions={{
+                      onDelete: () => setModalType({ type: 'delete', photoId: photo.id }),
+                      onEditTag: () => handleEditTag(photo.id),
+                      onSetRepresentative: () =>
+                        registerMainImage.mutate({
+                          storeId,
+                          photoId: photo.id,
+                          body: { isMain: true },
+                        }),
+                    }}
+                  />
+                </div>
+              ))}
+            </div>
+          )}
         </div>
-      )}
-    </CardForm>
+      </CardForm>
+      {/* 삭제 모달 */}
+      <ConfirmModal
+        open={modalType?.type === 'delete'}
+        title='사진을 삭제하겠습니까?'
+        confirmLabel='확인'
+        cancelLabel='취소'
+        onCancel={() => setModalType(null)}
+        onConfirm={() => modalType && handleConfirmDelete(modalType.photoId)}
+      />
+      {/* 태그 수정 모달 */}
+      <ConfirmModal
+        open={modalType?.type === 'editTag'}
+        title='태그 수정'
+        confirmLabel='확인'
+        cancelLabel='취소'
+        onCancel={() => setModalType(null)}
+        onConfirm={() => handleConfirmEdit(modalType?.photoId as number)}
+      >
+        <div className='flex flex-col gap-[24px]'>
+          <h3 className='subtitle-6 text-gray-5 mt-[-16px]'>
+            사진을 잘 설명하는 태그를 골라주세요.
+          </h3>
+          <ToggleGroup type='multiple' onValueChange={(values) => setSelectedTags(values)}>
+            <ToggleGroupItem value='PRICE_TAG'>가격표</ToggleGroupItem>
+            <ToggleGroupItem value='FOOD'>음식</ToggleGroupItem>
+            <ToggleGroupItem value='BEVERAGE'>음료</ToggleGroupItem>
+            <ToggleGroupItem value='INTERIOR'>내부</ToggleGroupItem>
+            <ToggleGroupItem value='EXTERIOR'>외부</ToggleGroupItem>
+          </ToggleGroup>
+        </div>
+      </ConfirmModal>
+    </>
   );
 };
 
