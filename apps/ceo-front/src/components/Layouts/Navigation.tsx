@@ -125,7 +125,7 @@ const MenuGroup = ({ menu }: MenuGroupProps) => {
         className={cn(
           'flex h-14 px-8 items-center cursor-pointer justify-between',
           hasActiveGroupItem && 'bg-primary-pink/5 text-primary-pink',
-          !hasActiveGroupItem && 'hover:bg-gray-50',
+          !hasActiveGroupItem && 'hover:bg-gray-7',
         )}
         onClick={() => setExpanded((prev) => !prev)}
       >
@@ -163,7 +163,7 @@ const MenuLink = ({ menu }: MenuLinkProps) => {
       className={cn(
         'h-14 px-8 items-center flex cursor-pointer body-2',
         isActive && 'bg-primary-pink/5 text-primary-pink',
-        !isActive && 'hover:bg-gray-50',
+        !isActive && 'hover:bg-gray-7',
       )}
       onClick={onNavigation}
     >
@@ -188,7 +188,7 @@ const MenuGroupItem = ({ item }: MenuGroupItemProps) => {
     <Link
       href={item.path}
       className={cn(
-        'px-15 flex items-center cursor-pointer text-gray-5 body-2 h-[43px] hover:bg-gray-50',
+        'px-15 flex items-center cursor-pointer text-gray-5 body-2 h-[43px] hover:bg-gray-7',
         isActive && 'text-black',
       )}
       onClick={onNavigation}
@@ -220,7 +220,7 @@ type MenuLink = {
   icon: React.ReactNode;
 };
 
-type Menu = MenuGroup | MenuLink;
+export type Menu = MenuGroup | MenuLink;
 
 type NavigationContextValue = {
   onNavigation: () => void;
