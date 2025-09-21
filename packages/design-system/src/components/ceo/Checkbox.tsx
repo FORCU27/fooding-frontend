@@ -1,6 +1,6 @@
 'use client';
 
-import { type ComponentPropsWithRef, useState, useId } from 'react';
+import { type ComponentPropsWithRef, useState } from 'react';
 
 import { Check } from 'lucide-react';
 
@@ -15,10 +15,10 @@ const Checkbox = ({
   labelText,
   checked: controlledChecked,
   defaultChecked,
+  'aria-invalid': ariaInvalid,
   onChange,
   ...props
 }: CheckboxProps) => {
-  const id = useId();
   const [uncontrolledChecked, setUncontrolledChecked] = useState(defaultChecked || false);
 
   const isControlled = controlledChecked !== undefined;
@@ -32,31 +32,34 @@ const Checkbox = ({
   };
 
   return (
-    <div className='flex items-center gap-2'>
-      <div className='relative'>
-        <input
-          type='checkbox'
-          id={id}
-          checked={isChecked}
-          onChange={handleChange}
-          className='sr-only'
-          {...props}
-        />
-        <label
-          htmlFor={id}
-          className={cn(
-            'flex h-5 w-5 items-center justify-center rounded-[4px] cursor-pointer transition-colors disabled:pointer-events-none',
-            isChecked ? 'bg-[#6366F1]' : 'bg-gray-200',
-            className,
-          )}
-        >
-          <Check className={cn('h-3 w-3 text-white', !isChecked && 'opacity-50')} strokeWidth={5} />
-        </label>
-      </div>
-      <label htmlFor={id} className='text-base font-medium text-gray-900 cursor-pointer'>
-        {labelText}
-      </label>
-    </div>
+    <label
+      className={cn(
+        'flex gap-2 items-center cursor-pointer',
+        'has-disabled:pointer-events-none has-disabled:opacity-50',
+        className,
+      )}
+    >
+      <input
+        type='checkbox'
+        checked={isChecked}
+        onChange={handleChange}
+        className='sr-only peer'
+        aria-invalid={ariaInvalid}
+        {...props}
+      />
+      <span
+        className={cn(
+          'flex justify-center items-center size-[18px] rounded-[4px] bg-gray-3',
+          'outline-none peer-focus-visible:ring-2 peer-focus-visible:ring-fooding-purple ring-offset-2',
+          ariaInvalid && 'ring-error-red border border-error-red',
+          isChecked && 'bg-fooding-purple',
+          isChecked && ariaInvalid && 'bg-error-red',
+        )}
+      >
+        <Check className='size-3 text-white' strokeWidth={4} />
+      </span>
+      <span className='shrink-0 body-2 text-gray-900 cursor-pointer'>{labelText}</span>
+    </label>
   );
 };
 

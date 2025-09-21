@@ -1,4 +1,4 @@
-const FooterLayout = () => {
+export const Footer = () => {
   return (
     <footer className='border-t border-gray-8 h-[180px] w-full flex flex-col justify-center text-[12px]'>
       <div className='flex items-center'>
@@ -37,5 +37,3 @@ const FooterLayout = () => {
     </footer>
   );
 };
-
-export default FooterLayout;

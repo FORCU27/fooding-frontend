@@ -1,7 +1,7 @@
 'use client';
 
 import { Review, StoreInfo } from '@repo/api/user';
-import { defineConfig } from '@stackflow/config';
+import { defineConfig, RegisteredActivityName } from '@stackflow/config';
 import { basicUIPlugin } from '@stackflow/plugin-basic-ui';
 import { basicRendererPlugin } from '@stackflow/plugin-renderer-basic';
 import { stackflow } from '@stackflow/react/future';
@@ -142,3 +142,7 @@ export const { Stack } = stackflow({
     wrapPlugin(),
   ],
 });
+
+export const screenId: Record<string, RegisteredActivityName> = {
+  '1': 'SearchScreen',
+};

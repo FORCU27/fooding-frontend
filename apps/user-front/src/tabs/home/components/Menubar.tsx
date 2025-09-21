@@ -15,8 +15,8 @@ function Menubar() {
         onChange={setSelectedRegions}
         trigger={
           <button className='flex items-center gap-1'>
-            <MarkPinIcon />
-            <div className='flex p-1 gap-1 items-center'>
+            <MarkPinIcon className='size-5' />
+            <div className='flex gap-1 items-center'>
               <div className='subtitle-4'>
                 {isNonEmptyArray(selectedRegions) ? selectedRegions[0].name : '전체'}
               </div>

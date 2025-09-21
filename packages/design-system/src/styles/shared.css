@@ -2,11 +2,11 @@
 
 @theme inline {
   /* Primary */
-  --color-primary-pink: oklch(0.65 0.2407 23.93);
-  --color-pink-putton-press: #cc202f;
+  --color-primary-pink: #ff2b3d;
+  --color-pink-button-press: #cc202f;
 
   /* Fooding */
-  --color-fooding-yellow: oklch(0.88 0.2 100);
+  --color-fooding-yellow: #ffcc25;
   --color-fooding-green: #0bb76d;
   --color-fooding-blue: #00afe8;
   --color-fooding-purple: #6366f1;
@@ -15,8 +15,8 @@
   /* Interaction */
   --color-error-red: #e11300;
   --color-info-blue: #007df8;
-  --color-attention-yellow: oklch(0.85 0.18 95);
-  --color-success-green: oklch(0.6 0.22 135);
+  --color-attention-yellow: #f7c716;
+  --color-success-green: #2b9e1e;
 
   /* Grays */
   --color-gray-1: #f1f3f5;
@@ -29,7 +29,7 @@
   --color-gray-8: #dde1eb;
 
   /* Base */
-  --color-white: oklch(1 0 0);
+  --color-white: #ffffff;
   --color-black: #111111;
 
   /* Animation Timings */
@@ -62,6 +62,38 @@
   }
 
   --font-family-sans: var(--font-pretendard), sans-serif;
+
+  @keyframes toast-enter {
+    from {
+      opacity: 0;
+      transform: translateY(40px);
+    }
+
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes toast-exit {
+    from {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    to {
+      opacity: 0;
+      transform: translateY(40px);
+    }
+  }
+}
+
+@utility toast-enter {
+  animation: toast-enter var(--ease-out-cubic);
+}
+
+@utility toast-exit {
+  animation: toast-exit var(--ease-out-cubic);
 }
 
 @utility fade-in {

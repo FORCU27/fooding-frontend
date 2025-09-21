@@ -23,7 +23,6 @@ export default function KakaoMapScript() {
           });
         }
       }}
-      onError={(e) => console.error('[KakaoMapScript] Failed to load:', e)}
     />
   );
 }
