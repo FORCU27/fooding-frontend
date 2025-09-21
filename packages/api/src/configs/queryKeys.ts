@@ -21,6 +21,11 @@ export const queryKeys = {
     store: {
       getStore: 'ceoStoreGetStore',
       operatingHour: 'ceoStoreOperatingHour',
+      pointShop: {
+        list: 'ceoStoreGetPointShopList',
+        detail: 'ceoStoreGetPointShopDetail',
+        status: 'ceoStoreGetPointShopStatus',
+      },
     },
   },
   pos: {},

@@ -20,6 +20,38 @@ export type CreateStoreBody = {
   name: string;
 };
 
+export type CreateStorePointShopItemBody = {
+  name: string;
+  point: number;
+  provideType: 'ALL' | 'REGULAR_CUSTOMER';
+  conditions: string;
+  totalQuantity: number;
+  issueStartOn: string;
+  issueEndOn: string;
+};
+
+export interface PointShopQuery {
+  searchString?: string;
+  pageNum?: number;
+  pageSize?: number;
+  isActive?: boolean;
+}
+
+export const PointShop = z.object({
+  id: z.number(),
+  name: z.string(),
+  point: z.number(),
+  provideType: z.enum(['ALL', 'REGULAR_CUSTOMER']),
+  conditions: z.string(),
+  isActive: z.boolean(),
+  totalQuantity: z.number(),
+  issuedQuantity: z.number(),
+  issueStartOn: z.string(),
+  issueEndOn: z.string(),
+});
+
+export type PointShop = z.infer<typeof PointShop>;
+
 export const SubwayStation = z.object({
   id: z.number(),
   name: z.string(),
@@ -116,3 +148,28 @@ export type GetStore = z.infer<typeof GetStoreResponse>;
 export type GetStoreList = z.infer<typeof GetStoreListResponse>;
 
 export type StoreOperatingHourBody = z.infer<typeof StoreOperatingHourBody>;
+
+export const GetStorePointShopResponse = ApiResponse(PointShop);
+export const GetStorePointShopListResponse = z.object({
+  status: z.string().nullable(),
+  data: z.object({
+    list: z.array(PointShop),
+    pageInfo: z.object({
+      pageNum: z.number(),
+      pageSize: z.number(),
+      totalCount: z.number(),
+      totalPages: z.number(),
+    }),
+  }),
+});
+export type GetStorePointShopStatusResponse = z.infer<typeof GetStorePointShopStatusResponse>;
+export const GetStorePointShopStatusResponse = z.object({
+  status: z.string(),
+  data: z.object({}),
+});
+
+export type CreateStorePointShopResponse = z.infer<typeof CreateStorePointShopResponse>;
+export const CreateStorePointShopResponse = z.object({
+  status: z.string(),
+  data: z.number(),
+});
