@@ -1530,7 +1530,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@chromatic-com/storybook@npm:^4.0.0":
+"@chromatic-com/storybook@npm:^4.1.1":
   version: 4.1.1
   resolution: "@chromatic-com/storybook@npm:4.1.1"
   dependencies:
@@ -5406,7 +5406,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@repo/design-system@workspace:packages/design-system"
   dependencies:
-    "@chromatic-com/storybook": "npm:^4.0.0"
+    "@chromatic-com/storybook": "npm:^4.1.1"
     "@dnd-kit/core": "npm:^6.3.1"
     "@dnd-kit/sortable": "npm:^10.0.0"
     "@dnd-kit/utilities": "npm:^3.2.2"
@@ -5417,17 +5417,17 @@ __metadata:
     "@radix-ui/react-toggle-group": "npm:^1.1.10"
     "@repo/eslint-config": "workspace:*"
     "@repo/typescript-config": "workspace:*"
-    "@storybook/addon-docs": "npm:^9.0.4"
-    "@storybook/react-vite": "npm:^9.0.4"
+    "@storybook/addon-docs": "npm:^9.1.7"
+    "@storybook/react-vite": "npm:^9.1.7"
     "@tailwindcss/vite": "npm:^4.1.7"
     "@tanstack/react-table": "npm:^8.21.3"
     "@types/react": "npm:^19.1.2"
     "@types/react-dom": "npm:^19.1.2"
-    "@vitejs/plugin-react": "npm:^4.5.0"
+    "@vitejs/plugin-react": "npm:^5.0.3"
     clsx: "npm:^2.1.1"
     date-fns: "npm:^4.1.0"
     eslint: "npm:^9.24.0"
-    eslint-plugin-storybook: "npm:^9.0.4"
+    eslint-plugin-storybook: "npm:^9.1.7"
     lucide-react: "npm:^0.511.0"
     next: "npm:^15.3.1"
     prettier: "npm:3.5.3"
@@ -5436,13 +5436,13 @@ __metadata:
     react-day-picker: "npm:^9.8.0"
     react-dom: "npm:^19.1.0"
     react-hot-toast: "npm:^2.6.0"
-    storybook: "npm:^9.0.4"
+    storybook: "npm:^9.1.7"
     tailwind-merge: "npm:^3.2.0"
     tailwind-variants: "npm:^1.0.0"
     tailwindcss: "npm:^4.1.7"
     typescript: "npm:^5.8.2"
     vaul: "npm:^1.1.2"
-    vite: "npm:^6.3.5"
+    vite: "npm:^7.1.6"
   languageName: unknown
   linkType: soft
 
@@ -5861,7 +5861,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@storybook/addon-docs@npm:^9.0.4":
+"@storybook/addon-docs@npm:^9.1.7":
   version: 9.1.7
   resolution: "@storybook/addon-docs@npm:9.1.7"
   dependencies:
@@ -5930,7 +5930,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@storybook/react-vite@npm:^9.0.4":
+"@storybook/react-vite@npm:^9.1.7":
   version: 9.1.7
   resolution: "@storybook/react-vite@npm:9.1.7"
   dependencies:
@@ -7145,7 +7145,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@vitejs/plugin-react@npm:^4.4.0, @vitejs/plugin-react@npm:^4.5.0":
+"@vitejs/plugin-react@npm:^4.4.0":
   version: 4.7.0
   resolution: "@vitejs/plugin-react@npm:4.7.0"
   dependencies:
@@ -9943,7 +9943,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint-plugin-storybook@npm:^9.0.4":
+"eslint-plugin-storybook@npm:^9.1.7":
   version: 9.1.7
   resolution: "eslint-plugin-storybook@npm:9.1.7"
   dependencies:
@@ -16037,7 +16037,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"storybook@npm:^9.0.4":
+"storybook@npm:^9.1.7":
   version: 9.1.7
   resolution: "storybook@npm:9.1.7"
   dependencies:
@@ -17380,7 +17380,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"vite@npm:^6.2.6, vite@npm:^6.3.5":
+"vite@npm:^6.2.6":
   version: 6.3.6
   resolution: "vite@npm:6.3.6"
   dependencies:
