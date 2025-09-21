@@ -20,14 +20,17 @@ import { ProfileModifyScreen } from '@/screens/profile/ProfileModify';
 import { ProfileCompleteScreen } from '@/screens/profile-user-info/ProfileCompleteScreen';
 import { ProfileUserInfoScreen } from '@/screens/profile-user-info/ProfileUserInfo';
 import { ReviewReportCreateScreen } from '@/screens/reports/ReivewReportCreate';
-import { ReviewCreateScreen } from '@/screens/reviews/ReviewCreate';
-import { ReviewModifyScreen } from '@/screens/reviews/ReviewModify';
+import { ReviewCreateScreen, ReviewCreateScreenParams } from '@/screens/reviews/ReviewCreate';
+import { ReviewModifyScreen, ReviewModifyScreenParams } from '@/screens/reviews/ReviewModify';
 import { SearchScreen } from '@/screens/search/Search';
 import { SearchResultScreen, SearchResultScreenParams } from '@/screens/search-result/SearchResult';
 import { NotificationSettingScreen } from '@/screens/settings/Notifications';
 import { SettingScreen } from '@/screens/settings/Settings';
-import { StoreDetailScreen } from '@/screens/store-detail/StoreDetail';
-import { StorePostDetailScreen } from '@/screens/store-post-detail/StorePostDetail';
+import { StoreDetailScreen, StoreDetailScreenParams } from '@/screens/store-detail/StoreDetail';
+import {
+  StorePostDetailScreen,
+  StorePostDetailScreenParams,
+} from '@/screens/store-post-detail/StorePostDetail';
 import { WaitingDetailScreen } from '@/screens/waiting-detail/WaitingDetail';
 import { HomeTab } from '@/tabs/home/Home';
 import { MyPageTab } from '@/tabs/my-page/MyPage';
@@ -41,16 +44,16 @@ declare module '@stackflow/config' {
     PlanTab: object;
     MyPageTab: object;
     NotificationListScreen: object;
-    StoreDetailScreen: { storeId: number; tab?: string };
+    StoreDetailScreen: StoreDetailScreenParams;
     BookmarkListScreen: object;
     MyCouponListScreen: object;
-    StorePostDetailScreen: { storePostId: number; storeName: string };
+    StorePostDetailScreen: StorePostDetailScreenParams;
     SettingScreen: object;
     NotificationSettingScreen: object;
     SearchScreen: object;
     SearchResultScreen: SearchResultScreenParams;
-    ReviewCreateScreen: { planId: string };
-    ReviewModifyScreen: { review: Review };
+    ReviewCreateScreen: ReviewCreateScreenParams;
+    ReviewModifyScreen: ReviewModifyScreenParams;
     WaitingDetailScreen: { waitingId: string };
     PlanDetailScreen: { planId: string };
     ProfileModifyScreen: object;

@@ -46,8 +46,8 @@ export const ImageGallery = ({
             <Carousel.Region className='w-full'>
               <Carousel.List className='h-full'>
                 {imageUrls.map((imageUrl, index) => (
-                  <Carousel.Item key={index} className='h-[265px] bg-white'>
-                    <Image src={imageUrl} alt='이미지' fill />
+                  <Carousel.Item key={index} className='bg-white relative h-[40dvh]'>
+                    <Image className='object-cover' src={imageUrl} alt='이미지' fill />
                   </Carousel.Item>
                 ))}
               </Carousel.List>

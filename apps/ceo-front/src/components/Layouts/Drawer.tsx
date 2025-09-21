@@ -90,7 +90,7 @@ const UserProfile = () => {
 
   return (
     <div className='flex justify-between items-end'>
-      <h3 className='whitespace-pre-wrap subtitle-2'>{`안녕하세요\n${me.name} 사장님`}</h3>
+      <h3 className='whitespace-pre-wrap subtitle-2'>{`안녕하세요\n${me.name ? `${me.name} ` : ''}사장님`}</h3>
       <StoreSelector />
     </div>
   );
