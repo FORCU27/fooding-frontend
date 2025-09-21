@@ -46,7 +46,7 @@ export const BottomSheetSelect = <TValue extends string>({
         <ChevronDownIcon className='text-gray-5 size-5' />
       </button>
 
-      <BottomSheet isOpen={isOpen} onOpenChange={setIsOpen}>
+      <BottomSheet open={isOpen} onOpenChange={setIsOpen}>
         <BottomSheet.Content aria-labelledby={titleId}>
           <BottomSheet.Header>
             <BottomSheet.Title id={titleId} className='font-bold text-[24px]'>

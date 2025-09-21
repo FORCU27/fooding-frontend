@@ -1,79 +1,62 @@
 'use client';
 
-import { type ComponentProps, createContext, forwardRef, useContext } from 'react';
+import { ToggleGroup as ToggleGroupPrimitives } from 'radix-ui';
 
-import * as ToggleGroupPrimitive from '@radix-ui/react-toggle-group';
-import { tv, type VariantProps } from 'tailwind-variants';
-
+import { createContext } from '../../utils';
 import { cn } from '../../utils/cn';
 
-const toggleGroupItemVariants = tv({
-  base: cn(
-    'inline-flex py-[18px] px-5 items-center justify-center border border-2 border-gray-3 transition-colors rounded-lg body-2',
-    'focus-visible:outline-none',
-    'disabled:pointer-events-none disabled:opacity-50',
-    'data-[state=on]:border-fooding-purple data-[state=on]:bg-[rgba(99,102,241,0.05)]',
-  ),
-  variants: {
-    variant: {
-      default: '',
-      selectedChip: 'border-fooding-purple bg-[rgba(99,102,241,0.05)]',
-      disabled: 'opacity-50 cursor-not-allowed bg-gray-100 text-gray-400 border-gray-200',
-    },
-  },
-  defaultVariants: {
-    variant: 'default',
-  },
-});
+type ToggleGroupProps = React.ComponentPropsWithRef<typeof ToggleGroupPrimitives.Root> & {
+  fullWidth?: boolean;
+};
 
-const ToggleGroupContext = createContext<VariantProps<typeof toggleGroupItemVariants>>({
-  variant: 'default',
-});
-
-type ToggleGroupProps = ComponentProps<typeof ToggleGroupPrimitive.Root> &
-  VariantProps<typeof toggleGroupItemVariants>;
-
-const ToggleGroup = forwardRef<
-  React.ElementRef<typeof ToggleGroupPrimitive.Root>,
-  ToggleGroupProps
->(({ className, variant, children, ...props }, ref) => (
-  <ToggleGroupPrimitive.Root
-    ref={ref}
-    className={cn('flex flex-wrap items-center justify-start gap-2', className)}
-    {...props}
-  >
-    <ToggleGroupContext.Provider value={{ variant: variant ?? 'default' }}>
+const ToggleGroup = ({
+  className,
+  children,
+  'aria-invalid': ariaInvalid,
+  fullWidth = false,
+  ...props
+}: ToggleGroupProps) => (
+  <ToggleGroupContext value={{ ariaInvalid: !!ariaInvalid, fullWidth }}>
+    <ToggleGroupPrimitives.Root
+      className={cn('flex flex-wrap items-center justify-start gap-2', className)}
+      {...props}
+    >
       {children}
-    </ToggleGroupContext.Provider>
-  </ToggleGroupPrimitive.Root>
-));
+    </ToggleGroupPrimitives.Root>
+  </ToggleGroupContext>
+);
 
-ToggleGroup.displayName = 'ToggleGroup';
+type ToggleGroupItemProps = React.ComponentPropsWithRef<typeof ToggleGroupPrimitives.Item>;
 
-type ToggleGroupItemProps = ComponentProps<typeof ToggleGroupPrimitive.Item>;
-
-const ToggleGroupItem = forwardRef<
-  React.ElementRef<typeof ToggleGroupPrimitive.Item>,
-  ToggleGroupItemProps & { disabled?: boolean }
->(({ className, children, value, disabled, ...props }, ref) => {
-  const { variant } = useContext(ToggleGroupContext);
+const ToggleGroupItem = ({ className, children, ...props }: ToggleGroupItemProps) => {
+  const { ariaInvalid, fullWidth } = useToggleGroupContext();
 
   return (
-    <ToggleGroupPrimitive.Item
-      ref={ref}
-      value={value}
-      disabled={disabled}
+    <ToggleGroupPrimitives.Item
       className={cn(
-        toggleGroupItemVariants({ variant: disabled ? 'disabled' : variant }),
+        'inline-flex h-[58px] px-5 items-center justify-center border-2 border-gray-3 rounded-[8px] body-2 cursor-pointer',
+        'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-fooding-purple focus-visible:ring-offset-2',
+        'disabled:pointer-events-none disabled:opacity-50',
+        'data-[state=on]:border-fooding-purple data-[state=on]:bg-fooding-purple/5',
+        ariaInvalid &&
+          'border-error-red data-[state=on]:border-error-red data-[state=on]:bg-error-red/5 focus-visible:ring-error-red',
+
+        fullWidth && 'flex-1',
         className,
       )}
       {...props}
     >
       {children}
-    </ToggleGroupPrimitive.Item>
+    </ToggleGroupPrimitives.Item>
   );
-});
+};
 
-ToggleGroupItem.displayName = 'ToggleGroupItem';
+type ToggleGroupContextValue = {
+  ariaInvalid: boolean;
+  fullWidth: boolean;
+};
+
+const [ToggleGroupContext, useToggleGroupContext] =
+  createContext<ToggleGroupContextValue>('ToggleGroup');
 
 export { ToggleGroup, ToggleGroupItem };

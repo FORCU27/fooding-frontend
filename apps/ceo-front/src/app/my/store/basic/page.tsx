@@ -12,11 +12,6 @@ import {
   TextArea,
   CardSubtitle,
   Dialog,
-  DialogTrigger,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogFooter,
 } from '@repo/design-system/components/ceo';
 import DaumPostcode from 'react-daum-postcode';
 
@@ -296,7 +291,7 @@ const BasicInfoPage = () => {
             </button>
           </div>
           <Dialog open={isAddressDialogOpen} onOpenChange={setIsAddressDialogOpen}>
-            <DialogTrigger asChild>
+            <Dialog.Trigger asChild>
               <Input
                 id='address'
                 inputType='search'
@@ -304,23 +299,20 @@ const BasicInfoPage = () => {
                 onChange={(e) => setFormData((prev) => ({ ...prev, address: e.target.value }))}
                 onClick={() => setIsAddressDialogOpen(true)}
               />
-            </DialogTrigger>
-            <DialogContent>
-              <DialogHeader>
-                <DialogTitle>변경하실 주소를 알려주세요</DialogTitle>
-              </DialogHeader>
-              <div className='py-4 '>
-                <DaumPostcode
-                  style={{ height: '500px' }}
-                  onComplete={onCompletePost}
-                ></DaumPostcode>
-              </div>
-              <DialogFooter>
-                <Button variant='outline' onClick={() => setIsAddressDialogOpen(false)}>
+            </Dialog.Trigger>
+            <Dialog.Content>
+              <Dialog.Header>
+                <Dialog.Title>변경하실 주소를 알려주세요</Dialog.Title>
+              </Dialog.Header>
+              <Dialog.Body>
+                <DaumPostcode style={{ height: '500px' }} onComplete={onCompletePost} />
+              </Dialog.Body>
+              <Dialog.Footer>
+                <Button variant='outlined' onClick={() => setIsAddressDialogOpen(false)}>
                   닫기
                 </Button>
-              </DialogFooter>
-            </DialogContent>
+              </Dialog.Footer>
+            </Dialog.Content>
           </Dialog>
 
           <Input

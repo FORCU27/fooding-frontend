@@ -1,8 +1,9 @@
 'use client';
 
 import Image from 'next/image';
-import { useEffect, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 
+import { STORE_CATEOGORY_LABELS } from '@repo/api/user';
 import {
   BottomSheet,
   Button,
@@ -32,6 +33,7 @@ import { useLoginBottomSheet } from '@/components/Auth/LoginBottomSheet';
 import { Carousel } from '@/components/Carousel';
 import { LoadingToggle } from '@/components/Devtool/LoadingToggle';
 import { DefaultErrorBoundary } from '@/components/Layout/DefaultErrorBoundary';
+import { Divider } from '@/components/Layout/Divider';
 import { Header } from '@/components/Layout/Header';
 import { Screen } from '@/components/Layout/Screen';
 import { Section } from '@/components/Layout/Section';
@@ -95,10 +97,6 @@ const StoreDetail = ({ storeId, showHeader, initialTab = 'home' }: StoreDetailPr
   const [isBookmarked, setIsBookmarked] = useState(store.isBookmarked);
   const [isBottomSheetOpen, setIsBottomSheetOpen] = useState(false);
 
-  useEffect(() => {
-    setIsBookmarked(store.isBookmarked);
-  }, [store.isBookmarked]);
-
   const handleBookmarkClick = (e: React.MouseEvent) => {
     if (!isLoggedIn && !isBookmarked) {
       e.preventDefault();
@@ -139,7 +137,7 @@ const StoreDetail = ({ storeId, showHeader, initialTab = 'home' }: StoreDetailPr
         <span className='flex items-center body-5 text-gray-5'>
           {store.address}
           <span className='mx-[6px] w-[1px] h-[12px] bg-[#76767630]' />
-          {store.category}
+          {STORE_CATEOGORY_LABELS[store.category]}
         </span>
         <h1 className='mt-[10px] headline-2 text-black' data-testid='store-name'>
           {store.name}
@@ -152,7 +150,8 @@ const StoreDetail = ({ storeId, showHeader, initialTab = 'home' }: StoreDetailPr
           <span className='ml-1 body-5 text-gray-5'>( 리뷰 {store.reviewCount}개 )</span>
         </div>
       </Section>
-      <Section className='mt-[10px] flex-row py-[20px] divide-x divide-gray-1'>
+      <Divider />
+      <Section className='flex-row py-[20px] divide-x divide-gray-1'>
         <div className='flex flex-col items-center flex-1'>
           <ColorFireIcon className='size-[50px]' />
           <span className='body-7 text-gray-5'>실시간</span>
@@ -169,9 +168,10 @@ const StoreDetail = ({ storeId, showHeader, initialTab = 'home' }: StoreDetailPr
           <span className='subtitle-6 text-black'>{store.estimatedWaitingTimeMinutes ?? 0}분</span>
         </div>
       </Section>
-      <Section className='mt-[10px] pt-[14px] pb-[100px]'>
+      <Section className='pb-[100px]'>
         <ChipTabs defaultValue={initialTab} scrollable>
-          <ChipTabs.List>
+          <Divider />
+          <ChipTabs.List className='py-[14px]'>
             <ChipTabs.Trigger value='home'>홈</ChipTabs.Trigger>
             <ChipTabs.Trigger value='news'>소식</ChipTabs.Trigger>
             <ChipTabs.Trigger value='menu'>메뉴</ChipTabs.Trigger>
@@ -180,6 +180,7 @@ const StoreDetail = ({ storeId, showHeader, initialTab = 'home' }: StoreDetailPr
             <ChipTabs.Trigger value='reward'>리워드</ChipTabs.Trigger>
             <ChipTabs.Trigger value='info'>매장정보</ChipTabs.Trigger>
           </ChipTabs.List>
+          <Divider />
           <Suspense>
             <ChipTabs.Content value='home'>
               <StoreDetailHomeTab store={store} />
@@ -205,7 +206,6 @@ const StoreDetail = ({ storeId, showHeader, initialTab = 'home' }: StoreDetailPr
       <div
         className={cn(
           'fixed bottom-0 left-0 right-0 flex items-center gap-4 px-grid-margin py-grid-margin bg-white rounded-t-[16px]',
-          // TODO: 임의로 설정한 그림자 효과 수정
           'shadow-[0_4px_24px_rgba(0,0,0,0.0.1)]',
         )}
       >
@@ -222,7 +222,7 @@ const StoreDetail = ({ storeId, showHeader, initialTab = 'home' }: StoreDetailPr
           {store.isFinished ? '영업 종료' : '줄서기'}
         </Button>
       </div>
-      <BottomSheet isOpen={isBottomSheetOpen} onOpenChange={setIsBottomSheetOpen}>
+      <BottomSheet open={isBottomSheetOpen} onOpenChange={setIsBottomSheetOpen}>
         <BottomSheet.Content>
           <BottomSheet.Header>
             <BottomSheet.Title className='headline-3'>방문 인원을 선택하세요</BottomSheet.Title>

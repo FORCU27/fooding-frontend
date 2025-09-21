@@ -1,0 +1,28 @@
+import { Map, MapMarker } from 'react-kakao-maps-sdk';
+
+import { useKakaoLoader } from './hooks';
+
+type StoreInfoMapProps = {
+  lat: number;
+  lng: number;
+  className?: string;
+};
+
+export const StoreInfoMap = ({ lat, lng, className }: StoreInfoMapProps) => {
+  useKakaoLoader();
+
+  return (
+    <Map
+      id='map'
+      center={{
+        lat,
+        lng,
+      }}
+      style={{ width: '100%', height: '100%' }}
+      className={className}
+      level={1}
+    >
+      <MapMarker position={{ lat, lng }} />
+    </Map>
+  );
+};

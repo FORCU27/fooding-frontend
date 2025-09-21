@@ -26,8 +26,9 @@ import {
 } from '@mui/material';
 import { leadApi, UploadLeadRequest } from '@repo/api/admin';
 import { userApi } from '@repo/api/admin';
-import { regionApi } from '@repo/api/admin';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+
+import { RegionSearchSelect } from '../../../components/RegionSearchSelect';
 
 interface SearchOption {
   id: string | number;
@@ -46,13 +47,9 @@ export default function LeadDetailPage() {
 
   // 검색 관련 상태
   const [ownerSearchTerm, setOwnerSearchTerm] = useState('');
-  const [regionSearchTerm, setRegionSearchTerm] = useState('');
   const [ownerSearchResults, setOwnerSearchResults] = useState<SearchOption[]>([]);
-  const [regionSearchResults, setRegionSearchResults] = useState<SearchOption[]>([]);
   const [showOwnerResults, setShowOwnerResults] = useState(false);
-  const [showRegionResults, setShowRegionResults] = useState(false);
   const [isSearchingOwner, setIsSearchingOwner] = useState(false);
-  const [isSearchingRegion, setIsSearchingRegion] = useState(false);
 
   const leadId = params.id as string;
 
@@ -89,28 +86,6 @@ export default function LeadDetailPage() {
     }
   };
 
-  // 지역 검색
-  const searchRegions = async (searchTerm: string) => {
-    if (!searchTerm.trim()) {
-      setRegionSearchResults([]);
-      return;
-    }
-
-    setIsSearchingRegion(true);
-    try {
-      const response = await regionApi.getRegionList(0, 10, { searchString: searchTerm });
-      const results = response.data.list.map((region) => ({
-        id: region.id,
-        label: `${region.name} (${region.id})`,
-      }));
-      setRegionSearchResults(results);
-    } catch (error) {
-      console.error('지역 검색 실패:', error);
-      setRegionSearchResults([]);
-    } finally {
-      setIsSearchingRegion(false);
-    }
-  };
 
   const uploadMutation = useMutation({
     mutationFn: (data: UploadLeadRequest) => leadApi.uploadLead(leadId, data),
@@ -285,70 +260,14 @@ export default function LeadDetailPage() {
               </Box>
 
               {/* 지역 검색 */}
-              <Box sx={{ position: 'relative' }}>
-                <TextField
-                  fullWidth
-                  label='지역 검색'
-                  placeholder='지역 이름으로 검색...'
-                  value={regionSearchTerm}
-                  onChange={(e) => {
-                    const value = e.target.value;
-                    setRegionSearchTerm(value);
-                    searchRegions(value);
-                    setShowRegionResults(true);
-                  }}
-                  onFocus={() => setShowRegionResults(true)}
-                  InputProps={{
-                    endAdornment: (
-                      <InputAdornment position='end'>
-                        {isSearchingRegion ? (
-                          <CircularProgress size={20} />
-                        ) : (
-                          <SearchIcon fontSize='small' />
-                        )}
-                      </InputAdornment>
-                    ),
-                  }}
-                  size='small'
-                />
-                {showRegionResults && regionSearchResults.length > 0 && (
-                  <ClickAwayListener onClickAway={() => setShowRegionResults(false)}>
-                    <Paper
-                      elevation={3}
-                      sx={{
-                        position: 'absolute',
-                        top: '100%',
-                        left: 0,
-                        right: 0,
-                        zIndex: 1300,
-                        maxHeight: 200,
-                        overflow: 'auto',
-                      }}
-                    >
-                      <List dense>
-                        {regionSearchResults.map((option) => (
-                          <ListItem
-                            key={option.id}
-                            onClick={() => {
-                              setUploadForm({ ...uploadForm, regionId: String(option.id) });
-                              setRegionSearchTerm(option.label);
-                              setShowRegionResults(false);
-                            }}
-                            sx={{
-                              cursor: 'pointer',
-                              '&:hover': {
-                                backgroundColor: 'action.hover',
-                              },
-                            }}
-                          >
-                            <ListItemText primary={option.label} />
-                          </ListItem>
-                        ))}
-                      </List>
-                    </Paper>
-                  </ClickAwayListener>
-                )}
-              </Box>
+              <RegionSearchSelect
+                value={uploadForm.regionId}
+                onChange={(regionId: string) => {
+                  setUploadForm({ ...uploadForm, regionId });
+                }}
+                label='지역 검색'
+                size='small'
+              />
             </Box>
           </Box>
         </DialogContent>

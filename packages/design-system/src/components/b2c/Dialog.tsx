@@ -4,16 +4,10 @@ import { Dialog as DialogPrimitives } from 'radix-ui';
 
 import { cn } from '../../utils';
 
-type DialogProps = Omit<DialogPrimitives.DialogProps, 'open'> & {
-  isOpen?: boolean;
-};
+type DialogProps = DialogPrimitives.DialogProps;
 
-const Dialog = ({ children, isOpen, ...props }: DialogProps) => {
-  return (
-    <DialogPrimitives.Root open={isOpen} {...props}>
-      {children}
-    </DialogPrimitives.Root>
-  );
+const Dialog = ({ children, ...props }: DialogProps) => {
+  return <DialogPrimitives.Root {...props}>{children}</DialogPrimitives.Root>;
 };
 
 type DialogOverlayProps = React.ComponentPropsWithRef<typeof DialogPrimitives.Overlay>;

@@ -7,6 +7,7 @@ import { useFlow } from '@stackflow/react/future';
 
 import { useGetStoreDetail } from '@/hooks/store/useGetStoreDetail';
 import { useGetStoreWaitingDetail } from '@/hooks/store-waiting/useGetStoreWaitingDetail';
+import { isNonEmptyArray } from '@/utils/array';
 import { formatDotDate } from '@/utils/date';
 
 interface PlanCardProps {
@@ -15,6 +16,7 @@ interface PlanCardProps {
 
 export const PlanCard = ({ plan }: PlanCardProps) => {
   const flow = useFlow();
+
   const { data: storeInfo } = useGetStoreDetail(plan.storeId);
   const { data: waitingInfo } = useGetStoreWaitingDetail(plan.originId);
 
@@ -37,12 +39,12 @@ export const PlanCard = ({ plan }: PlanCardProps) => {
         <CloseIcon className='text-gray-5' />
       </div>
       <div className='flex'>
-        {storeInfo.images[0]?.imageUrl ? (
+        {isNonEmptyArray(storeInfo.images) ? (
           <div className='relative w-[80px] h-[80px] rounded-2xl overflow-hidden'>
             <Image
               fill
               style={{ objectFit: 'cover' }}
-              src={storeInfo.images[0]?.imageUrl}
+              src={storeInfo.images[0].imageUrl}
               alt='가게 이미지'
             />
           </div>

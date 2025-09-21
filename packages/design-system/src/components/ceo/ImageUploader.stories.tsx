@@ -2,6 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react';
 import { Controller, useForm } from 'react-hook-form';
 import { ImageUploader } from './ImageUploader';
 import { useState } from 'react';
+import { Button } from './Button';
 
 const meta = {
   title: 'Components/ceo/ImageUploader',
@@ -64,9 +65,7 @@ export const ControlledWithForm: Story = {
             )}
           />
 
-          <button type='submit' className='mt-4 px-4 py-2 bg-blue-500 text-white rounded'>
-            제출
-          </button>
+          <Button className='mt-8'>제출</Button>
         </form>
       );
     };

@@ -4,9 +4,9 @@ import { api } from '../../shared';
 export * from './type';
 
 export const userNotificationApi = {
-  getUserNotificationList: async (page: number = 0, size: number = 10) => {
+  getUserNotificationList: async (page: number = 1, size: number = 10) => {
     const params = new URLSearchParams({
-      pageNum: (page + 1).toString(),
+      pageNum: page.toString(),
       pageSize: size.toString(),
     });
 

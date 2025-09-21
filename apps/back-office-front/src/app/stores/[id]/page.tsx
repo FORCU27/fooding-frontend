@@ -1,5 +1,6 @@
 'use client';
 
+import NextLink from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useParams } from 'next/navigation';
 import type React from 'react';
@@ -22,6 +23,13 @@ import {
   Tabs,
   Tab,
   IconButton,
+  FormControl,
+  FormControlLabel,
+  InputLabel,
+  MenuItem,
+  Pagination,
+  Select,
+  Checkbox,
 } from '@mui/material';
 import {
   Table,
@@ -32,6 +40,7 @@ import {
   TableRow,
   TextField,
 } from '@mui/material';
+import type { SelectChangeEvent } from '@mui/material/Select';
 import {
   storeApi,
   AdminStoreResponse,
@@ -44,6 +53,7 @@ import {
   AdminStoreImageResponse,
   AdminStoreImageCreateRequest,
   AdminStoreImageUpdateRequest,
+  adminFileApi,
 } from '@repo/api/admin';
 import {
   adminPointShopApi,
@@ -60,15 +70,29 @@ import {
   AdminMenuCategoryResponse,
   AdminMenuCategoryCreateRequest,
   AdminMenuCategoryUpdateRequest,
+  AdminCouponResponse,
+  AdminCreateCouponRequest,
+  AdminUpdateCouponRequest,
+  couponApi,
 } from '@repo/api/admin';
-import { fileApi } from '@repo/api/file';
 import { useQuery, useMutation } from '@tanstack/react-query';
 import { useQuery as useRQ, useMutation as useRMutation } from '@tanstack/react-query';
 
-import { queryClient } from '../../providers';
+import { queryClient } from '../../../components/Provider/providers';
 import { DeleteConfirmDialog } from '../DeleteConfirmDialog';
 import { EditStoreDialog } from '../EditStoreDialog';
 import StoreServiceManagement from './StoreServiceManagement';
+import { TagCheckboxGroup, StoreImageTag } from '../../../components/TagCheckboxGroup';
+import { TagInput } from '../../../components/TagInput';
+import { CreateCouponDialog } from '../../coupons/CreateCouponDialog';
+import { EditCouponDialog } from '../../coupons/EditCouponDialog';
+import {
+  BENEFIT_TYPE_LABEL,
+  COUPON_STATUS_LABEL,
+  COUPON_TYPE_LABEL,
+  DISCOUNT_TYPE_LABEL,
+  PROVIDE_TYPE_LABEL,
+} from '../../coupons/options';
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -111,6 +135,14 @@ export default function StoreDetailPage() {
   const [isCreatePointShopOpen, setIsCreatePointShopOpen] = useState(false);
   const [isEditPointShopOpen, setIsEditPointShopOpen] = useState(false);
   const [selectedPointShop, setSelectedPointShop] = useState<AdminPointShopResponse | null>(null);
+  const [storeCouponPage, setStoreCouponPage] = useState(1);
+  const [storeCouponPageSize, setStoreCouponPageSize] = useState(10);
+  const [storeCouponStatusFilter, setStoreCouponStatusFilter] = useState<'all' | 'ACTIVE' | 'INACTIVE'>('all');
+  const [isCreateStoreCouponOpen, setIsCreateStoreCouponOpen] = useState(false);
+  const [isEditStoreCouponOpen, setIsEditStoreCouponOpen] = useState(false);
+  const [selectedStoreCoupon, setSelectedStoreCoupon] = useState<AdminCouponResponse | null>(null);
+  const [deleteStoreCouponDialogOpen, setDeleteStoreCouponDialogOpen] = useState(false);
+  const [storeCouponToDelete, setStoreCouponToDelete] = useState<AdminCouponResponse | null>(null);
 
   const {
     data: storeResponse,
@@ -121,6 +153,25 @@ export default function StoreDetailPage() {
     queryFn: () => storeApi.getStore(storeId),
     enabled: !!storeId,
   });
+
+  const {
+    data: storeCouponsResponse,
+    isLoading: isStoreCouponsLoading,
+  } = useQuery({
+    queryKey: ['store-coupons', storeId, storeCouponPage, storeCouponPageSize, storeCouponStatusFilter],
+    queryFn: () =>
+      couponApi.list({
+        pageNum: storeCouponPage,
+        pageSize: storeCouponPageSize,
+        storeId,
+        status: storeCouponStatusFilter === 'all' ? undefined : storeCouponStatusFilter,
+      }),
+    enabled: !!storeId,
+    staleTime: 5_000,
+  });
+
+  const storeCoupons = storeCouponsResponse?.data.list ?? [];
+  const storeCouponsPageInfo = storeCouponsResponse?.data.pageInfo;
 
   // 디버깅을 위한 로그
   console.log('API Response:', storeResponse);
@@ -166,6 +217,39 @@ export default function StoreDetailPage() {
       queryClient.invalidateQueries({ queryKey: ['store', storeId] });
       queryClient.invalidateQueries({ queryKey: ['stores'] });
       setStatusDialogOpen(false);
+    },
+  });
+
+  const createStoreCouponMutation = useMutation({
+    mutationFn: (payload: AdminCreateCouponRequest) => couponApi.create(payload),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['store-coupons', storeId] });
+      queryClient.invalidateQueries({ queryKey: ['coupons'] });
+      setIsCreateStoreCouponOpen(false);
+    },
+  });
+
+  const updateStoreCouponMutation = useMutation({
+    mutationFn: ({ id, body }: { id: number; body: AdminUpdateCouponRequest }) => couponApi.update(id, body),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['store-coupons', storeId] });
+      queryClient.invalidateQueries({ queryKey: ['coupons'] });
+      setIsEditStoreCouponOpen(false);
+      setSelectedStoreCoupon(null);
+    },
+  });
+
+  const deleteStoreCouponMutation = useMutation({
+    mutationFn: (id: number) => couponApi.delete(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['store-coupons', storeId] });
+      queryClient.invalidateQueries({ queryKey: ['coupons'] });
+      setDeleteStoreCouponDialogOpen(false);
+      setStoreCouponToDelete(null);
+    },
+    onSettled: () => {
+      setDeleteStoreCouponDialogOpen(false);
+      setStoreCouponToDelete(null);
     },
   });
 
@@ -359,6 +443,11 @@ export default function StoreDetailPage() {
   if (!storeResponse?.data) return <div>Store not found</div>;
 
   const store = storeResponse.data;
+  const formatDate = (value?: string | null) => (value ? value : '-');
+  const formatDiscountValue = (coupon: AdminCouponResponse) =>
+    coupon.discountType === 'PERCENT'
+      ? `${coupon.discountValue}%`
+      : `${coupon.discountValue.toLocaleString()}원`;
 
   const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
     setActiveTab(newValue);
@@ -404,6 +493,7 @@ export default function StoreDetailPage() {
           <Tab label='사진' />
           <Tab label='소식' />
           <Tab label='서비스' />
+          <Tab label='쿠폰' />
           <Tab label='상태 관리' />
           <Tab label='포인트샵' />
         </Tabs>
@@ -537,7 +627,7 @@ export default function StoreDetailPage() {
       </TabPanel>
 
       {/* 포인트샵 탭 */}
-      <TabPanel value={activeTab} index={6}>
+      <TabPanel value={activeTab} index={7}>
         <Stack spacing={3}>
           <Paper sx={{ p: 3 }}>
             <Box sx={{ display: 'flex', alignItems: 'center', mb: 2, gap: 2 }}>
@@ -820,6 +910,7 @@ export default function StoreDetailPage() {
                   <TableCell>이미지</TableCell>
                   <TableCell>태그</TableCell>
                   <TableCell>정렬</TableCell>
+                  <TableCell>대표</TableCell>
                   <TableCell>작업</TableCell>
                 </TableRow>
               </TableHead>
@@ -834,8 +925,9 @@ export default function StoreDetailPage() {
                         style={{ width: 80, height: 60, objectFit: 'cover', borderRadius: 4 }}
                       />
                     </TableCell>
-                    <TableCell>{img.tags || ''}</TableCell>
+                    <TableCell>{Array.isArray(img.tags) ? img.tags.join(', ') : ''}</TableCell>
                     <TableCell>{img.sortOrder}</TableCell>
+                    <TableCell>{img.isMain ? 'Y' : 'N'}</TableCell>
                     <TableCell>
                       <Box sx={{ display: 'flex', gap: 1 }}>
                         <Button
@@ -869,16 +961,26 @@ export default function StoreDetailPage() {
         <ImageDialog
           open={isCreateImageOpen}
           title='이미지 추가'
-          initial={{ imageUrl: '', sortOrder: 0, tags: '' }}
+          initial={{ imageUrl: '', sortOrder: 0, tags: [] as StoreImageTag[], isMain: false }}
           onClose={() => setIsCreateImageOpen(false)}
-          onSubmit={(values) =>
-            createImageMutation.mutate({
+          onSubmit={async (values) => {
+            // 1) 생성하고 ID를 받아온 뒤
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            const res: any = await createImageMutation.mutateAsync({
               storeId,
               imageUrl: values.imageUrl,
               sortOrder: values.sortOrder,
               tags: values.tags,
-            })
-          }
+            });
+            const newId = res?.data as number | undefined;
+            // 2) 체크박스가 선택된 경우 대표이미지 설정 API 호출
+            if (newId && values.isMain === true) {
+              await adminStoreImageApi.updateMain(newId, { isMain: true });
+            }
+            // 목록 갱신 및 다이얼로그 닫기
+            queryClient.invalidateQueries({ queryKey: ['storeImages', storeId] });
+            setIsCreateImageOpen(false);
+          }}
           loading={createImageMutation.isPending}
         />
 
@@ -888,15 +990,16 @@ export default function StoreDetailPage() {
           initial={{
             imageUrl: selectedImage?.imageUrl ?? '',
             sortOrder: selectedImage?.sortOrder ?? 0,
-            tags: selectedImage?.tags ?? '',
+            tags: (selectedImage?.tags as StoreImageTag[] | undefined) ?? [],
+            isMain: selectedImage?.isMain ?? false,
           }}
           onClose={() => {
             setIsEditImageOpen(false);
             setSelectedImage(null);
           }}
-          onSubmit={(values) => {
+          onSubmit={async (values) => {
             if (!selectedImage) return;
-            updateImageMutation.mutate({
+            await updateImageMutation.mutateAsync({
               id: selectedImage.id,
               body: {
                 imageUrl: values.imageUrl || undefined,
@@ -904,6 +1007,11 @@ export default function StoreDetailPage() {
                 tags: values.tags,
               },
             });
+            // 대표이미지 상태를 체크박스 값으로 설정 (true/false)
+            await adminStoreImageApi.updateMain(selectedImage.id, { isMain: !!values.isMain });
+            queryClient.invalidateQueries({ queryKey: ['storeImages', storeId] });
+            setIsEditImageOpen(false);
+            setSelectedImage(null);
           }}
           loading={updateImageMutation.isPending}
         />
@@ -1016,8 +1124,176 @@ export default function StoreDetailPage() {
         <StoreServiceManagement storeId={storeId} />
       </TabPanel>
 
-      {/* 상태 관리 탭 */}
+      {/* 쿠폰 관리 탭 */}
       <TabPanel value={activeTab} index={5}>
+        <Paper sx={{ p: 3, mb: 3 }}>
+          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2, gap: 2, flexWrap: 'wrap' }}>
+            <Typography variant='h6'>쿠폰 관리</Typography>
+            <Button variant='contained' onClick={() => setIsCreateStoreCouponOpen(true)}>
+              쿠폰 생성
+            </Button>
+          </Box>
+          <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap', alignItems: 'center', mb: 2 }}>
+            <FormControl size='small' sx={{ minWidth: 160 }}>
+              <InputLabel id='store-coupon-status-filter'>상태</InputLabel>
+              <Select
+                labelId='store-coupon-status-filter'
+                value={storeCouponStatusFilter}
+                label='상태'
+                onChange={(event: SelectChangeEvent<'all' | 'ACTIVE' | 'INACTIVE'>) => {
+                  setStoreCouponStatusFilter(event.target.value as 'all' | 'ACTIVE' | 'INACTIVE');
+                  setStoreCouponPage(1);
+                }}
+              >
+                <MenuItem value='all'>전체</MenuItem>
+                <MenuItem value='ACTIVE'>활성화</MenuItem>
+                <MenuItem value='INACTIVE'>비활성화</MenuItem>
+              </Select>
+            </FormControl>
+            <FormControl size='small' sx={{ minWidth: 120 }}>
+              <InputLabel id='store-coupon-page-size'>페이지당</InputLabel>
+              <Select
+                labelId='store-coupon-page-size'
+                value={storeCouponPageSize.toString()}
+                label='페이지당'
+                onChange={(event: SelectChangeEvent<string>) => {
+                  setStoreCouponPageSize(Number(event.target.value));
+                  setStoreCouponPage(1);
+                }}
+              >
+                {[10, 20, 50].map((size) => (
+                  <MenuItem key={size} value={size.toString()}>
+                    {size}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          </Box>
+
+          {isStoreCouponsLoading ? (
+            <Typography sx={{ py: 4, textAlign: 'center' }}>쿠폰을 불러오는 중입니다...</Typography>
+          ) : storeCoupons.length === 0 ? (
+            <Typography sx={{ py: 4, textAlign: 'center' }}>등록된 쿠폰이 없습니다.</Typography>
+          ) : (
+            <TableContainer>
+              <Table size='small'>
+                <TableHead>
+                  <TableRow>
+                    <TableCell>ID</TableCell>
+                    <TableCell>쿠폰명</TableCell>
+                    <TableCell>혜택</TableCell>
+                    <TableCell>기간</TableCell>
+                    <TableCell>발급 수량</TableCell>
+                    <TableCell>상태</TableCell>
+                    <TableCell align='right'>작업</TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {storeCoupons.map((coupon) => (
+                    <TableRow key={coupon.id} hover>
+                      <TableCell>{coupon.id}</TableCell>
+                      <TableCell>{coupon.name}</TableCell>
+                      <TableCell>
+                        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.5 }}>
+                          <Typography variant='body2'>
+                            {BENEFIT_TYPE_LABEL[coupon.benefitType] ?? coupon.benefitType}
+                          </Typography>
+                          <Typography variant='caption' color='text.secondary'>
+                            {COUPON_TYPE_LABEL[coupon.type] ?? coupon.type} / {PROVIDE_TYPE_LABEL[coupon.provideType] ?? coupon.provideType}
+                          </Typography>
+                          <Typography variant='caption' color='primary'>
+                            {`${DISCOUNT_TYPE_LABEL[coupon.discountType] ?? coupon.discountType} / ${formatDiscountValue(coupon)}`}
+                          </Typography>
+                        </Box>
+                      </TableCell>
+                      <TableCell>
+                        {coupon.issueStartOn
+                          ? `${formatDate(coupon.issueStartOn)}${coupon.issueEndOn ? ` ~ ${formatDate(coupon.issueEndOn)}` : ''}`
+                          : '-'}
+                        <Typography variant='caption' color='text.secondary' display='block'>
+                          만료 {formatDate(coupon.expiredOn)}
+                        </Typography>
+                      </TableCell>
+                      <TableCell>
+                        <Box sx={{ display: 'flex', flexDirection: 'column' }}>
+                          <Typography variant='body2'>총 {coupon.totalQuantity ?? '무제한'}</Typography>
+                          <Typography variant='caption' color='text.secondary'>
+                            발급 {coupon.issuedQuantity}
+                          </Typography>
+                        </Box>
+                      </TableCell>
+                      <TableCell>
+                        <Chip
+                          label={COUPON_STATUS_LABEL[coupon.status] ?? coupon.status}
+                          color={coupon.status === 'ACTIVE' ? 'success' : 'default'}
+                          size='small'
+                        />
+                      </TableCell>
+                      <TableCell align='right'>
+                        <Box sx={{ display: 'flex', gap: 1, justifyContent: 'flex-end', flexWrap: 'wrap' }}>
+                          <Button
+                            size='small'
+                            component={NextLink}
+                            href={`/coupons/${coupon.id}`}
+                            variant='text'
+                          >
+                            상세
+                          </Button>
+                          <Button
+                            size='small'
+                            variant='outlined'
+                            onClick={() => {
+                              setSelectedStoreCoupon(coupon);
+                              setIsEditStoreCouponOpen(true);
+                            }}
+                          >
+                            수정
+                          </Button>
+                          <Button
+                            size='small'
+                            variant='outlined'
+                            color='error'
+                            onClick={() => {
+                              setStoreCouponToDelete(coupon);
+                              setDeleteStoreCouponDialogOpen(true);
+                            }}
+                          >
+                            삭제
+                          </Button>
+                        </Box>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </TableContainer>
+          )}
+
+          <Box
+            sx={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: { xs: 'stretch', md: 'center' },
+              mt: 2,
+              gap: 2,
+              flexDirection: { xs: 'column', md: 'row' },
+            }}
+          >
+            <Typography variant='body2'>총 {storeCouponsPageInfo?.totalCount ?? storeCoupons.length}개</Typography>
+            <Pagination
+              count={storeCouponsPageInfo?.totalPages ?? 1}
+              page={storeCouponPage}
+              onChange={(_: React.ChangeEvent<unknown>, page: number) => setStoreCouponPage(page)}
+              color='primary'
+              showFirstButton
+              showLastButton
+            />
+          </Box>
+        </Paper>
+      </TabPanel>
+
+      {/* 상태 관리 탭 */}
+      <TabPanel value={activeTab} index={6}>
         <Paper sx={{ p: 3 }}>
           <Typography variant='h6' gutterBottom>
             상태 관리
@@ -1068,6 +1344,7 @@ export default function StoreDetailPage() {
 
       {/* 메뉴 생성 다이얼로그 */}
       <MenuDialog
+        key={`create-menu-${isCreateMenuOpen}`}
         open={isCreateMenuOpen}
         title='메뉴 생성'
         initial={{
@@ -1090,6 +1367,7 @@ export default function StoreDetailPage() {
       {/* 메뉴 수정 다이얼로그 */}
       {selectedMenu && (
         <MenuDialog
+          key={`edit-menu-${selectedMenu.id}-${isEditMenuOpen}`}
           open={isEditMenuOpen}
           title='메뉴 수정'
           initial={{
@@ -1115,6 +1393,7 @@ export default function StoreDetailPage() {
 
       {/* 카테고리 생성 다이얼로그 */}
       <CategoryDialog
+        key={`create-category-${isCreateCategoryOpen}`}
         open={isCreateCategoryOpen}
         title='카테고리 생성'
         initial={{
@@ -1131,6 +1410,7 @@ export default function StoreDetailPage() {
       {/* 카테고리 수정 다이얼로그 */}
       {selectedCategory && (
         <CategoryDialog
+          key={`edit-category-${selectedCategory.id}-${isEditCategoryOpen}`}
           open={isEditCategoryOpen}
           title='카테고리 수정'
           initial={{
@@ -1179,6 +1459,48 @@ export default function StoreDetailPage() {
         }
         loading={updateMutation.isPending}
         initialData={selectedStore || undefined}
+      />
+
+      <CreateCouponDialog
+        open={isCreateStoreCouponOpen}
+        onClose={() => setIsCreateStoreCouponOpen(false)}
+        onSubmit={(payload) => createStoreCouponMutation.mutate(payload)}
+        loading={createStoreCouponMutation.isPending}
+        fixedStoreId={storeId}
+      />
+
+      {selectedStoreCoupon && (
+        <EditCouponDialog
+          open={isEditStoreCouponOpen}
+          onClose={() => {
+            setIsEditStoreCouponOpen(false);
+            setSelectedStoreCoupon(null);
+          }}
+          onSubmit={(payload) => {
+            if (selectedStoreCoupon) {
+              updateStoreCouponMutation.mutate({ id: selectedStoreCoupon.id, body: payload });
+            }
+          }}
+          loading={updateStoreCouponMutation.isPending}
+          initialData={selectedStoreCoupon}
+          fixedStoreId={storeId}
+        />
+      )}
+
+      <DeleteConfirmDialog
+        open={deleteStoreCouponDialogOpen}
+        onClose={() => {
+          setDeleteStoreCouponDialogOpen(false);
+          setStoreCouponToDelete(null);
+        }}
+        onConfirm={() => {
+          if (storeCouponToDelete) {
+            deleteStoreCouponMutation.mutate(storeCouponToDelete.id);
+          }
+        }}
+        loading={deleteStoreCouponMutation.isPending}
+        title='쿠폰 삭제 확인'
+        description={storeCouponToDelete ? `정말로 '${storeCouponToDelete.name}' 쿠폰을 삭제하시겠습니까?` : ''}
       />
 
       {/* 삭제 확인 다이얼로그 */}
@@ -1354,6 +1676,13 @@ function MenuDialog({
   const [uploadedFileName, setUploadedFileName] = useState<string>('');
   const [previewUrl, setPreviewUrl] = useState<string>('');
 
+  // initial 값이 변경될 때 폼 초기화
+  useEffect(() => {
+    setValues(initial);
+    setUploadedFileName('');
+    setPreviewUrl('');
+  }, [initial]);
+
   const handleChange = (key: keyof MenuFormValues) => (e: React.ChangeEvent<HTMLInputElement>) => {
     const val = e.target.value;
     setValues((prev) => ({
@@ -1378,7 +1707,7 @@ function MenuDialog({
     try {
       const form = new FormData();
       form.append('files', file);
-      const res = await fileApi.upload(form);
+      const res = await adminFileApi.upload(form);
       const first = res.data?.[0];
       if (first?.id) {
         setValues((prev) => ({ ...prev, imageId: first.id }));
@@ -1571,6 +1900,11 @@ function CategoryDialog({
 }) {
   const [values, setValues] = useState<CategoryFormValues>(initial);
 
+  // initial 값이 변경될 때 폼 초기화
+  useEffect(() => {
+    setValues(initial);
+  }, [initial]);
+
   const handleChange =
     (key: keyof CategoryFormValues) => (e: React.ChangeEvent<HTMLInputElement>) => {
       const val = e.target.value;
@@ -1612,7 +1946,8 @@ function CategoryDialog({
 type ImageFormValues = {
   imageUrl: string;
   sortOrder: number;
-  tags: string;
+  tags: StoreImageTag[];
+  isMain?: boolean;
 };
 
 function ImageDialog({
@@ -1641,15 +1976,26 @@ function ImageDialog({
     setUploadedFileName('');
   }, [initial]);
 
-  const handleChange = (key: keyof ImageFormValues) => (e: React.ChangeEvent<HTMLInputElement>) => {
-    const val = e.target.value;
-    setValues(
-      (prev) =>
-        ({
-          ...prev,
-          [key]: key === 'sortOrder' ? Number(val) : val,
-        }) as ImageFormValues,
-    );
+  const handleChange = (key: keyof Omit<ImageFormValues, 'tags' | 'isMain'>) =>
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const val = e.target.value;
+      setValues(
+        (prev) =>
+          ({
+            ...prev,
+            [key]: key === 'sortOrder' ? Number(val) : val,
+          }) as ImageFormValues,
+      );
+    };
+
+  const handleBoolChange = (key: keyof Pick<ImageFormValues, 'isMain'>) =>
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const checked = e.target.checked;
+      setValues((prev) => ({ ...prev, [key]: checked }));
+    };
+
+  const handleTagsChange = (tags: StoreImageTag[]) => {
+    setValues((prev) => ({ ...prev, tags }));
   };
 
   const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -1663,7 +2009,7 @@ function ImageDialog({
     try {
       const form = new FormData();
       form.append('files', file);
-      const res = await fileApi.upload(form);
+      const res = await adminFileApi.upload(form);
       const first = res.data?.[0];
       if (first?.url) {
         setValues((prev) => ({ ...prev, imageUrl: first.url }));
@@ -1735,7 +2081,16 @@ function ImageDialog({
           onChange={handleChange('sortOrder')}
           fullWidth
         />
-        <TextField label='태그' value={values.tags} onChange={handleChange('tags')} fullWidth />
+        <TagCheckboxGroup
+          value={values.tags}
+          onChange={handleTagsChange}
+          label='태그'
+          fullWidth
+        />
+        <FormControlLabel
+          control={<Checkbox checked={!!values.isMain} onChange={handleBoolChange('isMain')} />}
+          label='대표 이미지로 지정'
+        />
       </DialogContent>
       <DialogActions>
         <Button onClick={onClose}>취소</Button>
@@ -1787,12 +2142,7 @@ function PostDialog({
       setValues((prev) => ({ ...prev, [key]: val }));
     };
 
-  const handleTagsChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const raw = e.target.value;
-    const tags = raw
-      .split(',')
-      .map((t) => t.trim())
-      .filter((t) => t.length > 0);
+  const handleTagsChange = (tags: string[]) => {
     setValues((prev) => ({ ...prev, tags }));
   };
 
@@ -1814,10 +2164,11 @@ function PostDialog({
           multiline
           minRows={4}
         />
-        <TextField
-          label='태그 (쉼표로 구분)'
-          value={values.tags.join(', ')}
+        <TagInput
+          value={values.tags}
           onChange={handleTagsChange}
+          label='태그'
+          placeholder='태그를 입력하고 엔터를 누르세요'
           fullWidth
         />
         <Box sx={{ display: 'flex', gap: 2 }}>

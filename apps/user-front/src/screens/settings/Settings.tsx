@@ -11,6 +11,11 @@ import { cn } from '@/utils/cn';
 
 export const SettingScreen: ActivityComponentType<'SettingScreen'> = () => {
   const { logout, user } = useAuth();
+
+  if (!user) {
+    throw new Error('로그인이 필요합니다.');
+  }
+
   const flow = useFlow();
 
   const handleLogoutClick = async () => {
@@ -33,11 +38,11 @@ export const SettingScreen: ActivityComponentType<'SettingScreen'> = () => {
             onClick={() =>
               flow.push('ProfileUserInfoScreen', {
                 isUpdateMode: true,
-                gender: user?.gender || 'NONE',
-                nickname: user?.nickname || null,
-                description: user?.description || null,
-                phoneNumber: user?.phoneNumber || null,
-                referralCode: user?.referralCode || null,
+                gender: user.gender,
+                nickname: user.nickname,
+                description: user.description,
+                phoneNumber: user.phoneNumber,
+                referralCode: user.referralCode,
                 imageFile: null,
               })
             }

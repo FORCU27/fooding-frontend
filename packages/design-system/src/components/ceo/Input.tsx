@@ -15,6 +15,7 @@ const Input = ({
   className,
   disabled = false,
   suffix,
+  'aria-invalid': ariaInvalid,
   ...props
 }: InputProps) => {
   const renderIcon = () => {
@@ -36,11 +37,13 @@ const Input = ({
     <div className='relative flex w-full items-center'>
       <input
         className={cn(
-          'flex h-[58px] w-full rounded-[8px] border border-gray-3 bg-white px-[10px] py-[16px] text-[20px] font-bold text-black placeholder:text-gray-5 placeholder:font-normal',
+          'focus-visible:outline-none focus-visible:border-fooding-purple px-[20px] body-2',
+          'flex h-[58px] w-full rounded-[8px] border border-gray-3 bg-white text-[20px] placeholder:text-gray-4',
           { 'pr-10': inputType && !suffix },
           { 'pl-6 pr-8': suffix }, // suffix가 있을 때 오른쪽 패딩 추가
           className,
           { 'opacity-50 cursor-pointer bg-gray-1 text-gray-5': disabled },
+          ariaInvalid && 'border-error-red focus-visible:border-error-red',
         )}
         {...props}
         disabled={disabled}

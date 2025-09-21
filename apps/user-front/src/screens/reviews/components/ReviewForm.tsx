@@ -1,6 +1,6 @@
 import { PropsWithoutRef, useRef } from 'react';
 
-import { CreateStoreReviewBody, Review, VISIT_PURPOSES } from '@repo/api/user';
+import { CreateStoreReviewBody, Review, VISIT_PURPOSES, VisitPurpose } from '@repo/api/user';
 import { Button, Select } from '@repo/design-system/components/b2c';
 import { CloseIcon, ImageIcon } from '@repo/design-system/icons';
 import { Controller, useForm } from 'react-hook-form';
@@ -12,22 +12,13 @@ export interface ReviewFormProps {
   handleSubmit: (data: CreateStoreReviewBody & { imageFiles: File[] }) => void;
 }
 
-export enum VisitPurpose {
-  MEETING = 'MEETING',
-  DATE = 'DATE',
-  FRIEND = 'FRIEND',
-  FAMILY = 'FAMILY',
-  BUSINESS = 'BUSINESS',
-  PARTY = 'PARTY',
-}
-
 export const VisitPurposeLabels: Record<VisitPurpose, string> = {
-  [VisitPurpose.MEETING]: '미팅',
-  [VisitPurpose.DATE]: '데이트',
-  [VisitPurpose.FRIEND]: '친구와',
-  [VisitPurpose.FAMILY]: '가족과',
-  [VisitPurpose.BUSINESS]: '업무',
-  [VisitPurpose.PARTY]: '파티',
+  MEETING: '미팅',
+  DATE: '데이트',
+  FRIEND: '친구와',
+  FAMILY: '가족과',
+  BUSINESS: '업무',
+  PARTY: '파티',
 };
 
 export const ReviewForm = ({ review, handleSubmit }: PropsWithoutRef<ReviewFormProps>) => {

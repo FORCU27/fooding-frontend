@@ -4,7 +4,7 @@ import { api } from '../../shared';
 export * from './type';
 
 export const notificationApi = {
-  getNotificationList: async (page: number = 0, size: number = 10) => {
+  getNotificationList: async (page: number = 1, size: number = 10) => {
     const params = new URLSearchParams({
       pageNum: (page).toString(),
       pageSize: size.toString(),

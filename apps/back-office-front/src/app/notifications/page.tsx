@@ -19,10 +19,10 @@ import { notificationApi, NotificationResponse } from '@repo/api/admin';
 import { useQuery, useMutation } from '@tanstack/react-query';
 
 import { DeleteConfirmDialog } from './DeleteConfirmDialog';
-import { queryClient } from '../providers';
+import { queryClient } from '../../components/Provider/providers';
 
 export default function NotificationsPage() {
-  const page = 0;
+  const page = 1;
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [notificationToDelete, setNotificationToDelete] = useState<NotificationResponse | null>(
     null,

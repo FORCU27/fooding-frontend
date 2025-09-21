@@ -38,7 +38,8 @@ interface RewardPoint {
 }
 
 export default function RewardPointsPage() {
-  const [page, setPage] = useState(0);
+  // 페이지는 1부터 시작하도록 변경
+  const [page, setPage] = useState(1);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [openDialog, setOpenDialog] = useState(false);
   const [editingPoint, setEditingPoint] = useState<RewardPoint | null>(null);
@@ -82,7 +83,7 @@ export default function RewardPointsPage() {
 
   const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
     setRowsPerPage(parseInt(event.target.value, 10));
-    setPage(0);
+    setPage(1);
   };
 
   const handleOpenDialog = (point?: RewardPoint) => {
@@ -158,7 +159,9 @@ export default function RewardPointsPage() {
               </TableRow>
             </TableHead>
             <TableBody>
-              {mockData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => (
+              {mockData
+                .slice((page - 1) * rowsPerPage, (page - 1) * rowsPerPage + rowsPerPage)
+                .map((row) => (
                 <TableRow hover key={row.id}>
                   <TableCell>{row.id}</TableCell>
                   <TableCell>{row.storeName}</TableCell>
@@ -187,7 +190,8 @@ export default function RewardPointsPage() {
           component='div'
           count={mockData.length}
           rowsPerPage={rowsPerPage}
-          page={page}
+          // TablePagination은 0-based 페이지를 받음
+          page={page - 1}
           onPageChange={handleChangePage}
           onRowsPerPageChange={handleChangeRowsPerPage}
         />

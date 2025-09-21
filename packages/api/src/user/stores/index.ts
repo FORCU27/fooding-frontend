@@ -15,6 +15,8 @@ import {
   GetStoreReviewListResponse,
   GetStoreReviewResponse,
   GetStoreRewardListResponse,
+  SearchStoreListParams,
+  SearchStoreListResponse,
   ModifyStoreReviewBody,
 } from './type';
 import { api } from '../../shared';
@@ -54,7 +56,13 @@ export const storeApi = {
   createStoreReview: async (body: CreateStoreReviewBody) => {
     await api.post(`${ENDPOINT}/reviews`, body);
   },
-  modifyStoreReview: async (reviewId: number, body: ModifyStoreReviewBody) => {
+  modifyStoreReview: async ({
+    reviewId,
+    body,
+  }: {
+    reviewId: number;
+    body: ModifyStoreReviewBody;
+  }) => {
     const response = await api.patch(`${ENDPOINT}/${reviewId}/update`, body);
     return GetStoreReviewResponse.parse(response);
   },
@@ -72,6 +80,12 @@ export const storeApi = {
   },
   purchaseStoreReward: async (storeId: number, id: number) => {
     return await api.post(`${ENDPOINT}/${storeId}/rewards/${id}`);
+  },
+  searchStoreList: async (params: SearchStoreListParams) => {
+    const response = await api.get(`${ENDPOINT}/elastic-search`, {
+      params,
+    });
+    return SearchStoreListResponse.parse(response);
   },
   createStoreReviewReport: async (reviewId: number, body: CreateReportBody) => {
     const response = await api.post(`${ENDPOINT}/${reviewId}/report`, body);

@@ -22,43 +22,46 @@ const BottomTab = ({ currentTab }: BottomTabProps) => {
   };
 
   return (
-    <nav className='fixed bottom-0 left-0 right-0 flex w-full h-16 justify-around items-center shadow-[0_-2px_10px_rgba(0,0,0,0.08)]'>
-      <BottomTabItem isActive={currentTab === 'home'}>
-        <Link
-          activityName='HomeTab'
-          activityParams={{}}
-          replace
-          animate={false}
-          onClick={(e) => onTabClick(e, 'home')}
-        >
-          <HomeIcon size={24} />
-          <BottomTabLabel>메인</BottomTabLabel>
-        </Link>
-      </BottomTabItem>
-      <BottomTabItem isActive={currentTab === 'search'}>
-        <Link
-          activityName='SearchTab'
-          activityParams={{}}
-          replace
-          animate={false}
-          onClick={(e) => onTabClick(e, 'search')}
-        >
-          <SearchIcon size={24} />
-          <BottomTabLabel>검색</BottomTabLabel>
-        </Link>
-      </BottomTabItem>
-      <PlanLink
-        BottomTabItem={BottomTabItem}
-        BottomTabLabel={BottomTabLabel}
-        isActive={currentTab === 'plan'}
-      />
+    <div className='fixed bottom-0 left-0 right-0 flex flex-col bg-white shadow-[0_-2px_10px_rgba(0,0,0,0.08)]'>
+      <nav className='flex h-16 justify-around items-center'>
+        <BottomTabItem isActive={currentTab === 'home'}>
+          <Link
+            activityName='HomeTab'
+            activityParams={{}}
+            replace
+            animate={false}
+            onClick={(e) => onTabClick(e, 'home')}
+          >
+            <HomeIcon size={24} />
+            <BottomTabLabel>메인</BottomTabLabel>
+          </Link>
+        </BottomTabItem>
+        <BottomTabItem isActive={currentTab === 'search'}>
+          <Link
+            activityName='SearchTab'
+            activityParams={{}}
+            replace
+            animate={false}
+            onClick={(e) => onTabClick(e, 'search')}
+          >
+            <SearchIcon size={24} />
+            <BottomTabLabel>검색</BottomTabLabel>
+          </Link>
+        </BottomTabItem>
+        <PlanLink
+          BottomTabItem={BottomTabItem}
+          BottomTabLabel={BottomTabLabel}
+          isActive={currentTab === 'plan'}
+        />
 
-      <MyPageLink
-        BottomTabItem={BottomTabItem}
-        BottomTabLabel={BottomTabLabel}
-        isActive={currentTab === 'mypage'}
-      />
-    </nav>
+        <MyPageLink
+          BottomTabItem={BottomTabItem}
+          BottomTabLabel={BottomTabLabel}
+          isActive={currentTab === 'mypage'}
+        />
+      </nav>
+      <div className='h-[env(safe-area-inset-bottom)]' />
+    </div>
   );
 };
 
