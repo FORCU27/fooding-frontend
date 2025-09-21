@@ -22,6 +22,7 @@ type PhotoCardProps = {
     onSetRepresentative?: () => void;
     onPlayVideo?: () => void;
     onDelete?: () => void;
+    onEditTag?: () => void;
   };
   ImageComponent?: React.ComponentType<ImageComponentProps>;
 };
@@ -34,9 +35,11 @@ const ActionMenu = ({
   onSetRepresentative,
   onDelete,
   onClose,
+  onEditTag,
 }: {
   onSetRepresentative?: () => void;
   onDelete?: () => void;
+  onEditTag?: () => void;
   onClose: () => void;
 }) => (
   <div
@@ -52,6 +55,16 @@ const ActionMenu = ({
       }}
     >
       대표사진
+    </button>
+    <button
+      role='menuitem'
+      className='block w-full px-[16px] py-[4px] body-2 text-left hover:bg-gray-50 cursor-pointer'
+      onClick={() => {
+        onEditTag?.();
+        onClose();
+      }}
+    >
+      태그 수정
     </button>
     <button
       role='menuitem'
@@ -85,6 +98,7 @@ export function PhotoCard({
   const onPlayVideo = actions?.onPlayVideo;
   const onSetRepresentative = actions?.onSetRepresentative;
   const onDelete = actions?.onDelete;
+  const onEditTag = actions?.onEditTag;
 
   return (
     <div className='relative h-fit break-inside-avoid rounded-2xl overflow-hidden bg-white group'>
@@ -138,6 +152,7 @@ export function PhotoCard({
             {isMenuOpen && (
               <ActionMenu
                 onSetRepresentative={onSetRepresentative}
+                onEditTag={onEditTag}
                 onDelete={onDelete}
                 onClose={closeMenu}
               />
