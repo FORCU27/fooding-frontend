@@ -51,6 +51,8 @@ type MenuBoardProps = {
   onCategoriesChange: (categories: Category[]) => void;
   onSave?: (categories: Category[]) => void;
   onEditCategory?: (categoryId: string, name: string) => void;
+  onCategorySelect?: (categoryId: string) => void;
+  selectedCategoryId?: string | null;
 };
 
 const SortableCategory = ({ category, index, onDoubleClick }: { category: Category; index: number; onDoubleClick?: () => void }) => {
@@ -217,20 +219,44 @@ export const MenuBoard = ({
   categories: initialCategories,
   onCategoriesChange,
   onEditCategory,
+  onCategorySelect,
+  selectedCategoryId: externalSelectedCategoryId,
 }: MenuBoardProps) => {
   const [categories, setCategories] = useState<Category[]>(initialCategories);
   const [activeId, setActiveId] = useState<string | null>(null);
-  const [selectedCategoryId, setSelectedCategoryId] = useState<string | null>(
-    initialCategories[0]?.id || null,
+
+  // 초기값 설정 시 첫 번째 카테고리 ID 사용 (정렬 후)
+  const getFirstCategoryId = () => {
+    if (externalSelectedCategoryId) return externalSelectedCategoryId;
+    if (initialCategories.length > 0) {
+      // categories가 이미 정렬된 상태로 들어온다고 가정
+      return initialCategories[0]?.id || null;
+    }
+    return null;
+  };
+
+  const [internalSelectedCategoryId, setInternalSelectedCategoryId] = useState<string | null>(
+    getFirstCategoryId(),
   );
+
+  // 외부에서 관리하는 selectedCategoryId가 있으면 사용, 없으면 내부 state 사용
+  const selectedCategoryId = externalSelectedCategoryId ?? internalSelectedCategoryId;
 
   // prop 변경 시 내부 state 업데이트
   useEffect(() => {
     setCategories(initialCategories);
+  }, [initialCategories]);
+
+  // 초기 선택 카테고리 설정 (한 번만 실행)
+  useEffect(() => {
     if (initialCategories.length > 0 && !selectedCategoryId && initialCategories[0]) {
-      setSelectedCategoryId(initialCategories[0].id);
+      if (onCategorySelect) {
+        onCategorySelect(initialCategories[0].id);
+      } else {
+        setInternalSelectedCategoryId(initialCategories[0].id);
+      }
     }
-  }, [initialCategories, selectedCategoryId]);
+  }, []);
 
   const sensors = useSensors(
     useSensor(PointerSensor),
@@ -355,7 +381,13 @@ export const MenuBoard = ({
                 {categories.map((category, index) => (
                   <div
                     key={category.id}
-                    onClick={() => setSelectedCategoryId(category.id)}
+                    onClick={() => {
+                      if (onCategorySelect) {
+                        onCategorySelect(category.id);
+                      } else {
+                        setInternalSelectedCategoryId(category.id);
+                      }
+                    }}
                     className='relative'
                   >
                     <SortableCategory
