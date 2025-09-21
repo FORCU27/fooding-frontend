@@ -15,12 +15,8 @@ export const useDeleteStoreInformation = () => {
       queryClient.invalidateQueries({
         queryKey: [queryKeys.ceo.storeInformation.get, variables.storeId],
       });
-
-      console.log('부가정보 삭제 완료');
     },
 
-    onError: (error: unknown) => {
-      console.error('부가정보 삭제 실패:', error);
-    },
+    onError: () => {},
   });
 };

@@ -11,6 +11,7 @@ import Cookies from 'js-cookie';
 export const useSelectedStoreId = () => {
   const [selectedStoreId, setSelectedStoreId] = useState<number | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [isInitialized, setIsInitialized] = useState(false);
 
   // 초기 로드 시 쿠키에서 값 읽기
   useEffect(() => {
@@ -18,11 +19,11 @@ export const useSelectedStoreId = () => {
       try {
         // 먼저 일반 쿠키로 시도
         const clientCookie = Cookies.get(STORAGE_KEYS.SELECTED_STORE_ID);
-        console.log('Client cookie value:', clientCookie);
-        
+
         if (clientCookie) {
           setSelectedStoreId(Number(clientCookie));
           setIsLoading(false);
+          setIsInitialized(true);
           return;
         }
 
@@ -31,26 +32,22 @@ export const useSelectedStoreId = () => {
           method: 'GET',
           credentials: 'include',
         });
-        
+
         if (response.ok) {
           const data = await response.json();
-          console.log('API response - storeId:', data.storeId);
           if (data.storeId) {
             setSelectedStoreId(Number(data.storeId));
           } else {
-            // 쿠키가 없으면 null 유지
-            console.log('No storeId in cookie');
             setSelectedStoreId(null);
           }
         } else {
-          // API 호출 실패
-          console.log('API failed to get storeId');
           setSelectedStoreId(null);
         }
       } catch (error) {
         console.error('Failed to load store ID:', error);
       } finally {
         setIsLoading(false);
+        setIsInitialized(true);
       }
     };
 
@@ -96,6 +93,7 @@ export const useSelectedStoreId = () => {
   return {
     selectedStoreId,
     isLoading,
+    isInitialized,
     selectStore,
     clearSelectedStore,
   };

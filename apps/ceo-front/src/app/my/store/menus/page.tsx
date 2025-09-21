@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 
 import {
   CardForm,
@@ -18,6 +18,10 @@ import { useGetMenuCategories } from '@/hooks/menu-category/useGetMenuCategories
 import { useSortMenuCategories } from '@/hooks/menu-category/useSortMenuCategories';
 import { useUpdateMenuCategory } from '@/hooks/menu-category/useUpdateMenuCategory';
 import { useSelectedStoreId } from '@/hooks/useSelectedStoreId';
+import { useGetMenuList } from '@/hooks/menu/useGetMenuList';
+import { useQueries } from '@tanstack/react-query';
+import { menuApi } from '@repo/api/ceo';
+import { queryKeys } from '@repo/api/configs/query-keys';
 
 type BadgeType = '대표' | '추천' | '신규';
 
@@ -40,6 +44,48 @@ const MenusPage = () => {
   const { selectedStoreId, isLoading: isLoadingStoreId } = useSelectedStoreId();
   const { data: menuCategories, isLoading: isLoadingCategories } =
     useGetMenuCategories(selectedStoreId);
+
+  // 현재 선택된 카테고리 상태 관리
+  const [selectedCategoryId, setSelectedCategoryId] = useState<number | null>(null);
+
+  // 모든 카테고리의 메뉴를 미리 불러오기 (캐시 활용)
+  const menuQueries = useQueries({
+    queries: menuCategories?.map((category) => ({
+      queryKey: [queryKeys.ceo.menu.list, {
+        storeId: selectedStoreId,
+        categoryId: category.id,
+        pageNum: 1,
+        pageSize: 100
+      }],
+      queryFn: () => menuApi.getMenuList({
+        storeId: selectedStoreId || 0,
+        categoryId: category.id,
+        pageNum: 1,
+        pageSize: 100
+      }),
+      enabled: !!selectedStoreId && !!menuCategories,
+      staleTime: 5 * 60 * 1000,
+      gcTime: 10 * 60 * 1000,
+    })) || [],
+  });
+
+  // 현재 선택된 카테고리의 메뉴 데이터
+  const selectedCategoryIndex = menuCategories?.findIndex(cat => cat.id === selectedCategoryId) ?? -1;
+  const menuData = selectedCategoryIndex >= 0 ? menuQueries[selectedCategoryIndex]?.data : undefined;
+  const isLoadingMenus = menuQueries.some(query => query.isLoading);
+
+  // sortOrder가 가장 낮은 카테고리를 기본 선택
+  useEffect(() => {
+    if (menuCategories && menuCategories.length > 0 && !selectedCategoryId) {
+      // sortOrder로 정렬하여 첫 번째 카테고리 선택
+      const sortedCategories = [...menuCategories].sort((a, b) => a.sortOrder - b.sortOrder);
+      const firstCategory = sortedCategories[0];
+      if (firstCategory) {
+        setSelectedCategoryId(firstCategory.id);
+      }
+    }
+  }, [menuCategories, selectedCategoryId]);
+
   const createCategoryMutation = useCreateMenuCategory();
   const sortCategoriesMutation = useSortMenuCategories();
   const updateCategoryMutation = useUpdateMenuCategory(selectedStoreId);
@@ -48,25 +94,73 @@ const MenusPage = () => {
   const [categories, setCategories] = useState<Category[]>([]);
   const [editingCategory, setEditingCategory] = useState<{ id: string; name: string } | null>(null);
 
-  // API 데이터로 카테고리 초기화
+  // 모든 카테고리의 메뉴 데이터를 캐시 (렌더링과 무관하게 유지)
+  const menuCacheRef = useRef<Record<number, MenuItem[]>>({});
+
+  // API 데이터로 카테고리 및 메뉴 초기화
   useEffect(() => {
     if (menuCategories) {
-      console.log('API에서 받은 카테고리:', menuCategories);
       // sortOrder로 정렬
       const sortedCategories = [...menuCategories].sort((a, b) => a.sortOrder - b.sortOrder);
-      const mappedCategories: Category[] = sortedCategories.map((cat) => ({
-        id: cat.id.toString(),
-        name: cat.name,
-        items: [], // TODO: 메뉴 아이템 API 연동 후 실제 데이터로 변경
-      }));
-      console.log('정렬된 카테고리:', mappedCategories);
+
+      // 현재 선택된 카테고리의 메뉴 데이터가 있으면 캐시에 저장
+      if (selectedCategoryId && menuData) {
+        const menuItems = menuData.list.map((menu: any) => ({
+          id: menu.id.toString(),
+          name: menu.name,
+          description: menu.description || '',
+          price: menu.price,
+          image: menu.imageUrl || undefined,
+          badges: [
+            ...(menu.isSignature ? ['대표' as BadgeType] : []),
+            ...(menu.isRecommend ? ['추천' as BadgeType] : []),
+          ].filter(Boolean) as BadgeType[],
+        }));
+
+        // sortOrder로 정렬
+        menuItems.sort((a, b) => {
+          const menuA = menuData.list.find((m: any) => m.id.toString() === a.id);
+          const menuB = menuData.list.find((m: any) => m.id.toString() === b.id);
+          return (menuA?.sortOrder || 0) - (menuB?.sortOrder || 0);
+        });
+
+        menuCacheRef.current[selectedCategoryId] = menuItems;
+      }
+
+      const mappedCategories: Category[] = sortedCategories.map((cat) => {
+        // 캐시에서 메뉴 가져오기
+        const cachedMenuItems = menuCacheRef.current[cat.id] || [];
+
+        // 선택된 카테고리만 메뉴 표시 (캐시된 데이터 우선 사용)
+        if (selectedCategoryId === cat.id) {
+          // 새 데이터가 있으면 사용, 없으면 캐시 사용
+          if (menuData) {
+            return {
+              id: cat.id.toString(),
+              name: cat.name,
+              items: menuCacheRef.current[cat.id] || [],
+            };
+          }
+          return {
+            id: cat.id.toString(),
+            name: cat.name,
+            items: cachedMenuItems,
+          };
+        }
+
+        // 선택되지 않은 카테고리는 빈 배열
+        return {
+          id: cat.id.toString(),
+          name: cat.name,
+          items: [],
+        };
+      });
       setCategories(mappedCategories);
     }
-  }, [menuCategories]);
+  }, [menuCategories, menuData, selectedCategoryId]);
 
   const handleCategoriesChange = (newCategories: Category[]) => {
     setCategories(newCategories);
-    console.log('카테고리 변경:', newCategories);
 
     // 드래그 앤 드롭으로 순서 변경시 바로 API 호출
     const categoryIds = newCategories.map((cat) => parseInt(cat.id));
@@ -74,11 +168,9 @@ const MenusPage = () => {
       { menuCategoryIds: categoryIds },
       {
         onSuccess: () => {
-          console.log('카테고리 순서 저장 완료');
+          // console.log('카테고리 순서 저장 완료');
         },
-        onError: (error) => {
-          console.error('카테고리 순서 저장 실패:', error);
-          // 실패시 이전 상태로 복구
+        onError: () => {
           setCategories(categories);
         },
       },
@@ -154,7 +246,7 @@ const MenusPage = () => {
     if (!selectedStoreId) return;
   };
 
-  // 로딩 상태 처리
+  // 초기 로딩 상태 처리 (카테고리 로딩 중일 때만)
   if (isLoadingStoreId || isLoadingCategories) {
     return <div>메뉴 정보를 불러오는 중...</div>;
   }
@@ -184,6 +276,8 @@ const MenusPage = () => {
           onCategoriesChange={handleCategoriesChange}
           onSave={handleSave}
           onEditCategory={handleEditCategory}
+          onCategorySelect={(categoryId) => setSelectedCategoryId(Number(categoryId))}
+          selectedCategoryId={selectedCategoryId?.toString()}
         />
       </Card>
 

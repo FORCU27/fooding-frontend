@@ -16,10 +16,7 @@ export const useUpdateMenuCategory = (storeId: number | null) => {
           queryKey: [queryKeys.ceo.menuCategory.list, storeId],
         });
       }
-      console.log('메뉴 카테고리 수정 완료');
     },
-    onError: (error: unknown) => {
-      console.error('메뉴 카테고리 수정 실패:', error);
-    },
+    onError: () => {},
   });
 };

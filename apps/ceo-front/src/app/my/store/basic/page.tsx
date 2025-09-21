@@ -37,12 +37,6 @@ const BasicInfoPage = () => {
   const { data: store } = useGetStore(selectedStoreId);
   const putStoreMutation = usePutStore();
 
-  // 콘솔로그로 확인
-  useEffect(() => {
-    console.log('selectedStoreId:', selectedStoreId);
-    console.log('isLoadingStoreId:', isLoadingStoreId);
-  }, [selectedStoreId, isLoadingStoreId]);
-
   // 폼 상태 관리
   const [formData, setFormData] = useState({
     name: '',
@@ -195,23 +189,14 @@ const BasicInfoPage = () => {
       Object.entries(putBody).filter(([, value]) => value !== undefined),
     ) as PutStoreBody;
 
-    // 디버깅용 로그
-    console.log('PUT 요청 바디:', cleanedBody);
-    console.log('formData category:', formData.category);
-
     // selectedStoreId 사용
     const storeIdToUpdate = selectedStoreId;
 
     putStoreMutation.mutate(
       { id: storeIdToUpdate, body: cleanedBody },
       {
-        onSuccess: () => {
-          // console.log('저장 성공 - storeId:', storeIdToUpdate);
-          // alert('저장되었습니다.');
-        },
-        onError: () => {
-          // console.log('저장 실패 - storeId:', storeIdToUpdate);
-        },
+        onSuccess: () => {},
+        onError: () => {},
       },
     );
   };
@@ -258,7 +243,6 @@ const BasicInfoPage = () => {
             label='업종 선택'
             value={formData.category}
             onValueChange={(value) => {
-              console.log('Category selected:', value);
               setFormData((prev) => ({ ...prev, category: value }));
             }}
             placeholder='업종을 선택해주세요'
