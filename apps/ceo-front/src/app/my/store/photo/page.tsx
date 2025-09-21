@@ -159,7 +159,7 @@ const PhotoPage = () => {
           {!storeId || isFetching || images?.data?.list.length === 0 ? (
             <div className='columns-3'>목록이 비어있습니다.</div>
           ) : (
-            <div className='columns-3 gap-[20px]'>
+            <div className='columns-2 md:columns-4 gap-[20px]'>
               {images?.data.list.map((photo) => (
                 <div key={photo.id} className='mb-[20px] break-inside-avoid'>
                   <PhotoCard

@@ -9,6 +9,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 
 export const useStoreImages = (storeId: number, tag?: ImageTag | null) => {
   return useQuery({
+    // TODO queryKey 수정
     queryKey: ['storeImages', storeId, tag],
     queryFn: () => {
       if (!storeId) throw new Error('no storeId');
