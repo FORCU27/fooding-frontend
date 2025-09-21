@@ -128,7 +128,7 @@ const MenuGroup = ({ menu }: MenuGroupProps) => {
     <div className='flex flex-col'>
       <div
         className={cn(
-          'flex items-center flex-1 px-8 min-h-[56px]',
+          'flex items-center flex-1 px-8 min-h-[56px] body-2',
           hasActiveGroupItem && 'bg-primary-pink/5 text-primary-pink',
         )}
       >
