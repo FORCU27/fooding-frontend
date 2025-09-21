@@ -16,10 +16,7 @@ export const useDeleteMenuCategory = (storeId: number | null) => {
           queryKey: [queryKeys.ceo.menuCategory.list, storeId],
         });
       }
-      console.log('메뉴 카테고리 삭제 완료');
     },
-    onError: (error: unknown) => {
-      console.error('메뉴 카테고리 삭제 실패:', error);
-    },
+    onError: () => {},
   });
 };

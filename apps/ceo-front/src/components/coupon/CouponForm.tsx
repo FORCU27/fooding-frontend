@@ -78,14 +78,12 @@ export const CouponForm = ({
   // 초기 데이터가 변경되면 폼 업데이트
   useEffect(() => {
     if (initialData) {
-      console.log('Setting form data with:', initialData);
       setFormData((prev) => ({ ...prev, ...initialData }));
     }
   }, [initialData]); // initialData가 변경될 때마다 실행
 
   useEffect(() => {
     if (initialDateRange) {
-      console.log('Setting date range with:', initialDateRange);
       setSelectedDateRange(initialDateRange);
     }
   }, [initialDateRange]); // initialDateRange가 변경될 때마다 실행
@@ -181,7 +179,7 @@ export const CouponForm = ({
                         ...prev,
                         discountAmount: e.target.value,
                         discountType: 'fixed',
-                        discountPercentage: ''
+                        discountPercentage: '',
                       }))
                     }
                     placeholder=''
@@ -213,7 +211,7 @@ export const CouponForm = ({
                         ...prev,
                         discountPercentage: e.target.value,
                         discountType: 'percentage',
-                        discountAmount: ''
+                        discountAmount: '',
                       }))
                     }
                     placeholder=''
@@ -313,7 +311,6 @@ export const CouponForm = ({
         </CardSubtitle>
       </Card>
 
-
       <Card>
         <CardSubtitle label='발급 개수'>
           <div className='flex flex-row gap-4'>
@@ -406,7 +403,11 @@ export const CouponForm = ({
                 : '기간 미설정'
             }
             statuses={formData.couponUsageType === 'regular' ? ['단골 전용', '발급중'] : ['발급중']}
-            receivedCount={formData.issueType === 'limited' && formData.issueCount ? parseInt(formData.issueCount) : 0}
+            receivedCount={
+              formData.issueType === 'limited' && formData.issueCount
+                ? parseInt(formData.issueCount)
+                : 0
+            }
             purchaseCount={0}
             usedCount={0}
             canceledCount={0}

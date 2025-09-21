@@ -35,7 +35,6 @@ export default function LoginForm() {
   const router = useRouter();
 
   const onSubmit = form.handleSubmit(async (data) => {
-    console.log('submitting');
     try {
       await login({
         email: data.email,

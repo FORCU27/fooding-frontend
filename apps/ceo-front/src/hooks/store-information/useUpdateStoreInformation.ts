@@ -6,7 +6,15 @@ export const useUpdateStoreInformation = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: ({ storeId, informationId, body }: { storeId: number; informationId: number; body: StoreInformationBody }) => {
+    mutationFn: ({
+      storeId,
+      informationId,
+      body,
+    }: {
+      storeId: number;
+      informationId: number;
+      body: StoreInformationBody;
+    }) => {
       return storeInformationApi.updateStoreInformation(storeId, informationId, body);
     },
 
@@ -15,8 +23,6 @@ export const useUpdateStoreInformation = () => {
       queryClient.invalidateQueries({
         queryKey: [queryKeys.ceo.storeInformation.get, variables.storeId],
       });
-
-      console.log('부가정보 업데이트 완료');
     },
 
     onError: (error: unknown) => {

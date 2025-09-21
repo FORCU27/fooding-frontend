@@ -58,13 +58,7 @@ const CouponPage = () => {
       status: 'ACTIVE',
     };
 
-    console.log('API 요청 데이터:', apiData);
-
-    try {
-      await createCoupon.mutateAsync(apiData);
-    } catch (error) {
-      console.error('쿠폰 생성 실패:', error);
-    }
+    await createCoupon.mutateAsync(apiData);
   };
 
   if (isLoadingStoreId || !isInitialized) {

@@ -20,7 +20,6 @@ export const couponApiV2 = {
   // 쿠폰 단일 조회
   getCoupon: async (id: number): Promise<CouponSchema> => {
     const response = await api.get<GetCouponResponse>(`${ENDPOINT}/${id}`);
-    console.log('getCoupon API response:', response);
     return response.data;
   },
 

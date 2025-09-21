@@ -8,11 +8,9 @@ export async function GET() {
   try {
     const cookieStore = await cookies();
     const selectedStoreId = cookieStore.get(STORAGE_KEYS.SELECTED_STORE_ID);
-    
-    console.log('Server: selectedStoreId cookie:', selectedStoreId);
-    
+
     return NextResponse.json({
-      storeId: selectedStoreId?.value ? Number(selectedStoreId.value) : null
+      storeId: selectedStoreId?.value ? Number(selectedStoreId.value) : null,
     });
   } catch (error) {
     console.error('Failed to get selected store ID:', error);

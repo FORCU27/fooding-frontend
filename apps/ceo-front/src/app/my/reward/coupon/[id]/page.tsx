@@ -19,41 +19,40 @@ const CouponEditPage = () => {
   const { selectedStoreId, isInitialized } = useSelectedStoreId();
 
   // 쿠폰 데이터 조회
-  const { data: couponData, isLoading: isLoadingCoupon, error } = useQuery({
+  const { data: couponData, isLoading: isLoadingCoupon } = useQuery({
     queryKey: [queryKeys.ceo.coupon.detail, couponId],
     queryFn: () => couponApiV2.getCoupon(Number(couponId)),
     enabled: !!couponId,
   });
 
-  console.log('Coupon loading state:', {
-    isLoadingCoupon,
-    couponData,
-    couponId,
-    error
-  });
-
   // 초기 데이터를 직접 계산
-  const initialFormData = couponData ? {
-    couponName: couponData.name,
-    benefitType: couponData.benefitType === 'DISCOUNT' ? 'discount' : 'gift',
-    discountType: couponData.discountType === 'PERCENT' ? 'percentage' : 'fixed',
-    discountPercentage: couponData.discountType === 'PERCENT' ? String(couponData.discountValue || '') : '',
-    discountAmount: couponData.discountType === 'FIXED' ? String(couponData.discountValue || '') : '',
-    giftItem: couponData.giftItem || '',
-    giftType: couponData.minOrderAmount ? 'threshold' : 'free',
-    minOrderAmount: String(couponData.minOrderAmount || ''),
-    couponUsageType: couponData.provideType === 'REGULAR_CUSTOMER' ? 'regular' : 'all',
-    issueType: couponData.totalQuantity ? 'limited' : 'unlimited',
-    issueCount: couponData.totalQuantity ? String(couponData.totalQuantity) : '',
-    startDate: couponData.issueStartOn,
-    endDate: couponData.issueEndOn,
-    usageConditions: couponData.conditions || '',
-  } : undefined;
+  const initialFormData = couponData
+    ? {
+        couponName: couponData.name,
+        benefitType: couponData.benefitType === 'DISCOUNT' ? 'discount' : 'gift',
+        discountType: couponData.discountType === 'PERCENT' ? 'percentage' : 'fixed',
+        discountPercentage:
+          couponData.discountType === 'PERCENT' ? String(couponData.discountValue || '') : '',
+        discountAmount:
+          couponData.discountType === 'FIXED' ? String(couponData.discountValue || '') : '',
+        giftItem: couponData.giftItem || '',
+        giftType: couponData.minOrderAmount ? 'threshold' : 'free',
+        minOrderAmount: String(couponData.minOrderAmount || ''),
+        couponUsageType: couponData.provideType === 'REGULAR_CUSTOMER' ? 'regular' : 'all',
+        issueType: couponData.totalQuantity ? 'limited' : 'unlimited',
+        issueCount: couponData.totalQuantity ? String(couponData.totalQuantity) : '',
+        startDate: couponData.issueStartOn,
+        endDate: couponData.issueEndOn,
+        usageConditions: couponData.conditions || '',
+      }
+    : undefined;
 
-  const initialDateRange = couponData ? {
-    startDate: new Date(couponData.issueStartOn),
-    endDate: new Date(couponData.issueEndOn),
-  } : null;
+  const initialDateRange = couponData
+    ? {
+        startDate: new Date(couponData.issueStartOn),
+        endDate: new Date(couponData.issueEndOn),
+      }
+    : null;
 
   // 쿠폰 수정 mutation
   const updateCoupon = useMutation({
@@ -79,7 +78,6 @@ const CouponEditPage = () => {
       alert(message);
     },
   });
-
 
   const handleSubmit = async (
     formData: CouponFormData,
@@ -120,11 +118,15 @@ const CouponEditPage = () => {
           : undefined,
       giftItem: formData.benefitType === 'gift' ? formData.giftItem : undefined,
       minOrderAmount: formData.minOrderAmount ? parseInt(formData.minOrderAmount) : undefined,
-      issueStartOn: (selectedDateRange?.startDate 
-        ? selectedDateRange.startDate.toISOString().split('T')[0] 
+      issueStartOn: (selectedDateRange?.startDate
+        ? selectedDateRange.startDate.toISOString().split('T')[0]
         : couponData.issueStartOn) as string,
-      issueEndOn: selectedDateRange ? selectedDateRange.endDate.toISOString().split('T')[0] : undefined,
-      expiredOn: selectedDateRange ? selectedDateRange.endDate.toISOString().split('T')[0] : undefined,
+      issueEndOn: selectedDateRange
+        ? selectedDateRange.endDate.toISOString().split('T')[0]
+        : undefined,
+      expiredOn: selectedDateRange
+        ? selectedDateRange.endDate.toISOString().split('T')[0]
+        : undefined,
       status: 'ACTIVE',
     };
 

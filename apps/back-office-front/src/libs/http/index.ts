@@ -2,8 +2,6 @@ import axios from 'axios';
 
 import { env } from '@/configs/env';
 
-console.log('env.publicEnv.apiUrl', env.API_URL);
-
 const httpClient = axios.create({
   baseURL: env.API_URL,
   timeout: 5000,

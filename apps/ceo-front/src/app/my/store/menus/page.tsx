@@ -51,7 +51,6 @@ const MenusPage = () => {
   // API 데이터로 카테고리 초기화
   useEffect(() => {
     if (menuCategories) {
-      console.log('API에서 받은 카테고리:', menuCategories);
       // sortOrder로 정렬
       const sortedCategories = [...menuCategories].sort((a, b) => a.sortOrder - b.sortOrder);
       const mappedCategories: Category[] = sortedCategories.map((cat) => ({
@@ -59,14 +58,12 @@ const MenusPage = () => {
         name: cat.name,
         items: [], // TODO: 메뉴 아이템 API 연동 후 실제 데이터로 변경
       }));
-      console.log('정렬된 카테고리:', mappedCategories);
       setCategories(mappedCategories);
     }
   }, [menuCategories]);
 
   const handleCategoriesChange = (newCategories: Category[]) => {
     setCategories(newCategories);
-    console.log('카테고리 변경:', newCategories);
 
     // 드래그 앤 드롭으로 순서 변경시 바로 API 호출
     const categoryIds = newCategories.map((cat) => parseInt(cat.id));
@@ -74,11 +71,9 @@ const MenusPage = () => {
       { menuCategoryIds: categoryIds },
       {
         onSuccess: () => {
-          console.log('카테고리 순서 저장 완료');
+          // console.log('카테고리 순서 저장 완료');
         },
-        onError: (error) => {
-          console.error('카테고리 순서 저장 실패:', error);
-          // 실패시 이전 상태로 복구
+        onError: () => {
           setCategories(categories);
         },
       },
