@@ -18,7 +18,7 @@ const buttonVariants = tv({
       reward: '',
     },
     variant: {
-      primary: 'bg-primary-pink text-white active:bg-pink-putton-press',
+      primary: 'bg-primary-pink text-white active:bg-pink-button-press',
       tertiary: 'border border-gray-3 text-gray-5 bg-white active:bg-gray-1 active:text-black ',
       gray: 'bg-gray-1 text-gray-4 active:bg-[#D4D8DC]',
       outlined: 'border border-gray-3 text-black bg-white active:bg-gray-1',
@@ -47,7 +47,7 @@ const buttonVariants = tv({
       size: 'medium',
       variant: 'primary',
       action: 'press',
-      className: 'bg-pink-putton-press',
+      className: 'bg-pink-button-press',
     },
     {
       area: 'app',
@@ -65,7 +65,7 @@ const buttonVariants = tv({
       area: 'reward',
       size: 'small',
       action: 'press',
-      className: 'bg-pink-putton-press',
+      className: 'bg-pink-button-press',
     },
     {
       area: 'reward',
@@ -119,7 +119,7 @@ const buttonVariants = tv({
     {
       size: 'mini',
       action: 'press',
-      className: 'bg-pink-putton-press',
+      className: 'bg-pink-button-press',
     },
     {
       variant: 'menu',

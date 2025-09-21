@@ -116,7 +116,8 @@ const StoreSelector = () => {
 
   return (
     <SelectBox
-      className='h-[40px] text-[14px] py-[10px] px-[12px] w-auto'
+      className='w-fit'
+      size='small'
       value={currentStoreValue}
       options={storeSelectOptions}
       onValueChange={onStoreValueChange}

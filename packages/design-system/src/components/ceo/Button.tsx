@@ -15,8 +15,8 @@ const buttonVariants = tv({
       primary: 'bg-fooding-purple text-white hover:bg-fooding-purple-press',
       outlined: 'border border-gray-2 bg-white hover:bg-gray-7',
       primaryOutlined:
-        'border border-fooding-purple bg-white text-fooding-purple hover:bg-fooding-purple/5',
-      primaryPink: 'bg-primary-pink text-white hover:bg-pink-putton-press',
+        'border border-fooding-purple bg-white text-fooding-purple hover:bg-fooding-purple/10',
+      primaryPink: 'bg-primary-pink text-white hover:bg-pink-button-press',
       ghost: 'hover:bg-gray-7',
     },
     size: {
