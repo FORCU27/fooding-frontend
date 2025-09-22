@@ -15,6 +15,7 @@ import {
 } from '@repo/design-system/components/ceo';
 import { useQueries } from '@tanstack/react-query';
 
+import AddMenuDialog from './AddMenuDialog';
 import { useCreateMenuCategory } from '@/hooks/menu-category/useCreateMenuCategory';
 import { useDeleteMenuCategory } from '@/hooks/menu-category/useDeleteMenuCategory';
 import { useGetMenuCategories } from '@/hooks/menu-category/useGetMenuCategories';
@@ -49,28 +50,35 @@ const MenusPage = () => {
 
   // 모든 카테고리의 메뉴를 미리 불러오기 (캐시 활용)
   const menuQueries = useQueries({
-    queries: menuCategories?.map((category) => ({
-      queryKey: [queryKeys.ceo.menu.list, {
-        storeId: selectedStoreId,
-        categoryId: category.id,
-        pageNum: 1,
-        pageSize: 100
-      }],
-      queryFn: () => menuApi.getMenuList({
-        storeId: selectedStoreId || 0,
-        categoryId: category.id,
-        pageNum: 1,
-        pageSize: 100
-      }),
-      enabled: !!selectedStoreId && !!menuCategories,
-      staleTime: 5 * 60 * 1000,
-      gcTime: 10 * 60 * 1000,
-    })) || [],
+    queries:
+      menuCategories?.map((category) => ({
+        queryKey: [
+          queryKeys.ceo.menu.list,
+          {
+            storeId: selectedStoreId,
+            categoryId: category.id,
+            pageNum: 1,
+            pageSize: 100,
+          },
+        ],
+        queryFn: () =>
+          menuApi.getMenuList({
+            storeId: selectedStoreId || 0,
+            categoryId: category.id,
+            pageNum: 1,
+            pageSize: 100,
+          }),
+        enabled: !!selectedStoreId && !!menuCategories,
+        staleTime: 5 * 60 * 1000,
+        gcTime: 10 * 60 * 1000,
+      })) || [],
   });
 
   // 현재 선택된 카테고리의 메뉴 데이터
-  const selectedCategoryIndex = menuCategories?.findIndex(cat => cat.id === selectedCategoryId) ?? -1;
-  const menuData = selectedCategoryIndex >= 0 ? menuQueries[selectedCategoryIndex]?.data : undefined;
+  const selectedCategoryIndex =
+    menuCategories?.findIndex((cat) => cat.id === selectedCategoryId) ?? -1;
+  const menuData =
+    selectedCategoryIndex >= 0 ? menuQueries[selectedCategoryIndex]?.data : undefined;
 
   // sortOrder가 가장 낮은 카테고리를 기본 선택
   useEffect(() => {
@@ -91,6 +99,7 @@ const MenusPage = () => {
 
   const [categories, setCategories] = useState<Category[]>([]);
   const [editingCategory, setEditingCategory] = useState<{ id: string; name: string } | null>(null);
+  const [showAddMenuDialog, setShowAddMenuDialog] = useState(false);
 
   // 모든 카테고리의 메뉴 데이터를 캐시 (렌더링과 무관하게 유지)
   const menuCacheRef = useRef<Record<number, MenuItem[]>>({});
@@ -267,7 +276,7 @@ const MenusPage = () => {
             onAdd={handleAddCategory}
             trigger={<MenuButton>카테고리 등록</MenuButton>}
           />
-          <MenuButton>메뉴 추가</MenuButton>
+          <MenuButton onClick={() => setShowAddMenuDialog(true)}>메뉴 추가</MenuButton>
         </div>
         <MenuBoard
           categories={categories}
@@ -296,6 +305,15 @@ const MenusPage = () => {
           저장
         </Button>
       </div>
+
+      {/* 메뉴 추가 다이얼로그 */}
+      {showAddMenuDialog && selectedCategoryId && (
+        <AddMenuDialog
+          open={showAddMenuDialog}
+          onOpenChange={setShowAddMenuDialog}
+          categoryId={selectedCategoryId}
+        />
+      )}
     </CardForm>
   );
 };
