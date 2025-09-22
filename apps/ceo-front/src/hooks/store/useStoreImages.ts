@@ -7,14 +7,14 @@ import {
 import { CreateStoreImageParams } from '@repo/api/ceo';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 
-export const useStoreImages = (storeId: number, tag?: ImageTag | null) => {
+export const useStoreImages = (storeId: number, page: number, tag?: ImageTag | null) => {
   return useQuery({
     // TODO queryKey 수정
     queryKey: ['storeImages', storeId, tag],
     queryFn: () => {
       if (!storeId) throw new Error('no storeId');
       return storeImageApi.getImages(storeId, {
-        pageNum: 1,
+        pageNum: page,
         pageSize: 20,
         searchString: '',
         tag: tag ?? null,

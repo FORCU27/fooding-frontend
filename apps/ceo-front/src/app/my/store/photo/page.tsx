@@ -12,6 +12,7 @@ import {
   SortToggle,
   ToggleGroup,
   ToggleGroupItem,
+  Pagination,
 } from '@repo/design-system/components/ceo';
 import { ImageIcon } from '@repo/design-system/icons';
 import { useQuery } from '@tanstack/react-query';
@@ -34,6 +35,7 @@ const PhotoPage = () => {
     photoId: number;
   }>(null);
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
+  const [page, setPage] = useState(1);
 
   const { data: selectedStore } = useQuery({
     queryKey: [queryKeys.ceo.store.selectedStore],
@@ -48,6 +50,7 @@ const PhotoPage = () => {
 
   const { data: images, isFetching } = useStoreImages(
     storeId,
+    page,
     selectedChip === 'ALL' ? null : selectedChip,
   );
   const uploadFile = useUploadFile();
@@ -176,26 +179,34 @@ const PhotoPage = () => {
               </div>
             </div>
           ) : (
-            <div className='columns-2 md:columns-4 gap-[20px] pb-[200px]'>
-              {images?.data.list.map((photo) => (
-                <div key={photo.id} className='mb-[20px] break-inside-avoid'>
-                  <PhotoCard
-                    src={photo.imageUrl}
-                    alt='photo image'
-                    flags={{ isRepresentative: photo.isMain }}
-                    actions={{
-                      onDelete: () => setModalType({ type: 'delete', photoId: photo.id }),
-                      onEditTag: () => handleEditTag(photo.id),
-                      onSetRepresentative: () =>
-                        registerMainImage.mutate({
-                          storeId,
-                          photoId: photo.id,
-                          body: { isMain: true },
-                        }),
-                    }}
-                  />
-                </div>
-              ))}
+            <div className='flex flex-col'>
+              <div className='columns-2 md:columns-4 gap-[20px] pb-[200px]'>
+                {images?.data.list.map((photo) => (
+                  <div key={photo.id} className='mb-[20px] break-inside-avoid'>
+                    <PhotoCard
+                      src={photo.imageUrl}
+                      alt='photo image'
+                      flags={{ isRepresentative: photo.isMain }}
+                      actions={{
+                        onDelete: () => setModalType({ type: 'delete', photoId: photo.id }),
+                        onEditTag: () => handleEditTag(photo.id),
+                        onSetRepresentative: () =>
+                          registerMainImage.mutate({
+                            storeId,
+                            photoId: photo.id,
+                            body: { isMain: true },
+                          }),
+                      }}
+                    />
+                  </div>
+                ))}
+              </div>
+              <Pagination
+                page={page}
+                total={images?.data.pageInfo.totalPages as number}
+                onChange={setPage}
+                className='justify-center'
+              />
             </div>
           )}
         </div>
