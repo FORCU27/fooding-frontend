@@ -4,6 +4,7 @@ import { useState, useRef } from 'react';
 
 import { menuApi } from '@repo/api/ceo';
 import { queryKeys } from '@repo/api/configs/query-keys';
+import { fileApi } from '@repo/api/file';
 import { Dialog, Button, Input, TextArea, Checkbox } from '@repo/design-system/components/ceo';
 import { ImageIcon, X } from '@repo/design-system/icons';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
@@ -31,36 +32,76 @@ const AddMenuDialog = ({ open, onOpenChange, categoryId }: AddMenuDialogProps) =
   });
 
   const [images, setImages] = useState<string[]>([]);
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [imageFiles, setImageFiles] = useState<File[]>([]);
-  // TODO: 이미지 업로드 API 연동 시 imageFiles 사용 예정
+  const [uploadedImageId, setUploadedImageId] = useState<string | null>(null);
+  const [isUploadingImage, setIsUploadingImage] = useState(false);
+
+  // 이미지 업로드 함수
+  const uploadImage = async (file: File) => {
+    const formData = new FormData();
+    formData.append('files', file); // 서버는 'files' 파라미터를 기대함
+
+    try {
+      setIsUploadingImage(true);
+      const response = await fileApi.upload(formData);
+
+      // 응답에서 첫 번째 파일의 id 반환
+      if (response.data && response.data.length > 0) {
+        return response.data[0].id;
+      }
+      return null;
+    } catch (error) {
+      console.error('이미지 업로드 실패:', error);
+      throw error;
+    } finally {
+      setIsUploadingImage(false);
+    }
+  };
 
   // 메뉴 생성 mutation
   const createMenuMutation = useMutation({
     mutationFn: async () => {
       if (!selectedStoreId) throw new Error('스토어가 선택되지 않았습니다.');
 
-      // 먼저 메뉴 생성
-      const response = await menuApi.createMenuItem({
+      let imageId = uploadedImageId;
+
+      // 이미지가 있지만 아직 업로드하지 않은 경우
+      if (imageFiles.length > 0 && !uploadedImageId) {
+        try {
+          imageId = await uploadImage(imageFiles[0]);
+          setUploadedImageId(imageId);
+        } catch (error) {
+          console.error('이미지 업로드 실패:', error);
+          // 이미지 업로드 실패해도 메뉴는 생성 가능
+        }
+      }
+
+      // 메뉴 생성
+      const response = await menuApi.createMenu({
         storeId: selectedStoreId,
         categoryId,
         name: formData.name,
         price: parseInt(formData.price),
+        description: formData.description || undefined, // 메뉴 설명 추가
         sortOrder: 0, // API에서 자동 정렬
         isSignature: formData.isSignature,
         isRecommend: formData.isRecommend,
+        ...(imageId && { imageId }), // imageId가 있을 경우에만 추가
       });
-
-      // TODO: 이미지 업로드 API 연동
-      // if (imageFiles.length > 0) {
-      //   await uploadMenuImages(response.id, imageFiles);
-      // }
 
       return response;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: [queryKeys.ceo.menu.list, categoryId],
+        queryKey: [
+          queryKeys.ceo.menu.list,
+          {
+            storeId: selectedStoreId,
+            categoryId,
+            pageNum: 1,
+            pageSize: 100,
+          },
+        ],
       });
       handleClose();
     },
@@ -70,22 +111,72 @@ const AddMenuDialog = ({ open, onOpenChange, categoryId }: AddMenuDialogProps) =
     },
   });
 
-  const handleImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleImageSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files || []);
 
-    files.forEach((file) => {
+    if (files.length === 0) return;
+
+    // 기존 이미지와 합쳐서 최대 3개까지만 허용
+    const remainingSlots = 3 - images.length;
+    const filesToProcess = files.slice(0, remainingSlots);
+
+    if (filesToProcess.length === 0) {
+      alert('최대 3개까지 이미지를 업로드할 수 있습니다.');
+      return;
+    }
+
+    // 미리보기를 위한 로컬 URL 생성 (여러 파일 처리)
+    const newPreviews: string[] = [];
+    const newFiles: File[] = [];
+
+    for (const file of filesToProcess) {
       const reader = new FileReader();
-      reader.onload = (event) => {
-        setImages((prev) => [...prev, event.target?.result as string]);
-        setImageFiles((prev) => [...prev, file]);
-      };
-      reader.readAsDataURL(file);
-    });
+      const preview = await new Promise<string>((resolve) => {
+        reader.onload = (event) => resolve(event.target?.result as string);
+        reader.readAsDataURL(file);
+      });
+      newPreviews.push(preview);
+      newFiles.push(file);
+    }
+
+    setImages((prev) => [...prev, ...newPreviews]);
+    setImageFiles((prev) => [...prev, ...newFiles]);
+
+    // 첫 번째 이미지만 대표 이미지로 업로드 (아직 업로드하지 않은 경우)
+    if (!uploadedImageId && newFiles.length > 0) {
+      try {
+        const imageId = await uploadImage(newFiles[0]);
+        if (imageId) {
+          setUploadedImageId(imageId);
+        }
+      } catch (error) {
+        console.error('이미지 업로드 실패:', error);
+        alert('이미지 업로드에 실패했습니다.');
+      }
+    }
   };
 
-  const handleRemoveImage = (index: number) => {
+  const handleRemoveImage = async (index: number) => {
     setImages((prev) => prev.filter((_, i) => i !== index));
-    setImageFiles((prev) => prev.filter((_, i) => i !== index));
+    const updatedFiles = imageFiles.filter((_, i) => i !== index);
+    setImageFiles(updatedFiles);
+
+    // 첫 번째 이미지(대표 이미지)를 삭제한 경우
+    if (index === 0) {
+      setUploadedImageId(null);
+
+      // 남은 이미지가 있으면 그 중 첫 번째를 새로운 대표 이미지로 업로드
+      if (updatedFiles.length > 0) {
+        try {
+          const imageId = await uploadImage(updatedFiles[0]);
+          if (imageId) {
+            setUploadedImageId(imageId);
+          }
+        } catch (error) {
+          console.error('대체 이미지 업로드 실패:', error);
+        }
+      }
+    }
   };
 
   const handleSubmit = () => {
@@ -126,6 +217,7 @@ const AddMenuDialog = ({ open, onOpenChange, categoryId }: AddMenuDialogProps) =
     });
     setImages([]);
     setImageFiles([]);
+    setUploadedImageId(null);
     onOpenChange(false);
   };
 
@@ -148,28 +240,28 @@ const AddMenuDialog = ({ open, onOpenChange, categoryId }: AddMenuDialogProps) =
                 <div className='flex gap-4'>
                   <label className='flex items-center gap-2 cursor-pointer'>
                     <Checkbox
+                      labelText='대표'
                       checked={formData.isSignature}
-                      onChange={(checked) =>
-                        setFormData((prev) => ({ ...prev, isSignature: checked }))
+                      onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                        setFormData((prev) => ({ ...prev, isSignature: e.target.checked }))
                       }
                     />
-                    <span className='text-sm'>대표</span>
                   </label>
                   <label className='flex items-center gap-2 cursor-pointer'>
                     <Checkbox
+                      labelText='추천'
                       checked={formData.isRecommend}
-                      onChange={(checked) =>
-                        setFormData((prev) => ({ ...prev, isRecommend: checked }))
+                      onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                        setFormData((prev) => ({ ...prev, isRecommend: e.target.checked }))
                       }
                     />
-                    <span className='text-sm'>추천</span>
                   </label>
                   <label className='flex items-center gap-2 cursor-pointer'>
                     <Checkbox
+                      labelText='신규'
                       checked={formData.isNew}
-                      onChange={(checked) => setFormData((prev) => ({ ...prev, isNew: checked }))}
+                      onChange={(e: React.ChangeEvent<HTMLInputElement>) => setFormData((prev) => ({ ...prev, isNew: e.target.checked }))}
                     />
-                    <span className='text-sm'>신규</span>
                   </label>
                 </div>
               </div>
@@ -192,14 +284,14 @@ const AddMenuDialog = ({ open, onOpenChange, categoryId }: AddMenuDialogProps) =
               </div>
               <div className='flex items-center gap-2'>
                 <Checkbox
+                  labelText='변동가격'
                   checked={formData.price === '0'}
-                  onChange={(checked) => {
-                    if (checked) {
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                    if (e.target.checked) {
                       setFormData((prev) => ({ ...prev, price: '0' }));
                     }
                   }}
                 />
-                <span className='text-sm'>변동가격</span>
               </div>
             </label>
 
@@ -237,13 +329,19 @@ const AddMenuDialog = ({ open, onOpenChange, categoryId }: AddMenuDialogProps) =
                 </div>
               ))}
 
-              {images.length < 3 && (
+              {images.length < 3 && ( // 최대 3개까지 허용
                 <button
                   onClick={() => fileInputRef.current?.click()}
                   className='w-24 h-24 border-1 border border-gray-300 rounded-lg flex flex-col items-center justify-center hover:border-gray-400 transition-colors'
                 >
                   <ImageIcon className='w-8 h-8 text-gray-400' />
-                  <span className='text-xs text-gray-500 mt-1'>{images.length} / 3</span>
+                  <span className='text-xs text-gray-500 mt-1'>
+                    이미지 추가
+                    {isUploadingImage && ' (업로드 중...)'}
+                  </span>
+                  <span className='text-xs text-gray-400'>
+                    ({images.length}/3)
+                  </span>
                 </button>
               )}
             </div>
@@ -279,7 +377,7 @@ const AddMenuDialog = ({ open, onOpenChange, categoryId }: AddMenuDialogProps) =
           <Button
             variant='primary'
             onClick={handleSubmit}
-            disabled={createMenuMutation.isPending}
+            disabled={createMenuMutation.isPending || isUploadingImage}
             className='flex-1'
           >
             {createMenuMutation.isPending ? '추가 중...' : '저장'}
