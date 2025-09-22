@@ -6,19 +6,32 @@ import { Input } from './Input';
 import { LinkIcon, TrashIcon } from '../../icons';
 
 type UrlLinkListProps = {
+  value?: string[];
+  onChange?: (urls: string[]) => void;
   initialUrls?: string[];
   maxLinks?: number;
 };
 
-const UrlLinkList = ({ initialUrls = [], maxLinks = 5 }: UrlLinkListProps) => {
-  const [urls, setUrls] = useState<string[]>(initialUrls);
+const UrlLinkList = ({ value, onChange, initialUrls = [], maxLinks = 5 }: UrlLinkListProps) => {
+  // Use controlled value if provided, otherwise use internal state
+  const [internalUrls, setInternalUrls] = useState<string[]>(initialUrls);
+  const urls = value !== undefined ? value : internalUrls;
+  
   const [inputValue, setInputValue] = useState('');
+
+  const updateUrls = (newUrls: string[]) => {
+    if (onChange) {
+      onChange(newUrls);
+    } else {
+      setInternalUrls(newUrls);
+    }
+  };
 
   const handleAddUrl = () => {
     if (inputValue && urls.length < maxLinks) {
       try {
         new URL(inputValue); // Validate URL format
-        setUrls([...urls, inputValue]);
+        updateUrls([...urls, inputValue]);
         setInputValue('');
       } catch {
         alert('올바른 URL 형식이 아닙니다.');
@@ -27,7 +40,7 @@ const UrlLinkList = ({ initialUrls = [], maxLinks = 5 }: UrlLinkListProps) => {
   };
 
   const handleRemoveUrl = (indexToRemove: number) => {
-    setUrls(urls.filter((_, index) => index !== indexToRemove));
+    updateUrls(urls.filter((_, index) => index !== indexToRemove));
   };
 
   return (

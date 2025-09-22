@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 import {
   DndContext,
@@ -50,9 +50,12 @@ type MenuBoardProps = {
   categories: Category[];
   onCategoriesChange: (categories: Category[]) => void;
   onSave?: (categories: Category[]) => void;
+  onEditCategory?: (categoryId: string, name: string) => void;
+  onCategorySelect?: (categoryId: string) => void;
+  selectedCategoryId?: string | null;
 };
 
-const SortableCategory = ({ category, index }: { category: Category; index: number }) => {
+const SortableCategory = ({ category, index, onDoubleClick }: { category: Category; index: number; onDoubleClick?: () => void }) => {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
     id: category.id,
   });
@@ -81,6 +84,7 @@ const SortableCategory = ({ category, index }: { category: Category; index: numb
           'subtitle-2 cursor-pointer',
           index === 0 ? 'text-fooding-purple' : 'hover:fooding-purple',
         )}
+        onDoubleClick={onDoubleClick}
       >
         {category.name}
       </span>
@@ -134,10 +138,7 @@ const SortableMenuItems = ({
       <SortableContext items={items.map((item) => item.id)} strategy={verticalListSortingStrategy}>
         <div className='space-y-2 mb-4'>
           {items.map((item) => (
-            <SortableMenuItem
-              key={item.id}
-              item={item}
-            />
+            <SortableMenuItem key={item.id} item={item} />
           ))}
         </div>
       </SortableContext>
@@ -217,12 +218,46 @@ const SortableMenuItem = ({ item }: { item: MenuItem }) => {
 export const MenuBoard = ({
   categories: initialCategories,
   onCategoriesChange,
+  onEditCategory,
+  onCategorySelect,
+  selectedCategoryId: externalSelectedCategoryId,
 }: MenuBoardProps) => {
   const [categories, setCategories] = useState<Category[]>(initialCategories);
   const [activeId, setActiveId] = useState<string | null>(null);
-  const [selectedCategoryId, setSelectedCategoryId] = useState<string | null>(
-    initialCategories[0]?.id || null,
+
+  // 초기값 설정 시 첫 번째 카테고리 ID 사용 (정렬 후)
+  const getFirstCategoryId = () => {
+    if (externalSelectedCategoryId) return externalSelectedCategoryId;
+    if (initialCategories.length > 0) {
+      // categories가 이미 정렬된 상태로 들어온다고 가정
+      return initialCategories[0]?.id || null;
+    }
+    return null;
+  };
+
+  const [internalSelectedCategoryId, setInternalSelectedCategoryId] = useState<string | null>(
+    getFirstCategoryId(),
   );
+
+  // 외부에서 관리하는 selectedCategoryId가 있으면 사용, 없으면 내부 state 사용
+  const selectedCategoryId = externalSelectedCategoryId ?? internalSelectedCategoryId;
+
+  // prop 변경 시 내부 state 업데이트
+  useEffect(() => {
+    setCategories(initialCategories);
+  }, [initialCategories]);
+
+  // 초기 선택 카테고리 설정 (한 번만 실행)
+  useEffect(() => {
+    if (initialCategories.length > 0 && !selectedCategoryId && initialCategories[0]) {
+      if (onCategorySelect) {
+        onCategorySelect(initialCategories[0].id);
+      } else {
+        setInternalSelectedCategoryId(initialCategories[0].id);
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const sensors = useSensors(
     useSensor(PointerSensor),
@@ -347,12 +382,19 @@ export const MenuBoard = ({
                 {categories.map((category, index) => (
                   <div
                     key={category.id}
-                    onClick={() => setSelectedCategoryId(category.id)}
+                    onClick={() => {
+                      if (onCategorySelect) {
+                        onCategorySelect(category.id);
+                      } else {
+                        setInternalSelectedCategoryId(category.id);
+                      }
+                    }}
                     className='relative'
                   >
                     <SortableCategory
                       category={category}
                       index={selectedCategoryId === category.id ? 0 : index + 1}
+                      onDoubleClick={() => onEditCategory?.(category.id, category.name)}
                     />
                   </div>
                 ))}
@@ -376,7 +418,6 @@ export const MenuBoard = ({
               items={selectedCategory.items}
               onItemsReorder={handleItemsReorder}
             />
-            {/* <AddMenuItemDialog onAdd={(item) => handleAddMenuItem(selectedCategory.id, item)} /> */}
           </div>
         )}
       </div>

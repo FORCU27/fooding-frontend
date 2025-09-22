@@ -27,7 +27,6 @@ export const rewardApi = {
 
   postRewardGet: async (body: PostRewardGetRequest) => {
     const response = await api.post(`${ENDPOINT}/get`, body);
-    console.log(response);
     return PostRewardGetResponse.parse(response);
   },
 };

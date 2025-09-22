@@ -44,17 +44,6 @@ export default function LocationEditDialog({
           setIsInitialLoad(false); // 초기 로드 완료 표시
         }
       },
-      // onMapClick: (mouseEvent) => {
-      //   const latlng = mouseEvent.latLng;
-      //   setClickedLatlng({ lat: latlng.getLat(), lng: latlng.getLng() });
-      //   console.log(`[LocationEditDialog] Map clicked at: ${latlng.getLat()}, ${latlng.getLng()}`);
-      //   if (map) {
-      //     new window.kakao.maps.Marker({
-      //       position: latlng,
-      //       map: map,
-      //     });
-      //   }
-      // },
     },
   );
 
