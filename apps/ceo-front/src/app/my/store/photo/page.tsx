@@ -28,7 +28,6 @@ import { useUploadFile } from '@/hooks/useUploadFile';
 
 const PhotoPage = () => {
   const fileInputRef = useRef<HTMLInputElement>(null);
-
   const [selectedChip, setSelectedChip] = useState<'ALL' | ImageTag>('ALL');
   const [modalType, setModalType] = useState<null | {
     type: 'editTag' | 'delete';
@@ -113,7 +112,6 @@ const PhotoPage = () => {
   const handleEditTag = (photoId: number) => {
     setModalType({ type: 'editTag', photoId });
   };
-  console.log('modalType', modalType);
 
   return (
     <>

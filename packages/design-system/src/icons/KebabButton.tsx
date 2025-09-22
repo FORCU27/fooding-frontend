@@ -1,4 +1,4 @@
-const KebabButton = ({ onClick }: { onClick: () => void }) => {
+const KebabButton = ({ onClick }: { onClick?: () => void }) => {
   return (
     <button
       onClick={onClick}
