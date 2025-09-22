@@ -32,7 +32,7 @@ export default function StoreSelectPage() {
               'tablet:shadow-lg tablet:rounded-[30px] tablet:max-w-[571px] tablet:my-5',
             )}
           >
-            <Suspense>
+            <Suspense clientOnly>
               <StoreSetupCard />
             </Suspense>
           </div>
