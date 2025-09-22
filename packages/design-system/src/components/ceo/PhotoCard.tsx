@@ -101,9 +101,9 @@ export function PhotoCard({
   const onEditTag = actions?.onEditTag;
 
   return (
-    <div className='relative h-fit break-inside-avoid rounded-2xl overflow-hidden bg-white group'>
+    <div className='relative h-fit break-inside-avoid bg-white group'>
       {/* 이미지 */}
-      <div className='relative w-full'>
+      <div className='relative w-full overflow-hidden rounded-2xl'>
         <ImageComponent src={src} alt={alt} className='w-full h-auto object-cover align-middle' />
       </div>
 
