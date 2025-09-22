@@ -14,9 +14,9 @@ import {
   Switch,
   type SortOrder,
 } from '@repo/design-system/components/ceo';
-import { EllipsisVerticalIcon } from 'lucide-react';
+import { EllipsisVerticalIcon } from '@repo/design-system/icons';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { ColumnDef, PaginationState, SortingState } from '@tanstack/react-table';
+import type { ColumnDef, PaginationState, SortingState } from '@tanstack/react-table';
 
 import { useSelectedStoreId } from '@/hooks/useSelectedStoreId';
 
@@ -53,7 +53,7 @@ const CouponListPage = () => {
         storeId: selectedStoreId || 0,
         pageNum: pagination.pageIndex + 1,
         pageSize: pagination.pageSize,
-        status: 'ACTIVE',
+        // status 필터를 제거하여 모든 쿠폰을 보여줌
       }),
     enabled: !!selectedStoreId && isInitialized,
   });
@@ -67,25 +67,17 @@ const CouponListPage = () => {
       couponId: number;
       status: 'ACTIVE' | 'INACTIVE';
     }) => {
-      // TODO: API 엔드포인트가 있으면 여기에 추가
-      // return couponApiV2.updateCouponStatus(couponId, status);
-      console.log('Updating coupon status:', { couponId, status });
-      return Promise.resolve({ couponId, status });
+      return couponApiV2.updateCouponStatus(couponId, status);
     },
     onSuccess: () => {
       // 쿠폰 리스트 다시 불러오기
       queryClient.invalidateQueries({ queryKey: [queryKeys.ceo.coupon.list] });
     },
+    onError: (error) => {
+      console.error('쿠폰 상태 업데이트 실패:', error);
+      // TODO: 에러 토스트 메시지 표시
+    },
   });
-
-  const formatDate = (date: string) => {
-    return new Date(date).toLocaleDateString('ko-KR');
-  };
-
-  const formatDiscountValue = (type: string, value: number | null) => {
-    if (!value) return '-';
-    return type === 'PERCENT' ? `${value}%` : `${value.toLocaleString()}원`;
-  };
 
   const columns: ColumnDef<Coupon>[] = [
     {
@@ -93,7 +85,21 @@ const CouponListPage = () => {
       accessorKey: 'name',
       size: 300, // 쿠폰 이름은 넓게
       minSize: 200,
-      cell: ({ row }) => <span className='font-medium text-gray-900'>{row.original.name}</span>,
+      cell: ({ row }) => (
+        <div className='flex flex-col items-start gap-1'>
+          {row.original.status === 'INACTIVE' && (
+            <span className='px-2 py-0.5 text-xs font-medium text-white bg-blue-500 rounded'>
+              발급 일시중단
+            </span>
+          )}
+          <span
+            className='font-medium text-gray-900 cursor-pointer hover:text-primary-pink transition-colors'
+            onClick={() => router.push(`/my/reward/coupon/${row.original.id}`)}
+          >
+            {row.original.name}
+          </span>
+        </div>
+      ),
     },
     {
       header: '발급여부',
@@ -162,7 +168,7 @@ const CouponListPage = () => {
             </DropdownMenu.Trigger>
             <DropdownMenu.Content side='left'>
               <DropdownMenu.Item
-                onClick={() => router.push(`/my/reward/coupon/${row.original.id}`)}
+                onClick={() => router.push(`/my/reward/coupon/edit/${row.original.id}`)}
               >
                 수정
               </DropdownMenu.Item>

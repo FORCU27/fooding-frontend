@@ -2,142 +2,23 @@
 
 import { useParams, useRouter } from 'next/navigation';
 
-import { couponApiV2, UpdateCouponBody } from '@repo/api/ceo';
+import { couponApiV2 } from '@repo/api/ceo';
 import { queryKeys } from '@repo/api/configs/query-keys';
-import type { SelectedRangeItem } from '@repo/design-system/components/ceo';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { Button, Card, Coupon } from '@repo/design-system/components/ceo';
+import { useQuery } from '@tanstack/react-query';
 
-import { CouponForm, type CouponFormData } from '@/components/coupon/CouponForm';
-import { useSelectedStoreId } from '@/hooks/useSelectedStoreId';
-
-const CouponEditPage = () => {
-  const params = useParams();
+const CouponDetailPage = () => {
   const router = useRouter();
-  const couponId = params.id as string;
+  const params = useParams();
+  const couponId = Number(params.id);
 
-  const queryClient = useQueryClient();
-  const { selectedStoreId, isInitialized } = useSelectedStoreId();
-
-  // 쿠폰 데이터 조회
-  const { data: couponData, isLoading: isLoadingCoupon } = useQuery({
+  const { data: coupon, isLoading } = useQuery({
     queryKey: [queryKeys.ceo.coupon.detail, couponId],
-    queryFn: () => couponApiV2.getCoupon(Number(couponId)),
+    queryFn: () => couponApiV2.getCoupon(couponId),
     enabled: !!couponId,
   });
 
-  // 초기 데이터를 직접 계산
-  const initialFormData = couponData
-    ? {
-        couponName: couponData.name,
-        benefitType: couponData.benefitType === 'DISCOUNT' ? 'discount' : 'gift',
-        discountType: couponData.discountType === 'PERCENT' ? 'percentage' : 'fixed',
-        discountPercentage:
-          couponData.discountType === 'PERCENT' ? String(couponData.discountValue || '') : '',
-        discountAmount:
-          couponData.discountType === 'FIXED' ? String(couponData.discountValue || '') : '',
-        giftItem: couponData.giftItem || '',
-        giftType: couponData.minOrderAmount ? 'threshold' : 'free',
-        minOrderAmount: String(couponData.minOrderAmount || ''),
-        couponUsageType: couponData.provideType === 'REGULAR_CUSTOMER' ? 'regular' : 'all',
-        issueType: couponData.totalQuantity ? 'limited' : 'unlimited',
-        issueCount: couponData.totalQuantity ? String(couponData.totalQuantity) : '',
-        startDate: couponData.issueStartOn,
-        endDate: couponData.issueEndOn,
-        usageConditions: couponData.conditions || '',
-      }
-    : undefined;
-
-  const initialDateRange = couponData
-    ? {
-        startDate: new Date(couponData.issueStartOn),
-        endDate: new Date(couponData.issueEndOn),
-      }
-    : null;
-
-  // 쿠폰 수정 mutation
-  const updateCoupon = useMutation({
-    mutationFn: (body: UpdateCouponBody) => couponApiV2.updateCoupon(Number(couponId), body),
-    mutationKey: [queryKeys.ceo.coupon.update],
-    onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: [queryKeys.ceo.coupon.list],
-      });
-      queryClient.invalidateQueries({
-        queryKey: [queryKeys.ceo.coupon.detail, couponId],
-      });
-      alert('쿠폰이 수정되었습니다.');
-      router.push('/reward/coupon');
-    },
-    onError: (error: unknown) => {
-      console.error('쿠폰 수정 실패:', error);
-      let message = '쿠폰 수정에 실패했습니다.';
-      if (error && typeof error === 'object' && 'response' in error) {
-        const err = error as { response?: { data?: { message?: string } } };
-        message = err.response?.data?.message || message;
-      }
-      alert(message);
-    },
-  });
-
-  const handleSubmit = async (
-    formData: CouponFormData,
-    selectedDateRange: SelectedRangeItem | null,
-  ) => {
-    if (!selectedDateRange) {
-      alert('사용 기간을 선택해주세요.');
-      return;
-    }
-
-    if (!couponData) {
-      alert('쿠폰 데이터를 불러올 수 없습니다.');
-      return;
-    }
-
-    const apiData: UpdateCouponBody = {
-      storeId: selectedStoreId || 0,
-      benefitType: formData.benefitType === 'discount' ? 'DISCOUNT' : 'GIFT',
-      type: couponData.type === 'FIRST_COME_FIRST_SERVED' ? 'FIRST_COME_FIRST_SERVED' : 'GENERAL',
-      discountType:
-        formData.benefitType === 'discount'
-          ? formData.discountType === 'percentage'
-            ? 'PERCENT'
-            : 'FIXED'
-          : 'FIXED', // 필수값이므로 기본값 설정
-      provideType: formData.couponUsageType === 'regular' ? 'REGULAR_CUSTOMER' : 'ALL',
-      name: formData.couponName,
-      conditions: formData.usageConditions || '',
-      totalQuantity:
-        formData.issueType === 'limited' && formData.issueCount
-          ? parseInt(formData.issueCount)
-          : undefined,
-      discountValue:
-        formData.benefitType === 'discount'
-          ? formData.discountType === 'percentage'
-            ? parseInt(formData.discountPercentage || '0')
-            : parseInt(formData.discountAmount || '0')
-          : undefined,
-      giftItem: formData.benefitType === 'gift' ? formData.giftItem : undefined,
-      minOrderAmount: formData.minOrderAmount ? parseInt(formData.minOrderAmount) : undefined,
-      issueStartOn: (selectedDateRange?.startDate
-        ? selectedDateRange.startDate.toISOString().split('T')[0]
-        : couponData.issueStartOn) as string,
-      issueEndOn: selectedDateRange
-        ? selectedDateRange.endDate.toISOString().split('T')[0]
-        : undefined,
-      expiredOn: selectedDateRange
-        ? selectedDateRange.endDate.toISOString().split('T')[0]
-        : undefined,
-      status: 'ACTIVE',
-    };
-
-    try {
-      await updateCoupon.mutateAsync(apiData);
-    } catch (error) {
-      console.error('쿠폰 수정 실패:', error);
-    }
-  };
-
-  if (isLoadingCoupon || !couponData) {
+  if (isLoading) {
     return (
       <div className='flex items-center justify-center py-8'>
         <div className='text-gray-600'>쿠폰 정보를 불러오는 중...</div>
@@ -145,25 +26,185 @@ const CouponEditPage = () => {
     );
   }
 
-  if (!selectedStoreId && isInitialized) {
+  if (!coupon) {
     return (
       <div className='flex items-center justify-center py-8'>
-        <div className='text-gray-600'>스토어를 선택해주세요.</div>
+        <div className='text-gray-600'>쿠폰을 찾을 수 없습니다.</div>
       </div>
     );
   }
 
+  const formatDate = (date: string | null | undefined) => {
+    if (!date) return '-';
+    return new Date(date).toLocaleDateString('ko-KR');
+  };
+
+  const formatDiscountValue = () => {
+    if (coupon.benefitType === 'GIFT') {
+      return coupon.giftItem || '-';
+    }
+    if (!coupon.discountValue) return '-';
+    return coupon.discountType === 'PERCENT'
+      ? `${coupon.discountValue}% 할인`
+      : `${coupon.discountValue.toLocaleString()}원 할인`;
+  };
+
+  const getCouponStatuses = () => {
+    const statuses = [];
+    if (coupon.provideType === 'REGULAR_CUSTOMER') {
+      statuses.push('단골 전용' as const);
+    }
+    if (coupon.status === 'ACTIVE') {
+      statuses.push('발급중' as const);
+    }
+    return statuses;
+  };
+
+  const formatPeriod = () => {
+    const start = coupon.issueStartOn
+      ? new Date(coupon.issueStartOn).toLocaleDateString('ko-KR')
+      : '';
+    const end = coupon.issueEndOn ? new Date(coupon.issueEndOn).toLocaleDateString('ko-KR') : '';
+    return `${start} ~ ${end}`;
+  };
+
   return (
-    <CouponForm
-      title='쿠폰 수정'
-      initialData={initialFormData}
-      initialDateRange={initialDateRange}
-      onSubmit={handleSubmit}
-      onCancel={() => router.push('/reward/coupon')}
-      submitText='수정하기'
-      isSubmitting={updateCoupon.isPending}
-    />
+    <div className='space-y-6'>
+      <div className='flex justify-between items-center mb-6'>
+        <div className='headline-2'>쿠폰 상세</div>
+        <div className='flex gap-2'>
+          <Button onClick={() => router.push(`/my/reward/coupon/edit/${couponId}`)}>수정</Button>
+          <Button variant='primary' onClick={() => router.push('/my/reward/coupon')}>
+            목록으로
+          </Button>
+        </div>
+      </div>
+
+      {/* Coupon 컴포넌트 */}
+      <Coupon
+        title={coupon.name}
+        period={formatPeriod()}
+        statuses={getCouponStatuses()}
+        receivedCount={coupon.issuedQuantity || 0}
+        purchaseCount={0} // API에 없는 필드
+        usedCount={0} // API에 없는 필드
+        canceledCount={
+          coupon.totalQuantity
+            ? Math.max(0, coupon.totalQuantity - (coupon.issuedQuantity || 0))
+            : 0
+        }
+        details={coupon.conditions}
+        isActive={coupon.status === 'ACTIVE'}
+      />
+
+      <Card className='p-6'>
+        <div className='space-y-6'>
+          {/* 기본 정보 */}
+          <div>
+            <h3 className='headline-3 mb-4'>기본 정보</h3>
+            <div className='grid grid-cols-2 gap-4'>
+              <div>
+                <div className='text-gray-600 mb-1'>쿠폰명</div>
+                <div className='font-medium'>{coupon.name}</div>
+              </div>
+              <div>
+                <div className='text-gray-600 mb-1'>상태</div>
+                <div className='flex items-center gap-2'>
+                  <span
+                    className={`font-medium ${
+                      coupon.status === 'ACTIVE'
+                        ? 'text-green-600'
+                        : coupon.status === 'INACTIVE'
+                          ? 'text-gray-600'
+                          : 'text-red-600'
+                    }`}
+                  >
+                    {coupon.status === 'ACTIVE'
+                      ? '발급중'
+                      : coupon.status === 'INACTIVE'
+                        ? '발급중단'
+                        : '만료'}
+                  </span>
+                </div>
+              </div>
+              <div>
+                <div className='text-gray-600 mb-1'>혜택 종류</div>
+                <div className='font-medium'>
+                  {coupon.benefitType === 'DISCOUNT' ? '할인' : '선물'}
+                </div>
+              </div>
+              <div>
+                <div className='text-gray-600 mb-1'>혜택 내용</div>
+                <div className='font-medium'>{formatDiscountValue()}</div>
+              </div>
+            </div>
+          </div>
+
+          {/* 발급 정보 */}
+          <div>
+            <h3 className='headline-3 mb-4'>발급 정보</h3>
+            <div className='grid grid-cols-2 gap-4'>
+              <div>
+                <div className='text-gray-600 mb-1'>발급 방식</div>
+                <div className='font-medium'>{coupon.type === 'GENERAL' ? '일반' : '선착순'}</div>
+              </div>
+              <div>
+                <div className='text-gray-600 mb-1'>발급 대상</div>
+                <div className='font-medium'>
+                  {coupon.provideType === 'ALL' ? '전체 고객' : '단골 고객'}
+                </div>
+              </div>
+              <div>
+                <div className='text-gray-600 mb-1'>총 발급 수량</div>
+                <div className='font-medium'>{coupon.totalQuantity || '무제한'}</div>
+              </div>
+              <div>
+                <div className='text-gray-600 mb-1'>발급된 수량</div>
+                <div className='font-medium'>{coupon.issuedQuantity || 0}</div>
+              </div>
+            </div>
+          </div>
+
+          {/* 기간 정보 */}
+          <div>
+            <h3 className='headline-3 mb-4'>기간 정보</h3>
+            <div className='grid grid-cols-2 gap-4'>
+              <div>
+                <div className='text-gray-600 mb-1'>발급 시작일</div>
+                <div className='font-medium'>{formatDate(coupon.issueStartOn)}</div>
+              </div>
+              <div>
+                <div className='text-gray-600 mb-1'>발급 종료일</div>
+                <div className='font-medium'>{formatDate(coupon.issueEndOn)}</div>
+              </div>
+              <div>
+                <div className='text-gray-600 mb-1'>유효 기간</div>
+                <div className='font-medium'>{formatDate(coupon.expiredOn)}</div>
+              </div>
+              <div>
+                <div className='text-gray-600 mb-1'>최소 주문 금액</div>
+                <div className='font-medium'>
+                  {coupon.minOrderAmount
+                    ? `${coupon.minOrderAmount.toLocaleString()}원`
+                    : '제한 없음'}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* 조건 */}
+          {coupon.conditions && (
+            <div>
+              <h3 className='headline-3 mb-4'>사용 조건</h3>
+              <div className='p-4 bg-gray-50 rounded'>
+                <p className='text-gray-700'>{coupon.conditions}</p>
+              </div>
+            </div>
+          )}
+        </div>
+      </Card>
+    </div>
   );
 };
 
-export default CouponEditPage;
+export default CouponDetailPage;
