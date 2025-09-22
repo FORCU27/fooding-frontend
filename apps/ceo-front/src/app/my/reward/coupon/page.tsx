@@ -91,60 +91,85 @@ const CouponListPage = () => {
     {
       header: '쿠폰 이름',
       accessorKey: 'name',
+      size: 300, // 쿠폰 이름은 넓게
+      minSize: 200,
       cell: ({ row }) => <span className='font-medium text-gray-900'>{row.original.name}</span>,
     },
     {
       header: '발급여부',
       accessorKey: 'status',
+      size: 80, // 최소 너비
+      minSize: 80,
+      maxSize: 100,
       cell: ({ row }) => (
-        <Switch
-          checked={row.original.status === 'ACTIVE'}
-          onChange={(checked) => {
-            updateCouponStatusMutation.mutate({
-              couponId: row.original.id,
-              status: checked ? 'ACTIVE' : 'INACTIVE',
-            });
-          }}
-        />
+        <div className='flex justify-center'>
+          <Switch
+            checked={row.original.status === 'ACTIVE'}
+            onChange={(checked) => {
+              updateCouponStatusMutation.mutate({
+                couponId: row.original.id,
+                status: checked ? 'ACTIVE' : 'INACTIVE',
+              });
+            }}
+          />
+        </div>
       ),
     },
     {
       header: '발급수',
       accessorKey: 'totalQuantity',
-      cell: ({ row }) => row.original.totalQuantity || '무제한',
+      size: 80, // 최소 너비
+      minSize: 80,
+      maxSize: 100,
+      cell: ({ row }) => (
+        <div className='text-center'>{row.original.totalQuantity || '무제한'}</div>
+      ),
     },
     {
       header: '받은쿠폰',
       accessorKey: 'issuedQuantity',
-
-      cell: ({ row }) => row.original.issuedQuantity || 0,
+      size: 80, // 최소 너비
+      minSize: 80,
+      maxSize: 100,
+      cell: ({ row }) => <div className='text-center'>{row.original.issuedQuantity || 0}</div>,
     },
     {
       header: '남은쿠폰',
       id: 'remaining',
+      size: 80, // 최소 너비
+      minSize: 80,
+      maxSize: 100,
       cell: ({ row }) => {
-        if (!row.original.totalQuantity) return '무제한';
-        const remaining = row.original.totalQuantity - row.original.issuedQuantity;
-        return remaining > 0 ? remaining : 0;
+        const content = !row.original.totalQuantity
+          ? '무제한'
+          : Math.max(0, row.original.totalQuantity - row.original.issuedQuantity);
+        return <div className='text-center'>{content}</div>;
       },
     },
     {
       id: 'actions',
-      header: '액션',
+      size: 60, // 액션 버튼 최소 너비
+      minSize: 60,
+      maxSize: 80,
+      header: '',
       cell: ({ row }) => (
-        <DropdownMenu>
-          <DropdownMenu.Trigger asChild>
-            <button className='size-6 flex justify-center items-center cursor-pointer'>
-              <EllipsisVerticalIcon className='size-5' />
-            </button>
-          </DropdownMenu.Trigger>
-          <DropdownMenu.Content side='left'>
-            <DropdownMenu.Item onClick={() => router.push(`/my/reward/coupon/${row.original.id}`)}>
-              수정
-            </DropdownMenu.Item>
-            <DropdownMenu.Item variant='danger'>삭제</DropdownMenu.Item>
-          </DropdownMenu.Content>
-        </DropdownMenu>
+        <div className='flex justify-center'>
+          <DropdownMenu>
+            <DropdownMenu.Trigger asChild>
+              <button className='size-6 flex justify-center items-center cursor-pointer'>
+                <EllipsisVerticalIcon className='size-5' />
+              </button>
+            </DropdownMenu.Trigger>
+            <DropdownMenu.Content side='left'>
+              <DropdownMenu.Item
+                onClick={() => router.push(`/my/reward/coupon/${row.original.id}`)}
+              >
+                수정
+              </DropdownMenu.Item>
+              <DropdownMenu.Item variant='danger'>삭제</DropdownMenu.Item>
+            </DropdownMenu.Content>
+          </DropdownMenu>
+        </div>
       ),
     },
   ];
