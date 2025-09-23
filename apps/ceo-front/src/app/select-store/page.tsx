@@ -21,32 +21,30 @@ import { useGetStoreList } from '@/hooks/store/useGetStoreList';
 
 export default function StoreSelectPage() {
   return (
-    <Suspense>
-      <div className='flex flex-col min-h-screen relative'>
-        <div className='absolute inset-0 -z-10'>
-          <Image
-            src='/images/main-illust.png'
-            alt='메인 배경 일러스트'
-            fill
-            className='object-cover'
-            priority
-          />
-        </div>
-        <main className='flex-1 flex items-center justify-center'>
-          <div
-            className={cn(
-              'bg-white p-[60px] text-center flex flex-col items-center w-full',
-              'max-tablet:min-h-dvh',
-              'tablet:shadow-lg tablet:rounded-[30px] tablet:max-w-[571px] tablet:my-5',
-            )}
-          >
-            <Suspense>
-              <StoreSetupCard />
-            </Suspense>
-          </div>
-        </main>
+    <div className='flex flex-col min-h-screen relative'>
+      <div className='absolute inset-0 -z-10'>
+        <Image
+          src='/images/main-illust.png'
+          alt='메인 배경 일러스트'
+          fill
+          className='object-cover'
+          priority
+        />
       </div>
-    </Suspense>
+      <main className='flex-1 flex items-center justify-center'>
+        <div
+          className={cn(
+            'bg-white p-[60px] text-center flex flex-col items-center w-full',
+            'max-tablet:min-h-dvh',
+            'tablet:shadow-lg tablet:rounded-[30px] tablet:max-w-[571px] tablet:my-5',
+          )}
+        >
+          <Suspense clientOnly>
+            <StoreSetupCard />
+          </Suspense>
+        </div>
+      </main>
+    </div>
   );
 }
 
