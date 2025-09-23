@@ -7,7 +7,7 @@ import { ChevronDownIcon, FoodingIcon, StarIcon } from '@repo/design-system/icon
 import { ActivityComponentType, useFlow } from '@stackflow/react/future';
 import { Suspense } from '@suspensive/react';
 
-import { AutoComplete } from '../search/components/AutoComplete';
+import { AutoComplete } from '../../tabs/search/components/AutoComplete';
 import { IntersectionObserver } from '@/components/IntersectionObserver';
 import { DefaultErrorBoundary } from '@/components/Layout/DefaultErrorBoundary';
 import { Header } from '@/components/Layout/Header';

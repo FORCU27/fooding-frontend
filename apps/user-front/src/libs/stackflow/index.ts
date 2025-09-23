@@ -22,7 +22,6 @@ import { ProfileUserInfoScreen } from '@/screens/profile-user-info/ProfileUserIn
 import { ReviewReportCreateScreen } from '@/screens/reports/ReivewReportCreate';
 import { ReviewCreateScreen, ReviewCreateScreenParams } from '@/screens/reviews/ReviewCreate';
 import { ReviewModifyScreen, ReviewModifyScreenParams } from '@/screens/reviews/ReviewModify';
-import { SearchScreen } from '@/screens/search/Search';
 import { SearchResultScreen, SearchResultScreenParams } from '@/screens/search-result/SearchResult';
 import { NotificationSettingScreen } from '@/screens/settings/Notifications';
 import { SettingScreen } from '@/screens/settings/Settings';
@@ -50,7 +49,6 @@ declare module '@stackflow/config' {
     StorePostDetailScreen: StorePostDetailScreenParams;
     SettingScreen: object;
     NotificationSettingScreen: object;
-    SearchScreen: object;
     SearchResultScreen: SearchResultScreenParams;
     ReviewCreateScreen: ReviewCreateScreenParams;
     ReviewModifyScreen: ReviewModifyScreenParams;
@@ -88,7 +86,6 @@ const config = defineConfig({
     { name: 'StoreDetailScreen' },
     { name: 'SettingScreen' },
     { name: 'NotificationSettingScreen' },
-    { name: 'SearchScreen' },
     { name: 'SearchResultScreen' },
     { name: 'ReviewCreateScreen' },
     { name: 'ReviewModifyScreen' },
@@ -122,7 +119,6 @@ export const { Stack } = stackflow({
     StoreDetailScreen,
     SettingScreen,
     NotificationSettingScreen,
-    SearchScreen,
     SearchResultScreen,
     ReviewCreateScreen,
     ReviewModifyScreen,
@@ -147,5 +143,5 @@ export const { Stack } = stackflow({
 });
 
 export const screenId: Record<string, RegisteredActivityName> = {
-  '1': 'SearchScreen',
+  '1': 'SearchResultScreen',
 };
