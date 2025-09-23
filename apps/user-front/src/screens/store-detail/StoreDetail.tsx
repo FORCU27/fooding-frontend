@@ -211,7 +211,7 @@ const StoreDetail = ({ storeId, showHeader, initialTab = 'home' }: StoreDetailPr
       </Section>
       <div
         className={cn(
-          'fixed bottom-0 left-0 right-0 flex items-center gap-4 px-grid-margin py-grid-margin bg-white rounded-t-[16px]',
+          'z-10 fixed bottom-0 left-0 right-0 flex items-center gap-4 px-grid-margin py-grid-margin bg-white rounded-t-[16px]',
           'shadow-[0_4px_24px_rgba(0,0,0,0.0.1)]',
         )}
       >
