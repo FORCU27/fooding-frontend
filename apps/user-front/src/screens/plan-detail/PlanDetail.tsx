@@ -57,7 +57,7 @@ const PlanDetail = ({ planId }: StoreDetailProps) => {
     <div className='flex flex-col bg-gray-1'>
       <div className='flex flex-col p-5 bg-white/80'>
         <div className='flex border border-gray-2 items-center w-full h-[100px] p-5 rounded-xl gap-4 '>
-          {isNonEmptyArray(storeInfo.images) ? (
+          {storeInfo.images && isNonEmptyArray(storeInfo.images) ? (
             <div className='relative w-[60px] h-[60px] rounded-lg overflow-hidden'>
               <Image
                 fill
