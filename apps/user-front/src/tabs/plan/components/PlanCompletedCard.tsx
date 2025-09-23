@@ -35,7 +35,7 @@ export const PlanCompletedCard = ({ plan, showEditButton }: PlanCompletedCardPro
         <CloseIcon className='text-gray-5' />
       </div>
       <div className='flex'>
-        {isNonEmptyArray(storeInfo.images) ? (
+        {storeInfo.images && isNonEmptyArray(storeInfo.images) ? (
           <div className='relative w-[80px] h-[80px] rounded-2xl overflow-hidden'>
             <Image
               fill
