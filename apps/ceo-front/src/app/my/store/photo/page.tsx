@@ -49,12 +49,12 @@ const PhotoPage = () => {
 
   const storeId = selectedStore?.data?.id;
 
-  const { data: images, isFetching } = useStoreImages(
+  const { data: images, isFetching } = useStoreImages({
     storeId,
     sortType,
     page,
-    selectedChip === 'ALL' ? null : selectedChip,
-  );
+    tag: selectedChip === 'ALL' ? null : selectedChip,
+  });
   const uploadFile = useUploadFile();
   const createImage = useCreateImage();
   const deleteImage = useDeleteImage();

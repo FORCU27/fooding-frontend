@@ -24,6 +24,7 @@ export const queryKeys = {
       storeList: 'ceoStoreList',
       getStore: 'ceoStoreGetStore',
       operatingHour: 'ceoStoreOperatingHour',
+      images: 'ceoStoreImages',
     },
     menuCategory: {
       list: 'ceoMenuCategoryList',

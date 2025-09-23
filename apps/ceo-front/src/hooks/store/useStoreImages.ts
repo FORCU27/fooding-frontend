@@ -6,18 +6,22 @@ import {
   storeImageApi,
 } from '@repo/api/ceo';
 import { CreateStoreImageParams } from '@repo/api/ceo';
+import { queryKeys } from '@repo/api/configs/query-keys';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 
-// TODO 파라미터 매핑 수정
-export const useStoreImages = (
-  storeId: number,
-  sortType: ImagesSortType,
-  page: number,
-  tag?: ImageTag | null,
-) => {
+export const useStoreImages = ({
+  storeId,
+  sortType = 'RECENT',
+  page = 1,
+  tag = null,
+}: {
+  storeId: number;
+  sortType: ImagesSortType;
+  page: number;
+  tag?: ImageTag | null;
+}) => {
   return useQuery({
-    // TODO queryKey 수정
-    queryKey: ['storeImages', storeId, sortType, page, tag],
+    queryKey: [queryKeys.ceo.store.images, storeId, sortType, page, tag],
     queryFn: () => {
       if (!storeId) throw new Error('no storeId');
       return storeImageApi.getImages(storeId, {
@@ -38,7 +42,7 @@ export const useCreateImage = () => {
     mutationFn: ({ storeId, body }: { storeId: number; body: CreateStoreImageParams }) =>
       storeImageApi.createImage(storeId, body),
     onSuccess: (_data, variables) => {
-      qc.invalidateQueries({ queryKey: ['storeImages', variables.storeId] });
+      qc.invalidateQueries({ queryKey: [queryKeys.ceo.store.images, variables.storeId] });
     },
   });
 };
@@ -49,7 +53,7 @@ export const useDeleteImage = () => {
     mutationFn: ({ storeId, photoId }: { storeId: number; photoId: number }) =>
       storeImageApi.deleteImage(storeId, photoId),
     onSuccess: (_data, variables) => {
-      qc.invalidateQueries({ queryKey: ['storeImages', variables.storeId] });
+      qc.invalidateQueries({ queryKey: [queryKeys.ceo.store.images, variables.storeId] });
     },
   });
 };
@@ -67,7 +71,7 @@ export const useEditImage = () => {
       body: PustStoreImageParams;
     }) => storeImageApi.putImage(storeId, photoId, body),
     onSuccess: (_data, variables) => {
-      qc.invalidateQueries({ queryKey: ['storeImages', variables.storeId] });
+      qc.invalidateQueries({ queryKey: [queryKeys.ceo.store.images, variables.storeId] });
     },
   });
 };
@@ -85,7 +89,7 @@ export const useRegisterMainImage = () => {
       body: PutStoreMainImageParams;
     }) => storeImageApi.putMainImage(storeId, photoId, body),
     onSuccess: (_data, variables) => {
-      qc.invalidateQueries({ queryKey: ['storeImages', variables.storeId] });
+      qc.invalidateQueries({ queryKey: [queryKeys.ceo.store.images, variables.storeId] });
     },
   });
 };
