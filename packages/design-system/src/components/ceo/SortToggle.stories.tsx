@@ -17,7 +17,7 @@ type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
   args: {
-    value: 'LATEST' as SortOrder,
+    value: 'RECENT' as SortOrder,
     keepSelectedOpen: false,
     onSortChange: () => {},
   },
@@ -25,16 +25,16 @@ export const Default: Story = {
 
 export const SelectedOpen: Story = {
   args: {
-    value: 'LATEST' as SortOrder,
+    value: 'RECENT' as SortOrder,
     keepSelectedOpen: true,
     onSortChange: () => {},
   },
 };
 
 export const Controlled: Story = {
-  args: { value: 'LATEST' as SortOrder, onSortChange: () => {} },
+  args: { value: 'RECENT' as SortOrder, onSortChange: () => {} },
   render: (args) => {
-    const [sortOrder, setSortOrder] = useState<SortOrder>('LATEST');
+    const [sortOrder, setSortOrder] = useState<SortOrder>('RECENT');
 
     return (
       <div className='flex flex-col'>
@@ -46,9 +46,9 @@ export const Controlled: Story = {
 };
 
 export const ControlledSelectedOpen: Story = {
-  args: { value: 'LATEST' as SortOrder, onSortChange: () => {} },
+  args: { value: 'RECENT' as SortOrder, onSortChange: () => {} },
   render: (args) => {
-    const [sortOrder, setSortOrder] = useState<SortOrder>('LATEST');
+    const [sortOrder, setSortOrder] = useState<SortOrder>('RECENT');
 
     return (
       <div className='flex flex-col'>
