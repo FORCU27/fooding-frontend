@@ -1,8 +1,8 @@
 'use client';
 
-import { Suspense } from 'react';
+import { Suspense, useState } from 'react';
 
-import { STORE_CATEGORIES } from '@repo/api/user';
+import { StoreCategory } from '@repo/api/user';
 import { ErrorFallback } from '@repo/design-system/components/b2c';
 import { ActivityComponentType } from '@stackflow/react/future';
 import { ErrorBoundary, ErrorBoundaryFallbackProps } from '@suspensive/react';
@@ -18,8 +18,8 @@ import { Screen } from '@/components/Layout/Screen';
 import { StoresList } from '@/components/Store/StoresList';
 import { useGetStoreImmediateEntryList } from '@/hooks/store/useGetStoreImmediateEntryList';
 import { useGetStoreList } from '@/hooks/store/useGetStoreList';
-import Header from '@/tabs/home/components/Header';
-import Menubar from '@/tabs/home/components/Menubar';
+import { Header } from '@/tabs/home/components/Header';
+import { Toolbar } from '@/tabs/home/components/Toolbar';
 import { noop } from '@/utils/noop';
 
 export const HomeTab: ActivityComponentType<'HomeTab'> = () => {
@@ -53,11 +53,40 @@ const Content = () => {
 };
 
 const ContentBody = () => {
+  const [selectedRegions, setSelectedRegions] = useState<{ id: string; name: string }[]>([]);
+  const [category, setCategory] = useState<StoreCategory | null>(null);
+
+  return (
+    <div className='flex flex-col w-full'>
+      <Toolbar selectedRegions={selectedRegions} onSelectedRegionsChange={setSelectedRegions} />
+      <div className='bg-white mb-3'>
+        <Banner />
+        <Suspense>
+          <StoreSection
+            selectedRegions={selectedRegions}
+            category={category}
+            onCategoryChange={setCategory}
+          />
+        </Suspense>
+      </div>
+    </div>
+  );
+};
+
+type StoreSectionProps = {
+  selectedRegions: { id: string; name: string }[];
+  category: StoreCategory | null;
+  onCategoryChange: (category: StoreCategory | null) => void;
+};
+
+const StoreSection = ({ selectedRegions, category, onCategoryChange }: StoreSectionProps) => {
   const { data: stores } = useGetStoreList({
     pageNum: 1,
     pageSize: 10,
     sortType: 'RECENT',
     sortDirection: 'DESCENDING',
+    regionIds: selectedRegions.map((region) => region.id),
+    category: category ?? undefined,
   });
 
   const { data: popularStores } = useGetStoreList({
@@ -65,42 +94,42 @@ const ContentBody = () => {
     pageSize: 10,
     sortType: 'REVIEW',
     sortDirection: 'DESCENDING',
+    regionIds: selectedRegions.map((region) => region.id),
+    category: category ?? undefined,
   });
 
   const { data: immediateEntryStores } = useGetStoreImmediateEntryList({
     pageNum: 1,
     pageSize: 10,
+    regionIds: selectedRegions.map((region) => region.id),
+    category: category ?? undefined,
   });
 
   return (
-    <div className='flex flex-col w-full'>
-      <Menubar />
-      <div className='bg-white mb-3'>
-        <Banner />
-        <div className='flex flex-col py-grid-margin'>
-          <CategoryTabs categories={STORE_CATEGORIES} />
-          <MainStoreList stores={stores.list} />
-        </div>
-        <Divider />
-        <StoresList
-          subtitle='푸딩에서 인기 많은 식당이에요'
-          stores={popularStores.list}
-          onClickTotalBtn={noop}
-        />
-        <StoresList
-          className='pt-0'
-          subtitle='새로 오픈했어요!'
-          stores={stores.list}
-          onClickTotalBtn={noop}
-        />
-        <StoresList
-          className='pt-0'
-          subtitle='지금 바로 입장하실 수 있어요!'
-          stores={immediateEntryStores.list}
-          onClickTotalBtn={noop}
-        />
+    <>
+      <div className='flex flex-col py-grid-margin'>
+        <CategoryTabs category={category} onCategoryChange={onCategoryChange} />
+        <MainStoreList stores={stores.list} />
       </div>
-    </div>
+      <Divider />
+      <StoresList
+        subtitle='푸딩에서 인기 많은 식당이에요'
+        stores={popularStores.list}
+        onClickTotalBtn={noop}
+      />
+      <StoresList
+        className='pt-0'
+        subtitle='새로 오픈했어요!'
+        stores={stores.list}
+        onClickTotalBtn={noop}
+      />
+      <StoresList
+        className='pt-0'
+        subtitle='지금 바로 입장하실 수 있어요!'
+        stores={immediateEntryStores.list}
+        onClickTotalBtn={noop}
+      />
+    </>
   );
 };
 
