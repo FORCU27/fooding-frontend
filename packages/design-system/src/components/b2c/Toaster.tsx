@@ -27,7 +27,7 @@ export const Toaster = () => {
       containerClassName='mb-[26px] inset-5!'
       toastOptions={{
         className:
-          'text-sm w-full py-8! font-bold text-[20px] text-white! bg-gray-6/70! backdrop-blur-sm rounded-[12px]! px-6! [&>*[role="status"]]:justify-start! [&>*[role="status"]]:ml-4! max-w-full!',
+          'w-full py-6! subtitle-5 text-white! bg-gray-6/70! backdrop-blur-sm rounded-[12px]! px-6! [&>*[role="status"]]:justify-start! [&>*[role="status"]]:ml-4! max-w-full!',
         success: {
           icon: (
             <span className='size-[25px] flex justify-center items-center bg-fooding-green text-white rounded-full'>
