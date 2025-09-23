@@ -41,7 +41,7 @@ export function CreateNotificationDialog({
     queryKey: ['users'],
     queryFn: () =>
       userApi.getUserList({
-        page: 0,
+        page: 1,
         size: 100,
       }),
     enabled: open, // 다이얼로그가 열릴 때만 조회

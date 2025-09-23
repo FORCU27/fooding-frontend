@@ -6,6 +6,7 @@ import { ReactNode, Suspense } from 'react';
 import { queryKeys } from '@repo/api/configs/query-keys';
 import { QueryClient, dehydrate } from '@tanstack/react-query';
 import { Metadata } from 'next';
+import { OverlayProvider } from 'overlay-kit';
 
 import Analytics from '@/components/GA/Analytics';
 import KakaoMapScript from '@/components/KakaoMapScript';
@@ -20,17 +21,6 @@ export const metadata: Metadata = {
 
 export default async function RootLayout({ children }: { children: ReactNode }) {
   const qc = new QueryClient();
-
-  await qc.prefetchQuery({
-    // TODO 초기 렌더 시 깜박이는 현상 대응
-    queryKey: [queryKeys.ceo.me],
-    queryFn: async () => {
-      const res = await fetch('/api/auth/me', { cache: 'no-store' });
-      if (!res.ok) return null;
-      return res.json();
-    },
-    staleTime: 60_000,
-  });
 
   await qc.prefetchQuery({
     queryKey: [queryKeys.ceo.store.selectedStore],
@@ -83,11 +73,13 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
         )}
 
         <ReactQueryProvider dehydratedState={dehydratedState}>
-          <Suspense fallback={<div>페이지를 불러오는 중입니다...</div>}>
-            <AuthProvider>
-              {children}
-              <Analytics />
-            </AuthProvider>
+          <Suspense>
+            <OverlayProvider>
+              <AuthProvider>
+                {children}
+                <Analytics />
+              </AuthProvider>
+            </OverlayProvider>
           </Suspense>
         </ReactQueryProvider>
       </body>

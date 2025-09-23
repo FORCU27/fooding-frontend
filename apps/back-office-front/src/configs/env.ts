@@ -1,6 +1,6 @@
 export const env = {
-  // 클라이언트에서 사용 가능한 환경변수
-  publicEnv: {
-    apiUrl: process.env.NEXT_PUBLIC_API_URL,
-  },
+  API_URL: process.env.NEXT_PUBLIC_API_URL,
+  GA_MEASUREMENT_ID: process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID,
+  GOOGLE_CLIENT_ID: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID,
+  OAUTH_REDIRECT_URI: process.env.NEXT_PUBLIC_OAUTH_REDIRECT_URI,
 } as const;

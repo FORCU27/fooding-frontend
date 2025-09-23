@@ -1,14 +1,16 @@
 'use client';
 
 import { Review, StoreInfo } from '@repo/api/user';
-import { defineConfig } from '@stackflow/config';
+import { defineConfig, RegisteredActivityName } from '@stackflow/config';
 import { basicUIPlugin } from '@stackflow/plugin-basic-ui';
 import { basicRendererPlugin } from '@stackflow/plugin-renderer-basic';
 import { stackflow } from '@stackflow/react/future';
 
+import { SCREEN_TRANSITION_DURATION } from './configs';
+import { wrapPlugin } from './wrap-plugin';
 import { BookmarkListScreen } from '@/screens/bookmarks/Bookmarks';
 import { JoinFormScreen } from '@/screens/join/JoinFormScreen';
-import { MenuDetailScreen, MenuDetailScreenProps } from '@/screens/menu-detail/MenuDetail';
+import { MenuDetailScreen, MenuDetailScreenParams } from '@/screens/menu-detail/MenuDetail';
 import { MyCouponListScreen } from '@/screens/my-coupons/MyCoupons';
 import { MyRewardDetailScreen } from '@/screens/my-reward-detail/MyRewardDetail';
 import { MyRewardListScreen } from '@/screens/my-rewards/MyRewards';
@@ -18,12 +20,17 @@ import { ProfileModifyScreen } from '@/screens/profile/ProfileModify';
 import { ProfileCompleteScreen } from '@/screens/profile-user-info/ProfileCompleteScreen';
 import { ProfileUserInfoScreen } from '@/screens/profile-user-info/ProfileUserInfo';
 import { ReviewReportCreateScreen } from '@/screens/reports/ReivewReportCreate';
-import { ReviewCreateScreen } from '@/screens/reviews/ReviewCreate';
-import { ReviewModifyScreen } from '@/screens/reviews/ReviewModify';
+import { ReviewCreateScreen, ReviewCreateScreenParams } from '@/screens/reviews/ReviewCreate';
+import { ReviewModifyScreen, ReviewModifyScreenParams } from '@/screens/reviews/ReviewModify';
+import { SearchScreen } from '@/screens/search/Search';
+import { SearchResultScreen, SearchResultScreenParams } from '@/screens/search-result/SearchResult';
 import { NotificationSettingScreen } from '@/screens/settings/Notifications';
 import { SettingScreen } from '@/screens/settings/Settings';
-import { StoreDetailScreen } from '@/screens/store-detail/StoreDetail';
-import { StorePostDetailScreen } from '@/screens/store-post-detail/StorePostDetail';
+import { StoreDetailScreen, StoreDetailScreenParams } from '@/screens/store-detail/StoreDetail';
+import {
+  StorePostDetailScreen,
+  StorePostDetailScreenParams,
+} from '@/screens/store-post-detail/StorePostDetail';
 import { WaitingDetailScreen } from '@/screens/waiting-detail/WaitingDetail';
 import { HomeTab } from '@/tabs/home/Home';
 import { MyPageTab } from '@/tabs/my-page/MyPage';
@@ -37,14 +44,16 @@ declare module '@stackflow/config' {
     PlanTab: object;
     MyPageTab: object;
     NotificationListScreen: object;
-    StoreDetailScreen: { storeId: number; tab?: string };
+    StoreDetailScreen: StoreDetailScreenParams;
     BookmarkListScreen: object;
     MyCouponListScreen: object;
-    StorePostDetailScreen: { storePostId: number; storeName: string };
+    StorePostDetailScreen: StorePostDetailScreenParams;
     SettingScreen: object;
     NotificationSettingScreen: object;
-    ReviewCreateScreen: { planId: string };
-    ReviewModifyScreen: { review: Review };
+    SearchScreen: object;
+    SearchResultScreen: SearchResultScreenParams;
+    ReviewCreateScreen: ReviewCreateScreenParams;
+    ReviewModifyScreen: ReviewModifyScreenParams;
     WaitingDetailScreen: { waitingId: string };
     PlanDetailScreen: { planId: string };
     ProfileModifyScreen: object;
@@ -59,7 +68,7 @@ declare module '@stackflow/config' {
     };
     ProfileCompleteScreen: { userName: string };
     JoinFormScreen: object;
-    MenuDetailScreen: MenuDetailScreenProps;
+    MenuDetailScreen: MenuDetailScreenParams;
     MyRewardListScreen: object;
     MyRewardDetailScreen: { storeId: number };
     ReviewReportCreateScreen: { review: Review; store: StoreInfo; type: 'REVIEW' | 'POST' };
@@ -79,6 +88,8 @@ const config = defineConfig({
     { name: 'StoreDetailScreen' },
     { name: 'SettingScreen' },
     { name: 'NotificationSettingScreen' },
+    { name: 'SearchScreen' },
+    { name: 'SearchResultScreen' },
     { name: 'ReviewCreateScreen' },
     { name: 'ReviewModifyScreen' },
     { name: 'WaitingDetailScreen' },
@@ -93,7 +104,7 @@ const config = defineConfig({
     { name: 'ReviewReportCreateScreen' },
   ],
 
-  transitionDuration: 350,
+  transitionDuration: SCREEN_TRANSITION_DURATION,
   initialActivity: () => 'HomeTab',
 });
 
@@ -111,6 +122,8 @@ export const { Stack } = stackflow({
     StoreDetailScreen,
     SettingScreen,
     NotificationSettingScreen,
+    SearchScreen,
+    SearchResultScreen,
     ReviewCreateScreen,
     ReviewModifyScreen,
     WaitingDetailScreen,
@@ -129,5 +142,10 @@ export const { Stack } = stackflow({
     basicUIPlugin({
       theme: 'cupertino',
     }),
+    wrapPlugin(),
   ],
 });
+
+export const screenId: Record<string, RegisteredActivityName> = {
+  '1': 'SearchScreen',
+};

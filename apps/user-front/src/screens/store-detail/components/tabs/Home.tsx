@@ -7,8 +7,8 @@ import {
   PhoneIcon,
   TrainIcon,
 } from '@repo/design-system/icons';
-import { useFlow } from '@stackflow/react/future';
 
+import { Divider } from '@/components/Layout/Divider';
 import { Section } from '@/components/Layout/Section';
 import { MenuCard } from '@/components/Store/MenuCard';
 import { ReviewsList } from '@/components/Store/ReviewsList';
@@ -17,44 +17,45 @@ import { SubwayLineBadge } from '@/components/SubwayLineBadge';
 import { useGetStoreList } from '@/hooks/store/useGetStoreList';
 import { useGetStoreMenuList } from '@/hooks/store/useGetStoreMenuList';
 import { useGetStoreReviewList } from '@/hooks/store/useGetStoreReviewList';
-import { StoreInfoMap } from '@/screens/waiting-detail/components/StoreInfoMap';
+import { StoreInfoMap } from '@/libs/kakao-map/StoreInfoMap';
+import { getKakaoMapDirectionUrl } from '@/libs/kakao-map/utils';
+import { isNonEmptyArray } from '@/utils/array';
 import { noop } from '@/utils/noop';
 
+// TODO: API 연동
 const mock = {
-  location: '제주 제주시 서해안로 654 바다풍경 정육식당',
   subwayLocation: '제주역에서 847m',
   subwayNumber: 6,
   operatingHours: '매일 10:40 - 21:50',
-  isFinished: false,
 } as const;
 
 type StoreDetailHomeTabProps = {
   store: StoreInfo;
+  onSeeMoreReviews: () => void;
 };
 
-export const StoreDetailHomeTab = ({ store }: StoreDetailHomeTabProps) => {
-  const flow = useFlow();
+export const StoreDetailHomeTab = ({ store, onSeeMoreReviews }: StoreDetailHomeTabProps) => {
   const { data: storeMenus } = useGetStoreMenuList(store.id);
   const { data: reviews } = useGetStoreReviewList(store.id);
   const { data: stores } = useGetStoreList({ sortType: 'RECENT' });
 
-  const getKakaoMapDirectionUrl = (latitude: number, longitude: number, name?: string) => {
-    const encodedName = encodeURIComponent(name ?? '목적지');
-    return `https://map.kakao.com/link/to/${encodedName},${latitude},${longitude}`;
-  };
-
   return (
     <div className='flex flex-col'>
-      <Section className='mt-[10px] py-[20px] gap-[6px]'>
+      <Section className='py-[20px] gap-[6px]'>
         <span className='body-6 flex items-center gap-[10px]'>
           <MarkPinIcon className='size-[18px] stroke-1' />
           {store.address}
         </span>
         <span className='body-6 flex items-center gap-[10px]'>
           <ClockIcon className='size-[18px] stroke-1' />
-          {!mock.isFinished && (
+          {!store.isFinished && (
             <button className='flex items-center h-[26px] subtitle-7 text-white bg-gradient-to-r from-[#35FFBF] to-[#6CB8FF] rounded-full px-[10px]'>
               영업중
+            </button>
+          )}
+          {store.isFinished && (
+            <button className='flex items-center h-[26px] subtitle-7 text-gray-4 bg-gray-1 rounded-full px-[10px]'>
+              영업종료
             </button>
           )}
           {mock.operatingHours}
@@ -64,19 +65,19 @@ export const StoreDetailHomeTab = ({ store }: StoreDetailHomeTabProps) => {
           {store.contactNumber}
         </span>
       </Section>
-      {/* TODO: 메뉴 목록 조회 기능 추가 */}
-      <Section className='mt-[10px] pb-8'>
+      <Divider />
+      <Section className='pb-8'>
         <Section.Header>
           <Section.Title>메뉴</Section.Title>
           <Section.Link>더보기</Section.Link>
         </Section.Header>
-        {storeMenus.length === 0 && <EmptyState className='mt-10' title='등록된 메뉴가 없어요!' />}
-        {storeMenus.length > 0 && (
+        {!isNonEmptyArray(storeMenus) ? (
+          <EmptyState className='mt-10' title='등록된 메뉴가 없어요!' />
+        ) : (
           <ul className='mt-6 flex gap-3 -mx-grid-margin overflow-x-auto scrollbar-hide px-grid-margin'>
-            {/* TODO: 왜 배열일까 */}
-            {storeMenus[0]?.menu.map((menu) => (
+            {storeMenus[0].menu.map((menu) => (
               <MenuCard key={menu.id}>
-                <MenuCard.Image src={null} alt={menu.name} />
+                <MenuCard.Image src={menu.imageUrl} alt={menu.name} />
                 <MenuCard.Title>{menu.name}</MenuCard.Title>
                 <MenuCard.Price>{menu.price.toLocaleString()}</MenuCard.Price>
               </MenuCard>
@@ -84,19 +85,15 @@ export const StoreDetailHomeTab = ({ store }: StoreDetailHomeTabProps) => {
           </ul>
         )}
       </Section>
-      {/* TODO: 리뷰 목록 조회 기능 추가 */}
-      <Section className='mt-[10px]'>
+      <Divider />
+      <Section>
         <Section.Header>
           <Section.Title className='flex items-center gap-1'>
             리뷰
             <span className='subtitle-6 text-gray-5'>({reviews.list.length})</span>
           </Section.Title>
           {reviews.list.length > 0 && (
-            <Section.Link
-              onClick={() => flow.push('StoreDetailScreen', { storeId: store.id, tab: 'review' })}
-            >
-              더보기
-            </Section.Link>
+            <Section.Link onClick={onSeeMoreReviews}>더보기</Section.Link>
           )}
         </Section.Header>
         {reviews.list.length === 0 && (
@@ -108,7 +105,8 @@ export const StoreDetailHomeTab = ({ store }: StoreDetailHomeTabProps) => {
           </ul>
         )}
       </Section>
-      <Section className='mt-[10px] pb-8'>
+      <Divider />
+      <Section className='pb-8'>
         <Section.Header>
           <Section.Title>매장 위치</Section.Title>
         </Section.Header>
@@ -130,22 +128,17 @@ export const StoreDetailHomeTab = ({ store }: StoreDetailHomeTabProps) => {
             {store.direction}
           </span>
         </div>
-
-        {store.latitude != null && store.longitude != null && (
-          <Button
-            variant='gray'
-            size='large'
-            onClick={() => {
-              const url = getKakaoMapDirectionUrl(store.latitude!, store.longitude!, store.name);
-              window.open(url, '_blank');
-            }}
-          >
-            <CompassIcon />
-            <span className='ml-1'>길찾기</span>
-          </Button>
+        {store.latitude && store.longitude && (
+          <PathfindingButton
+            className='mt-5'
+            latitude={store.latitude}
+            longitude={store.longitude}
+            name={store.name}
+          />
         )}
       </Section>
-      <div className='mt-[10px]'>
+      <Divider />
+      <div>
         {/* TODO: 다른사람이 함께 본 식당 목록 조회 기능 추가 */}
         <StoresList
           subtitle='다른사람이 함께 본 비슷한 식당'
@@ -160,5 +153,26 @@ export const StoreDetailHomeTab = ({ store }: StoreDetailHomeTabProps) => {
         />
       </div>
     </div>
+  );
+};
+
+type PathfindingButtonProps = {
+  className?: string;
+  latitude: number;
+  longitude: number;
+  name: string;
+};
+
+const PathfindingButton = ({ className, latitude, longitude, name }: PathfindingButtonProps) => {
+  return (
+    <Button
+      className={className}
+      variant='gray'
+      size='large'
+      onClick={() => getKakaoMapDirectionUrl({ latitude, longitude, name })}
+    >
+      <CompassIcon />
+      <span className='ml-1'>길찾기</span>
+    </Button>
   );
 };

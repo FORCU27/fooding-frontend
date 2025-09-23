@@ -25,6 +25,26 @@ export const queryKeys = {
       getStore: 'ceoStoreGetStore',
       operatingHour: 'ceoStoreOperatingHour',
     },
+    menuCategory: {
+      list: 'ceoMenuCategoryList',
+    },
+    menu: {
+      list: 'ceoMenuList',
+      detail: 'ceoMenuDetail',
+      create: 'ceoMenuCreate',
+      update: 'ceoMenuUpdate',
+      delete: 'ceoMenuDelete',
+    },
+    storeInformation: {
+      get: 'ceoStoreInformationGet',
+    },
+    coupon: {
+      list: 'ceoCouponList',
+      detail: 'ceoCouponDetail',
+      create: 'ceoCouponCreate',
+      update: 'ceoCouponUpdate',
+      delete: 'ceoCouponDelete',
+    },
   },
   pos: {},
   user: {
@@ -45,6 +65,7 @@ export const queryKeys = {
       infiniteImageList: 'userStoreInfiniteImageList',
       reward: 'userStoreReward',
       rewardList: 'userStoreRewardList',
+      searchInfiniteStoreList: 'userSearchInfiniteStoreList',
     },
     storePost: {
       list: 'userStorePostList',

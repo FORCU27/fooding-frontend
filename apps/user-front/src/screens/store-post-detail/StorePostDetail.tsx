@@ -10,6 +10,8 @@ import { StoreTagList } from '@/components/Store/StoreTagList';
 import { useGetStorePostDetail } from '@/hooks/store-post/useGetStorePostDetail';
 import { formatDate } from '@/utils/date';
 
+export type StorePostDetailScreenParams = { storePostId: number; storeName: string };
+
 export const StorePostDetailScreen: ActivityComponentType<'StorePostDetailScreen'> = ({
   params,
 }) => {
@@ -54,7 +56,6 @@ const StorePostDetail = ({ storePostId }: StorePostDetailProps) => {
         </div>
       )}
       <p className='mt-5 whitespace-pre-wrap body-3-2'>{storePost.content}</p>
-      {/* TODO: 바텀 CTA 추가 */}
     </div>
   );
 };

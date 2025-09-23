@@ -5,6 +5,7 @@ import { BookmarkIcon, FoodingIcon, StarIcon } from '@repo/design-system/icons';
 import { useFlow } from '@stackflow/react/future';
 
 import { useDeleteBookmark } from '@/hooks/bookmark/useDeleteBookmark';
+import { isNonEmptyArray } from '@/utils/array';
 
 interface BookmarkCardProps {
   bookmark: Bookmark;
@@ -20,26 +21,26 @@ export const BookmarkCard = ({ bookmark }: BookmarkCardProps) => {
 
   return (
     <li key={bookmark.id} className='flex flex-col min-h-[240px] relative'>
-      <div className='h-full w-[140px]'>
+      <div
+        className='h-full w-[140px]'
+        onClick={() => flow.push('StoreDetailScreen', { storeId: bookmark.storeId })}
+      >
         <div className='relative h-[140px] mb-2 rounded-xl overflow-hidden'>
-          {bookmark.images.length > 0 ? (
-            bookmark.images.map((image, idx) => (
-              <Image
-                key={`${image}_${idx}}`}
-                width={140}
-                height={140}
-                src={image}
-                alt={bookmark.name || 'bookmark image'}
-                className='rounded-xl mb-4 object-center'
-              />
-            ))
+          {isNonEmptyArray(bookmark.images) ? (
+            <Image
+              className='object-center w-full h-full'
+              src={bookmark.images[0].imageUrl}
+              alt={bookmark.name}
+              width={140}
+              height={140}
+            />
           ) : (
             <div className='flex justify-center items-center w-full h-full bg-gray-1'>
               <FoodingIcon width={58} height={72} color='rgba(17, 17, 17, 0.1)' />
             </div>
           )}
           {bookmark.isFinished && (
-            <div className='absolute inset-0 bg-black/50 flex justify-center items-center rounded-xl'>
+            <div className='absolute inset-0 bg-black/50 flex justify-center items-center rounded-xl pointer-events-none'>
               <p className='subtitle-3 text-white'>영업 종료</p>
             </div>
           )}
@@ -53,10 +54,7 @@ export const BookmarkCard = ({ bookmark }: BookmarkCardProps) => {
             />
           </div>
         </div>
-        <div
-          className='cursor-pointer'
-          onClick={() => flow.push('StoreDetailScreen', { storeId: bookmark.storeId })}
-        >
+        <div>
           <div className='break-words line-clamp-2 subtitle-5 w-[144px]'>{bookmark.name}</div>
           <div className='flex flex-col gap-1'>
             <div className='subtitle-5 flex items-center gap-1 h-[17px]'>

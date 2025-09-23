@@ -15,17 +15,18 @@ const Input = ({
   className,
   disabled = false,
   suffix,
+  'aria-invalid': ariaInvalid,
   ...props
 }: InputProps) => {
   const renderIcon = () => {
     switch (inputType) {
       case 'search':
         return (
-          <SearchIcon className='absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400' />
+          <SearchIcon className='absolute right-5 top-1/2 size-6 -translate-y-1/2 text-gray-5' />
         );
       case 'url':
         return (
-          <LinkIcon className='absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400' />
+          <LinkIcon className='absolute right-5 top-1/2 size-6 -translate-y-1/2 text-gray-5' />
         );
       default:
         return null;
@@ -36,11 +37,13 @@ const Input = ({
     <div className='relative flex w-full items-center'>
       <input
         className={cn(
-          'flex h-[58px] w-full rounded-[8px] border border-gray-3 bg-white px-[10px] py-[16px] text-[20px] font-bold text-black placeholder:text-gray-5 placeholder:font-normal',
-          { 'pr-10': inputType && !suffix },
-          { 'pl-6 pr-8': suffix }, // suffix가 있을 때 오른쪽 패딩 추가
+          'focus-visible:outline-none focus-visible:border-fooding-purple px-[20px] body-2',
+          'flex h-[58px] w-full rounded-[8px] border border-gray-3 bg-white placeholder:text-gray-4',
+          { 'pr-14': inputType && !suffix },
+          { 'pl-6 pr-9': suffix }, // suffix가 있을 때 오른쪽 패딩 추가
           className,
           { 'opacity-50 cursor-pointer bg-gray-1 text-gray-5': disabled },
+          ariaInvalid && 'border-error-red focus-visible:border-error-red',
         )}
         {...props}
         disabled={disabled}

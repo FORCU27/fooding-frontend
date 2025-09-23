@@ -3,23 +3,13 @@
 import Image from 'next/image';
 import Link from 'next/link';
 
-import { queryKeys } from '@repo/api/configs/query-keys';
-import { useQuery } from '@tanstack/react-query';
+import { useGetSelfQuery } from '@/hooks/auth/useGetSelf';
 
 export default function PortalLandingPage() {
-  // 로그인 상태 확인
-  const { data: me } = useQuery({
-    queryKey: [queryKeys.ceo.me],
-    queryFn: async () => {
-      const res = await fetch('/api/auth/me', { cache: 'no-store' });
-      if (!res.ok) {
-        return null;
-      }
-      return res.json();
-    },
-  });
+  const { data: me } = useGetSelfQuery();
 
-  const isLoggedIn = !!me?.data;
+  const isLoggedIn = !!me;
+
   const managementItems = [
     { icon: '🕒', title: '영업시간', color: 'text-red-600', iconBg: 'bg-red-100' },
     { icon: '🎁', title: '쿠폰관리', color: 'text-orange-600', iconBg: 'bg-orange-100' },
@@ -98,7 +88,7 @@ export default function PortalLandingPage() {
             <div className='flex items-center space-x-3'>
               {isLoggedIn ? (
                 <div className='flex items-center space-x-3'>
-                  <span className='text-sm text-gray-600'>{me?.data.name} 사장님</span>
+                  <span className='text-sm text-gray-600'>{me.name} 사장님</span>
                   <button
                     onClick={async () => {
                       const response = await fetch('/api/auth/logout', {
@@ -298,8 +288,8 @@ export default function PortalLandingPage() {
                       <span className='text-red-600 text-lg'>👤</span>
                     </div>
                     <div>
-                      <p className='font-medium text-gray-900'>{me?.data.name} 사장님</p>
-                      <p className='text-sm text-gray-600'>{me?.data.email}</p>
+                      <p className='font-medium text-gray-900'>{me.name} 사장님</p>
+                      <p className='text-sm text-gray-600'>{me.email}</p>
                     </div>
                   </div>
                   <button

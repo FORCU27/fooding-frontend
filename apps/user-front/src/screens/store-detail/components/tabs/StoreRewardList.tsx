@@ -10,6 +10,7 @@ import { Section } from '@/components/Layout/Section';
 import { useGetStoreDetail } from '@/hooks/store/useGetStoreDetail';
 import { useGetStoreRewardList } from '@/hooks/store/useGetStoreRewardList';
 import { usePurchaseStoreReward } from '@/hooks/store/usePurchaseStoreReward';
+import { isNonEmptyArray } from '@/utils/array';
 
 type StoreRewardListTabProps = {
   storeId: number;
@@ -17,47 +18,16 @@ type StoreRewardListTabProps = {
 
 export const StoreRewardListTab = ({ storeId }: StoreRewardListTabProps) => {
   const flow = useFlow();
+
   const { data: rewards } = useGetStoreRewardList(storeId);
   const { data: store } = useGetStoreDetail(storeId);
 
-  if (!store || rewards.pointShopItems.length === 0) {
-    return (
-      <Section className='flex flex-col bg-gray-1 mt-[14px]'>
-        <div className='flex flex-col gap-5 py-4 mb-10'>
-          <div className='flex rounded-xl p-5 bg-white justify-between'>
-            <div className='flex gap-3 justify-center items-center'>
-              {store.images[0]?.imageUrl ? (
-                <Image src={store.images[0].imageUrl} width={40} height={40} alt='스토어 이미지' />
-              ) : (
-                <div className='flex justify-center items-center w-10 h-10 rounded-xl'>
-                  <FoodingIcon className='text-gray-2' />
-                </div>
-              )}
-              <div>
-                <p className='subtitle-4'>{store.name}</p>
-                <p className='subtitle-6 text-gray-5'>{rewards.point} 포인트</p>
-              </div>
-            </div>
-            <Button
-              variant='outlined'
-              size='small'
-              onClick={() => flow.push('MyRewardListScreen', {})}
-            >
-              적립내역
-            </Button>
-          </div>
-          <EmptyState className='mt-20' title='등록된 리워드가 없어요.' />
-        </div>
-      </Section>
-    );
-  }
-
   return (
-    <Section className='flex flex-col bg-gray-1 mt-[14px]'>
+    <Section className='flex flex-col bg-gray-1'>
       <div className='flex flex-col gap-5 py-4 mb-25'>
         <div className='flex rounded-xl p-5 bg-white justify-between'>
           <div className='flex gap-3 justify-center items-center'>
-            {store.images[0]?.imageUrl ? (
+            {isNonEmptyArray(store.images) ? (
               <Image src={store.images[0].imageUrl} width={40} height={40} alt='스토어 이미지' />
             ) : (
               <div className='flex justify-center items-center w-10 h-10 rounded-xl'>
@@ -77,6 +47,9 @@ export const StoreRewardListTab = ({ storeId }: StoreRewardListTabProps) => {
             적립내역
           </Button>
         </div>
+        {rewards.pointShopItems.length === 0 && (
+          <EmptyState className='mt-20' title='등록된 리워드가 없어요.' />
+        )}
         {rewards.pointShopItems.map((reward) => (
           <StoreRewardItem
             key={reward.id}
@@ -150,7 +123,7 @@ const StoreRewardItem = ({ reward, storeId, userPoint }: StoreRewardItemProps) =
         구매하기
       </Button>
 
-      <BottomSheet isOpen={isBottomSheetOpen} onOpenChange={setIsBottomSheetOpen}>
+      <BottomSheet open={isBottomSheetOpen} onOpenChange={setIsBottomSheetOpen}>
         <BottomSheet.Content>
           <BottomSheet.Header>
             <BottomSheet.Title className='headline-3'>쿠폰 구매</BottomSheet.Title>
@@ -215,7 +188,7 @@ const StoreRewardItem = ({ reward, storeId, userPoint }: StoreRewardItemProps) =
         </BottomSheet.Content>
       </BottomSheet>
 
-      <BottomSheet isOpen={isConfirmBottomSheetOpen} onOpenChange={setIsConfirmBottomSheetOpen}>
+      <BottomSheet open={isConfirmBottomSheetOpen} onOpenChange={setIsConfirmBottomSheetOpen}>
         <BottomSheet.Content>
           <BottomSheet.Body>
             <div className='flex flex-col justify-center items-center gap-6'>

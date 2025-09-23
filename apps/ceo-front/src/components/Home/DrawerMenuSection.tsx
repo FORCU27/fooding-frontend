@@ -62,16 +62,21 @@ const MenuItemComponent = memo(
       if (isExpanded !== undefined) {
         return isExpanded;
       }
-      
+
       if (!menu.subItems) return false;
 
       // 현재 활성화된 서브메뉴가 있거나, 현재 경로가 이 메뉴의 서브메뉴 중 하나와 일치하면 확장
-      return menu.subItems.some(
-        (subItem) =>
+      return menu.subItems.some((subItem: MenuItem) => {
+        // 쿠폰 메뉴의 경우 특별 처리
+        if (subItem.path === '/my/reward/coupon') {
+          return pathname === subItem.path || pathname.startsWith('/my/reward/coupon/');
+        }
+        return (
           pathname === subItem.path ||
-          pathname.startsWith(subItem.path) ||
-          activeSubItem?.id === subItem.id,
-      );
+          (subItem.path && pathname.startsWith(subItem.path)) ||
+          activeSubItem?.id === subItem.id
+        );
+      });
     })();
 
     // useCallback으로 클릭 핸들러 메모이제이션
@@ -83,7 +88,9 @@ const MenuItemComponent = memo(
 
     const handleSubMenuClick = (subMenu: MenuItem) => {
       onSubMenuClick?.(subMenu);
-      router.push(subMenu.path);
+      if (subMenu.path) {
+        router.push(subMenu.path);
+      }
     };
 
     return (
@@ -121,12 +128,12 @@ const MenuItemComponent = memo(
               shouldExpand ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'
             }`}
           >
-            {menu.subItems.map((subMenu) => (
+            {menu.subItems.map((subMenu: MenuItem) => (
               <li
                 key={subMenu.id}
                 onClick={() => handleSubMenuClick(subMenu)}
-                className={`body-2 cursor-pointer pt-[9px] pb-[12px] pl-[60px] hover:bg-primary-pink/5 rounded transition-colors 
-    ${pathname === subMenu.path ? 'text-black font-medium' : 'text-gray-5'}`}
+                className={`body-2 cursor-pointer pt-[9px] pb-[12px] pl-[60px] hover:bg-primary-pink/5 rounded transition-colors
+    ${(subMenu.path === '/my/reward/coupon' && pathname.startsWith('/my/reward/coupon')) || pathname === subMenu.path ? 'text-black font-medium' : 'text-gray-5'}`}
               >
                 {subMenu.text}
               </li>

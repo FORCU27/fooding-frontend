@@ -1,9 +1,7 @@
 import { z } from 'zod/v4';
 
 import { ApiResponse, PageResponse } from '../../shared';
-
-export const ProvideTypes = ['ALL', 'REGULAR_CUSTOMER'] as const;
-export type ProvideType = (typeof ProvideTypes)[number];
+import { ProvideType as CouponProvideType } from '../coupons/type';
 
 export const AdminPointShopResponseSchema = z.object({
   id: z.number(),
@@ -11,7 +9,7 @@ export const AdminPointShopResponseSchema = z.object({
   storeName: z.string().nullable().optional(),
   name: z.string(),
   point: z.number(),
-  provideType: z.enum(ProvideTypes),
+  provideType: CouponProvideType,
   conditions: z.string().nullable().optional(),
   isActive: z.boolean(),
   totalQuantity: z.number().nullable().optional(),
@@ -26,7 +24,7 @@ export const AdminCreatePointShopRequestSchema = z.object({
   storeId: z.number(),
   name: z.string(),
   point: z.number().int().nonnegative(),
-  provideType: z.enum(ProvideTypes),
+  provideType: CouponProvideType,
   conditions: z.string().optional().nullable(),
   totalQuantity: z.number().int().nullable().optional(),
   issueStartOn: z.string().optional().nullable(),
@@ -36,7 +34,7 @@ export const AdminCreatePointShopRequestSchema = z.object({
 export const AdminUpdatePointShopRequestSchema = z.object({
   name: z.string(),
   point: z.number().int().nonnegative(),
-  provideType: z.enum(ProvideTypes),
+  provideType: CouponProvideType,
   conditions: z.string().optional().nullable(),
   totalQuantity: z.number().int().nullable().optional(),
   issueStartOn: z.string().optional().nullable(),
@@ -48,4 +46,3 @@ export type AdminUpdatePointShopRequest = z.infer<typeof AdminUpdatePointShopReq
 
 export const GetAdminPointShopListResponse = PageResponse(AdminPointShopResponseSchema);
 export const GetAdminPointShopResponse = ApiResponse(AdminPointShopResponseSchema);
-

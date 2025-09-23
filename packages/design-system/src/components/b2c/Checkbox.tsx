@@ -7,7 +7,12 @@ type CheckboxProps = Omit<CheckboxPrimitives.CheckboxProps, 'onChange' | 'onChec
   onChange?: (checked: boolean) => void;
 };
 
-const Checkbox = ({ className, onChange, ...props }: CheckboxProps) => {
+const Checkbox = ({
+  className,
+  onChange,
+  'aria-invalid': ariaInvalid,
+  ...props
+}: CheckboxProps) => {
   return (
     <CheckboxPrimitives.Root
       onCheckedChange={onChange}
@@ -15,12 +20,13 @@ const Checkbox = ({ className, onChange, ...props }: CheckboxProps) => {
         'border border-gray-3 rounded-[4px] flex justify-center items-center cursor-pointer size-[20px]',
         'data-[state=checked]:bg-primary-pink data-[state=checked]:border-primary-pink',
         'disabled:opacity-50 disabled:pointer-events-none',
+        ariaInvalid &&
+          'border-error-red data-[state=checked]:border-error-red data-[state=checked]:bg-error-red',
         className,
       )}
       {...props}
     >
       <CheckboxPrimitives.Indicator asChild>
-        {/* TODO: 피그마 확인 후 수정 */}
         <CheckIcon className='text-white size-3.5' />
       </CheckboxPrimitives.Indicator>
     </CheckboxPrimitives.Root>

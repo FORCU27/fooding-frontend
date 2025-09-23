@@ -64,7 +64,7 @@ const TimePicker = ({
           ref={ref}
           disabled={disabled}
           className={cn(
-            'relative flex h-14 w-full items-center justify-between rounded-lg border border-gray-300 bg-white px-4 text-base font-medium text-gray-900 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/50',
+            'relative flex h-14 w-full items-center justify-between rounded-lg border border-gray-300 bg-white px-4 text-base font-medium cursor-pointer',
             'disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-400',
             className,
           )}

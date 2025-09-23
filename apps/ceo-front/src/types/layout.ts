@@ -1,8 +1,8 @@
-export type MenuItem = {
+export interface MenuItem {
   id: string;
-  text: string;
-  path: string;
+  label: string;
+  path?: string;
   icon?: React.ReactNode;
-  iconType?: 'store' | 'news' | 'regular' | 'reward' | 'statistics' | 'devices';
   subItems?: MenuItem[];
-};
+  text?: string;
+}

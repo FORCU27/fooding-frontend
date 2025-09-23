@@ -14,13 +14,15 @@ import {
 import { ActivityComponentType } from '@stackflow/react/future';
 import { Suspense } from '@suspensive/react';
 
-import { StoreInfoMap } from '../waiting-detail/components/StoreInfoMap';
 import { LoadingToggle } from '@/components/Devtool/LoadingToggle';
 import { DefaultErrorBoundary } from '@/components/Layout/DefaultErrorBoundary';
 import { Header } from '@/components/Layout/Header';
 import { Screen } from '@/components/Layout/Screen';
 import { useGetPlanDetail } from '@/hooks/plan/useGetPlanDetail';
 import { useGetStoreDetail } from '@/hooks/store/useGetStoreDetail';
+import { StoreInfoMap } from '@/libs/kakao-map/StoreInfoMap';
+import { openKakaoMapDirection } from '@/libs/kakao-map/utils';
+import { isNonEmptyArray } from '@/utils/array';
 import { formatDotDateTime } from '@/utils/date';
 
 export const PlanDetailScreen: ActivityComponentType<'PlanDetailScreen'> = ({ params }) => {
@@ -44,31 +46,23 @@ type StoreDetailProps = {
 const PlanDetail = ({ planId }: StoreDetailProps) => {
   const { data: planInfo } = useGetPlanDetail(planId);
   const { data: storeInfo } = useGetStoreDetail(planInfo.storeId);
+
   const [isAlertAccordionOpen, setIsAlertAccordionOpen] = useState(false);
-  // const [isParkingAccordionOpen, setIsParkingAccordionOpen] = useState(false);
-  // const onParkingAccordionClick = () => {
-  //   setIsParkingAccordionOpen((prev) => !prev);
-  // };
 
   const onAlertAccordionClick = () => {
     setIsAlertAccordionOpen((prev) => !prev);
-  };
-
-  const getKakaoMapDirectionUrl = (latitude: number, longitude: number, name?: string) => {
-    const encodedName = encodeURIComponent(name ?? '목적지');
-    return `https://map.kakao.com/link/to/${encodedName},${latitude},${longitude}`;
   };
 
   return (
     <div className='flex flex-col bg-gray-1'>
       <div className='flex flex-col p-5 bg-white/80'>
         <div className='flex border border-gray-2 items-center w-full h-[100px] p-5 rounded-xl gap-4 '>
-          {storeInfo.images.length !== 0 ? (
+          {isNonEmptyArray(storeInfo.images) ? (
             <div className='relative w-[60px] h-[60px] rounded-lg overflow-hidden'>
               <Image
                 fill
                 style={{ objectFit: 'cover' }}
-                src={`${storeInfo.images[0]}`}
+                src={storeInfo.images[0].imageUrl}
                 alt='리뷰 이미지'
               />
             </div>
@@ -87,8 +81,8 @@ const PlanDetail = ({ planId }: StoreDetailProps) => {
         <div className='flex flex-col my-6 gap-6'>
           <p className='subtitle-3'>예약정보</p>
           <p className='body-5 text-gray-5'>
-            <span>{planInfo?.reservationTime && formatDotDateTime(planInfo.reservationTime)}</span>
-            <span> {planInfo?.adultCount}명</span>
+            <span>{planInfo.reservationTime && formatDotDateTime(planInfo.reservationTime)}</span>
+            <span> {planInfo.adultCount}명</span>
           </p>
         </div>
       </div>
@@ -125,7 +119,7 @@ const PlanDetail = ({ planId }: StoreDetailProps) => {
         </div>
         <div className='flex flex-col p-3  gap-4'>
           <div className='w-full h-[300px]'>
-            {storeInfo.latitude != null && storeInfo.longitude != null ? (
+            {storeInfo.latitude && storeInfo.longitude ? (
               <StoreInfoMap
                 lat={storeInfo.latitude}
                 lng={storeInfo.longitude}
@@ -144,22 +138,12 @@ const PlanDetail = ({ planId }: StoreDetailProps) => {
             {storeInfo.direction}
           </div>
         </div>
-        {storeInfo.latitude != null && storeInfo.longitude != null && (
-          <Button
-            variant='gray'
-            size='large'
-            onClick={() => {
-              const url = getKakaoMapDirectionUrl(
-                storeInfo.latitude!,
-                storeInfo.longitude!,
-                storeInfo.name,
-              );
-              window.open(url, '_blank');
-            }}
-          >
-            <CompassIcon />
-            <span className='ml-1'>길찾기</span>
-          </Button>
+        {storeInfo.latitude !== null && storeInfo.longitude && (
+          <PathfindingButton
+            latitude={storeInfo.latitude}
+            longitude={storeInfo.longitude}
+            name={storeInfo.name}
+          />
         )}
         {/* <div className='flex justify-between mt-9 items-center'>
           <div className='flex gap-4 items-center'>
@@ -214,6 +198,25 @@ const PlanDetail = ({ planId }: StoreDetailProps) => {
         </Button>
       </div>
     </div>
+  );
+};
+
+type PathfindingButtonProps = {
+  latitude: number;
+  longitude: number;
+  name: string;
+};
+
+const PathfindingButton = ({ latitude, longitude, name }: PathfindingButtonProps) => {
+  return (
+    <Button
+      variant='gray'
+      size='large'
+      onClick={() => openKakaoMapDirection({ latitude, longitude, name })}
+    >
+      <CompassIcon />
+      <span className='ml-1'>길찾기</span>
+    </Button>
   );
 };
 

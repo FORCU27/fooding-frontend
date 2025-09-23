@@ -21,7 +21,7 @@ export const ImageGallery = ({
   initialPage,
 }: ImageGalleryProps) => {
   return (
-    <FullscreenBottomSheet isOpen={isOpen} onOpenChange={(isOpen) => isOpen === false && onClose()}>
+    <FullscreenBottomSheet open={isOpen} onOpenChange={(isOpen) => isOpen === false && onClose()}>
       <FullscreenBottomSheet.Content className='bg-black' hideCloseButton>
         <Carousel initialPage={initialPage}>
           <div className='flex h-[60px] items-center text-white justify-between'>
@@ -46,8 +46,8 @@ export const ImageGallery = ({
             <Carousel.Region className='w-full'>
               <Carousel.List className='h-full'>
                 {imageUrls.map((imageUrl, index) => (
-                  <Carousel.Item key={index} className='h-[265px] bg-white'>
-                    <Image src={imageUrl} alt='이미지' fill />
+                  <Carousel.Item key={index} className='bg-white relative h-[40dvh]'>
+                    <Image className='object-cover' src={imageUrl} alt='이미지' fill />
                   </Carousel.Item>
                 ))}
               </Carousel.List>
