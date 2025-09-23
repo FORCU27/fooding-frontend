@@ -24,7 +24,7 @@ export const Toaster = () => {
   return (
     <RhtToaster
       position='bottom-center'
-      containerClassName='mb-[26px] inset-5!'
+      containerClassName='mb-5 inset-5!'
       toastOptions={{
         className:
           'w-full py-6! subtitle-5 text-white! bg-gray-6/70! backdrop-blur-sm rounded-[12px]! px-6! [&>*[role="status"]]:justify-start! [&>*[role="status"]]:ml-4! max-w-full!',
