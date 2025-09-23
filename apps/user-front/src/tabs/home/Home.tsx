@@ -4,7 +4,7 @@ import { Suspense, useState } from 'react';
 
 import { StoreCategory } from '@repo/api/user';
 import { ErrorFallback } from '@repo/design-system/components/b2c';
-import { ActivityComponentType } from '@stackflow/react/future';
+import { ActivityComponentType, useFlow } from '@stackflow/react/future';
 import { ErrorBoundary, ErrorBoundaryFallbackProps } from '@suspensive/react';
 
 import { Banner } from './components/Banner';
@@ -20,7 +20,6 @@ import { useGetStoreImmediateEntryList } from '@/hooks/store/useGetStoreImmediat
 import { useGetStoreList } from '@/hooks/store/useGetStoreList';
 import { Header } from '@/tabs/home/components/Header';
 import { Toolbar } from '@/tabs/home/components/Toolbar';
-import { noop } from '@/utils/noop';
 
 export const HomeTab: ActivityComponentType<'HomeTab'> = () => {
   return (
@@ -105,6 +104,8 @@ const StoreSection = ({ selectedRegions, category, onCategoryChange }: StoreSect
     category: category ?? undefined,
   });
 
+  const flow = useFlow();
+
   return (
     <>
       <div className='flex flex-col py-grid-margin'>
@@ -115,19 +116,19 @@ const StoreSection = ({ selectedRegions, category, onCategoryChange }: StoreSect
       <StoresList
         subtitle='푸딩에서 인기 많은 식당이에요'
         stores={popularStores.list}
-        onClickTotalBtn={noop}
+        onClickTotalBtn={() => flow.push('SearchResultScreen', { keyword: '', regions: [] })}
       />
       <StoresList
         className='pt-0'
         subtitle='새로 오픈했어요!'
         stores={stores.list}
-        onClickTotalBtn={noop}
+        onClickTotalBtn={() => flow.push('SearchResultScreen', { keyword: '', regions: [] })}
       />
       <StoresList
         className='pt-0'
         subtitle='지금 바로 입장하실 수 있어요!'
         stores={immediateEntryStores.list}
-        onClickTotalBtn={noop}
+        onClickTotalBtn={() => flow.push('SearchResultScreen', { keyword: '', regions: [] })}
       />
     </>
   );

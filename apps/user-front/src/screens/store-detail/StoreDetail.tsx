@@ -187,26 +187,31 @@ const StoreDetail = ({ storeId, showHeader, initialTab = 'home' }: StoreDetailPr
             <ChipTabs.Trigger value='info'>매장정보</ChipTabs.Trigger>
           </ChipTabs.List>
           <Divider />
-          <Suspense>
-            <ChipTabs.Content value='home'>
-              <StoreDetailHomeTab store={store} onSeeMoreReviews={() => setCurrentTab('review')} />
-            </ChipTabs.Content>
-            <ChipTabs.Content value='news'>
-              <StoreDetailPostListTab storeId={storeId} />
-            </ChipTabs.Content>
-            <ChipTabs.Content value='menu'>
-              <StoreDetailMenuTab store={store} />
-            </ChipTabs.Content>
-            <ChipTabs.Content value='review'>
-              <StoreDetailReviewTab store={store} />
-            </ChipTabs.Content>
-            <ChipTabs.Content value='photo'>
-              <StoreDetailPhotoTab store={store} />
-            </ChipTabs.Content>
-            <ChipTabs.Content value='reward'>
-              <StoreRewardListTab storeId={storeId} />
-            </ChipTabs.Content>
-          </Suspense>
+          <DefaultErrorBoundary>
+            <Suspense>
+              <ChipTabs.Content value='home'>
+                <StoreDetailHomeTab
+                  store={store}
+                  onSeeMoreReviews={() => setCurrentTab('review')}
+                />
+              </ChipTabs.Content>
+              <ChipTabs.Content value='news'>
+                <StoreDetailPostListTab storeId={storeId} />
+              </ChipTabs.Content>
+              <ChipTabs.Content value='menu'>
+                <StoreDetailMenuTab store={store} />
+              </ChipTabs.Content>
+              <ChipTabs.Content value='review'>
+                <StoreDetailReviewTab store={store} />
+              </ChipTabs.Content>
+              <ChipTabs.Content value='photo'>
+                <StoreDetailPhotoTab store={store} />
+              </ChipTabs.Content>
+              <ChipTabs.Content value='reward'>
+                <StoreRewardListTab storeId={storeId} />
+              </ChipTabs.Content>
+            </Suspense>
+          </DefaultErrorBoundary>
         </ChipTabs>
       </Section>
       <div
