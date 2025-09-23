@@ -27,7 +27,7 @@ export const StoreRewardListTab = ({ storeId }: StoreRewardListTabProps) => {
       <div className='flex flex-col gap-5 py-4 mb-25'>
         <div className='flex rounded-xl p-5 bg-white justify-between'>
           <div className='flex gap-3 justify-center items-center'>
-            {isNonEmptyArray(store.images) ? (
+            {store.images && isNonEmptyArray(store.images) ? (
               <Image src={store.images[0].imageUrl} width={40} height={40} alt='스토어 이미지' />
             ) : (
               <div className='flex justify-center items-center w-10 h-10 rounded-xl'>
@@ -197,8 +197,8 @@ const StoreRewardItem = ({ reward, storeId, userPoint }: StoreRewardItemProps) =
             </div>
 
             <div className='flex gap-3 mt-10 items-center p-5 bg-gray-1 border border-gray-2 rounded-xl'>
-              {store.images[0]?.imageUrl ? (
-                <Image src={store.images[0]?.imageUrl} width={60} height={60} alt='스토어 이미지' />
+              {store.images && isNonEmptyArray(store.images) ? (
+                <Image src={store.images[0].imageUrl} width={60} height={60} alt='스토어 이미지' />
               ) : (
                 <div className='flex justify-center items-center w-[60px] h-[60px] rounded-xl'>
                   <GiftIcon className='text-gray-3' size={40} />

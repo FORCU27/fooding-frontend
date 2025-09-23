@@ -9,6 +9,7 @@ import { useFlow } from '@stackflow/react/future';
 import { StarRating } from './StarRating';
 import { useAuth } from '../Provider/AuthProvider';
 import { useDeleteStoreReview } from '@/hooks/store/useDeleteStoreReview';
+import { isNonEmptyArray } from '@/utils/array';
 import { formatDotDate } from '@/utils/date';
 
 interface ReviewCardProps {
@@ -191,7 +192,7 @@ export const ReviewDetailCard = ({ review, store }: ReviewCardProps) => {
 export const StoreCard = ({ review, store }: { review: Review; store: StoreInfo }) => {
   return (
     <div className='flex gap-3 items-center'>
-      {store.images[0]?.imageUrl ? (
+      {store.images && isNonEmptyArray(store.images) ? (
         <div className='flex justify-center items-center w-[48px] h-[48px]'>
           <Image
             src={store.images[0].imageUrl}
