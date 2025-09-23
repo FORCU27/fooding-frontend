@@ -1,4 +1,5 @@
 import {
+  ImagesSortType,
   ImageTag,
   PustStoreImageParams,
   PutStoreMainImageParams,
@@ -7,18 +8,24 @@ import {
 import { CreateStoreImageParams } from '@repo/api/ceo';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 
-export const useStoreImages = (storeId: number, page: number, tag?: ImageTag | null) => {
+// TODO 파라미터 매핑 수정
+export const useStoreImages = (
+  storeId: number,
+  sortType: ImagesSortType,
+  page: number,
+  tag?: ImageTag | null,
+) => {
   return useQuery({
     // TODO queryKey 수정
-    queryKey: ['storeImages', storeId, tag],
+    queryKey: ['storeImages', storeId, sortType, page, tag],
     queryFn: () => {
       if (!storeId) throw new Error('no storeId');
       return storeImageApi.getImages(storeId, {
         pageNum: page,
         pageSize: 20,
+        sortType,
         searchString: '',
         tag: tag ?? null,
-        isMain: false,
       });
     },
     enabled: !!storeId,

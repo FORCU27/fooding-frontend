@@ -2,7 +2,7 @@
 
 import { useRef, useState } from 'react';
 
-import { ImageTag } from '@repo/api/ceo';
+import { ImageTag, ImagesSortType } from '@repo/api/ceo';
 import { queryKeys } from '@repo/api/configs/query-keys';
 import { ChipTabs } from '@repo/design-system/components/b2c';
 import {
@@ -35,6 +35,7 @@ const PhotoPage = () => {
     photoId: number;
   }>(null);
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
+  const [sortType, setSortType] = useState<ImagesSortType>('RECENT');
   const [page, setPage] = useState(1);
 
   const { data: selectedStore } = useQuery({
@@ -50,6 +51,7 @@ const PhotoPage = () => {
 
   const { data: images, isFetching } = useStoreImages(
     storeId,
+    sortType,
     page,
     selectedChip === 'ALL' ? null : selectedChip,
   );
@@ -154,7 +156,11 @@ const PhotoPage = () => {
                 <ChipTabs.Trigger value='FOOD' className='h-[38px] px-[18px] body-2'>
                   음식
                 </ChipTabs.Trigger>
-                <SortToggle keepSelectedOpen onSortChange={function hX() {}} value='LATEST' />
+                <SortToggle
+                  keepSelectedOpen
+                  value={sortType}
+                  onSortChange={(value) => setSortType(value as ImagesSortType)}
+                />
               </ChipTabs.List>
             </ChipTabs>
           </div>
