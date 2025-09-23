@@ -97,7 +97,6 @@ export const StoreInfo = Store.extend({
   direction: z.string(),
   latitude: z.number().nullable(),
   longitude: z.number().nullable(),
-  images: z.array(StoreImage),
   bookmarkCount: z.number(),
 });
 
