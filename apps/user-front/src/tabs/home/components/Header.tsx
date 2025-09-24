@@ -6,7 +6,7 @@ import { useFlow } from '@stackflow/react/future';
 import { AuthGuard } from '@/components/Auth/AuthGuard';
 import { cn } from '@/utils/cn';
 
-function Header() {
+export const Header = () => {
   const flow = useFlow();
 
   return (
@@ -38,6 +38,4 @@ function Header() {
       </div>
     </div>
   );
-}
-
-export default Header;
+};

@@ -38,7 +38,7 @@ export const StoreCard = ({ store }: StoreCardProps) => {
             </div>
           )}
         </div>
-        <span className='mt-3 line-clamp-2 subtitle-5 w-[144px]'>{store.name}멜멞</span>
+        <span className='mt-3 line-clamp-2 subtitle-5 w-[144px]'>{store.name}</span>
         <div className='mt-1 flex flex-col gap-1'>
           <div className='subtitle-5 flex items-center gap-1 h-[17px]'>
             <StarIcon size={18} fill='#FFD83D' color='#FFD83D' />

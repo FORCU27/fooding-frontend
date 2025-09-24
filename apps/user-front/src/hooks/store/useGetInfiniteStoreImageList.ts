@@ -1,13 +1,13 @@
 import { queryKeys } from '@repo/api/configs/query-keys';
 import { storeApi } from '@repo/api/user';
-import { useSuspenseInfiniteQuery } from '@tanstack/react-query';
+import { infiniteQueryOptions, useSuspenseInfiniteQuery } from '@tanstack/react-query';
 
-export const useGetInfiniteStoreImageList = ({ storeId }: { storeId: number }) => {
-  const { data, fetchNextPage } = useSuspenseInfiniteQuery({
+const infiniteStoreImageListQueryOptions = ({ storeId }: { storeId: number }) =>
+  infiniteQueryOptions({
     initialPageParam: 1,
     queryKey: [queryKeys.user.store.infiniteImageList],
-    queryFn: ({ pageParam }) => {
-      return storeApi.getStoreImageList({
+    queryFn: ({ pageParam }) =>
+      storeApi.getStoreImageList({
         id: storeId,
         params: {
           pageNum: pageParam,
@@ -15,8 +15,7 @@ export const useGetInfiniteStoreImageList = ({ storeId }: { storeId: number }) =
           searchString: '',
           searchTag: '',
         },
-      });
-    },
+      }),
     getNextPageParam: (lastPage) => {
       const { pageInfo } = lastPage.data;
 
@@ -26,8 +25,12 @@ export const useGetInfiniteStoreImageList = ({ storeId }: { storeId: number }) =
 
       return undefined;
     },
-    staleTime: 0,
   });
+
+export const useGetInfiniteStoreImageList = ({ storeId }: { storeId: number }) => {
+  const { data, fetchNextPage } = useSuspenseInfiniteQuery(
+    infiniteStoreImageListQueryOptions({ storeId }),
+  );
 
   const images = data.pages.flatMap((page) => page.data.list);
 

@@ -23,7 +23,7 @@ import { StoresList } from '@/components/Store/StoresList';
 import { useGetBookmarkList } from '@/hooks/bookmark/useGetBookmarkList';
 import { useGetInfiniteMyCouponList } from '@/hooks/coupon/useGetMyCouponList';
 import { useGetRewardPersonalLog } from '@/hooks/reward/useGetRewardPersonalLog';
-import { useGetStoreList } from '@/hooks/store/useGetStoreList';
+import { useGetRecentlyViewedStoreList } from '@/hooks/store/useGetRecentlyViewedStoreList';
 import { BookmarkCard } from '@/screens/bookmarks/components/BookmarkCard';
 
 const dummy = {
@@ -75,14 +75,11 @@ const Content = () => {
     pageSize: 5,
   });
 
-  const { data: stores } = useGetStoreList({
-    pageNum: 1,
-    pageSize: 5,
-  });
-
   const { coupons } = useGetInfiniteMyCouponList({ used: false });
 
   const { data: reward } = useGetRewardPersonalLog();
+
+  const { data: recentlyViewedStores } = useGetRecentlyViewedStoreList();
 
   return (
     <div className='w-full'>
@@ -184,7 +181,7 @@ const Content = () => {
           </ul>
         </div>
         <StoresList
-          stores={stores.list}
+          stores={recentlyViewedStores.list}
           subtitle='최근 본 식당'
           onClickTotalBtn={() => flow.push('MyPageTab', {})}
         />

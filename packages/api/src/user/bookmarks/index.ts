@@ -17,16 +17,7 @@ export const bookmarkApi = {
     return GetBookmarkStoreListResponse.parse(response);
   },
   createBookmarkStore: async (storeId: number) => {
-    const response = await api.post(
-      `${ENDPOINT}`,
-      { storeId },
-      {
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      },
-    );
-
+    const response = await api.post(`${ENDPOINT}`, { storeId });
     return CreateBookmarkResponse.parse(response);
   },
   deleteBookmarkStore: async (storeId: number) => {

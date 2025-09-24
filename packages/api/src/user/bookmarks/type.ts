@@ -13,7 +13,8 @@ export const Bookmark = z.object({
       id: z.number(),
       imageUrl: z.string(),
     })
-    .array(),
+    .array()
+    .nullable(),
   isFinished: z.boolean(),
   name: z.string(),
   reviewCount: z.number(),

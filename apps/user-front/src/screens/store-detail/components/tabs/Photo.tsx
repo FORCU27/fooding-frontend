@@ -43,7 +43,7 @@ export const StoreDetailPhotoTab = ({ store }: StoreDetailPhotoTabProps) => {
           gap: [8],
         }}
         render={(item: { id: number; imageUrl: string }, index: number) => (
-          <button key={index} onClick={() => onImageClick(item.id)}>
+          <button className='w-full' key={index} onClick={() => onImageClick(item.id)}>
             <img src={item.imageUrl} alt='그림' className='rounded-[12px] w-full h-auto' />
           </button>
         )}
