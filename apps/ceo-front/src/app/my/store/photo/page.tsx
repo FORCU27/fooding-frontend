@@ -38,6 +38,7 @@ const PhotoPage = () => {
   const [sortType, setSortType] = useState<ImagesSortType>('RECENT');
   const [page, setPage] = useState(1);
 
+  // TODO 선택한 매장 조회 로직 추후 localStorage 조회 + Context 사용 방식으로 바뀌면 리팩토링 예정
   const { data: selectedStore } = useQuery({
     queryKey: [queryKeys.ceo.store.selectedStore],
     queryFn: async () => {
@@ -175,13 +176,6 @@ const PhotoPage = () => {
                 <p className='mt-[4px] subtitle-7'>
                   <span className='text-gray-5'>사진을 추가해주세요</span>
                 </p>
-                <input
-                  ref={fileInputRef}
-                  type='file'
-                  accept='image/*'
-                  className='hidden'
-                  onChange={handleFileChange}
-                />
               </div>
             </div>
           ) : (
