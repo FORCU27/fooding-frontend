@@ -193,6 +193,7 @@ const StoreDetail = ({ storeId, showHeader, initialTab = 'home' }: StoreDetailPr
                 <StoreDetailHomeTab
                   store={store}
                   onSeeMoreReviews={() => setCurrentTab('review')}
+                  onSeeMoreMenus={() => setCurrentTab('menu')}
                 />
               </ChipTabs.Content>
               <ChipTabs.Content value='news'>
