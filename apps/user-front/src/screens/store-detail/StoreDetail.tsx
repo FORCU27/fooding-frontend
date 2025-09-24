@@ -187,31 +187,36 @@ const StoreDetail = ({ storeId, showHeader, initialTab = 'home' }: StoreDetailPr
             <ChipTabs.Trigger value='info'>매장정보</ChipTabs.Trigger>
           </ChipTabs.List>
           <Divider />
-          <Suspense>
-            <ChipTabs.Content value='home'>
-              <StoreDetailHomeTab store={store} onSeeMoreReviews={() => setCurrentTab('review')} />
-            </ChipTabs.Content>
-            <ChipTabs.Content value='news'>
-              <StoreDetailPostListTab storeId={storeId} />
-            </ChipTabs.Content>
-            <ChipTabs.Content value='menu'>
-              <StoreDetailMenuTab store={store} />
-            </ChipTabs.Content>
-            <ChipTabs.Content value='review'>
-              <StoreDetailReviewTab store={store} />
-            </ChipTabs.Content>
-            <ChipTabs.Content value='photo'>
-              <StoreDetailPhotoTab store={store} />
-            </ChipTabs.Content>
-            <ChipTabs.Content value='reward'>
-              <StoreRewardListTab storeId={storeId} />
-            </ChipTabs.Content>
-          </Suspense>
+          <DefaultErrorBoundary>
+            <Suspense>
+              <ChipTabs.Content value='home'>
+                <StoreDetailHomeTab
+                  store={store}
+                  onSeeMoreReviews={() => setCurrentTab('review')}
+                />
+              </ChipTabs.Content>
+              <ChipTabs.Content value='news'>
+                <StoreDetailPostListTab storeId={storeId} />
+              </ChipTabs.Content>
+              <ChipTabs.Content value='menu'>
+                <StoreDetailMenuTab store={store} />
+              </ChipTabs.Content>
+              <ChipTabs.Content value='review'>
+                <StoreDetailReviewTab store={store} />
+              </ChipTabs.Content>
+              <ChipTabs.Content value='photo'>
+                <StoreDetailPhotoTab store={store} />
+              </ChipTabs.Content>
+              <ChipTabs.Content value='reward'>
+                <StoreRewardListTab storeId={storeId} />
+              </ChipTabs.Content>
+            </Suspense>
+          </DefaultErrorBoundary>
         </ChipTabs>
       </Section>
       <div
         className={cn(
-          'fixed bottom-0 left-0 right-0 flex items-center gap-4 px-grid-margin py-grid-margin bg-white rounded-t-[16px]',
+          'z-10 fixed bottom-0 left-0 right-0 flex items-center gap-4 px-grid-margin py-grid-margin bg-white rounded-t-[16px]',
           'shadow-[0_4px_24px_rgba(0,0,0,0.0.1)]',
         )}
       >

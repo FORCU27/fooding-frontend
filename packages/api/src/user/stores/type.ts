@@ -106,6 +106,10 @@ export type GetStoreListParams = {
   pageSize?: number;
   sortType?: SortType;
   sortDirection?: SortDirection;
+  regionIds?: string[];
+  category?: StoreCategory;
+  latitude?: number;
+  longitude?: number;
 };
 
 export type Review = z.infer<typeof Review>;
