@@ -185,7 +185,7 @@ const PhotoPage = () => {
               </div>
             </div>
           ) : (
-            <div className='flex flex-col'>
+            <div className='flex flex-col pb-[80px]'>
               <div className='columns-2 md:columns-4 gap-[20px] pb-[200px]'>
                 {images?.data.list.map((photo) => (
                   <div key={photo.id} className='mb-[20px] break-inside-avoid'>
@@ -200,7 +200,7 @@ const PhotoPage = () => {
                           registerMainImage.mutate({
                             storeId,
                             photoId: photo.id,
-                            body: { isMain: true },
+                            body: { isMain: !photo.isMain },
                           }),
                       }}
                     />
@@ -239,6 +239,7 @@ const PhotoPage = () => {
           <h3 className='subtitle-6 text-gray-5 mt-[-16px]'>
             사진을 잘 설명하는 태그를 골라주세요.
           </h3>
+          {/* TODO 새 컴포넌트 생성하여 대체 예정 */}
           <ToggleGroup type='multiple' onValueChange={(values) => setSelectedTags(values)}>
             <ToggleGroupItem value='PRICE_TAG'>가격표</ToggleGroupItem>
             <ToggleGroupItem value='FOOD'>음식</ToggleGroupItem>

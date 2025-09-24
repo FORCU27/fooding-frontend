@@ -72,7 +72,9 @@ export function PhotoCard({
             </button>
           </DropdownMenu.Trigger>
           <DropdownMenu.Content sideOffset={4} side='left' align='start'>
-            <DropdownMenu.Item onSelect={actions?.onSetRepresentative}>대표사진</DropdownMenu.Item>
+            <DropdownMenu.Item onSelect={actions?.onSetRepresentative}>
+              {isRepresentative ? '대표사진 해제' : '대표사진 설정'}
+            </DropdownMenu.Item>
             <DropdownMenu.Item onSelect={actions?.onEditTag}>태그 수정</DropdownMenu.Item>
             <DropdownMenu.Item onSelect={actions?.onDelete} variant='danger'>
               삭제
