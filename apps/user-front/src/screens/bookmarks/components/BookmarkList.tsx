@@ -49,7 +49,7 @@ export const BookmarkList = () => {
           <span className='mt-2 text-gray-5 text-[14px]'>제주 제주시 서해안로 654</span>
           <div className='-mx-grid-margin mt-4'>
             <div className='flex gap-2 overflow-x-auto w-full scrollbar-hide px-grid-margin'>
-              {bookmark.images.length > 0 ? (
+              {bookmark.images && bookmark.images.length > 0 ? (
                 <div className='rounded-[12px] shrink-0 size-[128px] relative overflow-hidden'>
                   {bookmark.images.map((image) => (
                     <Image key={image.id} src={image.imageUrl} alt={bookmark.name} fill />

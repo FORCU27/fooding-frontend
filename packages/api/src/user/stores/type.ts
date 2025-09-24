@@ -65,7 +65,7 @@ export const STORE_CATEOGORY_LABELS: Record<(typeof STORE_CATEGORIES)[number], s
   SIDE_DISH: '술안주',
 };
 
-const StoreImage = z.object({
+export const StoreImage = z.object({
   id: z.number(),
   imageUrl: z.string(),
   sortOrder: z.number(),
@@ -303,3 +303,5 @@ export const SearchStoreListResponse = PageResponse(
     category: z.enum(STORE_CATEGORIES),
   }),
 );
+
+export const GetRecentlyViewedStoreListResponse = PageResponse(Store);

@@ -97,7 +97,7 @@ export const StoreDetailHomeTab = ({ store, onSeeMoreReviews }: StoreDetailHomeT
           )}
         </Section.Header>
         {reviews.list.length === 0 && (
-          <EmptyState className='mt-10' title='등록된 리뷰가 없어요!' />
+          <EmptyState className='my-10' title='등록된 리뷰가 없어요!' />
         )}
         {reviews.list.length > 0 && (
           <ul className='mt-6 flex gap-3 -mx-grid-margin overflow-x-auto scrollbar-hide px-grid-margin pb-8'>

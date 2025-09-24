@@ -26,7 +26,7 @@ export const BookmarkCard = ({ bookmark }: BookmarkCardProps) => {
         onClick={() => flow.push('StoreDetailScreen', { storeId: bookmark.storeId })}
       >
         <div className='relative h-[140px] mb-2 rounded-xl overflow-hidden'>
-          {isNonEmptyArray(bookmark.images) ? (
+          {bookmark.images && isNonEmptyArray(bookmark.images) ? (
             <Image
               className='object-center w-full h-full'
               src={bookmark.images[0].imageUrl}
