@@ -32,9 +32,14 @@ const mock = {
 type StoreDetailHomeTabProps = {
   store: StoreInfo;
   onSeeMoreReviews: () => void;
+  onSeeMoreMenus: () => void;
 };
 
-export const StoreDetailHomeTab = ({ store, onSeeMoreReviews }: StoreDetailHomeTabProps) => {
+export const StoreDetailHomeTab = ({
+  store,
+  onSeeMoreReviews,
+  onSeeMoreMenus,
+}: StoreDetailHomeTabProps) => {
   const { data: storeMenus } = useGetStoreMenuList(store.id);
   const { data: reviews } = useGetStoreReviewList(store.id);
   const { data: stores } = useGetStoreList({ sortType: 'RECENT' });
@@ -69,7 +74,7 @@ export const StoreDetailHomeTab = ({ store, onSeeMoreReviews }: StoreDetailHomeT
       <Section className='pb-8'>
         <Section.Header>
           <Section.Title>메뉴</Section.Title>
-          <Section.Link>더보기</Section.Link>
+          <Section.Link onClick={onSeeMoreMenus}>더보기</Section.Link>
         </Section.Header>
         {!isNonEmptyArray(storeMenus) ? (
           <EmptyState className='mt-10' title='등록된 메뉴가 없어요!' />

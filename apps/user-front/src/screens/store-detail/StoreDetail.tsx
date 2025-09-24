@@ -189,7 +189,11 @@ const StoreDetail = ({ storeId, showHeader, initialTab = 'home' }: StoreDetailPr
           <Divider />
           <Suspense>
             <ChipTabs.Content value='home'>
-              <StoreDetailHomeTab store={store} onSeeMoreReviews={() => setCurrentTab('review')} />
+              <StoreDetailHomeTab
+                store={store}
+                onSeeMoreReviews={() => setCurrentTab('review')}
+                onSeeMoreMenus={() => setCurrentTab('menu')}
+              />
             </ChipTabs.Content>
             <ChipTabs.Content value='news'>
               <StoreDetailPostListTab storeId={storeId} />
