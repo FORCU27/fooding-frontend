@@ -7,6 +7,7 @@ import { OverlayProvider } from 'overlay-kit';
 import { LoginBottomSheetProvider } from '@/components/Auth/LoginBottomSheet';
 import { AuthProvider } from '@/components/Provider/AuthProvider';
 import { ReactQueryProvider } from '@/components/Provider/ReactQueryProvider';
+import { PreferredRegionsProvider } from '@/hooks/regions/usePreferredRegions';
 
 export const Providers = ({ children }: { children: React.ReactNode }) => {
   return (
@@ -14,7 +15,9 @@ export const Providers = ({ children }: { children: React.ReactNode }) => {
       <ReactQueryProvider>
         <OverlayProvider>
           <AuthProvider>
-            <LoginBottomSheetProvider>{children}</LoginBottomSheetProvider>
+            <PreferredRegionsProvider>
+              <LoginBottomSheetProvider>{children}</LoginBottomSheetProvider>
+            </PreferredRegionsProvider>
           </AuthProvider>
           <Toaster />
         </OverlayProvider>

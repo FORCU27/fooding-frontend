@@ -16,6 +16,7 @@ import BottomTab from '@/components/Layout/BottomTab';
 import { Divider } from '@/components/Layout/Divider';
 import { Screen } from '@/components/Layout/Screen';
 import { StoresList } from '@/components/Store/StoresList';
+import { usePreferredRegions } from '@/hooks/regions/usePreferredRegions';
 import { useGetStoreImmediateEntryList } from '@/hooks/store/useGetStoreImmediateEntryList';
 import { useGetStoreList } from '@/hooks/store/useGetStoreList';
 import { Header } from '@/tabs/home/components/Header';
@@ -52,17 +53,20 @@ const Content = () => {
 };
 
 const ContentBody = () => {
-  const [selectedRegions, setSelectedRegions] = useState<{ id: string; name: string }[]>([]);
+  const { preferredRegions, changePreferredRegions } = usePreferredRegions();
   const [category, setCategory] = useState<StoreCategory | null>(null);
 
   return (
     <div className='flex flex-col w-full'>
-      <Toolbar selectedRegions={selectedRegions} onSelectedRegionsChange={setSelectedRegions} />
+      <Toolbar
+        selectedRegions={preferredRegions}
+        onSelectedRegionsChange={changePreferredRegions}
+      />
       <div className='bg-white mb-3'>
         <Banner />
         <Suspense>
           <StoreSection
-            selectedRegions={selectedRegions}
+            selectedRegions={preferredRegions}
             category={category}
             onCategoryChange={setCategory}
           />
