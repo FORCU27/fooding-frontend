@@ -135,7 +135,7 @@ const StoreDetail = ({ storeId, showHeader, initialTab = 'home' }: StoreDetailPr
       <NavButton className='z-10 absolute right-grid-margin top-3'>
         <ShareIcon className='size-5' />
       </NavButton>
-      {store.images && store.images.length === 0 && <StoreImagePlaceholder />}
+      {(store.images === null || store.images.length === 0) && <StoreImagePlaceholder />}
       {store.images && store.images.length > 0 && (
         <StoreImageCarousel imageUrls={store.images.map((image) => image.imageUrl)} />
       )}
