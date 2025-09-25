@@ -116,3 +116,16 @@ export type GetStore = z.infer<typeof GetStoreResponse>;
 export type GetStoreList = z.infer<typeof GetStoreListResponse>;
 
 export type StoreOperatingHourBody = z.infer<typeof StoreOperatingHourBody>;
+
+export type UpdateStoreBody = {
+  name: Store['name'];
+  regionId: Store['regionId'];
+  address: Store['address'];
+  addressDetail: Store['addressDetail'];
+  category: Store['category'];
+  description: Store['description'];
+  contactNumber: Store['contactNumber'];
+  direction: Store['direction'];
+  latitude: Store['latitude'];
+  longitude: Store['longitude'];
+};
