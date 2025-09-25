@@ -64,12 +64,9 @@ const ContentBody = () => {
       />
       <div className='bg-white mb-3'>
         <Banner />
+        <CategoryTabs category={category} onCategoryChange={setCategory} />
         <Suspense>
-          <StoreSection
-            selectedRegions={preferredRegions}
-            category={category}
-            onCategoryChange={setCategory}
-          />
+          <StoreSection selectedRegions={preferredRegions} category={category} />
         </Suspense>
       </div>
     </div>
@@ -79,10 +76,9 @@ const ContentBody = () => {
 type StoreSectionProps = {
   selectedRegions: { id: string; name: string }[];
   category: StoreCategory | null;
-  onCategoryChange: (category: StoreCategory | null) => void;
 };
 
-const StoreSection = ({ selectedRegions, category, onCategoryChange }: StoreSectionProps) => {
+const StoreSection = ({ selectedRegions, category }: StoreSectionProps) => {
   const { data: stores } = useGetStoreList({
     pageNum: 1,
     pageSize: 10,
@@ -112,10 +108,7 @@ const StoreSection = ({ selectedRegions, category, onCategoryChange }: StoreSect
 
   return (
     <>
-      <div className='flex flex-col py-grid-margin'>
-        <CategoryTabs category={category} onCategoryChange={onCategoryChange} />
-        <MainStoreList stores={stores.list} />
-      </div>
+      {stores.list.length > 0 && <MainStoreList stores={stores.list} />}
       <Divider />
       <StoresList
         subtitle='푸딩에서 인기 많은 식당이에요'

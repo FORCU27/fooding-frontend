@@ -8,6 +8,7 @@ import {
   BottomSheet,
   Button,
   ChipTabs,
+  ErrorFallback,
   NavButton,
   Skeleton,
 } from '@repo/design-system/components/b2c';
@@ -20,7 +21,8 @@ import {
   StarIcon,
 } from '@repo/design-system/icons';
 import { ActivityComponentType, useFlow } from '@stackflow/react/future';
-import { Suspense } from '@suspensive/react';
+import { ErrorBoundary, ErrorBoundaryFallbackProps, Suspense } from '@suspensive/react';
+import { QueryErrorResetBoundary } from '@tanstack/react-query';
 
 import { StoreWaitingForm, StoreWaitingFormData } from './components/StoreWaitingForm';
 import { StoreDetailHomeTab } from './components/tabs/Home';
@@ -68,16 +70,24 @@ export const StoreDetailScreen: ActivityComponentType<'StoreDetailScreen'> = ({ 
 
   return (
     <Screen ref={screenRef}>
-      <DefaultErrorBoundary>
-        <NavButton className='z-10 absolute left-grid-margin top-3' onClick={() => flow.pop()}>
-          <ChevronLeftIcon className='size-7' />
-        </NavButton>
-        <LoadingToggle fallback={<StoreDetailLoadingFallback />}>
-          <Suspense clientOnly fallback={<StoreDetailLoadingFallback />}>
-            <StoreDetail storeId={params.storeId} showHeader={showHeader} initialTab={initialTab} />
-          </Suspense>
-        </LoadingToggle>
-      </DefaultErrorBoundary>
+      <QueryErrorResetBoundary>
+        {({ reset }) => (
+          <ErrorBoundary fallback={StoreDetailErrorFallback} onReset={reset}>
+            <NavButton className='z-10 absolute left-grid-margin top-3' onClick={() => flow.pop()}>
+              <ChevronLeftIcon className='size-7' />
+            </NavButton>
+            <LoadingToggle fallback={<StoreDetailLoadingFallback />}>
+              <Suspense clientOnly fallback={<StoreDetailLoadingFallback />}>
+                <StoreDetail
+                  storeId={params.storeId}
+                  showHeader={showHeader}
+                  initialTab={initialTab}
+                />
+              </Suspense>
+            </LoadingToggle>
+          </ErrorBoundary>
+        )}
+      </QueryErrorResetBoundary>
     </Screen>
   );
 };
@@ -135,7 +145,7 @@ const StoreDetail = ({ storeId, showHeader, initialTab = 'home' }: StoreDetailPr
       <NavButton className='z-10 absolute right-grid-margin top-3'>
         <ShareIcon className='size-5' />
       </NavButton>
-      {store.images && store.images.length === 0 && <StoreImagePlaceholder />}
+      {(store.images === null || store.images.length === 0) && <StoreImagePlaceholder />}
       {store.images && store.images.length > 0 && (
         <StoreImageCarousel imageUrls={store.images.map((image) => image.imageUrl)} />
       )}
@@ -187,7 +197,7 @@ const StoreDetail = ({ storeId, showHeader, initialTab = 'home' }: StoreDetailPr
             <ChipTabs.Trigger value='info'>매장정보</ChipTabs.Trigger>
           </ChipTabs.List>
           <Divider />
-          <DefaultErrorBoundary>
+          <DefaultErrorBoundary className='py-24'>
             <Suspense>
               <ChipTabs.Content value='home'>
                 <StoreDetailHomeTab
@@ -380,5 +390,18 @@ const StoreImageCarousel = ({ imageUrls }: CarouselProps) => {
         </Carousel.Pagination>
       </Carousel.Region>
     </Carousel>
+  );
+};
+
+const StoreDetailErrorFallback = ({ reset }: ErrorBoundaryFallbackProps) => {
+  return (
+    <ErrorFallback className='flex-1'>
+      <Header left={<Header.Back />} />
+      <ErrorFallback.Title>가게 정보를 불러오지 못했어요</ErrorFallback.Title>
+      <ErrorFallback.Description>잠시 후 다시 시도해 주세요</ErrorFallback.Description>
+      <ErrorFallback.Actions>
+        <ErrorFallback.Action onClick={reset}>새로고침</ErrorFallback.Action>
+      </ErrorFallback.Actions>
+    </ErrorFallback>
   );
 };

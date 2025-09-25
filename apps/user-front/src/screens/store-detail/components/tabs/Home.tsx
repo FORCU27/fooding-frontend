@@ -14,6 +14,7 @@ import { MenuCard } from '@/components/Store/MenuCard';
 import { ReviewsList } from '@/components/Store/ReviewsList';
 import { StoresList } from '@/components/Store/StoresList';
 import { SubwayLineBadge } from '@/components/SubwayLineBadge';
+import { useGetStoreImmediateEntryList } from '@/hooks/store/useGetStoreImmediateEntryList';
 import { useGetStoreList } from '@/hooks/store/useGetStoreList';
 import { useGetStoreMenuList } from '@/hooks/store/useGetStoreMenuList';
 import { useGetStoreReviewList } from '@/hooks/store/useGetStoreReviewList';
@@ -43,6 +44,10 @@ export const StoreDetailHomeTab = ({
   const { data: storeMenus } = useGetStoreMenuList(store.id);
   const { data: reviews } = useGetStoreReviewList(store.id);
   const { data: stores } = useGetStoreList({ sortType: 'RECENT' });
+  const { data: immediateEntryStores } = useGetStoreImmediateEntryList({
+    pageNum: 1,
+    pageSize: 10,
+  });
 
   return (
     <div className='flex flex-col'>
@@ -150,10 +155,9 @@ export const StoreDetailHomeTab = ({
           stores={stores.list}
           onClickTotalBtn={noop}
         />
-        {/* TODO: 지금 바로 입장 가능한 식당 목록 조회 기능 추가 */}
         <StoresList
           subtitle='지금 바로 입장하실 수 있어요!'
-          stores={stores.list}
+          stores={immediateEntryStores.list}
           onClickTotalBtn={noop}
         />
       </div>

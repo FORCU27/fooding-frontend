@@ -1,7 +1,7 @@
 'use client';
 
 import { Review, StoreInfo } from '@repo/api/user';
-import { defineConfig, RegisteredActivityName } from '@stackflow/config';
+import { defineConfig, Register } from '@stackflow/config';
 import { basicUIPlugin } from '@stackflow/plugin-basic-ui';
 import { basicRendererPlugin } from '@stackflow/plugin-renderer-basic';
 import { stackflow } from '@stackflow/react/future';
@@ -142,6 +142,8 @@ export const { Stack } = stackflow({
   ],
 });
 
-export const screenId: Record<string, RegisteredActivityName> = {
-  '1': 'SearchResultScreen',
+type BannerScreen = { [K in keyof Register]: { name: K; params: Register[K] } };
+
+export const bannerScreen: Record<string, BannerScreen[keyof BannerScreen]> = {
+  '1': { name: 'SearchResultScreen', params: { keyword: '', regions: [] } },
 };
