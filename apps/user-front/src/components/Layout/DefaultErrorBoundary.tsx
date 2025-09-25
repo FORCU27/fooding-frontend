@@ -2,14 +2,21 @@ import { ErrorFallback } from '@repo/design-system/components/b2c';
 import { ErrorBoundary } from '@suspensive/react';
 import { QueryErrorResetBoundary } from '@tanstack/react-query';
 
-export const DefaultErrorBoundary = ({ children }: { children: React.ReactNode }) => {
+import { cn } from '@/utils/cn';
+
+type DefaultErrorBoundaryProps = {
+  children: React.ReactNode;
+  className?: string;
+};
+
+export const DefaultErrorBoundary = ({ className, children }: DefaultErrorBoundaryProps) => {
   return (
     <QueryErrorResetBoundary>
       {({ reset }) => (
         <ErrorBoundary
           onReset={reset}
           fallback={({ reset }) => (
-            <ErrorFallback className='flex-1'>
+            <ErrorFallback className={cn('flex-1', className)}>
               <ErrorFallback.Title>알 수 없는 에러가 발생했습니다</ErrorFallback.Title>
               <ErrorFallback.Description>잠시 후 다시 시도해 주세요</ErrorFallback.Description>
               <ErrorFallback.Actions>

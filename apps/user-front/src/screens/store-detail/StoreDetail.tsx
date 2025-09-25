@@ -197,7 +197,7 @@ const StoreDetail = ({ storeId, showHeader, initialTab = 'home' }: StoreDetailPr
             <ChipTabs.Trigger value='info'>매장정보</ChipTabs.Trigger>
           </ChipTabs.List>
           <Divider />
-          <DefaultErrorBoundary>
+          <DefaultErrorBoundary className='py-24'>
             <Suspense>
               <ChipTabs.Content value='home'>
                 <StoreDetailHomeTab
