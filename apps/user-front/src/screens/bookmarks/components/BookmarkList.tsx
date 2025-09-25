@@ -52,7 +52,13 @@ export const BookmarkList = () => {
               {bookmark.images && bookmark.images.length > 0 ? (
                 <div className='rounded-[12px] shrink-0 size-[128px] relative overflow-hidden'>
                   {bookmark.images.map((image) => (
-                    <Image key={image.id} src={image.imageUrl} alt={bookmark.name} fill />
+                    <Image
+                      className='object-cover w-full h-full'
+                      key={image.id}
+                      src={image.imageUrl}
+                      alt={bookmark.name}
+                      fill
+                    />
                   ))}
                 </div>
               ) : (
