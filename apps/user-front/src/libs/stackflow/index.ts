@@ -19,6 +19,7 @@ import { PlanDetailScreen } from '@/screens/plan-detail/PlanDetail';
 import { ProfileModifyScreen } from '@/screens/profile/ProfileModify';
 import { ProfileCompleteScreen } from '@/screens/profile-user-info/ProfileCompleteScreen';
 import { ProfileUserInfoScreen } from '@/screens/profile-user-info/ProfileUserInfo';
+import { RecentlyViewedStoreListScreen } from '@/screens/recently-viewed-stores/RecentlyViewedStores';
 import { ReviewReportCreateScreen } from '@/screens/reports/ReivewReportCreate';
 import { ReviewCreateScreen, ReviewCreateScreenParams } from '@/screens/reviews/ReviewCreate';
 import { ReviewModifyScreen, ReviewModifyScreenParams } from '@/screens/reviews/ReviewModify';
@@ -70,6 +71,7 @@ declare module '@stackflow/config' {
     MyRewardListScreen: object;
     MyRewardDetailScreen: { storeId: number };
     ReviewReportCreateScreen: { review: Review; store: StoreInfo; type: 'REVIEW' | 'POST' };
+    RecentlyViewedStoreListScreen: object;
   }
 }
 
@@ -99,6 +101,7 @@ const config = defineConfig({
     { name: 'MyRewardListScreen' },
     { name: 'MyRewardDetailScreen' },
     { name: 'ReviewReportCreateScreen' },
+    { name: 'RecentlyViewedStoreListScreen' },
   ],
 
   transitionDuration: SCREEN_TRANSITION_DURATION,
@@ -132,6 +135,7 @@ export const { Stack } = stackflow({
     MyRewardListScreen,
     MyRewardDetailScreen,
     ReviewReportCreateScreen,
+    RecentlyViewedStoreListScreen,
   },
   plugins: [
     basicRendererPlugin(),
