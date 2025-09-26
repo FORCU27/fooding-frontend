@@ -24,6 +24,7 @@ export * from './RadioChoiceBox';
 export * from './Form';
 export * from './RadioSelectBox';
 export * from './BottomSheet';
+export * from './DropdownMenu';
 
 // Re-export commonly used icons from lucide-react
 export { Calendar, ChevronLeft, ChevronRight, Check } from 'lucide-react';
@@ -42,4 +43,8 @@ export * from './PhotoCard';
 export * from './ImageUploader';
 export * from './DatePicker';
 export * from './StoreStatusChip';
-export { DatePickerWithDialog, type SelectedItem, type SelectedRangeItem } from './DatePickerWithDialog';
+export {
+  DatePickerWithDialog,
+  type SelectedItem,
+  type SelectedRangeItem,
+} from './DatePickerWithDialog';

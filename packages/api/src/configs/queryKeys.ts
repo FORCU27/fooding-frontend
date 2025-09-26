@@ -78,6 +78,7 @@ export const queryKeys = {
     },
     storeWaiting: {
       detail: 'userStoreWaitingDetail',
+      available: 'userStoreWaitingAvailable',
     },
     coupon: {
       infiniteList: 'userCouponInfiniteList',
@@ -87,6 +88,7 @@ export const queryKeys = {
     region: { list: 'userRegionList' },
     reward: { list: 'userRewardList', log: 'userRewardLog' },
     report: { detail: 'userReportDetail' },
+    review: { myList: 'userReviewMyList' },
   },
   me: {
     user: 'meUser',

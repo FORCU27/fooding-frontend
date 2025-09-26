@@ -213,7 +213,7 @@ export const mockStoreMenuListResponse: GetStoreMenuListResponse = {
           name: '딤섬 SET',
           description:
             '오이무침-마늘새우찜-찜딤섬5종-계절야채요리-춘권-식사(토마토당면or홍쇼육덮밥)-디저트딤섬',
-          imageUrl: null,
+          imageUrls: [],
           price: 40000,
           sortOrder: 1,
           signature: true,
@@ -224,7 +224,7 @@ export const mockStoreMenuListResponse: GetStoreMenuListResponse = {
           name: '딤섬 SET',
           description:
             '오이무침-마늘새우찜-찜딤섬5종-계절야채요리-춘권-식사(토마토당면or홍쇼육덮밥)-디저트딤섬',
-          imageUrl: null,
+          imageUrls: [],
           price: 40000,
           sortOrder: 1,
           signature: false,
@@ -240,7 +240,7 @@ export const mockStoreMenuListResponse: GetStoreMenuListResponse = {
           id: 1,
           name: '김치찌개',
           description: '매운 김치찌개',
-          imageUrl: MENU_IMAGE_URL,
+          imageUrls: [MENU_IMAGE_URL],
           price: 10000,
           sortOrder: 1,
           signature: true,

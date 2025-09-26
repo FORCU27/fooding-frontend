@@ -12,6 +12,7 @@ import {
   GetStorePointShopStatusResponse,
   PointShopQuery,
   CreateStorePointShopItemBody,
+  UpdateStoreBody,
 } from './type';
 import { api } from '../../shared';
 
@@ -70,5 +71,11 @@ export const storeApi = {
   updateStorePointShopItemInactive: async (storeId: number, id: number) => {
     const response = await api.put(`${ENDPOINT}/${storeId}/point-shop/${id}/inactive`);
     return GetStorePointShopStatusResponse.parse(response);
+  },
+  updateStore: async ({ id, body }: { id: number; body: UpdateStoreBody }) => {
+    await api.put(`/ceo/stores/${id}`, body);
+  },
+  deleteStore: async (id: number) => {
+    await api.delete(`/ceo/stores/${id}`);
   },
 };

@@ -69,6 +69,9 @@ export const ProfileUserInfoScreen: ActivityComponentType<'ProfileUserInfoScreen
         }
       }
 
+      // 프로필 수정 성공 토스트
+      toast.success('내 정보가 성공적으로 수정되었어요!');
+
       if (!params.isUpdateMode)
         return flow.push('ProfileCompleteScreen', { userName: formData.name || '' });
     } catch (error) {

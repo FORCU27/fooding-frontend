@@ -7,7 +7,7 @@ interface CategoryTabsProps {
 }
 
 export const CategoryTabs = ({ category, onCategoryChange }: CategoryTabsProps) => (
-  <div className='flex flex-col justify-between px-grid-margin pb-grid-margin gap-4'>
+  <div className='flex flex-col justify-between px-grid-margin py-grid-margin gap-4'>
     <div className='subtitle-1'>오늘은 어디에서 식사할까요?</div>
     <ChipTabs value={category ?? undefined} onChange={onCategoryChange} scrollable>
       <ChipTabs.List>
