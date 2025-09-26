@@ -87,7 +87,7 @@ export const StoreDetailHomeTab = ({
           <ul className='mt-6 flex gap-3 -mx-grid-margin overflow-x-auto scrollbar-hide px-grid-margin'>
             {storeMenus[0].menu.map((menu) => (
               <MenuCard key={menu.id}>
-                <MenuCard.Image src={menu.imageUrl} alt={menu.name} />
+                <MenuCard.Image src={menu.imageUrls[0] ?? null} alt={menu.name} />
                 <MenuCard.Title>{menu.name}</MenuCard.Title>
                 <MenuCard.Price>{menu.price.toLocaleString()}</MenuCard.Price>
               </MenuCard>

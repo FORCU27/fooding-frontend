@@ -11,6 +11,7 @@ import {
   ErrorFallback,
   NavButton,
   Skeleton,
+  toast,
 } from '@repo/design-system/components/b2c';
 import {
   BookmarkIcon,
@@ -44,6 +45,7 @@ import { useAddBookmark } from '@/hooks/bookmark/useAddBookmark';
 import { useDeleteBookmark } from '@/hooks/bookmark/useDeleteBookmark';
 import { useGetStoreDetail } from '@/hooks/store/useGetStoreDetail';
 import { useCreateStoreWaiting } from '@/hooks/store-waiting/useCreateStoreWaiting';
+import { useGetStoreWaitingAvailable } from '@/hooks/store-waiting/useGetStoreWaitingAvailable';
 import { useScrollVisibility } from '@/hooks/useScrollVisibility';
 import { cn } from '@/utils/cn';
 
@@ -102,9 +104,11 @@ type StoreDetailProps = {
 
 const StoreDetail = ({ storeId, showHeader, initialTab = 'home' }: StoreDetailProps) => {
   const [currentTab, setCurrentTab] = useState<Tab>(initialTab);
+  const flow = useFlow();
 
   const { user } = useAuth();
   const { data: store } = useGetStoreDetail(storeId);
+  const { data: waitingAvailable } = useGetStoreWaitingAvailable(storeId);
   const loginBottomSheet = useLoginBottomSheet();
   const addBookMark = useAddBookmark();
   const createStoreWaiting = useCreateStoreWaiting();
@@ -134,8 +138,20 @@ const StoreDetail = ({ storeId, showHeader, initialTab = 'home' }: StoreDetailPr
   };
 
   const handleWaitingFormSubmit = (data: StoreWaitingFormData) => {
-    createStoreWaiting.mutate({ ...data, storeId: store.id });
-    setIsBottomSheetOpen(false);
+    createStoreWaiting.mutate(
+      { ...data, storeId: store.id },
+      {
+        onSuccess: (response) => {
+          toast.success('줄서기가 완료되었어요!');
+          setIsBottomSheetOpen(false);
+          // 웨이팅 상세 화면으로 이동
+          flow.push('WaitingDetailScreen', { waitingId: response.data.planId });
+        },
+        onError: () => {
+          toast.error('줄서기에 실패했어요. 잠시 후 다시 시도해주세요.');
+        },
+      }
+    );
   };
 
   return (
@@ -244,8 +260,8 @@ const StoreDetail = ({ storeId, showHeader, initialTab = 'home' }: StoreDetailPr
             {store.bookmarkCount + (!store.isBookmarked && isBookmarked ? 1 : 0)}
           </span>
         </button>
-        <Button disabled={store.isFinished} onClick={() => setIsBottomSheetOpen(true)}>
-          {store.isFinished ? '영업 종료' : '줄서기'}
+        <Button disabled={!waitingAvailable.available} onClick={() => setIsBottomSheetOpen(true)}>
+          줄서기
         </Button>
       </div>
       <BottomSheet open={isBottomSheetOpen} onOpenChange={setIsBottomSheetOpen}>

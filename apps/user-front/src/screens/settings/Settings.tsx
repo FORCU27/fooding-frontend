@@ -57,23 +57,23 @@ export const SettingScreen: ActivityComponentType<'SettingScreen'> = () => {
             <MenuItemText>알림 설정</MenuItemText>
             <MenuItemChevronRight />
           </MenuItem>
-          <MenuItem>
+          <MenuItem onClick={() => window.open('http://pf.kakao.com/_PpxbSn', '_blank')}>
             <MenuItemText>1:1 문의</MenuItemText>
             <MenuItemChevronRight />
           </MenuItem>
         </MenuItemGroup>
         <hr className='w-full text-white bg-gray-1 h-[10px]' />
         <MenuItemGroup label={<MenuItemGroupLabel>기타</MenuItemGroupLabel>}>
-          <MenuItem>
+          <MenuItem onClick={() => window.open('https://fooding-cs.notion.site/26e6b89156ba80ec8b5fe1ed2dab6fd7?pvs=73', '_blank')}>
             <MenuItemText>공지사항 및 이용약관</MenuItemText>
             <MenuItemChevronRight />
           </MenuItem>
-          <MenuItem>
+          <MenuItem onClick={() => window.open('http://pf.kakao.com/_PpxbSn', '_blank')}>
             <MenuItemText>개선 제안</MenuItemText>
             <MenuItemChevronRight />
           </MenuItem>
           <MenuItem onClick={handleLogoutClick}>로그아웃</MenuItem>
-          <MenuItem>회원탈퇴</MenuItem>
+          <MenuItem onClick={() => window.open('http://pf.kakao.com/_PpxbSn', '_blank')}>회원탈퇴</MenuItem>
         </MenuItemGroup>
       </div>
     </Screen>

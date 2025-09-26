@@ -86,7 +86,7 @@ export const ProfileUserInfoForm = ({
   });
 
   const onFormSubmit = (data: FormSchemaType) => {
-    alert('본인인증이 완료되었습니다.');
+    // alert('본인인증이 완료되었습니다.');
 
     handleSubmit(
       {
@@ -105,7 +105,7 @@ export const ProfileUserInfoForm = ({
       },
     );
 
-    setIsBottomSheetOpen(false);
+    // setIsBottomSheetOpen(false);
   };
 
   const formatPhoneNumber = (phoneNumber: string) => {
@@ -113,7 +113,8 @@ export const ProfileUserInfoForm = ({
   };
 
   const handleSaveClick = async () => {
-    setIsBottomSheetOpen(true);
+    // setIsBottomSheetOpen(true);
+    onSubmit(onFormSubmit)();
   };
 
   return (
@@ -203,7 +204,7 @@ export const ProfileUserInfoForm = ({
                 </Button>
               </div>
             )}
-            <BottomSheet open={isBottomSheetOpen} onOpenChange={setIsBottomSheetOpen}>
+            {/* <BottomSheet open={isBottomSheetOpen} onOpenChange={setIsBottomSheetOpen}>
               <BottomSheet.Content>
                 <BottomSheet.Header>
                   <BottomSheet.Title className='headline-3'>
@@ -241,7 +242,7 @@ export const ProfileUserInfoForm = ({
                   </a>
                 </BottomSheet.Footer>
               </BottomSheet.Content>
-            </BottomSheet>
+            </BottomSheet> */}
           </div>
         </div>
       </form>
