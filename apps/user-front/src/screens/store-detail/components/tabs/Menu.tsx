@@ -2,11 +2,11 @@ import Image from 'next/image';
 
 import { StoreInfo, StoreMenu } from '@repo/api/user';
 import { ChipTabs, EmptyState, Tag } from '@repo/design-system/components/b2c';
+import { FoodingIcon } from '@repo/design-system/icons';
 import { useFlow } from '@stackflow/react/future';
 
 import { useGetStoreMenuList } from '@/hooks/store/useGetStoreMenuList';
 import { isNonEmptyArray } from '@/utils/array';
-import { FoodingIcon } from '@repo/design-system/icons';
 
 type StoreDetailMenuTabProps = {
   store: StoreInfo;

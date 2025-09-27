@@ -1878,7 +1878,7 @@ function MenuDialog({
                 gridTemplateColumns: 'repeat(auto-fill, minmax(120px, 1fr))', 
                 gap: 2 
               }}>
-                {uploadedFiles.map((file, index) => (
+                {uploadedFiles.map((file) => (
                   <Box 
                     key={file.id} 
                     sx={{ 
