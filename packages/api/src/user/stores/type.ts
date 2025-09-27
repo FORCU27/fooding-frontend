@@ -137,7 +137,7 @@ export const StoreMenu = z.object({
   id: z.number(),
   name: z.string(),
   description: z.string(),
-  imageUrl: z.string().nullable(),
+  imageUrls: z.array(z.string()),
   price: z.number(),
   sortOrder: z.number(),
   signature: z.boolean(),
