@@ -27,7 +27,7 @@ const ConfirmModal = ({
         {title && <h2 className='subtitle-2 text-center'>{title}</h2>}
         {children && <div className='text-center'>{children}</div>}
         <div className='flex gap-[12px] px-[74px]'>
-          <Button onClick={onCancel} variant='outline'>
+          <Button onClick={onCancel} variant='outlined'>
             {cancelLabel}
           </Button>
           <Button onClick={onConfirm} variant='primary'>

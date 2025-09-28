@@ -156,9 +156,9 @@ const PhotoPage = () => {
             </div>
           ) : (
             <PhotoList
-              photos={images.data.list}
+              photos={images?.data?.list ?? []}
               page={params.page}
-              totalPages={images.data.pageInfo.totalPages ?? 1}
+              totalPages={images?.data.pageInfo.totalPages ?? 1}
               onChangePage={(page) => setParams((prev) => ({ ...prev, page }))}
               onDelete={(id) => setModalType({ type: 'delete', photoId: id })}
               onEditTag={(id) => setModalType({ type: 'editTag', photoId: id })}
