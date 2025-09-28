@@ -67,9 +67,7 @@ export function PhotoCard({
       <div className='absolute right-[22px] top-[20px]'>
         <DropdownMenu>
           <DropdownMenu.Trigger asChild>
-            <button>
-              <KebabButton aria-label='메뉴 열기' />
-            </button>
+            <KebabButton aria-label='메뉴 열기' />
           </DropdownMenu.Trigger>
           <DropdownMenu.Content sideOffset={4} side='left' align='start'>
             <DropdownMenu.Item onSelect={actions?.onSetRepresentative}>
