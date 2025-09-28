@@ -16,11 +16,13 @@ import {
 import { useQueries } from '@tanstack/react-query';
 
 import AddMenuDialog from './AddMenuDialog';
+import DeleteMenuDialog from './DeleteMenuDialog';
 import { useCreateMenuCategory } from '@/hooks/menu-category/useCreateMenuCategory';
 import { useDeleteMenuCategory } from '@/hooks/menu-category/useDeleteMenuCategory';
 import { useGetMenuCategories } from '@/hooks/menu-category/useGetMenuCategories';
 import { useSortMenuCategories } from '@/hooks/menu-category/useSortMenuCategories';
 import { useUpdateMenuCategory } from '@/hooks/menu-category/useUpdateMenuCategory';
+import { useDeleteMenu } from '@/hooks/menu/useDeleteMenu';
 import { useSelectedStoreId } from '@/hooks/useSelectedStoreId';
 
 type BadgeType = '대표' | '추천' | '신규';
@@ -96,10 +98,25 @@ const MenusPage = () => {
   const sortCategoriesMutation = useSortMenuCategories();
   const updateCategoryMutation = useUpdateMenuCategory(selectedStoreId);
   const deleteCategoryMutation = useDeleteMenuCategory(selectedStoreId);
+  const deleteMenuMutation = useDeleteMenu();
 
   const [categories, setCategories] = useState<Category[]>([]);
   const [editingCategory, setEditingCategory] = useState<{ id: string; name: string } | null>(null);
   const [showAddMenuDialog, setShowAddMenuDialog] = useState(false);
+  const [editingMenuItem, setEditingMenuItem] = useState<{
+    id: number;
+    categoryId: number;
+    name: string;
+    price: number;
+    description: string;
+    isSignature: boolean;
+    isRecommend: boolean;
+    imageUrls?: string[];
+  } | null>(null);
+  const [deletingMenuItem, setDeletingMenuItem] = useState<{
+    id: number;
+    name: string;
+  } | null>(null);
 
   // 모든 카테고리의 메뉴 데이터를 캐시 (렌더링과 무관하게 유지)
   const menuCacheRef = useRef<Record<number, MenuItem[]>>({});
@@ -117,7 +134,7 @@ const MenusPage = () => {
           name: menu.name,
           description: menu.description || '',
           price: menu.price,
-          image: menu.imageUrl || undefined,
+          image: menu.imageUrls?.[0] || menu.imageUrl || undefined, // imageUrls 배열의 첫 번째 이미지 사용
           badges: [
             ...(menu.isSignature ? ['대표' as BadgeType] : []),
             ...(menu.isRecommend ? ['추천' as BadgeType] : []),
@@ -285,6 +302,42 @@ const MenusPage = () => {
           onEditCategory={handleEditCategory}
           onCategorySelect={(categoryId) => setSelectedCategoryId(Number(categoryId))}
           selectedCategoryId={selectedCategoryId?.toString()}
+          onEditMenuItem={(categoryId, itemId) => {
+            // 메뉴 데이터 찾기
+            const categoryData = menuQueries.find((q, index) =>
+              menuCategories?.[index]?.id === parseInt(categoryId)
+            )?.data;
+
+            const menuItem = categoryData?.list.find(menu => menu.id === parseInt(itemId));
+
+            if (menuItem) {
+              setEditingMenuItem({
+                id: menuItem.id,
+                categoryId: parseInt(categoryId),
+                name: menuItem.name,
+                price: menuItem.price,
+                description: menuItem.description || '',
+                isSignature: menuItem.isSignature,
+                isRecommend: menuItem.isRecommend,
+                imageUrls: menuItem.imageUrls || [],
+              });
+            }
+          }}
+          onDeleteMenuItem={(categoryId, itemId) => {
+            // 메뉴 데이터 찾기
+            const categoryData = menuQueries.find((q, index) =>
+              menuCategories?.[index]?.id === parseInt(categoryId)
+            )?.data;
+
+            const menuItem = categoryData?.list.find(menu => menu.id === parseInt(itemId));
+
+            if (menuItem) {
+              setDeletingMenuItem({
+                id: menuItem.id,
+                name: menuItem.name,
+              });
+            }
+          }}
         />
       </Card>
 
@@ -300,11 +353,11 @@ const MenusPage = () => {
         />
       )}
 
-      <div className='flex justify-center mb-17'>
+      {/* <div className='flex justify-center mb-17'>
         <Button type='button' onClick={handleSave}>
           저장
         </Button>
-      </div>
+      </div> */}
 
       {/* 메뉴 추가 다이얼로그 */}
       {showAddMenuDialog && selectedCategoryId && (
@@ -312,6 +365,38 @@ const MenusPage = () => {
           open={showAddMenuDialog}
           onOpenChange={setShowAddMenuDialog}
           categoryId={selectedCategoryId}
+        />
+      )}
+
+      {/* 메뉴 수정 다이얼로그 */}
+      {editingMenuItem && (
+        <AddMenuDialog
+          open={!!editingMenuItem}
+          onOpenChange={(open) => !open && setEditingMenuItem(null)}
+          categoryId={editingMenuItem.categoryId}
+          menuItem={editingMenuItem}
+          mode="edit"
+        />
+      )}
+
+      {/* 메뉴 삭제 확인 다이얼로그 */}
+      {deletingMenuItem && (
+        <DeleteMenuDialog
+          open={!!deletingMenuItem}
+          onOpenChange={(open) => !open && setDeletingMenuItem(null)}
+          menuName={deletingMenuItem.name}
+          isDeleting={deleteMenuMutation.isPending}
+          onConfirm={() => {
+            deleteMenuMutation.mutate(deletingMenuItem.id, {
+              onSuccess: () => {
+                setDeletingMenuItem(null);
+              },
+              onError: (error) => {
+                console.error('메뉴 삭제 실패:', error);
+                alert('메뉴 삭제에 실패했습니다.');
+              },
+            });
+          }}
         />
       )}
     </CardForm>

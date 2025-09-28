@@ -11,29 +11,54 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 import { useSelectedStoreId } from '@/hooks/useSelectedStoreId';
 
-interface AddMenuDialogProps {
+interface MenuDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   categoryId: number;
+  menuItem?: {
+    id: number;
+    name: string;
+    price: number;
+    description: string;
+    isSignature: boolean;
+    isRecommend: boolean;
+    imageUrls?: string[];
+  };
+  mode?: 'add' | 'edit';
 }
 
-const AddMenuDialog = ({ open, onOpenChange, categoryId }: AddMenuDialogProps) => {
+const MenuDialog = ({ open, onOpenChange, categoryId, menuItem, mode = 'add' }: MenuDialogProps) => {
   const queryClient = useQueryClient();
   const { selectedStoreId } = useSelectedStoreId();
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const [formData, setFormData] = useState({
-    name: '',
-    price: '',
-    description: '',
-    isSignature: false,
-    isRecommend: false,
+    name: menuItem?.name || '',
+    price: menuItem?.price?.toString() || '',
+    description: menuItem?.description || '',
+    isSignature: menuItem?.isSignature || false,
+    isRecommend: menuItem?.isRecommend || false,
     isNew: false,
   });
 
-  const [images, setImages] = useState<string[]>([]);
+  const [images, setImages] = useState<string[]>(menuItem?.imageUrls || []);
   const [imageFiles, setImageFiles] = useState<File[]>([]);
-  const [uploadedImageId, setUploadedImageId] = useState<string | null>(null);
+  const [uploadedImageIds, setUploadedImageIds] = useState<string[]>([]);
+  // URL에서 이미지 ID 추출 함수
+  const extractImageIdFromUrl = (url: string): string => {
+    // URL 예시: https://d27gz6v6wvae1d.cloudfront.net/fooding/gigs/1759048292595-pexels-amberontheroad-13397143.jpg
+    const fileName = url.split('/').pop(); // 마지막 부분 추출
+    if (fileName) {
+      const idWithoutExtension = fileName.split('.')[0]; // 확장자 제거
+      return idWithoutExtension;
+    }
+    return url; // 실패시 원본 URL 반환
+  };
+
+  // 기존 이미지 URL들을 이미지 ID로 변환
+  const [existingImageIds, setExistingImageIds] = useState<string[]>(
+    menuItem?.imageUrls?.map(extractImageIdFromUrl) || []
+  );
   const [isUploadingImage, setIsUploadingImage] = useState(false);
 
   // 이미지 업로드 함수
@@ -63,31 +88,38 @@ const AddMenuDialog = ({ open, onOpenChange, categoryId }: AddMenuDialogProps) =
     mutationFn: async () => {
       if (!selectedStoreId) throw new Error('스토어가 선택되지 않았습니다.');
 
-      let imageId = uploadedImageId;
-
-      // 이미지가 있지만 아직 업로드하지 않은 경우
-      if (imageFiles.length > 0 && !uploadedImageId) {
+      // 아직 업로드되지 않은 이미지가 있으면 업로드
+      if (imageFiles.length > uploadedImageIds.length) {
+        const remainingFiles = imageFiles.slice(uploadedImageIds.length);
         try {
-          imageId = await uploadImage(imageFiles[0]);
-          setUploadedImageId(imageId);
+          const uploadPromises = remainingFiles.map((file) => uploadImage(file));
+          const newImageIds = await Promise.all(uploadPromises);
+          const validIds = newImageIds.filter((id): id is string => id !== null);
+          setUploadedImageIds((prev) => [...prev, ...validIds]);
         } catch (error) {
           console.error('이미지 업로드 실패:', error);
           // 이미지 업로드 실패해도 메뉴는 생성 가능
         }
       }
 
-      // 메뉴 생성
-      const response = await menuApi.createMenu({
+      // 메뉴 생성 또는 수정
+      const menuData = {
         storeId: selectedStoreId,
         categoryId,
         name: formData.name,
-        price: parseInt(formData.price),
-        description: formData.description || undefined, // 메뉴 설명 추가
-        sortOrder: 0, // API에서 자동 정렬
+        price: formData.price === '0' ? undefined : parseInt(formData.price), // 변동가격인 경우 price를 보내지 않음
+        description: formData.description, // 필수 필드
+        sortOrder: 1, // API에서 자동 정렬
         isSignature: formData.isSignature,
         isRecommend: formData.isRecommend,
-        ...(imageId && { imageId }), // imageId가 있을 경우에만 추가
-      });
+        imageIds: mode === 'edit'
+          ? [...existingImageIds, ...uploadedImageIds] // 수정 모드: 기존 + 새로운 이미지
+          : uploadedImageIds, // 생성 모드: 새로운 이미지만
+      };
+
+      const response = mode === 'edit' && menuItem
+        ? await menuApi.updateMenu(menuItem.id, menuData)
+        : await menuApi.createMenu(menuData);
 
       return response;
     },
@@ -142,41 +174,23 @@ const AddMenuDialog = ({ open, onOpenChange, categoryId }: AddMenuDialogProps) =
     setImages((prev) => [...prev, ...newPreviews]);
     setImageFiles((prev) => [...prev, ...newFiles]);
 
-    // 첫 번째 이미지만 대표 이미지로 업로드 (아직 업로드하지 않은 경우)
-    if (!uploadedImageId && newFiles.length > 0) {
-      try {
-        const imageId = await uploadImage(newFiles[0]);
-        if (imageId) {
-          setUploadedImageId(imageId);
-        }
-      } catch (error) {
-        console.error('이미지 업로드 실패:', error);
-        alert('이미지 업로드에 실패했습니다.');
-      }
+    // 모든 새 파일을 업로드
+    try {
+      const uploadPromises = newFiles.map((file) => uploadImage(file));
+      const imageIds = await Promise.all(uploadPromises);
+      const validIds = imageIds.filter((id): id is string => id !== null);
+
+      setUploadedImageIds((prev) => [...prev, ...validIds]);
+    } catch (error) {
+      console.error('이미지 업로드 실패:', error);
+      alert('이미지 업로드에 실패했습니다.');
     }
   };
 
-  const handleRemoveImage = async (index: number) => {
+  const handleRemoveImage = (index: number) => {
     setImages((prev) => prev.filter((_, i) => i !== index));
-    const updatedFiles = imageFiles.filter((_, i) => i !== index);
-    setImageFiles(updatedFiles);
-
-    // 첫 번째 이미지(대표 이미지)를 삭제한 경우
-    if (index === 0) {
-      setUploadedImageId(null);
-
-      // 남은 이미지가 있으면 그 중 첫 번째를 새로운 대표 이미지로 업로드
-      if (updatedFiles.length > 0) {
-        try {
-          const imageId = await uploadImage(updatedFiles[0]);
-          if (imageId) {
-            setUploadedImageId(imageId);
-          }
-        } catch (error) {
-          console.error('대체 이미지 업로드 실패:', error);
-        }
-      }
-    }
+    setImageFiles((prev) => prev.filter((_, i) => i !== index));
+    setUploadedImageIds((prev) => prev.filter((_, i) => i !== index));
   };
 
   const handleSubmit = () => {
@@ -186,8 +200,13 @@ const AddMenuDialog = ({ open, onOpenChange, categoryId }: AddMenuDialogProps) =
       return;
     }
 
+    if (!formData.description.trim()) {
+      alert('메뉴 설명을 입력해주세요.');
+      return;
+    }
+
     const price = parseInt(formData.price);
-    if (isNaN(price) || price <= 0) {
+    if (formData.price !== '0' && (isNaN(price) || price <= 0)) {
       alert('올바른 가격을 입력해주세요.');
       return;
     }
@@ -217,7 +236,7 @@ const AddMenuDialog = ({ open, onOpenChange, categoryId }: AddMenuDialogProps) =
     });
     setImages([]);
     setImageFiles([]);
-    setUploadedImageId(null);
+    setUploadedImageIds([]);
     onOpenChange(false);
   };
 
@@ -225,7 +244,7 @@ const AddMenuDialog = ({ open, onOpenChange, categoryId }: AddMenuDialogProps) =
     <Dialog open={open} onOpenChange={onOpenChange}>
       <Dialog.Content className='max-w-[600px] max-h-[80vh]' showCloseButton={true}>
         <Dialog.Header>
-          <Dialog.Title>메뉴 추가</Dialog.Title>
+          <Dialog.Title>{mode === 'edit' ? '메뉴 수정' : '메뉴 추가'}</Dialog.Title>
         </Dialog.Header>
 
         <Dialog.Body className='space-y-6'>
@@ -380,7 +399,10 @@ const AddMenuDialog = ({ open, onOpenChange, categoryId }: AddMenuDialogProps) =
             disabled={createMenuMutation.isPending || isUploadingImage}
             className='flex-1'
           >
-            {createMenuMutation.isPending ? '추가 중...' : '저장'}
+            {createMenuMutation.isPending
+              ? (mode === 'edit' ? '수정 중...' : '추가 중...')
+              : (mode === 'edit' ? '수정' : '추가')
+            }
           </Button>
         </Dialog.Footer>
       </Dialog.Content>
@@ -388,4 +410,6 @@ const AddMenuDialog = ({ open, onOpenChange, categoryId }: AddMenuDialogProps) =
   );
 };
 
-export default AddMenuDialog;
+// 이전 이름과의 호환성을 위해 AddMenuDialog로도 export
+export const AddMenuDialog = MenuDialog;
+export default MenuDialog;
