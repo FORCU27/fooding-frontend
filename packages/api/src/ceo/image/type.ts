@@ -13,7 +13,7 @@ export const ImageTagEnum = {
   EXTERIOR: 'EXTERIOR',
 } as const;
 
-export type ImageTag = keyof typeof ImageTagEnum;
+export type ImageTag = (typeof ImageTagEnum)[keyof typeof ImageTagEnum];
 
 export type GetStoreImagesParams = {
   searchString?: string;

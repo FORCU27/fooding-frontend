@@ -2,7 +2,7 @@
 
 import { useRef, useState } from 'react';
 
-import { ImageTag, ImagesSortType } from '@repo/api/ceo';
+import { ImageTag, ImageTagEnum, ImagesSortType } from '@repo/api/ceo';
 import { queryKeys } from '@repo/api/configs/query-keys';
 import { ChipTabs } from '@repo/design-system/components/b2c';
 import {
@@ -27,16 +27,23 @@ import {
 } from '@/hooks/store/useStoreImages';
 import { useUploadFile } from '@/hooks/useUploadFile';
 
+type ModalState = { type: 'editTag'; photoId: number } | { type: 'delete'; photoId: number } | null;
+
+type ImageParams = {
+  page: number;
+  sortType: ImagesSortType;
+  tag: ImageTag | null;
+};
+
 const PhotoPage = () => {
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const [selectedChip, setSelectedChip] = useState<'ALL' | ImageTag>('ALL');
-  const [modalType, setModalType] = useState<null | {
-    type: 'editTag' | 'delete';
-    photoId: number;
-  }>(null);
-  const [selectedTags, setSelectedTags] = useState<string[]>([]);
-  const [sortType, setSortType] = useState<ImagesSortType>('RECENT');
-  const [page, setPage] = useState(1);
+  const [modalType, setModalType] = useState<ModalState>(null);
+  const [selectedTags, setSelectedTags] = useState<ImageTag[]>([]);
+  const [params, setParams] = useState<ImageParams>({
+    page: 1,
+    sortType: 'RECENT',
+    tag: null,
+  });
 
   // TODO 선택한 매장 조회 로직 추후 localStorage 조회 + Context 사용 방식으로 바뀌면 리팩토링 예정
   const { data: selectedStore } = useQuery({
@@ -52,9 +59,9 @@ const PhotoPage = () => {
 
   const { data: images, isFetching } = useStoreImages({
     storeId,
-    sortType,
-    page,
-    tag: selectedChip === 'ALL' ? null : selectedChip,
+    sortType: params.sortType,
+    page: params.page,
+    tag: params.tag,
   });
   const uploadFile = useUploadFile();
   const createImage = useCreateImage();
@@ -143,9 +150,14 @@ const PhotoPage = () => {
           </div>
           <div className='self-end mb-[20px]'>
             <ChipTabs
-              defaultValue='1'
-              value={selectedChip}
-              onChange={(value) => setSelectedChip(value as 'ALL' | ImageTag)}
+              value={params.tag ?? 'ALL'}
+              onChange={(value) =>
+                setParams((prev) => ({
+                  ...prev,
+                  tag: value === 'ALL' ? null : (value as ImageTag),
+                  page: 1,
+                }))
+              }
             >
               <ChipTabs.List className='gap-[8px]'>
                 <ChipTabs.Trigger value='ALL' className='h-[38px] px-[18px] body-2'>
@@ -159,8 +171,10 @@ const PhotoPage = () => {
                 </ChipTabs.Trigger>
                 <SortToggle
                   keepSelectedOpen
-                  value={sortType}
-                  onSortChange={(value) => setSortType(value as ImagesSortType)}
+                  value={params.sortType}
+                  onSortChange={(value) =>
+                    setParams((prev) => ({ ...prev, sortType: value as ImagesSortType }))
+                  }
                 />
               </ChipTabs.List>
             </ChipTabs>
@@ -202,9 +216,9 @@ const PhotoPage = () => {
                 ))}
               </div>
               <Pagination
-                page={page}
-                total={images?.data.pageInfo.totalPages as number}
-                onChange={setPage}
+                page={params.page}
+                total={images?.data.pageInfo.totalPages ?? 1}
+                onChange={(page) => setParams((prev) => ({ ...prev, page }))}
                 className='justify-center'
               />
             </div>
@@ -234,12 +248,15 @@ const PhotoPage = () => {
             사진을 잘 설명하는 태그를 골라주세요.
           </h3>
           {/* TODO 새 컴포넌트 생성하여 대체 예정 */}
-          <ToggleGroup type='multiple' onValueChange={(values) => setSelectedTags(values)}>
-            <ToggleGroupItem value='PRICE_TAG'>가격표</ToggleGroupItem>
-            <ToggleGroupItem value='FOOD'>음식</ToggleGroupItem>
-            <ToggleGroupItem value='BEVERAGE'>음료</ToggleGroupItem>
-            <ToggleGroupItem value='INTERIOR'>내부</ToggleGroupItem>
-            <ToggleGroupItem value='EXTERIOR'>외부</ToggleGroupItem>
+          <ToggleGroup
+            type='multiple'
+            onValueChange={(values) => setSelectedTags(values as ImageTag[])}
+          >
+            <ToggleGroupItem value={ImageTagEnum.PRICE_TAG}>가격표</ToggleGroupItem>
+            <ToggleGroupItem value={ImageTagEnum.FOOD}>음식</ToggleGroupItem>
+            <ToggleGroupItem value={ImageTagEnum.BEVERAGE}>음료</ToggleGroupItem>
+            <ToggleGroupItem value={ImageTagEnum.INTERIOR}>내부</ToggleGroupItem>
+            <ToggleGroupItem value={ImageTagEnum.EXTERIOR}>외부</ToggleGroupItem>
           </ToggleGroup>
         </div>
       </ConfirmModal>
