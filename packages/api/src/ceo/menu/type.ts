@@ -8,7 +8,8 @@ export const MenuItemSchema = z.object({
   name: z.string(),
   price: z.number(),
   description: z.string().nullable(),
-  imageUrl: z.string().nullable(),
+  imageUrls: z.array(z.string()).optional(), // imageUrls 배열로 변경
+  imageUrl: z.string().nullable().optional(), // 기존 호환성 유지
   sortOrder: z.number(),
   isSignature: z.boolean(),
   isRecommend: z.boolean(),
@@ -45,12 +46,12 @@ export const CreateMenuBody = z.object({
   storeId: z.number(),
   categoryId: z.number(),
   name: z.string().min(1, '메뉴명을 입력해주세요'),
-  price: z.number().min(0, '가격은 0원 이상이어야 합니다'),
-  description: z.string().optional(),
-  imageUrl: z.string().optional(),
-  sortOrder: z.number().optional(),
-  isSignature: z.boolean().optional(),
-  isRecommend: z.boolean().optional(),
+  price: z.number().min(0, '가격은 0원 이상이어야 합니다').optional(),
+  description: z.string().min(1, '메뉴 설명을 입력해주세요'), // 필수 필드로 변경
+  imageIds: z.array(z.string()).optional(), // 배열로 변경
+  sortOrder: z.number(),
+  isSignature: z.boolean(),
+  isRecommend: z.boolean(),
 });
 
 export type CreateMenuBody = z.infer<typeof CreateMenuBody>;

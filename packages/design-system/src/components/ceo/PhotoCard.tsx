@@ -67,7 +67,7 @@ export function PhotoCard({
       <div className='absolute right-[22px] top-[20px]'>
         <DropdownMenu>
           <DropdownMenu.Trigger asChild>
-          {/* TODO 접근성(키보드 접근, aria 속성) 대비 예정 */}
+            {/* TODO 접근성(키보드 접근, aria 속성) 대비 예정 */}
             <div>
               <KebabButton aria-label='메뉴 열기' />
             </div>
@@ -86,3 +86,5 @@ export function PhotoCard({
     </div>
   );
 }
+
+export default PhotoCard;
