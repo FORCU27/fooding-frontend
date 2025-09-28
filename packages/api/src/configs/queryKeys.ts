@@ -29,6 +29,7 @@ export const queryKeys = {
         detail: 'ceoStoreGetPointShopDetail',
         status: 'ceoStoreGetPointShopStatus',
       },
+      images: 'ceoStoreImages',
     },
     menuCategory: {
       list: 'ceoMenuCategoryList',

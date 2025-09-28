@@ -1,11 +1,10 @@
 'use client';
 
-import { PropsWithoutRef, useState } from 'react';
+import { PropsWithoutRef } from 'react';
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import { AuthUpdateUserBody } from '@repo/api/auth';
 import {
-  BottomSheet,
   BottomSheetSelect,
   Button,
   TextField,
@@ -52,7 +51,6 @@ export const ProfileUserInfoForm = ({
   handleSubmit,
   isUpdateMode,
 }: PropsWithoutRef<ProfileFormProps>) => {
-  const [isBottomSheetOpen, setIsBottomSheetOpen] = useState(false);
   const { user } = useAuth();
   if (!user) {
     throw new Error('로그인이 필요합니다.');
@@ -71,7 +69,6 @@ export const ProfileUserInfoForm = ({
     handleSubmit: onSubmit,
     formState: { errors },
     setError,
-    watch,
   } = useForm<FormSchemaType>({
     mode: 'onSubmit',
     resolver: zodResolver(formSchema),
@@ -108,9 +105,9 @@ export const ProfileUserInfoForm = ({
     // setIsBottomSheetOpen(false);
   };
 
-  const formatPhoneNumber = (phoneNumber: string) => {
-    return phoneNumber.replace(/(\d{3})(\d{3,4})(\d{4})/, '$1-****-$3');
-  };
+  // const formatPhoneNumber = (phoneNumber: string) => {
+  //   return phoneNumber.replace(/(\d{3})(\d{3,4})(\d{4})/, '$1-****-$3');
+  // };
 
   const handleSaveClick = async () => {
     // setIsBottomSheetOpen(true);

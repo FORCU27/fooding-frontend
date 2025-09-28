@@ -61,7 +61,7 @@ export default function StoreServiceDetailPage() {
   const service: StoreServiceResponse | undefined = serviceRes?.data;
 
   const [page, setPage] = useState(1);
-  const { data: waitingSettingsPage, isLoading: isLoadingSettings, error: settingsError } = useQuery({
+  const { data: waitingSettingsPage } = useQuery({
     queryKey: ['admin-waiting-settings-by-service', serviceId, page],
     queryFn: () => adminWaitingSettingsApi.list(page, 20, { storeServiceId: serviceId }),
     enabled: !!serviceId && service?.type === 'WAITING',
@@ -71,7 +71,7 @@ export default function StoreServiceDetailPage() {
   const pageInfo = waitingSettingsPage?.data.pageInfo;
 
   const [waitingPage, setWaitingPage] = useState(1);
-  const { data: storeWaitingsPage, isLoading: isLoadingWaitings, error: waitingsError } = useQuery({
+  const { data: storeWaitingsPage } = useQuery({
     queryKey: ['admin-store-waitings', storeId, waitingPage],
     queryFn: () => adminStoreWaitingsApi.list(waitingPage, 20, { storeId }),
     enabled: !!storeId && service?.type === 'WAITING',

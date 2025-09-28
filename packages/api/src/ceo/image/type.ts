@@ -2,6 +2,9 @@ import { z } from 'zod/v4';
 
 import { PageResponse } from '../../shared';
 
+export const IMAGES_SORT_TYPES = ['RECENT', 'OLD'] as const;
+export type ImagesSortType = (typeof IMAGES_SORT_TYPES)[number];
+
 export const ImageTagEnum = {
   PRICE_TAG: 'PRICE_TAG',
   FOOD: 'FOOD',
@@ -10,14 +13,15 @@ export const ImageTagEnum = {
   EXTERIOR: 'EXTERIOR',
 } as const;
 
-export type ImageTag = keyof typeof ImageTagEnum; 
+export type ImageTag = (typeof ImageTagEnum)[keyof typeof ImageTagEnum];
 
 export type GetStoreImagesParams = {
-  searchString: string;
-  pageNum: number;
-  pageSize: number;
-  tag: ImageTag | null;
-  isMain: boolean;
+  searchString?: string;
+  pageNum?: number;
+  pageSize?: number;
+  tag?: ImageTag | null;
+  isMain?: boolean;
+  sortType?: ImagesSortType;
 };
 
 export type CreateStoreImageParams = {
@@ -30,7 +34,7 @@ export type PustStoreImageParams = {
   imageId?: string;
   sortOrder?: number;
   tags?: ImageTag[];
-}
+};
 
 export type PutStoreMainImageParams = {
   isMain: boolean;

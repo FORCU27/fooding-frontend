@@ -88,10 +88,8 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
           <Suspense>
             <OverlayProvider>
               <AuthProvider>
-                <StoreProvider>
-                  {children}
-                  <Analytics />
-                </StoreProvider>
+                {children}
+                <Analytics />
               </AuthProvider>
             </OverlayProvider>
           </Suspense>
