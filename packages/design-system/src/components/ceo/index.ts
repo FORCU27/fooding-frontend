@@ -43,6 +43,7 @@ export * from './Button';
 export * from './ChipList';
 export * from './SortToggle';
 export * from './PhotoCard';
+export * from './MenuPan';
 export * from './ImageUploader';
 export * from './DatePicker';
 export * from './StoreStatusChip';

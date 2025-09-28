@@ -2,37 +2,33 @@
 
 import { Button, Dialog } from '@repo/design-system/components/ceo';
 
-interface DeleteMenuDialogProps {
+interface DeleteMenuBoardDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  menuName: string;
   onConfirm: () => void;
   isDeleting?: boolean;
 }
 
-const DeleteMenuDialog = ({
+const DeleteMenuBoardDialog = ({
   open,
   onOpenChange,
-  menuName,
   onConfirm,
   isDeleting = false,
-}: DeleteMenuDialogProps) => {
+}: DeleteMenuBoardDialogProps) => {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <Dialog.Content className='max-w-[400px]' showCloseButton={true}>
         <Dialog.Header>
-          <Dialog.Title>메뉴 삭제</Dialog.Title>
+          <Dialog.Title>메뉴판 삭제</Dialog.Title>
         </Dialog.Header>
 
         <Dialog.Body>
           <div className='text-center space-y-4'>
             <p className='text-gray-700'>
-              <span className='font-semibold text-gray-900'>&ldquo;{menuName}&rdquo;</span> 메뉴를
-              <br />
-              정말 삭제하시겠습니까?
+              이 메뉴판을 정말 삭제하시겠습니까?
             </p>
             <p className='text-sm text-red-600'>
-              삭제된 메뉴는 복구할 수 없습니다.
+              삭제된 메뉴판은 복구할 수 없습니다.
             </p>
           </div>
         </Dialog.Body>
@@ -60,4 +56,4 @@ const DeleteMenuDialog = ({
   );
 };
 
-export default DeleteMenuDialog;
+export default DeleteMenuBoardDialog;

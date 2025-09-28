@@ -8,7 +8,6 @@ import {
   CardForm,
   Card,
   MenuBoard,
-  Button,
   AddCategoryDialog,
   EditCategoryDialog,
   MenuButton,
@@ -17,12 +16,13 @@ import { useQueries } from '@tanstack/react-query';
 
 import AddMenuDialog from './AddMenuDialog';
 import DeleteMenuDialog from './DeleteMenuDialog';
+import MenuBoardImageUpload from './MenuBoardImageUpload';
+import { useDeleteMenu } from '@/hooks/menu/useDeleteMenu';
 import { useCreateMenuCategory } from '@/hooks/menu-category/useCreateMenuCategory';
 import { useDeleteMenuCategory } from '@/hooks/menu-category/useDeleteMenuCategory';
 import { useGetMenuCategories } from '@/hooks/menu-category/useGetMenuCategories';
 import { useSortMenuCategories } from '@/hooks/menu-category/useSortMenuCategories';
 import { useUpdateMenuCategory } from '@/hooks/menu-category/useUpdateMenuCategory';
-import { useDeleteMenu } from '@/hooks/menu/useDeleteMenu';
 import { useSelectedStoreId } from '@/hooks/useSelectedStoreId';
 
 type BadgeType = '대표' | '추천' | '신규';
@@ -117,6 +117,14 @@ const MenusPage = () => {
     id: number;
     name: string;
   } | null>(null);
+
+  // 메뉴판 이미지 상태
+  const [menuBoardImages, setMenuBoardImages] = useState<{
+    id: string;
+    url: string;
+    file?: File;
+    title?: string;
+  }[]>([]);
 
   // 모든 카테고리의 메뉴 데이터를 캐시 (렌더링과 무관하게 유지)
   const menuCacheRef = useRef<Record<number, MenuItem[]>>({});
@@ -286,6 +294,17 @@ const MenusPage = () => {
   return (
     <CardForm className='p-grid-margin' onSubmit={(e) => e.preventDefault()}>
       <div className='headline-2'>메뉴</div>
+
+      {/* 메뉴판 이미지 섹션 */}
+      <Card className='pt-7 pb-6'>
+        <div className='px-4'>
+          <MenuBoardImageUpload
+            images={menuBoardImages}
+            onImagesChange={setMenuBoardImages}
+            maxImages={8}
+          />
+        </div>
+      </Card>
 
       <Card className='pt-7 pb-6'>
         <div className='flex flex-row justify-end gap-2 mb-4 px-4'>

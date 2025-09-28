@@ -66,7 +66,7 @@ const ActionMenu = ({
   </div>
 );
 
-export default function PhotoCard({
+export function PhotoCard({
   src,
   alt,
   flags,
@@ -148,3 +148,5 @@ export default function PhotoCard({
     </div>
   );
 }
+
+export default PhotoCard;

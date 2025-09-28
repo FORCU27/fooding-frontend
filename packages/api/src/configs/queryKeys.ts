@@ -32,6 +32,13 @@ export const queryKeys = {
       update: 'ceoMenuUpdate',
       delete: 'ceoMenuDelete',
     },
+    menuBoard: {
+      list: 'ceoMenuBoardList',
+      detail: 'ceoMenuBoardDetail',
+      create: 'ceoMenuBoardCreate',
+      update: 'ceoMenuBoardUpdate',
+      delete: 'ceoMenuBoardDelete',
+    },
     storeInformation: {
       get: 'ceoStoreInformationGet',
     },

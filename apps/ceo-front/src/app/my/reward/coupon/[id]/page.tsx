@@ -4,7 +4,7 @@ import { useParams, useRouter } from 'next/navigation';
 
 import { couponApiV2 } from '@repo/api/ceo';
 import { queryKeys } from '@repo/api/configs/query-keys';
-import { Button, Card, Coupon } from '@repo/design-system/components/ceo';
+import { Button, Card, Coupon, type CouponStatus } from '@repo/design-system/components/ceo';
 import { useQuery } from '@tanstack/react-query';
 
 const CouponDetailPage = () => {
@@ -49,13 +49,13 @@ const CouponDetailPage = () => {
       : `${coupon.discountValue.toLocaleString()}원 할인`;
   };
 
-  const getCouponStatuses = () => {
-    const statuses = [];
+  const getCouponStatuses = (): CouponStatus[] => {
+    const statuses: CouponStatus[] = [];
     if (coupon.provideType === 'REGULAR_CUSTOMER') {
-      statuses.push('단골 전용' as const);
+      statuses.push('단골 전용');
     }
     if (coupon.status === 'ACTIVE') {
-      statuses.push('발급중' as const);
+      statuses.push('발급중');
     }
     return statuses;
   };

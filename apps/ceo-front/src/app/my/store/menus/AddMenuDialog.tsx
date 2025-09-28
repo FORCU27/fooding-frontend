@@ -50,13 +50,13 @@ const MenuDialog = ({ open, onOpenChange, categoryId, menuItem, mode = 'add' }: 
     const fileName = url.split('/').pop(); // 마지막 부분 추출
     if (fileName) {
       const idWithoutExtension = fileName.split('.')[0]; // 확장자 제거
-      return idWithoutExtension;
+      return idWithoutExtension || url;
     }
     return url; // 실패시 원본 URL 반환
   };
 
   // 기존 이미지 URL들을 이미지 ID로 변환
-  const [existingImageIds, setExistingImageIds] = useState<string[]>(
+  const [existingImageIds] = useState<string[]>(
     menuItem?.imageUrls?.map(extractImageIdFromUrl) || []
   );
   const [isUploadingImage, setIsUploadingImage] = useState(false);
@@ -71,7 +71,7 @@ const MenuDialog = ({ open, onOpenChange, categoryId, menuItem, mode = 'add' }: 
       const response = await fileApi.upload(formData);
 
       // 응답에서 첫 번째 파일의 id 반환
-      if (response.data && response.data.length > 0) {
+      if (response.data && response.data.length > 0 && response.data[0]?.id) {
         return response.data[0].id;
       }
       return null;
@@ -390,7 +390,7 @@ const MenuDialog = ({ open, onOpenChange, categoryId, menuItem, mode = 'add' }: 
         </Dialog.Body>
 
         <Dialog.Footer>
-          <Button variant='secondary' onClick={handleClose} className='flex-1'>
+          <Button variant='outlined' onClick={handleClose} className='flex-1'>
             취소
           </Button>
           <Button
