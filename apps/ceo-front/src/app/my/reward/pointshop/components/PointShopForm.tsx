@@ -50,9 +50,13 @@ const PointShopForm = ({ originValue, onSubmit }: PointShopFormProps) => {
     try {
       setLoading(true);
       await onSubmit(data); // 부모에서 내려준 onSubmit 실행
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error(error);
-      alert(error?.response?.data?.message || '등록 실패');
+      const errorMessage =
+        error instanceof Error ? error.message :
+        (error as { response?: { data?: { message?: string } } })?.response?.data?.message ||
+        '등록 실패';
+      alert(errorMessage);
     } finally {
       setLoading(false);
     }

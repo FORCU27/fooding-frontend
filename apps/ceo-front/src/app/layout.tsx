@@ -12,7 +12,6 @@ import Analytics from '@/components/GA/Analytics';
 import KakaoMapScript from '@/components/KakaoMapScript';
 import { AuthProvider } from '@/components/Provider/AuthProvider';
 import { ReactQueryProvider } from '@/components/Provider/ReactQueryProvider';
-import { StoreProvider } from '@/context/StoreContext';
 import { GA_TRACKING_ID } from '@/libs/ga/gtag';
 
 export const metadata: Metadata = {

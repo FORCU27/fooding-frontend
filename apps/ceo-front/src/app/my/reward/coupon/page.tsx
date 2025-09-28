@@ -44,7 +44,7 @@ const CouponListPage = () => {
   });
 
   const [sorting, setSorting] = useState<SortingState>([]);
-  const [sortOrder, setSortOrder] = useState<SortOrder>('LATEST');
+  const [sortOrder, setSortOrder] = useState<SortOrder>('RECENT');
 
   const { data: couponList, isLoading } = useQuery({
     queryKey: [queryKeys.ceo.coupon.list, selectedStoreId, pagination],
@@ -217,7 +217,7 @@ const CouponListPage = () => {
               setSortOrder(value);
               // 정렬 상태 업데이트 - 예시로 생성일 기준 정렬
               setSorting(
-                value === 'LATEST' ? [{ id: 'name', desc: true }] : [{ id: 'name', desc: false }],
+                value === 'RECENT' ? [{ id: 'name', desc: true }] : [{ id: 'name', desc: false }],
               );
             }}
           />

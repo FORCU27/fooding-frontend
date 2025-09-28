@@ -13,9 +13,13 @@ const PointShopCreatePage = () => {
       // await storeApi.createStorePointShopItem(selectedStoreId, data);
       alert('포인트샵 상품이 등록되었습니다.');
       console.log('등록 데이터:', data);
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error(error);
-      alert(error?.response?.data?.message || '등록 실패');
+      const errorMessage =
+        error instanceof Error ? error.message :
+        (error as { response?: { data?: { message?: string } } })?.response?.data?.message ||
+        '등록 실패';
+      alert(errorMessage);
     }
   };
 
