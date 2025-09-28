@@ -9,3 +9,5 @@ export * from './bookmarks';
 export * from './rewards';
 export * from './reports';
 export * from './banners';
+export * from './keywords';
+export * from './reviews';

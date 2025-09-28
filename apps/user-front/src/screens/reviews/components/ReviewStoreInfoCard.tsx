@@ -18,7 +18,7 @@ export const ReviewStoreInfoCard = ({ planInfo }: ReviewStoreInfoCardProps) => {
 
   return (
     <div className='flex bg-gray-1 items-center w-full h-[100px] p-5 rounded-xl'>
-      {isNonEmptyArray(storeInfo.images) ? (
+      {storeInfo.images && isNonEmptyArray(storeInfo.images) ? (
         <div className='relative w-[60px] h-[60px] rounded-lg overflow-hidden'>
           <Image
             fill

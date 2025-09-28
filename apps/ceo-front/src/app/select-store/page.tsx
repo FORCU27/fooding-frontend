@@ -4,15 +4,19 @@ import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
+import { Store } from '@repo/api/ceo';
+import { DropdownMenu } from '@repo/design-system/components/ceo';
 import { Button, Dialog, Input, RadioChoiceBox } from '@repo/design-system/components/ceo';
-import { CirclePlusIcon } from '@repo/design-system/icons';
+import { CirclePlusIcon, MoreVerticalIcon } from '@repo/design-system/icons';
 import { cn } from '@repo/design-system/utils';
 import { Suspense } from '@suspensive/react';
 import { overlay } from 'overlay-kit';
 
 import { FoodingLogo } from '@/components/FoodingLogo';
 import { useCreateStore } from '@/hooks/store/useCreateStore';
+import { useDeleteStore } from '@/hooks/store/useDeleteStore';
 import { useGetStoreList } from '@/hooks/store/useGetStoreList';
+import { useUpdateStore } from '@/hooks/store/useUpateStore';
 
 // TODO: 매장이 많아졌을 때 UI 개선
 // TODO: 최대 매장 수 초과 시 UI 개선
@@ -21,32 +25,30 @@ import { useGetStoreList } from '@/hooks/store/useGetStoreList';
 
 export default function StoreSelectPage() {
   return (
-    <Suspense>
-      <div className='flex flex-col min-h-screen relative'>
-        <div className='absolute inset-0 -z-10'>
-          <Image
-            src='/images/main-illust.png'
-            alt='메인 배경 일러스트'
-            fill
-            className='object-cover'
-            priority
-          />
-        </div>
-        <main className='flex-1 flex items-center justify-center'>
-          <div
-            className={cn(
-              'bg-white p-[60px] text-center flex flex-col items-center w-full',
-              'max-tablet:min-h-dvh',
-              'tablet:shadow-lg tablet:rounded-[30px] tablet:max-w-[571px] tablet:my-5',
-            )}
-          >
-            <Suspense>
-              <StoreSetupCard />
-            </Suspense>
-          </div>
-        </main>
+    <div className='flex flex-col min-h-screen relative'>
+      <div className='absolute inset-0 -z-10'>
+        <Image
+          src='/images/main-illust.png'
+          alt='메인 배경 일러스트'
+          fill
+          className='object-cover'
+          priority
+        />
       </div>
-    </Suspense>
+      <main className='flex-1 flex items-center justify-center'>
+        <div
+          className={cn(
+            'bg-white p-[60px] text-center flex flex-col items-center w-full',
+            'max-tablet:min-h-dvh',
+            'tablet:shadow-lg tablet:rounded-[30px] tablet:max-w-[571px] tablet:my-5',
+          )}
+        >
+          <Suspense clientOnly>
+            <StoreSetupCard />
+          </Suspense>
+        </div>
+      </main>
+    </div>
   );
 }
 
@@ -77,6 +79,12 @@ const StoreSetupCard = () => {
     ));
   };
 
+  const onDelete = (storeId: string) => {
+    if (selectedStoreId && selectedStoreId === storeId) {
+      setSelectedStoreId(null);
+    }
+  };
+
   const title = '사장님을 위한 전용 공간에 오신 걸 환영합니다';
 
   return (
@@ -105,9 +113,12 @@ const StoreSetupCard = () => {
               >
                 <RadioChoiceBox value={selectedStoreId} onValueChange={setSelectedStoreId}>
                   {stores.map((store) => (
-                    <RadioChoiceBox.Item key={store.id} value={store.id.toString()}>
-                      {store.name}
-                    </RadioChoiceBox.Item>
+                    <div key={store.id} className='relative'>
+                      <RadioChoiceBox.Item className='pr-10' value={store.id.toString()}>
+                        {store.name}
+                      </RadioChoiceBox.Item>
+                      <MoreMenu store={store} onDelete={() => onDelete(store.id.toString())} />
+                    </div>
                   ))}
                 </RadioChoiceBox>
               </div>
@@ -186,6 +197,141 @@ const StoreCreateDialog = ({ isOpen, onOpenChange }: StoreCreateDialogProps) => 
           >
             등록
           </Button>
+        </Dialog.Footer>
+      </Dialog.Content>
+    </Dialog>
+  );
+};
+
+type MoreMenuProps = {
+  store: Store;
+  onDelete: () => void;
+};
+
+const MoreMenu = ({ store, onDelete }: MoreMenuProps) => {
+  const onUpdateButtonClick = () => {
+    overlay.open(({ isOpen, close }) => (
+      <StoreUpdateDialog isOpen={isOpen} onOpenChange={(open) => !open && close()} store={store} />
+    ));
+  };
+
+  const onDeleteButtonClick = () => {
+    overlay.open(({ isOpen, close }) => (
+      <StoreDeleteDialog
+        isOpen={isOpen}
+        onOpenChange={(open) => !open && close()}
+        store={store}
+        onDelete={onDelete}
+      />
+    ));
+  };
+
+  return (
+    <DropdownMenu>
+      <DropdownMenu.Trigger className='text-gray-5 absolute top-1/2 right-4 -translate-y-1/2 cursor-pointer'>
+        <MoreVerticalIcon />
+      </DropdownMenu.Trigger>
+      <DropdownMenu.Content side='left' align='start'>
+        <DropdownMenu.Item onClick={onUpdateButtonClick}>수정</DropdownMenu.Item>
+        <DropdownMenu.Item variant='danger' onClick={onDeleteButtonClick}>
+          삭제
+        </DropdownMenu.Item>
+      </DropdownMenu.Content>
+    </DropdownMenu>
+  );
+};
+
+type StoreUpdateDialogProps = {
+  isOpen: boolean;
+  onOpenChange: (open: boolean) => void;
+  store: Store;
+};
+
+const StoreUpdateDialog = ({ isOpen, onOpenChange, store }: StoreUpdateDialogProps) => {
+  const [storeName, setStoreName] = useState(store.name);
+
+  const updateStoreMutation = useUpdateStore();
+
+  const onConfirmButtonClick = () => {
+    if (updateStoreMutation.isPending) return;
+
+    updateStoreMutation.mutate(
+      { id: store.id, body: store },
+      {
+        onSuccess: () => {
+          onOpenChange(false);
+        },
+        onError: () => {
+          // TODO: 에러 처리
+        },
+      },
+    );
+  };
+
+  return (
+    <Dialog open={isOpen} onOpenChange={onOpenChange}>
+      <Dialog.Content>
+        <Dialog.Header>
+          <Dialog.Title>매장 수정</Dialog.Title>
+        </Dialog.Header>
+        <Dialog.Body>
+          <Input
+            placeholder='매장명을 입력해주세요'
+            value={storeName}
+            onChange={(e) => setStoreName(e.target.value)}
+          />
+        </Dialog.Body>
+        <Dialog.Footer>
+          <Button
+            variant='primaryPink'
+            onClick={onConfirmButtonClick}
+            disabled={storeName.trim().length === 0}
+          >
+            수정
+          </Button>
+        </Dialog.Footer>
+      </Dialog.Content>
+    </Dialog>
+  );
+};
+
+type StoreDeleteDialogProps = {
+  isOpen: boolean;
+  onOpenChange: (open: boolean) => void;
+  store: {
+    id: Store['id'];
+  };
+  onDelete: () => void;
+};
+
+const StoreDeleteDialog = ({ isOpen, onOpenChange, onDelete, store }: StoreDeleteDialogProps) => {
+  const deleteStoreMutation = useDeleteStore();
+
+  const onConfirmButtonClick = () => {
+    if (deleteStoreMutation.isPending) return;
+
+    deleteStoreMutation.mutate(store.id, {
+      onSuccess: () => {
+        onOpenChange(false);
+        onDelete();
+      },
+      onError: () => {
+        // TODO: 에러 처리
+      },
+    });
+  };
+
+  return (
+    <Dialog open={isOpen} onOpenChange={onOpenChange}>
+      <Dialog.Content showCloseButton={false}>
+        <Dialog.Header>
+          <Dialog.Title>등록된 매장을 삭제하시겠습니까?</Dialog.Title>
+        </Dialog.Header>
+        <Dialog.Footer>
+          <Dialog.Close asChild>
+            <Button variant='outlined'>취소</Button>
+          </Dialog.Close>
+          <Button onClick={onConfirmButtonClick}>삭제</Button>
         </Dialog.Footer>
       </Dialog.Content>
     </Dialog>

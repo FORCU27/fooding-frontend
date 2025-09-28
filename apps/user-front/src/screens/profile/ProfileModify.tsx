@@ -62,7 +62,6 @@ export const ProfileModifyScreen: ActivityComponentType<'ProfileModifyScreen'> =
         }
       }
 
-      flow.pop();
       toast.success('프로필이 수정되었어요.');
     } catch {
       toast.error('프로필 수정에 실패했어요. 잠시 후 다시 시도해주세요.');

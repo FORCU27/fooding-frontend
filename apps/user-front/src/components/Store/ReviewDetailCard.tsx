@@ -5,10 +5,13 @@ import { Review, StoreInfo } from '@repo/api/user';
 import { BottomSheet, Button, Dialog, toast } from '@repo/design-system/components/b2c';
 import { FoodingIcon, HeartIcon } from '@repo/design-system/icons';
 import { useFlow } from '@stackflow/react/future';
+import { overlay } from 'overlay-kit';
 
 import { StarRating } from './StarRating';
+import { ImageGallery } from '../ImageGallery';
 import { useAuth } from '../Provider/AuthProvider';
 import { useDeleteStoreReview } from '@/hooks/store/useDeleteStoreReview';
+import { isNonEmptyArray } from '@/utils/array';
 import { formatDotDate } from '@/utils/date';
 
 interface ReviewCardProps {
@@ -40,6 +43,18 @@ export const ReviewDetailCard = ({ review, store }: ReviewCardProps) => {
         toast.error('에러가 발생했습니다. 잠시 후 다시 시도해주세요.');
       },
     });
+  };
+
+  const onImageClick = (imageIndex: number) => {
+    overlay.open(({ isOpen, close }) => (
+      <ImageGallery
+        isOpen={isOpen}
+        onClose={close}
+        imageUrls={imageUrls}
+        title={store.name}
+        initialPage={imageIndex + 1}
+      />
+    ));
   };
 
   return (
@@ -82,16 +97,17 @@ export const ReviewDetailCard = ({ review, store }: ReviewCardProps) => {
       <div className='flex flex-col'>
         <p className='my-4 body-8 text-gray-5'>{review.content}</p>
         {imageUrls.length > 0 && (
-          <div className='flex h-[140px] overflow-x-auto scrollbar-hide gap-3'>
+          <div className='flex overflow-x-auto scrollbar-hide gap-3'>
             {imageUrls.map((url, idx) => (
-              <Image
-                key={idx}
-                width={140}
-                height={140}
-                src={url}
-                alt={`리뷰이미지_${idx}`}
-                className='rounded-2xl shrink-0 object-cover'
-              />
+              <button key={idx} onClick={() => onImageClick(idx)}>
+                <Image
+                  width={140}
+                  height={140}
+                  src={url}
+                  alt={`리뷰이미지_${idx}`}
+                  className='size-[140px] rounded-2xl shrink-0 object-cover'
+                />
+              </button>
             ))}
           </div>
         )}
@@ -191,7 +207,7 @@ export const ReviewDetailCard = ({ review, store }: ReviewCardProps) => {
 export const StoreCard = ({ review, store }: { review: Review; store: StoreInfo }) => {
   return (
     <div className='flex gap-3 items-center'>
-      {store.images[0]?.imageUrl ? (
+      {store.images && isNonEmptyArray(store.images) ? (
         <div className='flex justify-center items-center w-[48px] h-[48px]'>
           <Image
             src={store.images[0].imageUrl}

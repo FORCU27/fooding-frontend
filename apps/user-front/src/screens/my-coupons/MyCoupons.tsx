@@ -256,7 +256,7 @@ const ApplyCouponDialog = ({ isOpen, onOpenChange, coupon }: ApplyCouponDialogPr
               </Dialog.Header>
               <Dialog.Body>
                 <div className='flex items-center gap-4 mt-6'>
-                  <CouponStoreThumbnail mainImage={coupon.mainImage} />
+                  <CouponStoreThumbnail mainImage={coupon.images?.[0]?.imageUrl ?? null} />
                   <div className='flex flex-col gap-2 justify-center'>
                     <span className='subtitle-1'>{coupon.name}</span>
                     <span className='body-6 text-gray-5'>{coupon.storeName}</span>
@@ -298,7 +298,7 @@ const ApplyCouponDialog = ({ isOpen, onOpenChange, coupon }: ApplyCouponDialogPr
               </Dialog.Header>
               <Dialog.Body>
                 <div className='mt-5 bg-gray-1 rounded-[12px] flex gap-4 p-6'>
-                  <CouponStoreThumbnail mainImage={coupon.mainImage} />
+                  <CouponStoreThumbnail mainImage={coupon.images?.[0]?.imageUrl ?? null} />
                   <div className='flex flex-col gap-2 justify-center'>
                     <span className='subtitle-1'>{coupon.name}</span>
                     <span className='body-6 text-gray-5'>{coupon.storeName}</span>

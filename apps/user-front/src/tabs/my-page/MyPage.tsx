@@ -22,14 +22,14 @@ import { useAuth } from '@/components/Provider/AuthProvider';
 import { StoresList } from '@/components/Store/StoresList';
 import { useGetBookmarkList } from '@/hooks/bookmark/useGetBookmarkList';
 import { useGetInfiniteMyCouponList } from '@/hooks/coupon/useGetMyCouponList';
+import { useGetMyReviewList } from '@/hooks/review/useGetMyReviewList';
 import { useGetRewardPersonalLog } from '@/hooks/reward/useGetRewardPersonalLog';
-import { useGetStoreList } from '@/hooks/store/useGetStoreList';
+import { useGetRecentlyViewedStoreList } from '@/hooks/store/useGetRecentlyViewedStoreList';
 import { BookmarkCard } from '@/screens/bookmarks/components/BookmarkCard';
 
 const dummy = {
   followers: 0,
   followings: 0,
-  reviews: 5,
 };
 
 export const MyPageTab: ActivityComponentType<'MyPageTab'> = () => {
@@ -75,14 +75,18 @@ const Content = () => {
     pageSize: 5,
   });
 
-  const { data: stores } = useGetStoreList({
-    pageNum: 1,
-    pageSize: 5,
-  });
-
   const { coupons } = useGetInfiniteMyCouponList({ used: false });
 
+  const { data: myReviews } = useGetMyReviewList({
+    sortType: 'RECENT',
+    sortDirection: 'DESCENDING',
+    pageNum: 1,
+    pageSize: 1, // 개수만 필요하므로 1개만 조회
+  });
+
   const { data: reward } = useGetRewardPersonalLog();
+
+  const { data: recentlyViewedStores } = useGetRecentlyViewedStoreList();
 
   return (
     <div className='w-full'>
@@ -129,10 +133,16 @@ const Content = () => {
           </div>
         </div>
         <div className='flex justify-around items-center h-[88px] mt-5 p-5'>
-          <div className='flex flex-col justify-center items-center gap-1 cursor-pointer'>
+          <div 
+            className='flex flex-col justify-center items-center gap-1 cursor-pointer'
+            onClick={() => {
+              // TODO: 내 리뷰 목록 화면으로 이동하는 기능 구현 필요
+              console.log('내 리뷰 목록으로 이동');
+            }}
+          >
             <MessageDotsSquareIcon />
             <p className='body-7 text-gray-5'>내 리뷰</p>
-            <p className='subtitle-6'>{dummy.reviews}건</p>
+            <p className='subtitle-6'>{myReviews.pageInfo.totalCount}건</p>
           </div>
           <hr className='w-[2px] h-[81px] bg-gray-2 text-gray-2 mx-2' />
           <div
@@ -184,7 +194,7 @@ const Content = () => {
           </ul>
         </div>
         <StoresList
-          stores={stores.list}
+          stores={recentlyViewedStores.list}
           subtitle='최근 본 식당'
           onClickTotalBtn={() => flow.push('MyPageTab', {})}
         />

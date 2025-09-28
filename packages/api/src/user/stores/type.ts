@@ -65,6 +65,14 @@ export const STORE_CATEOGORY_LABELS: Record<(typeof STORE_CATEGORIES)[number], s
   SIDE_DISH: '술안주',
 };
 
+export const StoreImage = z.object({
+  id: z.number(),
+  imageUrl: z.string(),
+  sortOrder: z.number(),
+  tags: z.array(z.string()).nullable(),
+  isMain: z.boolean().optional(),
+});
+
 export type Store = z.infer<typeof Store>;
 export const Store = z.object({
   id: z.number(),
@@ -75,20 +83,12 @@ export const Store = z.object({
   estimatedWaitingTimeMinutes: z.number().nullable(),
   isBookmarked: z.boolean(),
   isFinished: z.boolean(),
-  mainImage: z.string().nullable(),
   category: z.enum(STORE_CATEGORIES),
-});
-
-const StoreImage = z.object({
-  id: z.number(),
-  imageUrl: z.string(),
-  sortOrder: z.number(),
-  tags: z.array(z.string()).nullable(),
-  isMain: z.boolean().optional(),
+  images: z.array(StoreImage).nullable(),
 });
 
 export type StoreInfo = z.infer<typeof StoreInfo>;
-export const StoreInfo = Store.omit({ mainImage: true }).extend({
+export const StoreInfo = Store.extend({
   address: z.string(),
   addressDetail: z.string().nullable(),
   category: z.enum(STORE_CATEGORIES),
@@ -97,7 +97,6 @@ export const StoreInfo = Store.omit({ mainImage: true }).extend({
   direction: z.string(),
   latitude: z.number().nullable(),
   longitude: z.number().nullable(),
-  images: z.array(StoreImage),
   bookmarkCount: z.number(),
 });
 
@@ -107,6 +106,10 @@ export type GetStoreListParams = {
   pageSize?: number;
   sortType?: SortType;
   sortDirection?: SortDirection;
+  regionIds?: string[];
+  category?: StoreCategory;
+  latitude?: number;
+  longitude?: number;
 };
 
 export type Review = z.infer<typeof Review>;
@@ -134,7 +137,7 @@ export const StoreMenu = z.object({
   id: z.number(),
   name: z.string(),
   description: z.string(),
-  imageUrl: z.string().nullable(),
+  imageUrls: z.array(z.string()),
   price: z.number(),
   sortOrder: z.number(),
   signature: z.boolean(),
@@ -163,11 +166,7 @@ export type GetStoreImageListResponse = z.infer<typeof GetStoreImageListResponse
 export const GetStoreImageListResponse = PageResponse(StoreImage);
 
 export type GetStoreListResponse = z.infer<typeof GetStoreListResponse>;
-export const GetStoreListResponse = PageResponse(
-  Store.extend({
-    mainImage: z.string().nullable(),
-  }),
-);
+export const GetStoreListResponse = PageResponse(Store);
 
 export type GetStoreByIdResponse = z.infer<typeof GetStoreByIdResponse>;
 export const GetStoreByIdResponse = ApiResponse(StoreInfo);
@@ -308,3 +307,5 @@ export const SearchStoreListResponse = PageResponse(
     category: z.enum(STORE_CATEGORIES),
   }),
 );
+
+export const GetRecentlyViewedStoreListResponse = PageResponse(Store);

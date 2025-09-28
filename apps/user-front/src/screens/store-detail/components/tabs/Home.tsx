@@ -14,6 +14,7 @@ import { MenuCard } from '@/components/Store/MenuCard';
 import { ReviewsList } from '@/components/Store/ReviewsList';
 import { StoresList } from '@/components/Store/StoresList';
 import { SubwayLineBadge } from '@/components/SubwayLineBadge';
+import { useGetStoreImmediateEntryList } from '@/hooks/store/useGetStoreImmediateEntryList';
 import { useGetStoreList } from '@/hooks/store/useGetStoreList';
 import { useGetStoreMenuList } from '@/hooks/store/useGetStoreMenuList';
 import { useGetStoreReviewList } from '@/hooks/store/useGetStoreReviewList';
@@ -32,12 +33,21 @@ const mock = {
 type StoreDetailHomeTabProps = {
   store: StoreInfo;
   onSeeMoreReviews: () => void;
+  onSeeMoreMenus: () => void;
 };
 
-export const StoreDetailHomeTab = ({ store, onSeeMoreReviews }: StoreDetailHomeTabProps) => {
+export const StoreDetailHomeTab = ({
+  store,
+  onSeeMoreReviews,
+  onSeeMoreMenus,
+}: StoreDetailHomeTabProps) => {
   const { data: storeMenus } = useGetStoreMenuList(store.id);
   const { data: reviews } = useGetStoreReviewList(store.id);
   const { data: stores } = useGetStoreList({ sortType: 'RECENT' });
+  const { data: immediateEntryStores } = useGetStoreImmediateEntryList({
+    pageNum: 1,
+    pageSize: 10,
+  });
 
   return (
     <div className='flex flex-col'>
@@ -69,7 +79,7 @@ export const StoreDetailHomeTab = ({ store, onSeeMoreReviews }: StoreDetailHomeT
       <Section className='pb-8'>
         <Section.Header>
           <Section.Title>메뉴</Section.Title>
-          <Section.Link>더보기</Section.Link>
+          <Section.Link onClick={onSeeMoreMenus}>더보기</Section.Link>
         </Section.Header>
         {!isNonEmptyArray(storeMenus) ? (
           <EmptyState className='mt-10' title='등록된 메뉴가 없어요!' />
@@ -77,7 +87,7 @@ export const StoreDetailHomeTab = ({ store, onSeeMoreReviews }: StoreDetailHomeT
           <ul className='mt-6 flex gap-3 -mx-grid-margin overflow-x-auto scrollbar-hide px-grid-margin'>
             {storeMenus[0].menu.map((menu) => (
               <MenuCard key={menu.id}>
-                <MenuCard.Image src={menu.imageUrl} alt={menu.name} />
+                <MenuCard.Image src={menu.imageUrls[0] ?? null} alt={menu.name} />
                 <MenuCard.Title>{menu.name}</MenuCard.Title>
                 <MenuCard.Price>{menu.price.toLocaleString()}</MenuCard.Price>
               </MenuCard>
@@ -97,7 +107,7 @@ export const StoreDetailHomeTab = ({ store, onSeeMoreReviews }: StoreDetailHomeT
           )}
         </Section.Header>
         {reviews.list.length === 0 && (
-          <EmptyState className='mt-10' title='등록된 리뷰가 없어요!' />
+          <EmptyState className='my-10' title='등록된 리뷰가 없어요!' />
         )}
         {reviews.list.length > 0 && (
           <ul className='mt-6 flex gap-3 -mx-grid-margin overflow-x-auto scrollbar-hide px-grid-margin pb-8'>
@@ -145,10 +155,9 @@ export const StoreDetailHomeTab = ({ store, onSeeMoreReviews }: StoreDetailHomeT
           stores={stores.list}
           onClickTotalBtn={noop}
         />
-        {/* TODO: 지금 바로 입장 가능한 식당 목록 조회 기능 추가 */}
         <StoresList
           subtitle='지금 바로 입장하실 수 있어요!'
-          stores={stores.list}
+          stores={immediateEntryStores.list}
           onClickTotalBtn={noop}
         />
       </div>

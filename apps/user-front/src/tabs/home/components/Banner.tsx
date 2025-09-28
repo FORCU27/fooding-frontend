@@ -4,7 +4,7 @@ import { useFlow } from '@stackflow/react/future';
 
 import { Carousel } from '@/components/Carousel';
 import { useGetBannerList } from '@/hooks/banner/useGetBannerList';
-import { screenId } from '@/libs/stackflow';
+import { bannerScreen } from '@/libs/stackflow';
 
 const DEFAULT_PLACEHOLDER = '/images/home/banneritem1.png';
 
@@ -27,10 +27,10 @@ export const Banner = () => {
                 onClick={() => {
                   if (!banner.parameters || !banner.parameters.screenId) return;
 
-                  const screenName = screenId[banner.parameters.screenId];
+                  const screen = bannerScreen[banner.parameters.screenId];
 
-                  if (screenName) {
-                    flow.push(screenName, {});
+                  if (screen) {
+                    flow.push(screen.name, screen.params);
                   }
                 }}
               >

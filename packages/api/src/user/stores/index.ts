@@ -18,6 +18,7 @@ import {
   SearchStoreListParams,
   SearchStoreListResponse,
   ModifyStoreReviewBody,
+  GetRecentlyViewedStoreListResponse,
 } from './type';
 import { api } from '../../shared';
 import { CreateReportBody, GetUserReportResponse } from '../reports';
@@ -90,5 +91,9 @@ export const storeApi = {
   createStoreReviewReport: async (reviewId: number, body: CreateReportBody) => {
     const response = await api.post(`${ENDPOINT}/${reviewId}/report`, body);
     return GetUserReportResponse.parse(response);
+  },
+  getRecentlyViewedStoreList: async () => {
+    const response = await api.get(`${ENDPOINT}/recent`);
+    return GetRecentlyViewedStoreListResponse.parse(response);
   },
 };

@@ -8,13 +8,13 @@ export type UserRole = z.infer<typeof UserRole>;
 export const Gender = z.enum(['NONE', 'MALE', 'FEMALE']);
 export type Gender = z.infer<typeof Gender>;
 
-export const Provider = z.enum(['GOOGLE', 'FOODING', 'APPLE', 'KAKAO']);
+export const Provider = z.enum(['GOOGLE', 'FOODING', 'APPLE', 'KAKAO', 'NAVER']);
 export type Provider = z.infer<typeof Provider>;
 
 export const AdminUserResponseSchema = z.object({
   id: z.number(),
   email: z.string(),
-  nickname: z.string().nullable(),
+  nickname: z.string(),
   phoneNumber: z.string().nullable(),
   gender: Gender,
   provider: Provider,

@@ -7,13 +7,14 @@ import { ChevronDownIcon, FoodingIcon, StarIcon } from '@repo/design-system/icon
 import { ActivityComponentType, useFlow } from '@stackflow/react/future';
 import { Suspense } from '@suspensive/react';
 
-import { AutoComplete } from '../search/components/AutoComplete';
+import { AutoComplete } from '../../tabs/search/components/AutoComplete';
 import { IntersectionObserver } from '@/components/IntersectionObserver';
 import { DefaultErrorBoundary } from '@/components/Layout/DefaultErrorBoundary';
 import { Header } from '@/components/Layout/Header';
 import { Screen } from '@/components/Layout/Screen';
 import { RegionMultiSelectBottomSheet } from '@/components/RegionMultiSelectBottomSheet';
 import { useSearchInfiniteStoreList } from '@/hooks/store/useSearchInfiniteStoreList';
+import { useDebouncedValue } from '@/hooks/useDebouncedValue';
 import { isNonEmptyArray } from '@/utils/array';
 
 export type SearchResultScreenParams = {
@@ -76,6 +77,8 @@ export const SearchResultScreen: ActivityComponentType<'SearchResultScreen'> = (
     setSearchInputFocused(false);
   };
 
+  const debouncedSearchInputValue = useDebouncedValue(searchInputValue, 300);
+
   return (
     <Screen
       header={
@@ -100,7 +103,7 @@ export const SearchResultScreen: ActivityComponentType<'SearchResultScreen'> = (
       {searchInputValue && searchInputFocused && (
         <AutoComplete
           className='absolute inset-0 z-10'
-          keyword={searchInputValue}
+          keyword={debouncedSearchInputValue}
           onSelect={search}
         />
       )}
