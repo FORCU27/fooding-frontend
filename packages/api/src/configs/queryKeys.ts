@@ -17,10 +17,14 @@ export const queryKeys = {
     },
   },
   ceo: {
+    me: 'ceoMe',
     devices: 'ceoDevices',
     store: {
+      selectedStore: 'ceoSelectedStore',
+      storeList: 'ceoStoreList',
       getStore: 'ceoStoreGetStore',
       operatingHour: 'ceoStoreOperatingHour',
+      images: 'ceoStoreImages',
     },
     menuCategory: {
       list: 'ceoMenuCategoryList',

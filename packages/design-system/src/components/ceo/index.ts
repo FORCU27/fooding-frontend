@@ -17,6 +17,7 @@ export * from './CoinProduct';
 export * from './DeviceCard';
 export * from './ToolTip';
 export * from './RadioButtonV2';
+export * from './Pagination';
 export * from './TextField';
 export * from './DataTable';
 export * from './Tag';
