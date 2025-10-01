@@ -10,16 +10,18 @@ import { useDeleteBookmark } from '@/hooks/bookmark/useDeleteBookmark';
 import { cn } from '@/utils/cn';
 
 interface StoreListItemProps {
-  store: {
-    id: Store['id'];
-    images: Store['images'];
-    isFinished: Store['isFinished'];
-    name: Store['name'];
-    averageRating: Store['averageRating'];
-    reviewCount: Store['reviewCount'];
-    estimatedWaitingTimeMinutes: Store['estimatedWaitingTimeMinutes'];
-    isBookmarked: Store['isBookmarked'];
-    category: Store['category'];
+  store: Pick<
+    Store,
+    | 'id'
+    | 'images'
+    | 'isFinished'
+    | 'name'
+    | 'averageRating'
+    | 'reviewCount'
+    | 'estimatedWaitingTimeMinutes'
+    | 'isBookmarked'
+    | 'category'
+  > & {
     address: string;
   };
 }
