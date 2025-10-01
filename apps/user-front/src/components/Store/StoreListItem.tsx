@@ -1,5 +1,4 @@
 import Image from 'next/image';
-import { useState } from 'react';
 
 import { Store, STORE_CATEOGORY_LABELS } from '@repo/api/user';
 import { Skeleton } from '@repo/design-system/components/b2c';
@@ -38,11 +37,7 @@ export const StoreListItem = ({ store }: StoreListItemProps) => {
           <div className='subtitle-2 max-w-[300px] truncate'>{store.name}</div>
           <div className='body-6 text-gray-5'>{STORE_CATEOGORY_LABELS[store.category]}</div>
         </div>
-        <BookmarkToggleButton
-          key={store.isBookmarked.toString()}
-          isBookmarked={store.isBookmarked}
-          storeId={store.id}
-        />
+        <BookmarkToggleButton isBookmarked={store.isBookmarked} storeId={store.id} />
       </div>
       <div className='flex items-center mt-2'>
         <StarIcon size={18} fill='#FFD83D' color='#FFD83D' />
@@ -86,12 +81,7 @@ type BookmarkToggleButtonProps = {
   isBookmarked: boolean;
 };
 
-const BookmarkToggleButton = ({
-  storeId,
-  isBookmarked: initialIsBookmarked,
-}: BookmarkToggleButtonProps) => {
-  const [isBookmarked, setIsBookmarked] = useState(initialIsBookmarked);
-
+const BookmarkToggleButton = ({ storeId, isBookmarked }: BookmarkToggleButtonProps) => {
   const addBookmark = useAddBookmark();
   const deleteBookMark = useDeleteBookmark();
 
@@ -103,17 +93,9 @@ const BookmarkToggleButton = ({
     }
 
     if (isBookmarked) {
-      deleteBookMark.mutate(storeId, {
-        onSuccess: () => {
-          setIsBookmarked(false);
-        },
-      });
+      deleteBookMark.mutate(storeId);
     } else {
-      addBookmark.mutate(storeId, {
-        onSuccess: () => {
-          setIsBookmarked(true);
-        },
-      });
+      addBookmark.mutate(storeId);
     }
   };
 
