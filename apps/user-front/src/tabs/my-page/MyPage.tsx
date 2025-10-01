@@ -25,7 +25,7 @@ import { useGetInfiniteMyCouponList } from '@/hooks/coupon/useGetMyCouponList';
 import { useGetMyReviewList } from '@/hooks/review/useGetMyReviewList';
 import { useGetRewardPersonalLog } from '@/hooks/reward/useGetRewardPersonalLog';
 import { useGetRecentlyViewedStoreList } from '@/hooks/store/useGetRecentlyViewedStoreList';
-import { BookmarkCard } from '@/screens/bookmarks/components/BookmarkCard';
+import { BookmarkCard } from '@/tabs/my-page/components/BookmarkCard';
 
 const dummy = {
   followers: 0,
@@ -168,24 +168,14 @@ const Content = () => {
         <div className='flex flex-col py-grid-margin bg-white/80'>
           <div className='flex justify-between mb-4 px-grid-margin'>
             <div className='subtitle-3'>찜해 둔 식당</div>
-            {bookmarks.list.length === 0 ? (
-              <button
-                className='flex justify-center items-center body-5 text-gray-3'
-                onClick={() => flow.push('BookmarkListScreen', {})}
-                disabled
-              >
-                <span>전체보기</span>
-                <ChevronRightIcon size={14} />
-              </button>
-            ) : (
-              <button
-                className='flex justify-center items-center body-5 text-gray-5 cursor-pointer hover:text-black'
-                onClick={() => flow.push('BookmarkListScreen', {})}
-              >
-                <span>전체보기</span>
-                <ChevronRightIcon size={14} />
-              </button>
-            )}
+            <button
+              className='flex justify-center items-center body-5 text-gray-5 disabled:text-gray-3'
+              onClick={() => flow.push('BookmarkListScreen', {})}
+              disabled={bookmarks.list.length === 0}
+            >
+              전체보기
+              <ChevronRightIcon size={18} />
+            </button>
           </div>
           <ul className='flex px-grid-margin overflow-x-auto scrollbar-hide w-dvw gap-3'>
             {bookmarks.list.map((bookmark) => (
@@ -196,7 +186,7 @@ const Content = () => {
         <StoresList
           stores={recentlyViewedStores.list}
           subtitle='최근 본 식당'
-          onClickTotalBtn={() => flow.push('MyPageTab', {})}
+          onClickTotalBtn={() => flow.push('RecentlyViewedStoreListScreen', {})}
         />
       </div>
     </div>

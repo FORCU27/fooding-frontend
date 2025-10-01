@@ -79,6 +79,7 @@ export const queryKeys = {
       reward: 'userStoreReward',
       rewardList: 'userStoreRewardList',
       searchInfiniteStoreList: 'userSearchInfiniteStoreList',
+      recentlyViewedStores: 'recently-viewed-stores',
     },
     storePost: {
       list: 'userStorePostList',

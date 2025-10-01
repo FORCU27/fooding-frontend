@@ -44,6 +44,11 @@ export const useDeleteBookmark = () => {
 
       return { storeListData, bookmarkListData };
     },
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: [queryKeys.user.store.recentlyViewedStores],
+      });
+    },
 
     onError: (_error, _, context) => {
       if (context?.storeListData) {
