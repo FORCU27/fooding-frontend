@@ -4,10 +4,10 @@ import NextLink from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useParams } from 'next/navigation';
 import type React from 'react';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 
 import { ArrowBack, Edit, Delete } from '@mui/icons-material';
-import { Delete as DeleteIcon } from '@mui/icons-material';
+import { Delete as DeleteIcon, Add, Close } from '@mui/icons-material';
 import {
   Box,
   Button,
@@ -279,6 +279,22 @@ export default function StoreDetailPage() {
   const [isCreateMenuOpen, setIsCreateMenuOpen] = useState(false);
   const [isEditMenuOpen, setIsEditMenuOpen] = useState(false);
   const [selectedMenu, setSelectedMenu] = useState<AdminMenuResponse | null>(null);
+  const selectedMenuImages = useMemo(() => {
+    if (!selectedMenu) {
+      return [] as Array<{ id: string; name: string; url: string }>;
+    }
+    return (selectedMenu.imageUrls ?? []).map((url, index) => {
+      const id = selectedMenu.imageIds?.[index];
+      if (!id) {
+        return null;
+      }
+      return {
+        id,
+        name: `기존 이미지 ${index + 1}`,
+        url,
+      };
+    }).filter((img): img is { id: string; name: string; url: string } => Boolean(img));
+  }, [selectedMenu]);
   // Categories state
   const [categoryPage] = useState(1);
   const [isCreateCategoryOpen, setIsCreateCategoryOpen] = useState(false);
@@ -1353,7 +1369,7 @@ export default function StoreDetailPage() {
           name: '',
           price: 0,
           description: '',
-          imageId: '',
+          imageIds: [],
           sortOrder: 0,
           isSignature: false,
           isRecommend: false,
@@ -1376,11 +1392,12 @@ export default function StoreDetailPage() {
             name: selectedMenu.name,
             price: Number(selectedMenu.price),
             description: selectedMenu.description,
-            imageId: '',
+            imageIds: selectedMenu.imageIds ?? [],
             sortOrder: selectedMenu.sortOrder,
             isSignature: selectedMenu.isSignature,
             isRecommend: selectedMenu.isRecommend,
           }}
+          existingImages={selectedMenuImages}
           onClose={() => {
             setIsEditMenuOpen(false);
             setSelectedMenu(null);
@@ -1648,7 +1665,7 @@ type MenuFormValues = {
   name: string;
   price: number;
   description: string;
-  imageId: string;
+  imageIds: string[];
   sortOrder: number;
   isSignature: boolean;
   isRecommend: boolean;
@@ -1658,6 +1675,7 @@ function MenuDialog({
   open,
   title,
   initial,
+  existingImages = [],
   onClose,
   onSubmit,
   loading,
@@ -1666,6 +1684,7 @@ function MenuDialog({
   open: boolean;
   title: string;
   initial: MenuFormValues;
+  existingImages?: Array<{ id: string; name: string; url: string }>;
   onClose: () => void;
   onSubmit: (values: MenuFormValues) => void;
   loading: boolean;
@@ -1673,15 +1692,25 @@ function MenuDialog({
 }) {
   const [values, setValues] = useState<MenuFormValues>(initial);
   const [uploading, setUploading] = useState(false);
-  const [uploadedFileName, setUploadedFileName] = useState<string>('');
-  const [previewUrl, setPreviewUrl] = useState<string>('');
+  const [uploadedFiles, setUploadedFiles] = useState<Array<{ id: string; name: string; url: string }>>([]);
 
   // initial 값이 변경될 때 폼 초기화
   useEffect(() => {
+    if (!open) {
+      return;
+    }
     setValues(initial);
-    setUploadedFileName('');
-    setPreviewUrl('');
-  }, [initial]);
+
+    if (existingImages.length > 0) {
+      setUploadedFiles(existingImages);
+      setValues((prev) => ({
+        ...prev,
+        imageIds: existingImages.map((img) => img.id),
+      }));
+    } else {
+      setUploadedFiles([]);
+    }
+  }, [open, initial, existingImages]);
 
   const handleChange = (key: keyof MenuFormValues) => (e: React.ChangeEvent<HTMLInputElement>) => {
     const val = e.target.value;
@@ -1700,30 +1729,33 @@ function MenuDialog({
     const files = e.target.files;
     if (!files || files.length === 0) return;
 
-    const file = files[0];
-    if (!file) return;
-
     setUploading(true);
     try {
       const form = new FormData();
-      form.append('files', file);
+      Array.from(files).forEach((file) => {
+        form.append('files', file);
+      });
+      
       const res = await adminFileApi.upload(form);
-      const first = res.data?.[0];
-      if (first?.id) {
-        setValues((prev) => ({ ...prev, imageId: first.id }));
-        setUploadedFileName(first.name ?? file.name);
+      const uploadedData = res.data?.map((file, index) => ({
+        id: file.id,
+        name: file.name ?? files[index]?.name ?? `image-${index + 1}`,
+        url: file.url ?? ''
+      })) ?? [];
 
-        // 미리보기 URL 생성
-        if (first.url) {
-          setPreviewUrl(first.url);
-        } else {
-          // URL이 없는 경우 FileReader로 로컬 미리보기
-          const reader = new FileReader();
-          reader.onload = (e) => {
-            setPreviewUrl(e.target?.result as string);
+      if (uploadedData.length > 0) {
+        setValues((prev) => {
+          const remainingSlots = Math.max(0, 5 - prev.imageIds.length);
+          const filesToAdd = uploadedData.slice(0, remainingSlots);
+          if (!filesToAdd.length) {
+            return prev;
+          }
+          setUploadedFiles((prevFiles) => [...prevFiles, ...filesToAdd]);
+          return {
+            ...prev,
+            imageIds: [...prev.imageIds, ...filesToAdd.map((f) => f.id)],
           };
-          reader.readAsDataURL(file);
-        }
+        });
       }
     } finally {
       setUploading(false);
@@ -1731,18 +1763,33 @@ function MenuDialog({
     }
   };
 
-  const handleRemoveImage = () => {
-    setValues((prev) => ({ ...prev, imageId: '' }));
-    setUploadedFileName('');
-    setPreviewUrl('');
+  const handleRemoveImage = (imageId?: string) => {
+    if (imageId) {
+      // 개별 이미지 삭제
+      setUploadedFiles((prev) => prev.filter(f => f.id !== imageId));
+      setValues((prev) => ({ 
+        ...prev, 
+        imageIds: prev.imageIds.filter(id => id !== imageId)
+      }));
+    } else {
+      // 전체 이미지 삭제
+      setUploadedFiles([]);
+      setValues((prev) => ({ ...prev, imageIds: [] }));
+    }
   };
 
   const handleClose = () => {
     // 다이얼로그 닫을 때 상태 초기화
     setValues(initial);
-    setUploadedFileName('');
-    setPreviewUrl('');
+    setUploadedFiles(existingImages);
     onClose();
+  };
+
+  const handleSubmit = () => {
+    onSubmit({
+      ...values,
+      imageIds: [...values.imageIds],
+    });
   };
 
   return (
@@ -1783,55 +1830,111 @@ function MenuDialog({
         <Box>
           <Typography
             variant='body2'
-            color={values.imageId ? 'text.secondary' : 'error'}
+            color={values.imageIds.length ? 'text.secondary' : 'error'}
             sx={{ mb: 1 }}
           >
-            메뉴 이미지 업로드 (필수)
+            메뉴 이미지 업로드 (필수) - 최대 5개까지 업로드 가능
           </Typography>
 
-          {!values.imageId ? (
-            <Button variant='outlined' component='label' disabled={uploading}>
-              {uploading ? '업로드 중…' : '이미지 선택 및 업로드'}
-              <input type='file' hidden accept='image/*' onChange={handleUpload} />
-            </Button>
-          ) : (
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-              <Button variant='outlined' component='label' disabled={uploading}>
-                {uploading ? '업로드 중…' : '이미지 변경'}
-                <input type='file' hidden accept='image/*' onChange={handleUpload} />
-              </Button>
-              <IconButton color='error' onClick={handleRemoveImage} size='small'>
-                <DeleteIcon />
-              </IconButton>
-            </Box>
-          )}
-
-          {uploadedFileName && (
-            <Typography variant='caption' sx={{ ml: 2 }}>
-              {uploadedFileName}
-            </Typography>
-          )}
-
-          {/* 이미지 미리보기 */}
-          {previewUrl && (
-            <Box sx={{ mt: 2, textAlign: 'center' }}>
-              <img
-                src={previewUrl}
-                alt='미리보기'
-                style={{
-                  maxWidth: '100%',
-                  maxHeight: '200px',
-                  objectFit: 'contain',
-                  border: '1px solid #ddd',
-                  borderRadius: '4px',
-                }}
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 2 }}>
+            <Button 
+              variant='outlined' 
+              component='label' 
+              disabled={uploading || values.imageIds.length >= 5}
+              startIcon={<Add />}
+            >
+              {uploading ? '업로드 중…' : '이미지 추가'}
+              <input 
+                type='file' 
+                hidden 
+                accept='image/*' 
+                multiple 
+                onChange={handleUpload}
+                disabled={uploading || values.imageIds.length >= 5}
               />
+            </Button>
+            
+            {values.imageIds.length > 0 && (
+              <Button 
+                variant='outlined' 
+                color='error' 
+                onClick={() => handleRemoveImage()}
+                startIcon={<DeleteIcon />}
+                size='small'
+              >
+                전체 삭제
+              </Button>
+            )}
+          </Box>
+
+          {/* 업로드된 이미지 목록 */}
+          {uploadedFiles.length > 0 && (
+            <Box sx={{ mt: 2 }}>
+              <Typography variant='body2' sx={{ mb: 1 }}>
+                업로드된 이미지 ({uploadedFiles.length}/5)
+              </Typography>
+              <Box sx={{ 
+                display: 'grid', 
+                gridTemplateColumns: 'repeat(auto-fill, minmax(120px, 1fr))', 
+                gap: 2 
+              }}>
+                {uploadedFiles.map((file) => (
+                  <Box 
+                    key={file.id} 
+                    sx={{ 
+                      position: 'relative',
+                      border: '1px solid #ddd',
+                      borderRadius: 1,
+                      overflow: 'hidden'
+                    }}
+                  >
+                    <img
+                      src={file.url || URL.createObjectURL(new Blob())}
+                      alt={file.name}
+                      style={{
+                        width: '100%',
+                        height: '120px',
+                        objectFit: 'cover',
+                      }}
+                    />
+                    <Box sx={{ 
+                      position: 'absolute', 
+                      top: 4, 
+                      right: 4,
+                      backgroundColor: 'rgba(0,0,0,0.7)',
+                      borderRadius: '50%'
+                    }}>
+                      <IconButton 
+                        color='error' 
+                        onClick={() => handleRemoveImage(file.id)} 
+                        size='small'
+                        sx={{ color: 'white' }}
+                      >
+                        <Close fontSize='small' />
+                      </IconButton>
+                    </Box>
+                    <Typography 
+                      variant='caption' 
+                      sx={{ 
+                        display: 'block', 
+                        p: 0.5, 
+                        textAlign: 'center',
+                        overflow: 'hidden',
+                        textOverflow: 'ellipsis',
+                        whiteSpace: 'nowrap'
+                      }}
+                    >
+                      {file.name}
+                    </Typography>
+                  </Box>
+                ))}
+              </Box>
             </Box>
           )}
 
-          {!values.imageId && (
+          {!values.imageIds.length && (
             <Typography variant='caption' color='error' display='block' sx={{ mt: 0.5 }}>
-              이미지를 업로드해야 저장할 수 있습니다.
+              최소 1개 이상의 이미지를 업로드해야 저장할 수 있습니다.
             </Typography>
           )}
         </Box>
@@ -1865,9 +1968,9 @@ function MenuDialog({
       <DialogActions>
         <Button onClick={handleClose}>취소</Button>
         <Button
-          onClick={() => onSubmit(values)}
+          onClick={handleSubmit}
           variant='contained'
-          disabled={loading || uploading || !values.imageId}
+          disabled={loading || uploading || !values.imageIds.length}
         >
           {loading ? '저장 중...' : '저장'}
         </Button>

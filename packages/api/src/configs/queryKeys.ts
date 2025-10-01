@@ -17,10 +17,14 @@ export const queryKeys = {
     },
   },
   ceo: {
+    me: 'ceoMe',
     devices: 'ceoDevices',
     store: {
+      selectedStore: 'ceoSelectedStore',
+      storeList: 'ceoStoreList',
       getStore: 'ceoStoreGetStore',
       operatingHour: 'ceoStoreOperatingHour',
+      images: 'ceoStoreImages',
     },
     menuCategory: {
       list: 'ceoMenuCategoryList',
@@ -71,6 +75,7 @@ export const queryKeys = {
     },
     storeWaiting: {
       detail: 'userStoreWaitingDetail',
+      available: 'userStoreWaitingAvailable',
     },
     coupon: {
       infiniteList: 'userCouponInfiniteList',
@@ -80,6 +85,7 @@ export const queryKeys = {
     region: { list: 'userRegionList' },
     reward: { list: 'userRewardList', log: 'userRewardLog' },
     report: { detail: 'userReportDetail' },
+    review: { myList: 'userReviewMyList' },
   },
   me: {
     user: 'meUser',

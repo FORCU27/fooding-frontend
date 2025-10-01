@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import PhotoCard from './PhotoCard';
+import { PhotoCard } from './PhotoCard';
 
 // 샘플 이미지
 const IMG =

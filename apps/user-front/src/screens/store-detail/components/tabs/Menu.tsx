@@ -2,6 +2,7 @@ import Image from 'next/image';
 
 import { StoreInfo, StoreMenu } from '@repo/api/user';
 import { ChipTabs, EmptyState, Tag } from '@repo/design-system/components/b2c';
+import { FoodingIcon } from '@repo/design-system/icons';
 import { useFlow } from '@stackflow/react/future';
 
 import { useGetStoreMenuList } from '@/hooks/store/useGetStoreMenuList';
@@ -62,14 +63,18 @@ const MenuItem = ({ menu, storeName }: MenuItemProps) => {
         <p className='mt-2 body-8-2 text-gray-5'>{menu.description}</p>
         <p className='mt-2 subtitle-4 text-black'>{menu.price.toLocaleString()}원</p>
       </div>
-      {menu.imageUrl && (
+      {menu.imageUrls[0] ? (
         <Image
           width={120}
           height={120}
-          src={menu.imageUrl}
+          src={menu.imageUrls[0]}
           alt={menu.name}
           className='rounded-[12px] object-cover'
         />
+      ) : (
+        <div className='flex justify-center items-center bg-gray-1 size-[120px] rounded-[12px]'>
+          <FoodingIcon width={58} height={72} color='rgba(17, 17, 17, 0.1)' />
+        </div>
       )}
     </li>
   );
