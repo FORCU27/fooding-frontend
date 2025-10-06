@@ -1,6 +1,7 @@
 'use client';
 
 import Image from 'next/image';
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
@@ -32,13 +33,15 @@ export const Header = () => {
           }
         />
         <div className='items-center gap-3 hidden desktop:flex'>
-          <Image
-            src='/images/fooding-ceo-logo.svg'
-            width={162}
-            height={28}
-            alt='ceo-logo'
-            className='object-contain'
-          />
+          <Link href='/my'>
+            <Image
+              src='/images/fooding-ceo-logo.svg'
+              width={162}
+              height={28}
+              alt='ceo-logo'
+              className='object-contain cursor-pointer'
+            />
+          </Link>
         </div>
         {/* TODO: 페이지 제목 표시 */}
         {/* <div className='desktop:hidden absolute left-1/2 -translate-x-1/2 subtitle-2'>부가정보</div> */}
