@@ -8,3 +8,4 @@ export * from './menu-board';
 export * from './store-information';
 export * from './image';
 export * from './coupon';
+export * from './post';
