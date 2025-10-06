@@ -177,7 +177,7 @@ export default function PortalLandingPage() {
             {/* 서비스 관리 카드 */}
             <div className='border border-gray-200 rounded-lg bg-white shadow-sm'>
               <div className='p-6 border-b border-gray-100'>
-                <h3 className='text-lg font-semibold text-gray-900'>서비스 관리</h3>
+                <h3 className='text-lg font-semibold text-gray-900'>서비스</h3>
               </div>
               <div className='p-6'>
                 <div className='grid grid-cols-2 md:grid-cols-3 gap-6'>
@@ -198,7 +198,7 @@ export default function PortalLandingPage() {
             </div>
 
             {/* 추천 기능들 */}
-            <div className='grid grid-cols-1 md:grid-cols-3 gap-6'>
+            {/* <div className='grid grid-cols-1 md:grid-cols-3 gap-6'>
               <div className='border border-gray-200 rounded-lg bg-white shadow-sm hover:shadow-md transition-shadow'>
                 <div className='p-6'>
                   <div className='w-full h-32 bg-gradient-to-br from-red-100 to-red-200 rounded-lg mb-4 flex items-center justify-center'>
@@ -230,7 +230,7 @@ export default function PortalLandingPage() {
                   <p className='text-sm text-gray-600'>효율적인 매장 운영을 위한 팁과 가이드</p>
                 </div>
               </div>
-            </div>
+            </div> */}
 
             {/* 공지사항 */}
             <div className='border border-gray-200 rounded-lg bg-white shadow-sm'>
