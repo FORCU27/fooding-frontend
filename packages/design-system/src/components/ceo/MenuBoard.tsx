@@ -1,7 +1,7 @@
 'use client';
 
-import { useState, useEffect } from 'react';
 import Image from 'next/image';
+import { useState, useEffect } from 'react';
 
 import {
   DndContext,
@@ -25,8 +25,8 @@ import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { MoreVertical } from 'lucide-react';
 
-import { MenuBadgeList, type BadgeType } from './MenuBadge';
 import { DropdownMenu } from './DropdownMenu';
+import { MenuBadgeList, type BadgeType } from './MenuBadge';
 import { ChevronsLeftRightIcon, ChevronsUpDownIcon } from '../../icons';
 import { cn } from '../../utils/cn';
 
