@@ -5,7 +5,7 @@ import { useState, useEffect } from 'react';
 import { IconProps } from '../../icons';
 import { cn } from '../../utils/cn';
 
-export type SortOrder = 'RECENT' | 'OLD';
+export type SortOrder = 'TOTAL' | 'RECENT' | 'OLD';
 
 export interface SortToggleProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   value?: SortOrder;
@@ -42,6 +42,8 @@ export const SortToggle = ({
     setIsOpen(false);
   };
 
+  const selectedLabel = selectedValue === 'RECENT' ? '최신순' : '오래된순';
+
   return (
     <div className='flex items-center gap-5 relative'>
       {keepSelectedOpen && !isOpen && (
@@ -50,7 +52,7 @@ export const SortToggle = ({
           className={cn(baseClassName, chipClassName, selectClassName)}
           onClick={handleToggle}
         >
-          {labelMap[selectedValue]}
+          {selectedLabel}
         </button>
       )}
 
