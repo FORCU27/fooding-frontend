@@ -1,24 +1,41 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 'use client';
 
-import { CreateStorePointShopItemBody } from '@repo/api/ceo';
+import { useRouter } from 'next/navigation';
+
+import { CreateStorePointShopItemBody, storeApi } from '@repo/api/ceo';
 
 import PointShopForm from '../components/PointShopForm';
+import { useStore } from '@/context/StoreContext';
+import { useUploadFile } from '@/hooks/useUploadFile';
 
 const PointShopCreatePage = () => {
-  const handleSubmit = async (data: CreateStorePointShopItemBody) => {
-    // const selectedStoreId = Number(Cookies.get(STORAGE_KEYS.SELECTED_STORE_ID) ?? '1');
+  const { storeId } = useStore();
+  const router = useRouter();
 
+  const selectedStoreId = Number(storeId);
+  const { mutateAsync: uploadFile } = useUploadFile();
+
+  const handleSubmit = async (data: CreateStorePointShopItemBody & { file?: File | null }) => {
     try {
-      // const selectedStoreId = Number(Cookies.get(STORAGE_KEYS.SELECTED_STORE_ID) ?? '1');
-      // await storeApi.createStorePointShopItem(selectedStoreId, data);
+      if (data.file) {
+        const formData = new FormData();
+        formData.append('files', data.file);
+
+        const uploadResult = await uploadFile(formData);
+        data.imageId = uploadResult.data[0]?.id || '';
+      }
+
+      await storeApi.createStorePointShopItem(selectedStoreId, data);
       alert('포인트샵 상품이 등록되었습니다.');
-      console.log('등록 데이터:', data);
-    } catch (error: unknown) {
+      router.push('/my/reward/pointshop');
+    } catch (error: any) {
       console.error(error);
       const errorMessage =
-        error instanceof Error ? error.message :
-        (error as { response?: { data?: { message?: string } } })?.response?.data?.message ||
-        '등록 실패';
+        error instanceof Error
+          ? error.message
+          : (error as { response?: { data?: { message?: string } } })?.response?.data?.message ||
+            '등록 실패';
       alert(errorMessage);
     }
   };

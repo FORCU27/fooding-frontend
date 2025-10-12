@@ -1,39 +1,61 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import { useState } from 'react';
+import { Suspense, useState } from 'react';
 
-import { Button, SortOrder, SortToggle } from '@repo/design-system/components/ceo';
+import { Button, CoinProduct, SortOrder, SortToggle } from '@repo/design-system/components/ceo';
 
 import { useStore } from '@/context/StoreContext';
 import { useGetStorePointShopList } from '@/hooks/store/useGetStorePointShopList';
 
 const PointShopPage = () => {
   const router = useRouter();
-  const [sortOrder, setSortOrder] = useState<SortOrder>('TOTAL');
-
+  const [sortOrder, setSortOrder] = useState<SortOrder>('RECENT');
   const { storeId } = useStore();
 
-  const { data: pointShopList, isLoading } = useGetStorePointShopList({
-    storeId: Number(storeId),
-    isActive: true,
-  });
-
-  if (isLoading) {
+  if (!storeId) {
     return (
       <div className='flex items-center justify-center h-dvh'>
-        <p className='body-2 text-gray-4'>불러오는 중...</p>
+        <p className='body-2 text-gray-4'>가게 정보가 없습니다...</p>
       </div>
     );
   }
 
-  if (!pointShopList || pointShopList.pageInfo.totalCount === 0) {
+  return (
+    <Suspense
+      fallback={
+        <div className='flex items-center justify-center h-dvh'>
+          <p className='body-2 text-gray-4'>불러오는 중...</p>
+        </div>
+      }
+    >
+      <PointShopContent
+        storeId={storeId}
+        sortOrder={sortOrder}
+        setSortOrder={setSortOrder}
+        router={router}
+      />
+    </Suspense>
+  );
+};
+
+interface PointShopContentProps {
+  storeId: string;
+  sortOrder: SortOrder;
+  setSortOrder: (v: SortOrder) => void;
+  router: ReturnType<typeof useRouter>;
+}
+
+const PointShopContent = ({ storeId, sortOrder, setSortOrder, router }: PointShopContentProps) => {
+  const pointShopList = useGetStorePointShopList({ storeId, sortType: sortOrder });
+
+  if (!pointShopList.data.list || pointShopList.data.list.length === 0) {
     return (
       <div className='flex flex-col h-dvh w-full max-w-[1080px] gap-5'>
         <h1 className='headline-2'>포인트샵</h1>
         <div className='flex flex-col gap-5 items-end'>
           <Button className='w-fit' onClick={() => router.push('/my/reward/pointshop/create')}>
-            상품등록{' '}
+            상품등록
           </Button>
           <SortToggle value={sortOrder} onSortChange={setSortOrder} />
         </div>
@@ -46,13 +68,33 @@ const PointShopPage = () => {
   }
 
   return (
-    <div className='flex flex-col h-dvh w-full max-w-[1080px]'>
+    <div className='flex flex-col h-full w-full max-w-[1080px]'>
       <h1 className='headline-2 mb-4'>포인트샵</h1>
       <div className='flex flex-col gap-3 items-end'>
         <Button className='w-fit' onClick={() => router.push('/my/reward/pointshop/create')}>
           상품등록
         </Button>
         <SortToggle value={sortOrder} onSortChange={setSortOrder} />
+      </div>
+      <div className='flex flex-col justify-center gap-5 py-5'>
+        {pointShopList.data.list.map((shop) => (
+          <div key={shop.id}>
+            <CoinProduct
+              className='border-fooding-purple'
+              canceledCount={shop.totalQuantity - shop.issuedQuantity}
+              exchangePoint={shop.point}
+              imageAlt={shop.name}
+              purchaseCount={shop.issuedQuantity}
+              receivedCount={shop.totalQuantity}
+              registrationDate={shop.issueStartOn || '-'}
+              status={shop.isActive ? '발급중' : '발급중지'}
+              title={shop.name}
+              usedCount={0}
+              conditions={shop.conditions}
+              image={shop.image?.url}
+            />
+          </div>
+        ))}
       </div>
     </div>
   );

@@ -40,13 +40,13 @@ export const storeApi = {
   createStoreOperatingHour: async (id: number, body: StoreOperatingHourBody) => {
     await api.post(`${ENDPOINT}/${id}/operating-hour`, body);
   },
-  getStorePointShopList: async (storeId: number, query: PointShopQuery) => {
+  getStorePointShopList: async (storeId: string, query: PointShopQuery) => {
     const response = await api.get(`${ENDPOINT}/${storeId}/point-shop`, {
       params: query,
     });
     return GetStorePointShopListResponse.parse(response);
   },
-  getStorePointShopItemById: async (storeId: number, id: number, query: PointShopQuery) => {
+  getStorePointShopItemById: async (storeId: string, id: number, query: PointShopQuery) => {
     const response = await api.get(`${ENDPOINT}/${storeId}/point-shop/${id}`, {
       params: query,
     });

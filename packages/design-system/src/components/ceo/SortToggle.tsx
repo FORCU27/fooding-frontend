@@ -27,7 +27,7 @@ export const SortToggle = ({
 }: SortToggleProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedValue, setSelectedValue] = useState<SortOrder>(
-    value ?? (keepSelectedOpen ? 'TOTAL' : 'RECENT'),
+    value ?? (keepSelectedOpen ? 'OLD' : 'RECENT'),
   );
 
   useEffect(() => {
@@ -42,11 +42,7 @@ export const SortToggle = ({
     setIsOpen(false);
   };
 
-  const labelMap: Record<SortOrder, string> = {
-    TOTAL: '전체',
-    RECENT: '최신순',
-    OLD: '오래된순',
-  };
+  const selectedLabel = selectedValue === 'RECENT' ? '최신순' : '오래된순';
 
   return (
     <div className='flex items-center gap-5 relative'>
@@ -56,13 +52,13 @@ export const SortToggle = ({
           className={cn(baseClassName, chipClassName, selectClassName)}
           onClick={handleToggle}
         >
-          {labelMap[selectedValue]}
+          {selectedLabel}
         </button>
       )}
 
       {isOpen && (
         <div className='flex gap-2'>
-          {['TOTAL', 'OLD', 'RECENT'].map((v) => {
+          {['OLD', 'RECENT'].map((v) => {
             const val = v as SortOrder;
             return (
               <button
@@ -74,7 +70,7 @@ export const SortToggle = ({
                 )}
                 onClick={() => handleSelect(val)}
               >
-                {labelMap[val]}
+                {val === 'RECENT' ? '최신순' : '오래된순'}
               </button>
             );
           })}

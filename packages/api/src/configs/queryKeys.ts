@@ -24,11 +24,6 @@ export const queryKeys = {
       storeList: 'ceoStoreList',
       getStore: 'ceoStoreGetStore',
       operatingHour: 'ceoStoreOperatingHour',
-      pointShop: {
-        list: 'ceoStoreGetPointShopList',
-        detail: 'ceoStoreGetPointShopDetail',
-        status: 'ceoStoreGetPointShopStatus',
-      },
       images: 'ceoStoreImages',
     },
     menuCategory: {
@@ -57,6 +52,11 @@ export const queryKeys = {
       create: 'ceoCouponCreate',
       update: 'ceoCouponUpdate',
       delete: 'ceoCouponDelete',
+    },
+    pointShop: {
+      list: 'ceoStoreGetPointShopList',
+      detail: 'ceoStoreGetPointShopDetail',
+      status: 'ceoStoreGetPointShopStatus',
     },
   },
   pos: {},

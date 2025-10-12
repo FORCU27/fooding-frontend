@@ -28,6 +28,7 @@ export type CreateStorePointShopItemBody = {
   totalQuantity: number;
   issueStartOn: string;
   issueEndOn: string;
+  imageId: string;
 };
 
 export interface PointShopQuery {
@@ -35,6 +36,7 @@ export interface PointShopQuery {
   pageNum?: number;
   pageSize?: number;
   isActive?: boolean;
+  sortType?: string;
 }
 
 export const PointShop = z.object({
@@ -46,8 +48,17 @@ export const PointShop = z.object({
   isActive: z.boolean(),
   totalQuantity: z.number(),
   issuedQuantity: z.number(),
-  issueStartOn: z.string(),
-  issueEndOn: z.string(),
+  issueStartOn: z.string().nullable(),
+  issueEndOn: z.string().nullable(),
+  image: z
+    .object({
+      id: z.string(),
+      name: z.string(),
+      url: z.string(),
+      size: z.number(),
+    })
+    .nullable()
+    .optional(),
 });
 
 export type PointShop = z.infer<typeof PointShop>;
@@ -173,6 +184,7 @@ export const CreateStorePointShopResponse = z.object({
   status: z.string(),
   data: z.number(),
 });
+
 export type UpdateStoreBody = {
   name: Store['name'];
   regionId: Store['regionId'];

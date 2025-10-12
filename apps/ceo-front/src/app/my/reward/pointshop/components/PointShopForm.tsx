@@ -12,23 +12,26 @@ import {
   ToggleGroupItem,
   RadioButton,
   TextArea,
-  ImageUploader,
   CoinProduct,
+  ImageUploader,
 } from '@repo/design-system/components/ceo';
 import { Controller, useForm } from 'react-hook-form';
 
 interface PointShopFormProps {
   originValue?: CreateStorePointShopItemBody;
-  onSubmit: (data: CreateStorePointShopItemBody) => void;
+  onSubmit: (data: CreateStorePointShopItemBody & { file?: File | null }) => void;
 }
 
 const PointShopForm = ({ originValue, onSubmit }: PointShopFormProps) => {
   const [loading, setLoading] = useState(false);
+  const [imageFile, setImageFile] = useState<File | null>(null);
+  const [previewImage, setPreviewImage] = useState<string>(originValue?.imageId || '');
 
   const {
     register,
     handleSubmit,
     control,
+    watch,
     formState: { errors },
   } = useForm<CreateStorePointShopItemBody & { quantityLimit: boolean }>({
     mode: 'onSubmit',
@@ -41,21 +44,52 @@ const PointShopForm = ({ originValue, onSubmit }: PointShopFormProps) => {
       quantityLimit: originValue ? originValue.totalQuantity > 0 : false,
       issueStartOn: originValue?.issueStartOn || '',
       issueEndOn: originValue?.issueEndOn || '',
+      imageId: originValue?.imageId || '',
     },
   });
+
+  const dataURLtoFile = (dataurl: string, filename = 'upload.png') => {
+    const arr = dataurl.split(',');
+    const mime = arr[0]?.match(/:(.*?);/)![1];
+    const bstr = atob(arr[1]!);
+    let n = bstr.length;
+    const u8arr = new Uint8Array(n);
+    while (n--) {
+      u8arr[n] = bstr.charCodeAt(n);
+    }
+    return new File([u8arr], filename, { type: mime });
+  };
+
+  const handleImageChange = async (
+    images: string[],
+    field: { onChange: (value: string) => void },
+  ) => {
+    if (images.length === 0) {
+      setImageFile(null);
+      setPreviewImage('');
+      field.onChange('');
+      return;
+    }
+
+    const file = dataURLtoFile(images[0]!);
+    setImageFile(file);
+    setPreviewImage(images[0]!);
+    field.onChange(images[0]!);
+  };
 
   const handleFormSubmit = async (
     data: CreateStorePointShopItemBody & { quantityLimit: boolean },
   ) => {
     try {
       setLoading(true);
-      await onSubmit(data); // 부모에서 내려준 onSubmit 실행
-    } catch (error: unknown) {
+      onSubmit({ ...data, file: imageFile });
+    } catch (error: any) {
       console.error(error);
       const errorMessage =
-        error instanceof Error ? error.message :
-        (error as { response?: { data?: { message?: string } } })?.response?.data?.message ||
-        '등록 실패';
+        error instanceof Error
+          ? error.message
+          : (error as { response?: { data?: { message?: string } } })?.response?.data?.message ||
+            '등록 실패';
       alert(errorMessage);
     } finally {
       setLoading(false);
@@ -213,7 +247,17 @@ const PointShopForm = ({ originValue, onSubmit }: PointShopFormProps) => {
           error={!!errors.conditions}
           className='bg-white rounded-2xl p-8 border border-gray-3'
         >
-          <ImageUploader />
+          <Controller
+            name='imageId'
+            control={control}
+            render={({ field }) => (
+              <ImageUploader
+                maxImages={1}
+                images={previewImage ? [previewImage] : []}
+                onChange={(images) => handleImageChange(images, field)}
+              />
+            )}
+          />
         </Form.Item>
 
         <div className='w-full flex justify-center'>
@@ -226,15 +270,17 @@ const PointShopForm = ({ originValue, onSubmit }: PointShopFormProps) => {
       <div className='flex flex-col gap-2 my-10'>
         <h1 className='headline-2 ml-10'>미리보기</h1>
         <CoinProduct
-          canceledCount={0}
-          exchangePoint={0}
-          imageAlt='된장찌개 쿠폰 이미지'
+          canceledCount={watch('quantityLimit') === true ? watch('totalQuantity') : 0}
+          exchangePoint={watch('point')}
+          imageAlt={watch('name')}
           purchaseCount={0}
-          receivedCount={0}
+          receivedCount={watch('quantityLimit') === true ? watch('totalQuantity') : 0}
           registrationDate='2025.00.00'
           status='발급중'
-          title='된장찌개 쿠폰'
+          title={watch('name') || '쿠폰이름'}
           usedCount={0}
+          conditions={watch('conditions')}
+          image={previewImage}
         />
       </div>
     </div>

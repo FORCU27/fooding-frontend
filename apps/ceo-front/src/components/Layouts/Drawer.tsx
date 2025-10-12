@@ -10,6 +10,7 @@ import { Dialog as DialogPrimitives } from 'radix-ui';
 import { allMenus, Menu } from './Navigation';
 import { FoodingLogo } from '@/components/FoodingLogo';
 import { StoreSelector } from '@/components/StoreSelector';
+import { useStore } from '@/context/StoreContext';
 import { useGetSelf } from '@/hooks/auth/useGetSelf';
 import { useLogout } from '@/hooks/auth/useLogout';
 
@@ -21,6 +22,7 @@ type DrawerProps = {
 
 export const Drawer = ({ trigger, isOpen, onOpenChange }: DrawerProps) => {
   const router = useRouter();
+  const { clearStore } = useStore();
 
   const logout = useLogout();
 
@@ -29,6 +31,7 @@ export const Drawer = ({ trigger, isOpen, onOpenChange }: DrawerProps) => {
 
     logout.mutate(undefined, {
       onSuccess: () => {
+        clearStore();
         router.push('/login');
       },
       onError: () => {
