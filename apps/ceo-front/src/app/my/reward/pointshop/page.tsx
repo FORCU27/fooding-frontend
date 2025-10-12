@@ -7,6 +7,7 @@ import { Button, CoinProduct, SortOrder, SortToggle } from '@repo/design-system/
 
 import { useStore } from '@/context/StoreContext';
 import { useGetStorePointShopList } from '@/hooks/store/useGetStorePointShopList';
+import { formatDate } from '@/utils/date';
 
 const PointShopPage = () => {
   const router = useRouter();
@@ -78,7 +79,7 @@ const PointShopContent = ({ storeId, sortOrder, setSortOrder, router }: PointSho
       </div>
       <div className='flex flex-col justify-center gap-5 py-5'>
         {pointShopList.data.list.map((shop) => (
-          <div key={shop.id}>
+          <div key={shop.id} onClick={() => router.push(`/my/reward/pointshop/${shop.id}`)}>
             <CoinProduct
               className='border-fooding-purple'
               canceledCount={shop.totalQuantity - shop.issuedQuantity}
@@ -86,7 +87,7 @@ const PointShopContent = ({ storeId, sortOrder, setSortOrder, router }: PointSho
               imageAlt={shop.name}
               purchaseCount={shop.issuedQuantity}
               receivedCount={shop.totalQuantity}
-              registrationDate={shop.issueStartOn || '-'}
+              registrationDate={formatDate(shop.createdAt, { format: 'dot' }) || '-'}
               status={shop.isActive ? '발급중' : '발급중지'}
               title={shop.name}
               usedCount={0}

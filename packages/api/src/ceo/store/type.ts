@@ -26,9 +26,9 @@ export type CreateStorePointShopItemBody = {
   provideType: 'ALL' | 'REGULAR_CUSTOMER';
   conditions: string;
   totalQuantity: number;
-  issueStartOn: string;
-  issueEndOn: string;
-  imageId: string;
+  issueStartOn: string | null;
+  issueEndOn: string | null;
+  imageId?: string;
 };
 
 export interface PointShopQuery {
@@ -50,6 +50,7 @@ export const PointShop = z.object({
   issuedQuantity: z.number(),
   issueStartOn: z.string().nullable(),
   issueEndOn: z.string().nullable(),
+  createdAt: z.string(),
   image: z
     .object({
       id: z.string(),
@@ -57,8 +58,7 @@ export const PointShop = z.object({
       url: z.string(),
       size: z.number(),
     })
-    .nullable()
-    .optional(),
+    .nullable(),
 });
 
 export type PointShop = z.infer<typeof PointShop>;
@@ -177,6 +177,11 @@ export type GetStorePointShopStatusResponse = z.infer<typeof GetStorePointShopSt
 export const GetStorePointShopStatusResponse = z.object({
   status: z.string(),
   data: z.object({}),
+});
+export type GetStorePointShopNullResponse = z.infer<typeof GetStorePointShopNullResponse>;
+export const GetStorePointShopNullResponse = z.object({
+  status: z.string(),
+  data: z.null(),
 });
 
 export type CreateStorePointShopResponse = z.infer<typeof CreateStorePointShopResponse>;

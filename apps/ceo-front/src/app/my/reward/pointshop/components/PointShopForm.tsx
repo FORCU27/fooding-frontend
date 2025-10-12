@@ -19,15 +19,21 @@ import {
 import { Controller, useForm } from 'react-hook-form';
 
 interface PointShopFormProps {
-  originValue?: CreateStorePointShopItemBody;
-  onSubmit: (data: CreateStorePointShopItemBody & { file?: File | null }) => void;
+  originValue?: CreateStorePointShopItemBody & {
+    image?: { id: string; name: string; url: string; size: number };
+  };
+  onSubmit: (
+    data: CreateStorePointShopItemBody & {
+      file?: File | null;
+      image?: { id: string; name: string; url: string; size: number };
+    },
+  ) => void;
 }
 
 const PointShopForm = ({ originValue, onSubmit }: PointShopFormProps) => {
   const [loading, setLoading] = useState(false);
   const [imageFile, setImageFile] = useState<File | null>(null);
-  const [previewImage, setPreviewImage] = useState<string>(originValue?.imageId || '');
-
+  const [previewImage, setPreviewImage] = useState<string>(originValue?.image?.url || '');
   const {
     register,
     handleSubmit,
@@ -45,7 +51,7 @@ const PointShopForm = ({ originValue, onSubmit }: PointShopFormProps) => {
       quantityLimit: originValue ? originValue.totalQuantity > 0 : false,
       issueStartOn: originValue?.issueStartOn || '',
       issueEndOn: originValue?.issueEndOn || '',
-      imageId: originValue?.imageId || '',
+      imageId: originValue?.image?.id || '',
     },
   });
 
@@ -103,7 +109,7 @@ const PointShopForm = ({ originValue, onSubmit }: PointShopFormProps) => {
         className='flex flex-col h-full w-full max-w-[1100px] gap-6 pb-8'
         onSubmit={handleSubmit(handleFormSubmit)}
       >
-        <h1 className='headline-2 mb-4 ml-10'>포인트샵 상품 등록</h1>
+        <h1 className='headline-2 mb-4 ml-10'>포인트샵 상품 {originValue ? '수정' : '등록'}</h1>
 
         <Form.Item
           label={<Form.Label>상품이름</Form.Label>}
@@ -263,7 +269,13 @@ const PointShopForm = ({ originValue, onSubmit }: PointShopFormProps) => {
 
         <div className='w-full flex justify-center'>
           <Button type='submit' disabled={loading} className='w-fit'>
-            {loading ? '등록중...' : '등록하기'}
+            {loading
+              ? originValue
+                ? '수정중...'
+                : '등록중...'
+              : originValue
+                ? '수정하기'
+                : '등록하기'}
           </Button>
         </div>
       </Form>
