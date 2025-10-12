@@ -2,9 +2,11 @@ import { Store } from '@repo/api/ceo';
 import { SelectBox } from '@repo/design-system/components/ceo';
 import { useQuery } from '@tanstack/react-query';
 
+import { useStore } from '@/context/StoreContext';
 import { useChangeSelectedStore } from '@/hooks/store/useChangeSelectedStore';
 
 export const StoreSelector = () => {
+  const { setStoreId } = useStore();
   const changeStore = useChangeSelectedStore();
 
   const selectedStoreQuery = useQuery({
@@ -54,9 +56,17 @@ export const StoreSelector = () => {
   const onStoreValueChange = (value: string) => {
     if (changeStore.isPending) return;
 
-    changeStore.mutate({
-      storeId: Number(value),
-    });
+    changeStore.mutate(
+      {
+        storeId: Number(value),
+      },
+      {
+        onSuccess: () => {
+          // 서버 변경 완료 후 로컬 상태/스토리지/쿠키 모두 업데이트
+          setStoreId(value);
+        },
+      },
+    );
   };
 
   return (

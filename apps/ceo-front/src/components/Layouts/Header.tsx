@@ -10,6 +10,7 @@ import { Suspense } from '@suspensive/react';
 
 import { Drawer } from './Drawer';
 import { StoreSelector } from '@/components/StoreSelector';
+import { useStore } from '@/context/StoreContext';
 import { useGetSelf } from '@/hooks/auth/useGetSelf';
 import { useLogout } from '@/hooks/auth/useLogout';
 
@@ -61,6 +62,7 @@ export const Header = () => {
 
 const UserProfile = () => {
   const { data: me } = useGetSelf();
+  const { clearStore } = useStore();
 
   const router = useRouter();
 
@@ -71,6 +73,7 @@ const UserProfile = () => {
 
     logout.mutate(undefined, {
       onSuccess: () => {
+        clearStore();
         router.push('/login');
       },
       onError: () => {
