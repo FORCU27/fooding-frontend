@@ -50,6 +50,7 @@ export const PointShop = z.object({
   issuedQuantity: z.number(),
   issueStartOn: z.string().nullable(),
   issueEndOn: z.string().nullable(),
+  createdAt: z.string(),
   image: z
     .object({
       id: z.string(),

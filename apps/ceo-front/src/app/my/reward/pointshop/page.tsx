@@ -7,6 +7,7 @@ import { Button, CoinProduct, SortOrder, SortToggle } from '@repo/design-system/
 
 import { useStore } from '@/context/StoreContext';
 import { useGetStorePointShopList } from '@/hooks/store/useGetStorePointShopList';
+import { formatDate } from '@/utils/date';
 
 const PointShopPage = () => {
   const router = useRouter();
@@ -86,7 +87,7 @@ const PointShopContent = ({ storeId, sortOrder, setSortOrder, router }: PointSho
               imageAlt={shop.name}
               purchaseCount={shop.issuedQuantity}
               receivedCount={shop.totalQuantity}
-              registrationDate={shop.issueStartOn || '-'}
+              registrationDate={formatDate(shop.createdAt, { format: 'dot' }) || '-'}
               status={shop.isActive ? '발급중' : '발급중지'}
               title={shop.name}
               usedCount={0}
