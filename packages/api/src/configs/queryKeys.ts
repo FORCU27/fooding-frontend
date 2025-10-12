@@ -17,15 +17,39 @@ export const queryKeys = {
     },
   },
   ceo: {
+    me: 'ceoMe',
     devices: 'ceoDevices',
     store: {
+      selectedStore: 'ceoSelectedStore',
+      storeList: 'ceoStoreList',
       getStore: 'ceoStoreGetStore',
       operatingHour: 'ceoStoreOperatingHour',
-      pointShop: {
-        list: 'ceoStoreGetPointShopList',
-        detail: 'ceoStoreGetPointShopDetail',
-        status: 'ceoStoreGetPointShopStatus',
-      },
+      images: 'ceoStoreImages',
+    },
+    menuCategory: {
+      list: 'ceoMenuCategoryList',
+    },
+    menu: {
+      list: 'ceoMenuList',
+      detail: 'ceoMenuDetail',
+      create: 'ceoMenuCreate',
+      update: 'ceoMenuUpdate',
+      delete: 'ceoMenuDelete',
+    },
+    storeInformation: {
+      get: 'ceoStoreInformationGet',
+    },
+    coupon: {
+      list: 'ceoCouponList',
+      detail: 'ceoCouponDetail',
+      create: 'ceoCouponCreate',
+      update: 'ceoCouponUpdate',
+      delete: 'ceoCouponDelete',
+    },
+    pointShop: {
+      list: 'ceoStoreGetPointShopList',
+      detail: 'ceoStoreGetPointShopDetail',
+      status: 'ceoStoreGetPointShopStatus',
     },
   },
   pos: {},
@@ -48,6 +72,7 @@ export const queryKeys = {
       reward: 'userStoreReward',
       rewardList: 'userStoreRewardList',
       searchInfiniteStoreList: 'userSearchInfiniteStoreList',
+      recentlyViewedStores: 'recently-viewed-stores',
     },
     storePost: {
       list: 'userStorePostList',
@@ -55,6 +80,7 @@ export const queryKeys = {
     },
     storeWaiting: {
       detail: 'userStoreWaitingDetail',
+      available: 'userStoreWaitingAvailable',
     },
     coupon: {
       infiniteList: 'userCouponInfiniteList',
@@ -64,6 +90,7 @@ export const queryKeys = {
     region: { list: 'userRegionList' },
     reward: { list: 'userRewardList', log: 'userRewardLog' },
     report: { detail: 'userReportDetail' },
+    review: { myList: 'userReviewMyList' },
   },
   me: {
     user: 'meUser',

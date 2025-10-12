@@ -132,3 +132,11 @@ export const GetStoreWaitingOverviewType = z.object({
 export type GetStoreWaitingOverviewResult = z.infer<typeof GetStoreWaitingOverviewType>;
 
 export const GetStoreWaitingOverviewResponse = ApiResponse(GetStoreWaitingOverviewType);
+
+export const UserWaitingAvailable = z.object({
+  available: z.boolean(),
+});
+
+export type UserWaitingAvailable = z.infer<typeof UserWaitingAvailable>;
+
+export const GetUserWaitingAvailableResponse = ApiResponse(UserWaitingAvailable);

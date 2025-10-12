@@ -3,6 +3,7 @@ import './globals.css';
 import Script from 'next/script';
 import { ReactNode, Suspense } from 'react';
 
+import { queryKeys } from '@repo/api/configs/query-keys';
 import { QueryClient, dehydrate } from '@tanstack/react-query';
 import { Metadata } from 'next';
 import { OverlayProvider } from 'overlay-kit';
@@ -23,7 +24,7 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
   const qc = new QueryClient();
 
   await qc.prefetchQuery({
-    queryKey: ['selectedStore'],
+    queryKey: [queryKeys.ceo.store.selectedStore],
     queryFn: async () => {
       const res = await fetch('/api/store/select', { cache: 'no-store' });
       if (!res.ok) return null;
@@ -32,7 +33,7 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
   });
 
   await qc.prefetchQuery({
-    queryKey: ['storeList'],
+    queryKey: [queryKeys.ceo.store.storeList],
     queryFn: async () => {
       const res = await fetch('/api/store/list', { cache: 'no-store' });
       if (!res.ok) return null;

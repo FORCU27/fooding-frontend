@@ -5,7 +5,7 @@ import { useState, useEffect } from 'react';
 import { IconProps } from '../../icons';
 import { cn } from '../../utils/cn';
 
-export type SortOrder = 'TOTAL' | 'LATEST' | 'OLDEST';
+export type SortOrder = 'RECENT' | 'OLD';
 
 export interface SortToggleProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   value?: SortOrder;
@@ -27,7 +27,7 @@ export const SortToggle = ({
 }: SortToggleProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedValue, setSelectedValue] = useState<SortOrder>(
-    value ?? (keepSelectedOpen ? 'TOTAL' : 'LATEST'),
+    value ?? (keepSelectedOpen ? 'OLD' : 'RECENT'),
   );
 
   useEffect(() => {
@@ -42,11 +42,7 @@ export const SortToggle = ({
     setIsOpen(false);
   };
 
-  const labelMap: Record<SortOrder, string> = {
-    TOTAL: '전체',
-    LATEST: '최신순',
-    OLDEST: '오래된순',
-  };
+  const selectedLabel = selectedValue === 'RECENT' ? '최신순' : '오래된순';
 
   return (
     <div className='flex items-center gap-5 relative'>
@@ -62,7 +58,7 @@ export const SortToggle = ({
 
       {isOpen && (
         <div className='flex gap-2'>
-          {['TOTAL', 'OLDEST', 'LATEST'].map((v) => {
+          {['OLD', 'RECENT'].map((v) => {
             const val = v as SortOrder;
             return (
               <button
@@ -74,7 +70,7 @@ export const SortToggle = ({
                 )}
                 onClick={() => handleSelect(val)}
               >
-                {labelMap[val]}
+                {val === 'RECENT' ? '최신순' : '오래된순'}
               </button>
             );
           })}

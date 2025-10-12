@@ -1,6 +1,7 @@
 import z from 'zod/v4';
 
 import { PageResponse } from '../../shared';
+import { StoreImage } from '../stores';
 
 export type Bookmark = z.infer<typeof Bookmark>;
 export const Bookmark = z.object({
@@ -8,12 +9,7 @@ export const Bookmark = z.object({
   bookmarkCount: z.number(),
   estimatedWaitingTimeMinutes: z.number().nullable(),
   id: z.number(),
-  images: z
-    .object({
-      id: z.number(),
-      imageUrl: z.string(),
-    })
-    .array(),
+  images: StoreImage.array().nullable(),
   isFinished: z.boolean(),
   name: z.string(),
   reviewCount: z.number(),

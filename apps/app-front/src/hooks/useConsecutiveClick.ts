@@ -26,7 +26,7 @@ export const useConsecutiveClick = ({
 
     // 목표 횟수에 도달했으면 콜백 실행
     if (newClickCount >= targetCount) {
-      console.log(`${targetCount}번 연속 클릭!`);
+      // console.log(`${targetCount}번 연속 클릭!`);
       onSuccess?.();
       setClickCount(0); // 클릭 횟수 리셋
       return;

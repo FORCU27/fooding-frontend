@@ -1,7 +1,7 @@
 'use client';
 
 import { Review, StoreInfo } from '@repo/api/user';
-import { defineConfig, RegisteredActivityName } from '@stackflow/config';
+import { defineConfig, Register } from '@stackflow/config';
 import { basicUIPlugin } from '@stackflow/plugin-basic-ui';
 import { basicRendererPlugin } from '@stackflow/plugin-renderer-basic';
 import { stackflow } from '@stackflow/react/future';
@@ -19,15 +19,18 @@ import { PlanDetailScreen } from '@/screens/plan-detail/PlanDetail';
 import { ProfileModifyScreen } from '@/screens/profile/ProfileModify';
 import { ProfileCompleteScreen } from '@/screens/profile-user-info/ProfileCompleteScreen';
 import { ProfileUserInfoScreen } from '@/screens/profile-user-info/ProfileUserInfo';
+import { RecentlyViewedStoreListScreen } from '@/screens/recently-viewed-stores/RecentlyViewedStores';
 import { ReviewReportCreateScreen } from '@/screens/reports/ReivewReportCreate';
-import { ReviewCreateScreen } from '@/screens/reviews/ReviewCreate';
-import { ReviewModifyScreen } from '@/screens/reviews/ReviewModify';
-import { SearchScreen } from '@/screens/search/Search';
+import { ReviewCreateScreen, ReviewCreateScreenParams } from '@/screens/reviews/ReviewCreate';
+import { ReviewModifyScreen, ReviewModifyScreenParams } from '@/screens/reviews/ReviewModify';
 import { SearchResultScreen, SearchResultScreenParams } from '@/screens/search-result/SearchResult';
 import { NotificationSettingScreen } from '@/screens/settings/Notifications';
 import { SettingScreen } from '@/screens/settings/Settings';
-import { StoreDetailScreen } from '@/screens/store-detail/StoreDetail';
-import { StorePostDetailScreen } from '@/screens/store-post-detail/StorePostDetail';
+import { StoreDetailScreen, StoreDetailScreenParams } from '@/screens/store-detail/StoreDetail';
+import {
+  StorePostDetailScreen,
+  StorePostDetailScreenParams,
+} from '@/screens/store-post-detail/StorePostDetail';
 import { WaitingDetailScreen } from '@/screens/waiting-detail/WaitingDetail';
 import { HomeTab } from '@/tabs/home/Home';
 import { MyPageTab } from '@/tabs/my-page/MyPage';
@@ -41,16 +44,15 @@ declare module '@stackflow/config' {
     PlanTab: object;
     MyPageTab: object;
     NotificationListScreen: object;
-    StoreDetailScreen: { storeId: number; tab?: string };
+    StoreDetailScreen: StoreDetailScreenParams;
     BookmarkListScreen: object;
     MyCouponListScreen: object;
-    StorePostDetailScreen: { storePostId: number; storeName: string };
+    StorePostDetailScreen: StorePostDetailScreenParams;
     SettingScreen: object;
     NotificationSettingScreen: object;
-    SearchScreen: object;
     SearchResultScreen: SearchResultScreenParams;
-    ReviewCreateScreen: { planId: string };
-    ReviewModifyScreen: { review: Review };
+    ReviewCreateScreen: ReviewCreateScreenParams;
+    ReviewModifyScreen: ReviewModifyScreenParams;
     WaitingDetailScreen: { waitingId: string };
     PlanDetailScreen: { planId: string };
     ProfileModifyScreen: object;
@@ -69,6 +71,7 @@ declare module '@stackflow/config' {
     MyRewardListScreen: object;
     MyRewardDetailScreen: { storeId: number };
     ReviewReportCreateScreen: { review: Review; store: StoreInfo; type: 'REVIEW' | 'POST' };
+    RecentlyViewedStoreListScreen: object;
   }
 }
 
@@ -85,7 +88,6 @@ const config = defineConfig({
     { name: 'StoreDetailScreen' },
     { name: 'SettingScreen' },
     { name: 'NotificationSettingScreen' },
-    { name: 'SearchScreen' },
     { name: 'SearchResultScreen' },
     { name: 'ReviewCreateScreen' },
     { name: 'ReviewModifyScreen' },
@@ -99,6 +101,7 @@ const config = defineConfig({
     { name: 'MyRewardListScreen' },
     { name: 'MyRewardDetailScreen' },
     { name: 'ReviewReportCreateScreen' },
+    { name: 'RecentlyViewedStoreListScreen' },
   ],
 
   transitionDuration: SCREEN_TRANSITION_DURATION,
@@ -119,7 +122,6 @@ export const { Stack } = stackflow({
     StoreDetailScreen,
     SettingScreen,
     NotificationSettingScreen,
-    SearchScreen,
     SearchResultScreen,
     ReviewCreateScreen,
     ReviewModifyScreen,
@@ -133,6 +135,7 @@ export const { Stack } = stackflow({
     MyRewardListScreen,
     MyRewardDetailScreen,
     ReviewReportCreateScreen,
+    RecentlyViewedStoreListScreen,
   },
   plugins: [
     basicRendererPlugin(),
@@ -143,6 +146,8 @@ export const { Stack } = stackflow({
   ],
 });
 
-export const screenId: Record<string, RegisteredActivityName> = {
-  '1': 'SearchScreen',
+type BannerScreen = { [K in keyof Register]: { name: K; params: Register[K] } };
+
+export const bannerScreen: Record<string, BannerScreen[keyof BannerScreen]> = {
+  '1': { name: 'SearchResultScreen', params: { keyword: '', regions: [] } },
 };

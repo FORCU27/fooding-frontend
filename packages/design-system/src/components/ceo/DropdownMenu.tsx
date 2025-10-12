@@ -39,7 +39,7 @@ const DropdownMenuContent = ({
 const dropdownMenuItemVariants = tv({
   base: cn(
     'outline-hidden cursor-pointer h-[30px] flex px-4 items-center font-medium',
-    'focus:bg-gray-1',
+    'focus:bg-gray-7',
   ),
   variants: {
     variant: {

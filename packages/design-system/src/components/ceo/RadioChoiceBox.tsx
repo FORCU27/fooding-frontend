@@ -34,7 +34,7 @@ const RadioChoiceBoxItem = ({ className, children, ...props }: RadioChoiceBoxIte
       >
         <span className='size-[14px] rounded-full bg-primary-pink group-data-[state=unchecked]:hidden' />
       </RadioGroupPrimitives.Indicator>
-      <span className='subtitle-2'>{children}</span>
+      <span className='subtitle-2 truncate'>{children}</span>
     </RadioGroupPrimitives.Item>
   );
 };

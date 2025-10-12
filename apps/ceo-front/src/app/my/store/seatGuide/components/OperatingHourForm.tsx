@@ -16,6 +16,7 @@ import {
   BreakMode,
   DatePickerWithDialog,
   DatePicker,
+  type SelectedItem,
 } from '@repo/design-system/components/ceo';
 import { ClockIcon } from '@repo/design-system/icons';
 import { Controller, useForm } from 'react-hook-form';
@@ -229,8 +230,8 @@ export const OperatingHoursForm = ({ handleSubmit }: PropsWithoutRef<OperatingHo
                       field.onChange(
                         Array.isArray(selected)
                           ? selected.map((item) => item.date.toISOString().substring(0, 10))
-                          : selected
-                            ? [selected.date.toISOString().substring(0, 10)]
+                          : selected && typeof selected === 'object' && 'date' in selected
+                            ? [(selected as SelectedItem).date.toISOString().substring(0, 10)]
                             : [],
                       )
                     }

@@ -29,3 +29,8 @@ dist
 .cursor
 CLAUDE.md
 docs
+claude/
+
+# Ignore all Watchman-related files
+.watchman-cookie-*
+reference

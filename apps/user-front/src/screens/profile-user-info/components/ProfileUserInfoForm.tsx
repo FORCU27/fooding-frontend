@@ -1,11 +1,10 @@
 'use client';
 
-import { PropsWithoutRef, useState } from 'react';
+import { PropsWithoutRef } from 'react';
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import { AuthUpdateUserBody } from '@repo/api/auth';
 import {
-  BottomSheet,
   BottomSheetSelect,
   Button,
   TextField,
@@ -52,7 +51,6 @@ export const ProfileUserInfoForm = ({
   handleSubmit,
   isUpdateMode,
 }: PropsWithoutRef<ProfileFormProps>) => {
-  const [isBottomSheetOpen, setIsBottomSheetOpen] = useState(false);
   const { user } = useAuth();
   if (!user) {
     throw new Error('로그인이 필요합니다.');
@@ -71,7 +69,6 @@ export const ProfileUserInfoForm = ({
     handleSubmit: onSubmit,
     formState: { errors },
     setError,
-    watch,
   } = useForm<FormSchemaType>({
     mode: 'onSubmit',
     resolver: zodResolver(formSchema),
@@ -86,7 +83,7 @@ export const ProfileUserInfoForm = ({
   });
 
   const onFormSubmit = (data: FormSchemaType) => {
-    alert('본인인증이 완료되었습니다.');
+    // alert('본인인증이 완료되었습니다.');
 
     handleSubmit(
       {
@@ -105,15 +102,16 @@ export const ProfileUserInfoForm = ({
       },
     );
 
-    setIsBottomSheetOpen(false);
+    // setIsBottomSheetOpen(false);
   };
 
-  const formatPhoneNumber = (phoneNumber: string) => {
-    return phoneNumber.replace(/(\d{3})(\d{3,4})(\d{4})/, '$1-****-$3');
-  };
+  // const formatPhoneNumber = (phoneNumber: string) => {
+  //   return phoneNumber.replace(/(\d{3})(\d{3,4})(\d{4})/, '$1-****-$3');
+  // };
 
   const handleSaveClick = async () => {
-    setIsBottomSheetOpen(true);
+    // setIsBottomSheetOpen(true);
+    onSubmit(onFormSubmit)();
   };
 
   return (
@@ -131,16 +129,15 @@ export const ProfileUserInfoForm = ({
               control={control}
               render={({ field }) => (
                 <TextField
-                  {...field}
+                  value={field.value}
+                  onChange={field.onChange}
                   label={<TextField.Label>이름</TextField.Label>}
                   error={!!errors.name}
                   errorMessage={
-                    <TextField.ErrorMessage>
-                      {errors.name?.message || '이름을 입력해주세요'}
-                    </TextField.ErrorMessage>
+                    <TextField.ErrorMessage>{errors.name?.message}</TextField.ErrorMessage>
                   }
                 >
-                  <TextField.Input placeholder='이름을 입력해주세요' {...field} />
+                  <TextField.Input placeholder='이름을 입력해주세요' ref={field.ref} />
                 </TextField>
               )}
             />
@@ -149,19 +146,19 @@ export const ProfileUserInfoForm = ({
               control={control}
               render={({ field }) => (
                 <TextField
-                  {...field}
+                  inputMode='numeric'
+                  value={field.value}
+                  onChange={(value) => field.onChange(numberOnly(value))}
                   label={<TextField.Label>휴대폰 번호</TextField.Label>}
                   error={!!errors.phoneNumber}
                   errorMessage={
-                    errors.phoneNumber ? (
-                      <TextField.ErrorMessage>{errors.phoneNumber.message}</TextField.ErrorMessage>
-                    ) : undefined
+                    <TextField.ErrorMessage>{errors.phoneNumber?.message}</TextField.ErrorMessage>
                   }
                 >
                   <TextField.Input
+                    ref={field.ref}
                     placeholder='휴대폰 번호를 입력해주세요'
                     maxLength={11}
-                    {...field}
                   />
                 </TextField>
               )}
@@ -203,7 +200,7 @@ export const ProfileUserInfoForm = ({
                 </Button>
               </div>
             )}
-            <BottomSheet open={isBottomSheetOpen} onOpenChange={setIsBottomSheetOpen}>
+            {/* <BottomSheet open={isBottomSheetOpen} onOpenChange={setIsBottomSheetOpen}>
               <BottomSheet.Content>
                 <BottomSheet.Header>
                   <BottomSheet.Title className='headline-3'>
@@ -241,10 +238,14 @@ export const ProfileUserInfoForm = ({
                   </a>
                 </BottomSheet.Footer>
               </BottomSheet.Content>
-            </BottomSheet>
+            </BottomSheet> */}
           </div>
         </div>
       </form>
     </div>
   );
+};
+
+const numberOnly = (value: string) => {
+  return value.replace(/[^0-9]/g, '');
 };

@@ -2,7 +2,6 @@
 
 import Image from 'next/image';
 
-import { Bookmark } from '@repo/api/user';
 import { Button, ErrorFallback, Skeleton } from '@repo/design-system/components/b2c';
 import {
   ChevronRightIcon,
@@ -23,9 +22,15 @@ import { useAuth } from '@/components/Provider/AuthProvider';
 import { StoresList } from '@/components/Store/StoresList';
 import { useGetBookmarkList } from '@/hooks/bookmark/useGetBookmarkList';
 import { useGetInfiniteMyCouponList } from '@/hooks/coupon/useGetMyCouponList';
+import { useGetMyReviewList } from '@/hooks/review/useGetMyReviewList';
 import { useGetRewardPersonalLog } from '@/hooks/reward/useGetRewardPersonalLog';
-import { useGetStoreList } from '@/hooks/store/useGetStoreList';
-import { BookmarkCard } from '@/screens/bookmarks/components/BookmarkCard';
+import { useGetRecentlyViewedStoreList } from '@/hooks/store/useGetRecentlyViewedStoreList';
+import { BookmarkCard } from '@/tabs/my-page/components/BookmarkCard';
+
+const dummy = {
+  followers: 0,
+  followings: 0,
+};
 
 export const MyPageTab: ActivityComponentType<'MyPageTab'> = () => {
   const flow = useFlow();
@@ -70,45 +75,53 @@ const Content = () => {
     pageSize: 5,
   });
 
-  const { data: stores } = useGetStoreList({
-    pageNum: 1,
-    pageSize: 5,
-  });
-
   const { coupons } = useGetInfiniteMyCouponList({ used: false });
 
+  const { data: myReviews } = useGetMyReviewList({
+    sortType: 'RECENT',
+    sortDirection: 'DESCENDING',
+    pageNum: 1,
+    pageSize: 1, // 개수만 필요하므로 1개만 조회
+  });
+
   const { data: reward } = useGetRewardPersonalLog();
+
+  const { data: recentlyViewedStores } = useGetRecentlyViewedStoreList();
 
   return (
     <div className='w-full'>
       <div className='flex-col bg-white/80 pb-5 py-grid-margin'>
-        <div className='flex justify-between px-grid-margin'>
-          <div className='flex justify-center items-center'>
-            {user.profileImage ? (
-              <div className='flex justify-center items-center w-[64px] h-[64px]'>
-                <Image
-                  src={user.profileImage}
-                  height={64}
-                  width={64}
-                  alt='user-profile'
-                  className='w-full h-full object-cover rounded-full'
-                />
-              </div>
-            ) : (
-              <div className='flex justify-center items-center w-[64px] h-[64px] bg-gray-1 rounded-full'>
-                <FoodingIcon fillOpacity={0.1} />
-              </div>
-            )}
-            <div className='flex flex-col mx-5 justify-center w-[100px]'>
-              <p className='subtitle-4 mb-2'>{user?.nickname ? user?.nickname : user?.email}</p>
-              <div className='flex justify-between w-full'>
-                <p className='text-gray-5 body-8'>팔로워 0</p>
-                <hr className='w-[1px] h-[14px] bg-gray-2 text-gray-2' />
-                <p className='text-gray-5 body-8'>팔로잉 0</p>
-              </div>
+        <div className='flex px-grid-margin'>
+          {user.profileImage ? (
+            <div className='flex justify-center items-center size-[64px] shrink-0'>
+              <Image
+                src={user.profileImage}
+                height={64}
+                width={64}
+                alt='user-profile'
+                className='w-full h-full object-cover rounded-full'
+              />
+            </div>
+          ) : (
+            <div className='flex justify-center items-center w-[64px] h-[64px] bg-gray-1 rounded-full shrink-0'>
+              <FoodingIcon fillOpacity={0.1} />
+            </div>
+          )}
+          <div className='flex flex-col mx-5 justify-center flex-1 min-w-0'>
+            <span className='subtitle-4 mb-2 truncate'>
+              {user.nickname ? user.nickname : user.email}
+            </span>
+            <div className='flex items-center gap-2'>
+              <span className='text-gray-5 body-8'>
+                팔로워 <span className='subtitle-7'>{dummy.followers}</span>
+              </span>
+              <hr className='w-[1px] h-[14px] bg-gray-2 text-gray-2' />
+              <span className='text-gray-5 body-8'>
+                팔로잉 <span className='subtitle-7'>{dummy.followings}</span>
+              </span>
             </div>
           </div>
-          <div className='flex justify-center items-center'>
+          <div className='flex justify-center items-center shrink-0'>
             <Button
               size='small'
               variant='outlined'
@@ -120,10 +133,16 @@ const Content = () => {
           </div>
         </div>
         <div className='flex justify-around items-center h-[88px] mt-5 p-5'>
-          <div className='flex flex-col justify-center items-center gap-1 cursor-pointer'>
+          <div 
+            className='flex flex-col justify-center items-center gap-1 cursor-pointer'
+            onClick={() => {
+              // TODO: 내 리뷰 목록 화면으로 이동하는 기능 구현 필요
+              console.log('내 리뷰 목록으로 이동');
+            }}
+          >
             <MessageDotsSquareIcon />
             <p className='body-7 text-gray-5'>내 리뷰</p>
-            <p className='subtitle-6'>5건</p>
+            <p className='subtitle-6'>{myReviews.pageInfo.totalCount}건</p>
           </div>
           <hr className='w-[2px] h-[81px] bg-gray-2 text-gray-2 mx-2' />
           <div
@@ -149,35 +168,25 @@ const Content = () => {
         <div className='flex flex-col py-grid-margin bg-white/80'>
           <div className='flex justify-between mb-4 px-grid-margin'>
             <div className='subtitle-3'>찜해 둔 식당</div>
-            {bookmarks.list.length === 0 ? (
-              <button
-                className='flex justify-center items-center body-5 text-gray-3'
-                onClick={() => flow.push('BookmarkListScreen', {})}
-                disabled
-              >
-                <span>전체보기</span>
-                <ChevronRightIcon size={14} />
-              </button>
-            ) : (
-              <button
-                className='flex justify-center items-center body-5 text-gray-5 cursor-pointer hover:text-black'
-                onClick={() => flow.push('BookmarkListScreen', {})}
-              >
-                <span>전체보기</span>
-                <ChevronRightIcon size={14} />
-              </button>
-            )}
+            <button
+              className='flex justify-center items-center body-5 text-gray-5 disabled:text-gray-3'
+              onClick={() => flow.push('BookmarkListScreen', {})}
+              disabled={bookmarks.list.length === 0}
+            >
+              전체보기
+              <ChevronRightIcon size={18} />
+            </button>
           </div>
           <ul className='flex px-grid-margin overflow-x-auto scrollbar-hide w-dvw gap-3'>
-            {bookmarks.list.map((bookmark: Bookmark) => (
+            {bookmarks.list.map((bookmark) => (
               <BookmarkCard bookmark={bookmark} key={bookmark.id} />
             ))}
           </ul>
         </div>
         <StoresList
-          stores={stores.list}
+          stores={recentlyViewedStores.list}
           subtitle='최근 본 식당'
-          onClickTotalBtn={() => flow.push('MyPageTab', {})}
+          onClickTotalBtn={() => flow.push('RecentlyViewedStoreListScreen', {})}
         />
       </div>
     </div>

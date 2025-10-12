@@ -28,7 +28,7 @@ export const mockStoreListResponse: GetStoreListResponse = {
       {
         id: 1,
         name: '바다풍경 정육식당 흑돼지 용담탑동본점',
-        mainImage: null,
+        images: null,
         averageRating: 4.9,
         estimatedWaitingTimeMinutes: 20,
         visitCount: 1000,
@@ -40,7 +40,7 @@ export const mockStoreListResponse: GetStoreListResponse = {
       {
         id: 2,
         name: '엉터리 생고기 엉생 무한리필 아산테크노본점',
-        mainImage: null,
+        images: null,
         averageRating: 4.9,
         estimatedWaitingTimeMinutes: 20,
         visitCount: 1000,
@@ -52,7 +52,7 @@ export const mockStoreListResponse: GetStoreListResponse = {
       {
         id: 3,
         name: '민서네 김밥 홍대점',
-        mainImage: null,
+        images: null,
         averageRating: 4.9,
         estimatedWaitingTimeMinutes: 20,
         visitCount: 1000,
@@ -64,7 +64,7 @@ export const mockStoreListResponse: GetStoreListResponse = {
       {
         id: 4,
         name: '민서네 김밥 홍대점',
-        mainImage: null,
+        images: null,
         averageRating: 4.9,
         estimatedWaitingTimeMinutes: 20,
         visitCount: 1000,
@@ -76,7 +76,7 @@ export const mockStoreListResponse: GetStoreListResponse = {
       {
         id: 5,
         name: '민서네 김밥 홍대점',
-        mainImage: null,
+        images: null,
         averageRating: 4.9,
         estimatedWaitingTimeMinutes: 20,
         visitCount: 1000,
@@ -213,7 +213,7 @@ export const mockStoreMenuListResponse: GetStoreMenuListResponse = {
           name: '딤섬 SET',
           description:
             '오이무침-마늘새우찜-찜딤섬5종-계절야채요리-춘권-식사(토마토당면or홍쇼육덮밥)-디저트딤섬',
-          imageUrl: null,
+          imageUrls: [],
           price: 40000,
           sortOrder: 1,
           signature: true,
@@ -224,7 +224,7 @@ export const mockStoreMenuListResponse: GetStoreMenuListResponse = {
           name: '딤섬 SET',
           description:
             '오이무침-마늘새우찜-찜딤섬5종-계절야채요리-춘권-식사(토마토당면or홍쇼육덮밥)-디저트딤섬',
-          imageUrl: null,
+          imageUrls: [],
           price: 40000,
           sortOrder: 1,
           signature: false,
@@ -240,7 +240,7 @@ export const mockStoreMenuListResponse: GetStoreMenuListResponse = {
           id: 1,
           name: '김치찌개',
           description: '매운 김치찌개',
-          imageUrl: MENU_IMAGE_URL,
+          imageUrls: [MENU_IMAGE_URL],
           price: 10000,
           sortOrder: 1,
           signature: true,

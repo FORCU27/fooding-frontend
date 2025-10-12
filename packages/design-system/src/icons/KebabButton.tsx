@@ -1,4 +1,5 @@
-const KebabButton = ({ onClick }: { onClick: () => void }) => {
+// TODO ref forwarding 지원하도록 수정 예정
+const KebabButton = ({ onClick }: { onClick?: () => void }) => {
   return (
     <button
       onClick={onClick}
