@@ -42,8 +42,6 @@ export const SortToggle = ({
     setIsOpen(false);
   };
 
-  const selectedLabel = selectedValue === 'RECENT' ? '최신순' : '오래된순';
-
   return (
     <div className='flex items-center gap-5 relative'>
       {keepSelectedOpen && !isOpen && (

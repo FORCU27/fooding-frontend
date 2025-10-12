@@ -14,6 +14,7 @@ type CoinProductProps = {
   canceledCount: number;
   onOrderClick?: () => void;
   isActive?: boolean;
+  conditions?: string;
   className?: string;
 };
 
@@ -28,6 +29,7 @@ const CoinProduct = ({
   purchaseCount,
   usedCount,
   canceledCount,
+  conditions,
   onOrderClick,
   isActive = false,
   className,
@@ -92,7 +94,8 @@ const CoinProduct = ({
             <p className='mt-1 text-xl font-semibold text-black'>{canceledCount}</p>
           </div>
         </div>
-        <div className='flex flex-row mt-[18px] min-h-[80px] justify-between bg-[#6366F10D] rounded-[16px] p-4 w-full'>
+        <div className='flex flex-col mt-[18px] min-h-[80px] bg-[#6366F10D] rounded-[16px] p-4 w-full'>
+          <p className='text-base text-gray-5'>이용안내 {conditions ? conditions : '-'}</p>
           <p className='text-base text-gray-5'>교환 포인트 {exchangePoint} P</p>
           {onOrderClick && (
             <button
