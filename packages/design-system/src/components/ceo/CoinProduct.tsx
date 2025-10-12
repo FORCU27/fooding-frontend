@@ -94,13 +94,15 @@ const CoinProduct = ({
             <p className='mt-1 text-xl font-semibold text-black'>{canceledCount}</p>
           </div>
         </div>
-        <div className='flex flex-col mt-[18px] min-h-[80px] bg-[#6366F10D] rounded-[16px] p-4 w-full'>
-          <p className='text-base text-gray-5'>이용안내 {conditions ? conditions : '-'}</p>
-          <p className='text-base text-gray-5'>교환 포인트 {exchangePoint} P</p>
+        <div className='flex justify-between mt-[18px] min-h-[80px] bg-[#6366F10D] rounded-[16px] p-4 w-full'>
+          <div>
+            <p className='text-base text-gray-5'>이용안내 {conditions ? conditions : '-'}</p>
+            <p className='text-base text-gray-5'>교환 포인트 {exchangePoint} P</p>
+          </div>
           {onOrderClick && (
             <button
               onClick={onOrderClick}
-              className='h-[48px] rounded-[8px] bg-fooding-purple px-6 text-base font-medium text-white transition-colors hover:bg-fooding-purple/90 active:bg-fooding-purple/80'
+              className='h-[48px] w-fit rounded-[8px] bg-fooding-purple px-6 text-base font-medium text-white transition-colors hover:bg-fooding-purple/90 active:bg-fooding-purple/80'
             >
               수정하기
             </button>

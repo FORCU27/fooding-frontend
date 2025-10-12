@@ -79,7 +79,7 @@ const PointShopContent = ({ storeId, sortOrder, setSortOrder, router }: PointSho
       </div>
       <div className='flex flex-col justify-center gap-5 py-5'>
         {pointShopList.data.list.map((shop) => (
-          <div key={shop.id}>
+          <div key={shop.id} onClick={() => router.push(`/my/reward/pointshop/${shop.id}`)}>
             <CoinProduct
               className='border-fooding-purple'
               canceledCount={shop.totalQuantity - shop.issuedQuantity}

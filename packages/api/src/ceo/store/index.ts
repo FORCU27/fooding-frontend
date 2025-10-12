@@ -13,6 +13,7 @@ import {
   PointShopQuery,
   CreateStorePointShopItemBody,
   UpdateStoreBody,
+  GetStorePointShopNullResponse,
 } from './type';
 import { api } from '../../shared';
 
@@ -46,10 +47,8 @@ export const storeApi = {
     });
     return GetStorePointShopListResponse.parse(response);
   },
-  getStorePointShopItemById: async (storeId: string, id: number, query: PointShopQuery) => {
-    const response = await api.get(`${ENDPOINT}/${storeId}/point-shop/${id}`, {
-      params: query,
-    });
+  getStorePointShopItemById: async (storeId: string, id: string) => {
+    const response = await api.get(`${ENDPOINT}/${storeId}/point-shop/${id}`);
     return GetStorePointShopResponse.parse(response);
   },
   createStorePointShopItem: async (storeId: number, body: CreateStorePointShopItemBody) => {
@@ -57,12 +56,12 @@ export const storeApi = {
     return CreateStorePointShopResponse.parse(response);
   },
   updateStorePointShopItem: async (
-    storeId: number,
-    id: number,
+    storeId: string,
+    id: string,
     body: CreateStorePointShopItemBody,
   ) => {
     const response = await api.put(`${ENDPOINT}/${storeId}/point-shop/${id}`, body);
-    return GetStorePointShopStatusResponse.parse(response);
+    return GetStorePointShopNullResponse.parse(response);
   },
   updateStorePointShopItemActive: async (storeId: number, id: number) => {
     const response = await api.put(`${ENDPOINT}/${storeId}/point-shop/${id}/active`);
