@@ -23,6 +23,7 @@ interface MenuDialogProps {
     isSignature: boolean;
     isRecommend: boolean;
     imageUrls?: string[];
+    imageIds?: string[];
   };
   mode?: 'add' | 'edit';
 }
@@ -44,21 +45,9 @@ const MenuDialog = ({ open, onOpenChange, categoryId, menuItem, mode = 'add' }: 
   const [images, setImages] = useState<string[]>(menuItem?.imageUrls || []);
   const [imageFiles, setImageFiles] = useState<File[]>([]);
   const [uploadedImageIds, setUploadedImageIds] = useState<string[]>([]);
-  // URL에서 이미지 ID 추출 함수
-  const extractImageIdFromUrl = (url: string): string => {
-    // URL 예시: https://d27gz6v6wvae1d.cloudfront.net/fooding/gigs/1759048292595-pexels-amberontheroad-13397143.jpg
-    const fileName = url.split('/').pop(); // 마지막 부분 추출
-    if (fileName) {
-      const idWithoutExtension = fileName.split('.')[0]; // 확장자 제거
-      return idWithoutExtension || url;
-    }
-    return url; // 실패시 원본 URL 반환
-  };
 
-  // 기존 이미지 URL들을 이미지 ID로 변환
-  const [existingImageIds] = useState<string[]>(
-    menuItem?.imageUrls?.map(extractImageIdFromUrl) || []
-  );
+  // 기존 이미지 ID들을 직접 사용
+  const [existingImageIds] = useState<string[]>(menuItem?.imageIds || []);
   const [isUploadingImage, setIsUploadingImage] = useState(false);
 
   // 이미지 업로드 함수

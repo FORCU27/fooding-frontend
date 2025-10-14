@@ -112,6 +112,7 @@ const MenusPage = () => {
     isSignature: boolean;
     isRecommend: boolean;
     imageUrls?: string[];
+    imageIds?: string[];
   } | null>(null);
   const [deletingMenuItem, setDeletingMenuItem] = useState<{
     id: number;
@@ -142,7 +143,7 @@ const MenusPage = () => {
           name: menu.name,
           description: menu.description || '',
           price: menu.price,
-          image: menu.imageUrls?.[0] || menu.imageUrl || undefined, // imageUrls 배열의 첫 번째 이미지 사용
+          image: menu.images?.[0]?.url || menu.imageUrls?.[0] || menu.imageUrl || undefined, // images 배열의 첫 번째 이미지 사용
           badges: [
             ...(menu.isSignature ? ['대표' as BadgeType] : []),
             ...(menu.isRecommend ? ['추천' as BadgeType] : []),
@@ -338,7 +339,8 @@ const MenusPage = () => {
                 description: menuItem.description || '',
                 isSignature: menuItem.isSignature,
                 isRecommend: menuItem.isRecommend,
-                imageUrls: menuItem.imageUrls || [],
+                imageUrls: menuItem.images?.map(img => img.url) || menuItem.imageUrls || [],
+                imageIds: menuItem.images?.map(img => img.id) || [],
               });
             }
           }}
