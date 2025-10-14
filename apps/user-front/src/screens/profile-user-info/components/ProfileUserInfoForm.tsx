@@ -129,16 +129,15 @@ export const ProfileUserInfoForm = ({
               control={control}
               render={({ field }) => (
                 <TextField
-                  {...field}
+                  value={field.value}
+                  onChange={field.onChange}
                   label={<TextField.Label>이름</TextField.Label>}
                   error={!!errors.name}
                   errorMessage={
-                    <TextField.ErrorMessage>
-                      {errors.name?.message || '이름을 입력해주세요'}
-                    </TextField.ErrorMessage>
+                    <TextField.ErrorMessage>{errors.name?.message}</TextField.ErrorMessage>
                   }
                 >
-                  <TextField.Input placeholder='이름을 입력해주세요' {...field} />
+                  <TextField.Input placeholder='이름을 입력해주세요' ref={field.ref} />
                 </TextField>
               )}
             />
@@ -147,19 +146,19 @@ export const ProfileUserInfoForm = ({
               control={control}
               render={({ field }) => (
                 <TextField
-                  {...field}
+                  inputMode='numeric'
+                  value={field.value}
+                  onChange={(value) => field.onChange(numberOnly(value))}
                   label={<TextField.Label>휴대폰 번호</TextField.Label>}
                   error={!!errors.phoneNumber}
                   errorMessage={
-                    errors.phoneNumber ? (
-                      <TextField.ErrorMessage>{errors.phoneNumber.message}</TextField.ErrorMessage>
-                    ) : undefined
+                    <TextField.ErrorMessage>{errors.phoneNumber?.message}</TextField.ErrorMessage>
                   }
                 >
                   <TextField.Input
+                    ref={field.ref}
                     placeholder='휴대폰 번호를 입력해주세요'
                     maxLength={11}
-                    {...field}
                   />
                 </TextField>
               )}
@@ -245,4 +244,8 @@ export const ProfileUserInfoForm = ({
       </form>
     </div>
   );
+};
+
+const numberOnly = (value: string) => {
+  return value.replace(/[^0-9]/g, '');
 };
