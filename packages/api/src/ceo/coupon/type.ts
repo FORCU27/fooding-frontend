@@ -108,3 +108,42 @@ export type GetCouponListParams = {
   searchString?: string;
   status?: 'ACTIVE' | 'INACTIVE';
 };
+
+// 쿠폰 사용내역 상태
+export const CouponUsageStatus = z.enum(['AVAILABLE', 'USED', 'EXPIRED']);
+export type CouponUsageStatus = z.infer<typeof CouponUsageStatus>;
+
+// 쿠폰 사용내역 스키마
+export const CouponUsageSchema = z.object({
+  id: z.number(),
+  userId: z.number(),
+  profileImage: z.string().nullable(),
+  nickname: z.string(),
+  status: CouponUsageStatus,
+  usedAt: z.string().nullable(),
+  createdAt: z.string(),
+});
+
+export type CouponUsageSchema = z.infer<typeof CouponUsageSchema>;
+
+// 쿠폰 사용내역 조회 파라미터
+export type GetCouponUsageParams = {
+  searchString?: string;
+  pageNum?: number;
+  pageSize?: number;
+  sortType?: 'RECENT' | 'OLD';
+};
+
+// 쿠폰 사용내역 조회 응답
+export type GetCouponUsageResponse = {
+  status: string;
+  data: {
+    list: CouponUsageSchema[];
+    pageInfo: {
+      pageNum: number;
+      pageSize: number;
+      totalCount: number;
+      totalPages: number;
+    };
+  };
+};
