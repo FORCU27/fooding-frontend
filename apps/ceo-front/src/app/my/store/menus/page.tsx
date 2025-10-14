@@ -120,12 +120,14 @@ const MenusPage = () => {
   } | null>(null);
 
   // 메뉴판 이미지 상태
-  const [menuBoardImages, setMenuBoardImages] = useState<{
-    id: string;
-    url: string;
-    file?: File;
-    title?: string;
-  }[]>([]);
+  const [menuBoardImages, setMenuBoardImages] = useState<
+    {
+      id: string;
+      url: string;
+      file?: File;
+      title?: string;
+    }[]
+  >([]);
 
   // 모든 카테고리의 메뉴 데이터를 캐시 (렌더링과 무관하게 유지)
   const menuCacheRef = useRef<Record<number, MenuItem[]>>({});
@@ -317,8 +319,13 @@ const MenusPage = () => {
   }
 
   return (
-    <CardForm className='p-grid-margin' onSubmit={(e) => e.preventDefault()}>
-      <div className='headline-2'>메뉴</div>
+    <CardForm className='p-grid-margin gap-0' onSubmit={(e) => e.preventDefault()}>
+      <div className='headline-2 m-8 mb-0'>메뉴</div>
+      <div className='flex flex-row ml-8 mt-5 mb-5'>
+        <div className='subtitle-2 '>
+          메뉴판 사진을 추가해 주세요 <span className='text-blue-500'>*</span>
+        </div>
+      </div>
 
       {/* 메뉴판 이미지 섹션 */}
       <Card className='pt-7 pb-6'>
@@ -330,7 +337,13 @@ const MenusPage = () => {
           />
         </div>
       </Card>
+      <div className='flex flex-row ml-8 mt-8 mb-5 items-center'>
+        <div className='subtitle-2 '>
+          메뉴를 추가해 주세요 <span className='text-blue-500'>*</span>
+        </div>
 
+        <div className='text-gray-500 text-body-2 ml-3'>최대 200개 까지 등록 가능</div>
+      </div>
       <Card className='pt-7 pb-6'>
         <div className='flex flex-row justify-end gap-2 mb-4 px-4'>
           <AddCategoryDialog
@@ -348,11 +361,11 @@ const MenusPage = () => {
           selectedCategoryId={selectedCategoryId?.toString()}
           onEditMenuItem={(categoryId, itemId) => {
             // 메뉴 데이터 찾기
-            const categoryData = menuQueries.find((q, index) =>
-              menuCategories?.[index]?.id === parseInt(categoryId)
+            const categoryData = menuQueries.find(
+              (q, index) => menuCategories?.[index]?.id === parseInt(categoryId),
             )?.data;
 
-            const menuItem = categoryData?.list.find(menu => menu.id === parseInt(itemId));
+            const menuItem = categoryData?.list.find((menu) => menu.id === parseInt(itemId));
 
             if (menuItem) {
               setEditingMenuItem({
@@ -363,18 +376,18 @@ const MenusPage = () => {
                 description: menuItem.description || '',
                 isSignature: menuItem.isSignature,
                 isRecommend: menuItem.isRecommend,
-                imageUrls: menuItem.images?.map(img => img.url) || menuItem.imageUrls || [],
-                imageIds: menuItem.images?.map(img => img.id) || [],
+                imageUrls: menuItem.images?.map((img) => img.url) || menuItem.imageUrls || [],
+                imageIds: menuItem.images?.map((img) => img.id) || [],
               });
             }
           }}
           onDeleteMenuItem={(categoryId, itemId) => {
             // 메뉴 데이터 찾기
-            const categoryData = menuQueries.find((q, index) =>
-              menuCategories?.[index]?.id === parseInt(categoryId)
+            const categoryData = menuQueries.find(
+              (q, index) => menuCategories?.[index]?.id === parseInt(categoryId),
             )?.data;
 
-            const menuItem = categoryData?.list.find(menu => menu.id === parseInt(itemId));
+            const menuItem = categoryData?.list.find((menu) => menu.id === parseInt(itemId));
 
             if (menuItem) {
               setDeletingMenuItem({
@@ -420,7 +433,7 @@ const MenusPage = () => {
           onOpenChange={(open) => !open && setEditingMenuItem(null)}
           categoryId={editingMenuItem.categoryId}
           menuItem={editingMenuItem}
-          mode="edit"
+          mode='edit'
         />
       )}
 
