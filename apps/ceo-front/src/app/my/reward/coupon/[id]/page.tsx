@@ -1,19 +1,17 @@
 'use client';
 
-import { useParams, useRouter } from 'next/navigation';
+import { useParams } from 'next/navigation';
 import { useState } from 'react';
 
 import { couponApiV2, type CouponUsageSchema } from '@repo/api/ceo';
 import { queryKeys } from '@repo/api/configs/query-keys';
 import {
-  Button,
   Card,
   Coupon,
   DataTable,
   Pagination,
   SortToggle,
   type CouponStatus,
-  type SortOrder,
 } from '@repo/design-system/components/ceo';
 import { useQuery } from '@tanstack/react-query';
 import type { ColumnDef, PaginationState } from '@tanstack/react-table';
@@ -21,7 +19,6 @@ import type { ColumnDef, PaginationState } from '@tanstack/react-table';
 import { useGetCouponUsages } from '@/hooks/coupon/useGetCouponUsages';
 
 const CouponDetailPage = () => {
-  const router = useRouter();
   const params = useParams();
   const couponId = Number(params.id);
 
@@ -80,21 +77,6 @@ const CouponDetailPage = () => {
       </div>
     );
   }
-
-  const formatDate = (date: string | null | undefined) => {
-    if (!date) return '-';
-    return new Date(date).toLocaleDateString('ko-KR');
-  };
-
-  const formatDiscountValue = () => {
-    if (coupon.benefitType === 'GIFT') {
-      return coupon.giftItem || '-';
-    }
-    if (!coupon.discountValue) return '-';
-    return coupon.discountType === 'PERCENT'
-      ? `${coupon.discountValue}% 할인`
-      : `${coupon.discountValue.toLocaleString()}원 할인`;
-  };
 
   const getCouponStatuses = (): CouponStatus[] => {
     const statuses: CouponStatus[] = [];

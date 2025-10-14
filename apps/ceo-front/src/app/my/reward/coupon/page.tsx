@@ -18,9 +18,9 @@ import { EllipsisVerticalIcon } from '@repo/design-system/icons';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import type { ColumnDef, PaginationState, SortingState } from '@tanstack/react-table';
 
-import { useSelectedStoreId } from '@/hooks/useSelectedStoreId';
-import { useDeleteCoupon } from '@/hooks/coupon/useDeleteCoupon';
 import DeleteCouponDialog from '@/components/coupon/DeleteCouponDialog';
+import { useDeleteCoupon } from '@/hooks/coupon/useDeleteCoupon';
+import { useSelectedStoreId } from '@/hooks/useSelectedStoreId';
 
 interface Coupon {
   id: number;
