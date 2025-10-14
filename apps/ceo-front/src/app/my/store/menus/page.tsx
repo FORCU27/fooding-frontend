@@ -279,16 +279,40 @@ const MenusPage = () => {
     if (!selectedStoreId) return;
   };
 
-  // 초기 로딩 상태 처리 (카테고리 로딩 중일 때만)
+  // 로딩 상태 처리
   if (isLoadingStoreId || isLoadingCategories) {
-    return <div>메뉴 정보를 불러오는 중...</div>;
+    return (
+      <CardForm className='p-grid-margin'>
+        <div className='headline-2'>메뉴</div>
+        <Card>
+          <div className='flex items-center justify-center py-8'>
+            <div className='text-center'>
+              <div className='mb-4'>
+                <div className='inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-current border-r-transparent motion-reduce:animate-[spin_1.5s_linear_infinite]' />
+              </div>
+              <div className='text-gray-600'>메뉴 정보를 불러오는 중...</div>
+            </div>
+          </div>
+        </Card>
+      </CardForm>
+    );
   }
 
   if (!selectedStoreId) {
     return (
-      <div>
-        가게를 선택해주세요. <a href='/store/select'>가게 선택하기</a>
-      </div>
+      <CardForm className='p-grid-margin'>
+        <div className='headline-2'>메뉴</div>
+        <Card>
+          <div className='flex items-center justify-center py-8'>
+            <div className='text-center'>
+              <div className='text-gray-600'>가게를 선택해주세요.</div>
+              <a href='/store/select' className='text-blue-500 underline mt-2 inline-block'>
+                가게 선택하기
+              </a>
+            </div>
+          </div>
+        </Card>
+      </CardForm>
     );
   }
 
