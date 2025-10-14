@@ -30,41 +30,41 @@ const DefaultImage = ({ src, alt, className }: ImageComponentProps) => (
   <img src={src} alt={alt} className={className} />
 );
 
-const ActionMenu = ({
-  onSetRepresentative,
-  onDelete,
-  onClose,
-}: {
-  onSetRepresentative?: () => void;
-  onDelete?: () => void;
-  onClose: () => void;
-}) => (
-  <div
-    role='menu'
-    className='absolute right-0 mt-[4px] py-[12px] w-[117px] overflow-hidden rounded-md bg-white z-10'
-  >
-    <button
-      role='menuitem'
-      className='block w-full px-[16px] py-[4px] body-2 text-left hover:bg-gray-50 cursor-pointer'
-      onClick={() => {
-        onSetRepresentative?.();
-        onClose();
-      }}
-    >
-      대표사진
-    </button>
-    <button
-      role='menuitem'
-      className='block w-full px-[16px] py-[4px] body-2 text-left text-error-red hover:bg-red-50 cursor-pointer'
-      onClick={() => {
-        onDelete?.();
-        onClose();
-      }}
-    >
-      삭제
-    </button>
-  </div>
-);
+// const ActionMenu = ({
+//   onSetRepresentative,
+//   onDelete,
+//   onClose,
+// }: {
+//   onSetRepresentative?: () => void;
+//   onDelete?: () => void;
+//   onClose: () => void;
+// }) => (
+//   <div
+//     role='menu'
+//     className='absolute right-0 mt-[4px] py-[12px] w-[117px] overflow-hidden rounded-md bg-white z-10'
+//   >
+//     <button
+//       role='menuitem'
+//       className='block w-full px-[16px] py-[4px] body-2 text-left hover:bg-gray-50 cursor-pointer'
+//       onClick={() => {
+//         onSetRepresentative?.();
+//         onClose();
+//       }}
+//     >
+//       대표사진
+//     </button>
+//     <button
+//       role='menuitem'
+//       className='block w-full px-[16px] py-[4px] body-2 text-left text-error-red hover:bg-red-50 cursor-pointer'
+//       onClick={() => {
+//         onDelete?.();
+//         onClose();
+//       }}
+//     >
+//       삭제
+//     </button>
+//   </div>
+// );
 
 export function PhotoCard({
   src,
