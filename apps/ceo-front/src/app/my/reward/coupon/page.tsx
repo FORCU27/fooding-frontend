@@ -19,6 +19,8 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import type { ColumnDef, PaginationState, SortingState } from '@tanstack/react-table';
 
 import { useSelectedStoreId } from '@/hooks/useSelectedStoreId';
+import { useDeleteCoupon } from '@/hooks/coupon/useDeleteCoupon';
+import DeleteCouponDialog from '@/components/coupon/DeleteCouponDialog';
 
 interface Coupon {
   id: number;
@@ -45,6 +47,7 @@ const CouponListPage = () => {
 
   const [sorting, setSorting] = useState<SortingState>([]);
   const [sortOrder, setSortOrder] = useState<SortOrder>('RECENT');
+  const [deletingCoupon, setDeletingCoupon] = useState<{ id: number; name: string } | null>(null);
 
   const { data: couponList, isLoading } = useQuery({
     queryKey: [queryKeys.ceo.coupon.list, selectedStoreId, pagination],
@@ -57,6 +60,8 @@ const CouponListPage = () => {
       }),
     enabled: !!selectedStoreId && isInitialized,
   });
+
+  const deleteCouponMutation = useDeleteCoupon();
 
   // 쿠폰 상태 업데이트 mutation
   const updateCouponStatusMutation = useMutation({
@@ -172,7 +177,14 @@ const CouponListPage = () => {
               >
                 수정
               </DropdownMenu.Item>
-              <DropdownMenu.Item variant='danger'>삭제</DropdownMenu.Item>
+              <DropdownMenu.Item
+                variant='danger'
+                onClick={() =>
+                  setDeletingCoupon({ id: row.original.id, name: row.original.name })
+                }
+              >
+                삭제
+              </DropdownMenu.Item>
             </DropdownMenu.Content>
           </DropdownMenu>
         </div>
@@ -214,16 +226,16 @@ const CouponListPage = () => {
   }
 
   return (
-    <div className='space-y-4'>
+    <div className='space-y-5'>
       <div className='flex justify-between items-center mb-6'>
-        <div className='headline-2'>쿠폰</div>
+        <div className='headline-2 ml-8'>쿠폰</div>
       </div>
 
       <div className='flex justify-end gap-4'>
-        <Button onClick={() => router.push('/my/reward/coupon/create')}>쿠폰선물</Button>
         <Button variant='primaryPink' onClick={() => router.push('/my/reward/coupon/create')}>
-          쿠폰생성
+          쿠폰선물
         </Button>
+        <Button onClick={() => router.push('/my/reward/coupon/create')}>쿠폰생성</Button>
       </div>
 
       <div className='bg-white rounded-lg shadow overflow-hidden'>
@@ -263,6 +275,23 @@ const CouponListPage = () => {
             onChange={(page) => setPagination((prev) => ({ ...prev, pageIndex: page - 1 }))}
           />
         </div>
+      )}
+
+      {/* 쿠폰 삭제 확인 다이얼로그 */}
+      {deletingCoupon && (
+        <DeleteCouponDialog
+          open={!!deletingCoupon}
+          onOpenChange={(open) => !open && setDeletingCoupon(null)}
+          couponName={deletingCoupon.name}
+          isDeleting={deleteCouponMutation.isPending}
+          onConfirm={() => {
+            deleteCouponMutation.mutate(deletingCoupon.id, {
+              onSuccess: () => {
+                setDeletingCoupon(null);
+              },
+            });
+          }}
+        />
       )}
     </div>
   );
