@@ -14,7 +14,7 @@ interface StoreContextType {
 const StoreContext = createContext<StoreContextType | undefined>(undefined);
 
 export const StoreProvider = ({ children }: { children: ReactNode }) => {
-  const [storeId, setStoreIdState] = useState<string>('');
+  const [storeIdState, setStoreIdState] = useState<string>('');
 
   useEffect(() => {
     // 초기 로드 시: 쿠키 → localStorage 순서로 storeId 불러오기
@@ -31,7 +31,10 @@ export const StoreProvider = ({ children }: { children: ReactNode }) => {
    * - 페이지 새로고침
    */
   const setStoreId = (id: string) => {
-    if (!id) return;
+    if (!id) {
+      throw new Error('선택된 가게가 없습니다.');
+    }
+
     setStoreIdState(id);
     localStorage.setItem(STORAGE_KEYS.SELECTED_STORE_ID, id);
     Cookies.set(STORAGE_KEYS.SELECTED_STORE_ID, id, { path: '/', sameSite: 'lax' });
@@ -53,7 +56,7 @@ export const StoreProvider = ({ children }: { children: ReactNode }) => {
     }
   };
   return (
-    <StoreContext.Provider value={{ storeId, setStoreId, clearStore }}>
+    <StoreContext.Provider value={{ storeId: storeIdState, setStoreId, clearStore }}>
       {children}
     </StoreContext.Provider>
   );

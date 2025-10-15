@@ -8,12 +8,6 @@ interface UseGetStorePointShopParams {
   enabled?: boolean;
 }
 
-interface UseGetStorePointShopParams {
-  id: string;
-  storeId: string;
-  enabled?: boolean;
-}
-
 export const useGetStorePointShop = ({
   id,
   storeId,
