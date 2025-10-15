@@ -18,7 +18,7 @@ const PointShopModifyPage = () => {
   const router = useRouter();
   const { data: pointShopItem } = useGetStorePointShop({
     storeId,
-    id: id!,
+    id: id,
   });
 
   const selectedStoreId = storeId;

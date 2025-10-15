@@ -98,6 +98,12 @@ const PointShopForm = ({ originValue, onSubmit }: PointShopFormProps) => {
     }
   };
 
+  const quantityLimit = watch('quantityLimit');
+  const totalQuantity = Number(watch('totalQuantity') ?? 0);
+  const point = Number(watch('point') ?? 0);
+  const name = watch('name') ?? '';
+  const conditions = watch('conditions') ?? '';
+
   return (
     <div>
       <Form
@@ -215,7 +221,10 @@ const PointShopForm = ({ originValue, onSubmit }: PointShopFormProps) => {
                         <Input
                           suffix='개'
                           type='number'
-                          {...register('totalQuantity', { valueAsNumber: true })}
+                          {...register('totalQuantity', {
+                            setValueAs: (v) => (v === '' || v === null ? 0 : Number(v)),
+                            min: { value: 0, message: '0 이상이어야 합니다.' },
+                          })}
                           placeholder='발급 수량을 입력해주세요'
                         />
                       </Form.Control>
@@ -278,16 +287,16 @@ const PointShopForm = ({ originValue, onSubmit }: PointShopFormProps) => {
       <div className='flex flex-col gap-2 my-10'>
         <h1 className='headline-2 ml-10'>미리보기</h1>
         <CoinProduct
-          canceledCount={watch('quantityLimit') === true ? watch('totalQuantity') : 0}
-          exchangePoint={watch('point')}
-          imageAlt={watch('name')}
+          canceledCount={quantityLimit ? totalQuantity : 0}
+          exchangePoint={point}
+          imageAlt={name}
           purchaseCount={0}
-          receivedCount={watch('quantityLimit') === true ? watch('totalQuantity') : 0}
+          receivedCount={quantityLimit ? totalQuantity : 0}
           registrationDate='2025.00.00'
           status='발급중'
-          title={watch('name') || '쿠폰이름'}
+          title={name || '쿠폰이름'}
           usedCount={0}
-          conditions={watch('conditions')}
+          conditions={conditions}
           image={previewImage}
         />
       </div>

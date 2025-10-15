@@ -28,6 +28,10 @@ export async function middleware(request: NextRequest) {
   // 선택된 매장 id 쿠키
   const selectedStoreId = request.cookies.get(STORAGE_KEYS.SELECTED_STORE_ID)?.value;
 
+  if (!selectedStoreId) {
+    return NextResponse.redirect('/store/select');
+  }
+
   // NOTE: 로그인 필요 페이지에 접근 시 로그인 페이지로 이동
   if (!PUBLIC_ROUTES.includes(path)) {
     if (authType === AuthType.PRIVATE && !isAuthenticated) {
