@@ -43,4 +43,6 @@ export { default as CirclePlusIcon } from './CirclePlusIcon';
 export { default as LinkIcon } from './LinkIcon';
 export { default as TrashIcon } from './TrashIcon';
 export { default as LogoutIcon } from './LogoutIcon';
+export { EllipsisVerticalIcon } from './EllipsisVerticalIcon';
+export { X } from './XIcon';
 export { default as MoreVerticalIcon } from './MoreVerticalIcon';

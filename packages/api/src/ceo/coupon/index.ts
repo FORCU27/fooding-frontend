@@ -5,6 +5,8 @@ import {
   GetCouponResponse,
   GetCouponListResponse,
   CouponSchema,
+  GetCouponUsageParams,
+  GetCouponUsageResponse,
 } from './type';
 import { api } from '../../shared';
 
@@ -35,15 +37,49 @@ export const couponApiV2 = {
     return response;
   },
 
-  // 쿠폰 상태 변경
+  // 쿠폰 상태 변경 - PUT 요청으로 status만 변경
   updateCouponStatus: async (id: number, status: 'ACTIVE' | 'INACTIVE') => {
-    const response = await api.patch(`${ENDPOINT}/${id}/status`, { status });
+    // 먼저 기존 쿠폰 정보 조회
+    const existingCoupon = await api.get<GetCouponResponse>(`${ENDPOINT}/${id}`);
+    const couponData = existingCoupon.data;
+
+    // UpdateCouponBody에 맞게 필요한 필드만 전송
+    const updateBody: UpdateCouponBody = {
+      storeId: couponData.storeId,
+      benefitType: couponData.benefitType,
+      type: couponData.type as 'GENERAL' | 'FIRST_COME_FIRST_SERVED',
+      discountType: couponData.discountType || 'FIXED',
+      provideType: couponData.provideType,
+      name: couponData.name,
+      conditions: couponData.conditions || undefined,
+      totalQuantity: couponData.totalQuantity || undefined,
+      discountValue: couponData.discountValue || undefined,
+      giftItem: couponData.giftItem || undefined,
+      minOrderAmount: couponData.minOrderAmount || undefined,
+      issueStartOn: couponData.issueStartOn,
+      issueEndOn: couponData.issueEndOn || undefined,
+      expiredOn: couponData.expiredOn || undefined,
+      status: status,
+    };
+
+    const response = await api.put(`${ENDPOINT}/${id}`, updateBody);
     return response;
   },
 
   // 쿠폰 삭제
   deleteCoupon: async (id: number) => {
     await api.delete(`${ENDPOINT}/${id}`);
+  },
+
+  // 쿠폰 사용내역 조회
+  getCouponUsages: async (
+    couponId: number,
+    params: GetCouponUsageParams,
+  ): Promise<GetCouponUsageResponse['data']> => {
+    const response = await api.get<GetCouponUsageResponse>(`${ENDPOINT}/${couponId}/usages`, {
+      params,
+    });
+    return response.data;
   },
 };
 
