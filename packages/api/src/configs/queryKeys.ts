@@ -52,6 +52,7 @@ export const queryKeys = {
       create: 'ceoCouponCreate',
       update: 'ceoCouponUpdate',
       delete: 'ceoCouponDelete',
+      usages: 'ceoCouponUsages',
     },
     pointShop: {
       list: 'ceoStoreGetPointShopList',

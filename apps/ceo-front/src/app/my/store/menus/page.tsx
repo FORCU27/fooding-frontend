@@ -112,6 +112,7 @@ const MenusPage = () => {
     isSignature: boolean;
     isRecommend: boolean;
     imageUrls?: string[];
+    imageIds?: string[];
   } | null>(null);
   const [deletingMenuItem, setDeletingMenuItem] = useState<{
     id: number;
@@ -119,12 +120,14 @@ const MenusPage = () => {
   } | null>(null);
 
   // 메뉴판 이미지 상태
-  const [menuBoardImages, setMenuBoardImages] = useState<{
-    id: string;
-    url: string;
-    file?: File;
-    title?: string;
-  }[]>([]);
+  const [menuBoardImages, setMenuBoardImages] = useState<
+    {
+      id: string;
+      url: string;
+      file?: File;
+      title?: string;
+    }[]
+  >([]);
 
   // 모든 카테고리의 메뉴 데이터를 캐시 (렌더링과 무관하게 유지)
   const menuCacheRef = useRef<Record<number, MenuItem[]>>({});
@@ -142,7 +145,7 @@ const MenusPage = () => {
           name: menu.name,
           description: menu.description || '',
           price: menu.price,
-          image: menu.imageUrls?.[0] || menu.imageUrl || undefined, // imageUrls 배열의 첫 번째 이미지 사용
+          image: menu.images?.[0]?.url || menu.imageUrls?.[0] || menu.imageUrl || undefined, // images 배열의 첫 번째 이미지 사용
           badges: [
             ...(menu.isSignature ? ['대표' as BadgeType] : []),
             ...(menu.isRecommend ? ['추천' as BadgeType] : []),
@@ -278,22 +281,51 @@ const MenusPage = () => {
     if (!selectedStoreId) return;
   };
 
-  // 초기 로딩 상태 처리 (카테고리 로딩 중일 때만)
+  // 로딩 상태 처리
   if (isLoadingStoreId || isLoadingCategories) {
-    return <div>메뉴 정보를 불러오는 중...</div>;
+    return (
+      <CardForm className='p-grid-margin'>
+        <div className='headline-2'>메뉴</div>
+        <Card>
+          <div className='flex items-center justify-center py-8'>
+            <div className='text-center'>
+              <div className='mb-4'>
+                <div className='inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-current border-r-transparent motion-reduce:animate-[spin_1.5s_linear_infinite]' />
+              </div>
+              <div className='text-gray-600'>메뉴 정보를 불러오는 중...</div>
+            </div>
+          </div>
+        </Card>
+      </CardForm>
+    );
   }
 
   if (!selectedStoreId) {
     return (
-      <div>
-        가게를 선택해주세요. <a href='/store/select'>가게 선택하기</a>
-      </div>
+      <CardForm className='p-grid-margin'>
+        <div className='headline-2'>메뉴</div>
+        <Card>
+          <div className='flex items-center justify-center py-8'>
+            <div className='text-center'>
+              <div className='text-gray-600'>가게를 선택해주세요.</div>
+              <a href='/store/select' className='text-blue-500 underline mt-2 inline-block'>
+                가게 선택하기
+              </a>
+            </div>
+          </div>
+        </Card>
+      </CardForm>
     );
   }
 
   return (
-    <CardForm className='p-grid-margin' onSubmit={(e) => e.preventDefault()}>
-      <div className='headline-2'>메뉴</div>
+    <CardForm className='p-grid-margin gap-0' onSubmit={(e) => e.preventDefault()}>
+      <div className='headline-2 m-8 mb-0'>메뉴</div>
+      <div className='flex flex-row ml-8 mt-5 mb-5'>
+        <div className='subtitle-2 '>
+          메뉴판 사진을 추가해 주세요 <span className='text-blue-500'>*</span>
+        </div>
+      </div>
 
       {/* 메뉴판 이미지 섹션 */}
       <Card className='pt-7 pb-6'>
@@ -305,7 +337,13 @@ const MenusPage = () => {
           />
         </div>
       </Card>
+      <div className='flex flex-row ml-8 mt-8 mb-5 items-center'>
+        <div className='subtitle-2 '>
+          메뉴를 추가해 주세요 <span className='text-blue-500'>*</span>
+        </div>
 
+        <div className='text-gray-500 text-body-2 ml-3'>최대 200개 까지 등록 가능</div>
+      </div>
       <Card className='pt-7 pb-6'>
         <div className='flex flex-row justify-end gap-2 mb-4 px-4'>
           <AddCategoryDialog
@@ -323,11 +361,11 @@ const MenusPage = () => {
           selectedCategoryId={selectedCategoryId?.toString()}
           onEditMenuItem={(categoryId, itemId) => {
             // 메뉴 데이터 찾기
-            const categoryData = menuQueries.find((q, index) =>
-              menuCategories?.[index]?.id === parseInt(categoryId)
+            const categoryData = menuQueries.find(
+              (q, index) => menuCategories?.[index]?.id === parseInt(categoryId),
             )?.data;
 
-            const menuItem = categoryData?.list.find(menu => menu.id === parseInt(itemId));
+            const menuItem = categoryData?.list.find((menu) => menu.id === parseInt(itemId));
 
             if (menuItem) {
               setEditingMenuItem({
@@ -338,17 +376,18 @@ const MenusPage = () => {
                 description: menuItem.description || '',
                 isSignature: menuItem.isSignature,
                 isRecommend: menuItem.isRecommend,
-                imageUrls: menuItem.imageUrls || [],
+                imageUrls: menuItem.images?.map((img) => img.url) || menuItem.imageUrls || [],
+                imageIds: menuItem.images?.map((img) => img.id) || [],
               });
             }
           }}
           onDeleteMenuItem={(categoryId, itemId) => {
             // 메뉴 데이터 찾기
-            const categoryData = menuQueries.find((q, index) =>
-              menuCategories?.[index]?.id === parseInt(categoryId)
+            const categoryData = menuQueries.find(
+              (q, index) => menuCategories?.[index]?.id === parseInt(categoryId),
             )?.data;
 
-            const menuItem = categoryData?.list.find(menu => menu.id === parseInt(itemId));
+            const menuItem = categoryData?.list.find((menu) => menu.id === parseInt(itemId));
 
             if (menuItem) {
               setDeletingMenuItem({
@@ -394,7 +433,7 @@ const MenusPage = () => {
           onOpenChange={(open) => !open && setEditingMenuItem(null)}
           categoryId={editingMenuItem.categoryId}
           menuItem={editingMenuItem}
-          mode="edit"
+          mode='edit'
         />
       )}
 

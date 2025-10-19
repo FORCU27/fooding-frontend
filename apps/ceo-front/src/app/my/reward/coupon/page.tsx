@@ -18,6 +18,8 @@ import { EllipsisVerticalIcon } from '@repo/design-system/icons';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import type { ColumnDef, PaginationState, SortingState } from '@tanstack/react-table';
 
+import DeleteCouponDialog from '@/components/coupon/DeleteCouponDialog';
+import { useDeleteCoupon } from '@/hooks/coupon/useDeleteCoupon';
 import { useSelectedStoreId } from '@/hooks/useSelectedStoreId';
 
 interface Coupon {
@@ -45,6 +47,7 @@ const CouponListPage = () => {
 
   const [sorting, setSorting] = useState<SortingState>([]);
   const [sortOrder, setSortOrder] = useState<SortOrder>('RECENT');
+  const [deletingCoupon, setDeletingCoupon] = useState<{ id: number; name: string } | null>(null);
 
   const { data: couponList, isLoading } = useQuery({
     queryKey: [queryKeys.ceo.coupon.list, selectedStoreId, pagination],
@@ -57,6 +60,8 @@ const CouponListPage = () => {
       }),
     enabled: !!selectedStoreId && isInitialized,
   });
+
+  const deleteCouponMutation = useDeleteCoupon();
 
   // 쿠폰 상태 업데이트 mutation
   const updateCouponStatusMutation = useMutation({
@@ -172,7 +177,12 @@ const CouponListPage = () => {
               >
                 수정
               </DropdownMenu.Item>
-              <DropdownMenu.Item variant='danger'>삭제</DropdownMenu.Item>
+              <DropdownMenu.Item
+                variant='danger'
+                onClick={() => setDeletingCoupon({ id: row.original.id, name: row.original.name })}
+              >
+                삭제
+              </DropdownMenu.Item>
             </DropdownMenu.Content>
           </DropdownMenu>
         </div>
@@ -182,31 +192,48 @@ const CouponListPage = () => {
 
   if (!isInitialized || isLoading) {
     return (
-      <div className='flex items-center justify-center py-8'>
-        <div className='text-gray-600'>쿠폰 목록을 불러오는 중...</div>
+      <div className='space-y-4'>
+        <div className='headline-2'>쿠폰</div>
+        <div className='bg-white rounded-lg shadow p-6'>
+          <div className='flex items-center justify-center py-8'>
+            <div className='text-center'>
+              <div className='mb-4'>
+                <div className='inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-current border-r-transparent motion-reduce:animate-[spin_1.5s_linear_infinite]' />
+              </div>
+              <div className='text-gray-600'>쿠폰 목록을 불러오는 중...</div>
+            </div>
+          </div>
+        </div>
       </div>
     );
   }
 
   if (!selectedStoreId) {
     return (
-      <div className='flex items-center justify-center py-8'>
-        <div className='text-gray-600'>스토어를 선택해주세요.</div>
+      <div className='space-y-4'>
+        <div className='headline-2'>쿠폰</div>
+        <div className='bg-white rounded-lg shadow p-6'>
+          <div className='flex items-center justify-center py-8'>
+            <div className='text-center'>
+              <div className='text-gray-600'>스토어를 선택해주세요.</div>
+            </div>
+          </div>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className='space-y-4'>
+    <div className='space-y-5'>
       <div className='flex justify-between items-center mb-6'>
-        <div className='headline-2'>쿠폰</div>
+        <div className='headline-2 ml-8'>쿠폰</div>
       </div>
 
       <div className='flex justify-end gap-4'>
-        <Button onClick={() => router.push('/my/reward/coupon/create')}>쿠폰선물</Button>
         <Button variant='primaryPink' onClick={() => router.push('/my/reward/coupon/create')}>
-          쿠폰생성
+          쿠폰선물
         </Button>
+        <Button onClick={() => router.push('/my/reward/coupon/create')}>쿠폰생성</Button>
       </div>
 
       <div className='bg-white rounded-lg shadow overflow-hidden'>
@@ -246,6 +273,23 @@ const CouponListPage = () => {
             onChange={(page) => setPagination((prev) => ({ ...prev, pageIndex: page - 1 }))}
           />
         </div>
+      )}
+
+      {/* 쿠폰 삭제 확인 다이얼로그 */}
+      {deletingCoupon && (
+        <DeleteCouponDialog
+          open={!!deletingCoupon}
+          onOpenChange={(open) => !open && setDeletingCoupon(null)}
+          couponName={deletingCoupon.name}
+          isDeleting={deleteCouponMutation.isPending}
+          onConfirm={() => {
+            deleteCouponMutation.mutate(deletingCoupon.id, {
+              onSuccess: () => {
+                setDeletingCoupon(null);
+              },
+            });
+          }}
+        />
       )}
     </div>
   );

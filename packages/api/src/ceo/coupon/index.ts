@@ -5,6 +5,8 @@ import {
   GetCouponResponse,
   GetCouponListResponse,
   CouponSchema,
+  GetCouponUsageParams,
+  GetCouponUsageResponse,
 } from './type';
 import { api } from '../../shared';
 
@@ -67,6 +69,17 @@ export const couponApiV2 = {
   // 쿠폰 삭제
   deleteCoupon: async (id: number) => {
     await api.delete(`${ENDPOINT}/${id}`);
+  },
+
+  // 쿠폰 사용내역 조회
+  getCouponUsages: async (
+    couponId: number,
+    params: GetCouponUsageParams,
+  ): Promise<GetCouponUsageResponse['data']> => {
+    const response = await api.get<GetCouponUsageResponse>(`${ENDPOINT}/${couponId}/usages`, {
+      params,
+    });
+    return response.data;
   },
 };
 
