@@ -180,7 +180,7 @@ const CouponDetailPage = () => {
       <h3 className='headline-2 m-8'>쿠폰 사용내역</h3>
       {/* 쿠폰 사용내역 */}
       <Card className='p-6'>
-        <div className='flex justify-between items-center mb-4'>
+        <div className='flex justify-end items-center mb-4'>
           <SortToggle
             value={sortOrder}
             onSortChange={(value) => {
