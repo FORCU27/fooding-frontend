@@ -5,6 +5,7 @@ import Link from 'next/link';
 
 import type { CeoPost } from '@repo/api/ceo';
 
+import { useStore } from '@/context/StoreContext';
 import { useGetSelfQuery } from '@/hooks/auth/useGetSelf';
 import { useGetRecentPosts } from '@/hooks/post/useGetRecentPosts';
 
@@ -24,11 +25,8 @@ const formatPostDate = (value: string) => {
 
 export default function PortalLandingPage() {
   const { data: me } = useGetSelfQuery();
-  const {
-    data: postsData,
-    isLoading: isPostsLoading,
-    isError: isPostsError,
-  } = useGetRecentPosts();
+  const { data: postsData, isLoading: isPostsLoading, isError: isPostsError } = useGetRecentPosts();
+  const { clearStore } = useStore();
 
   const isLoggedIn = !!me;
   const posts = postsData?.list ?? [];
@@ -44,8 +42,20 @@ export default function PortalLandingPage() {
       title: '사장님 앱',
       subtitle: '매장 관리 앱',
       platforms: [
-        { name: 'Google Play', icon: '🤖', url: 'https://play.google.com/store/apps/details?id=com.openai.chatgpt&hl=ko', rating: 4.8, reviewCount: 1250 },
-        { name: 'App Store', icon: '🍎', url: 'https://apps.apple.com/kr/app/%EB%84%A4%EC%9D%B4%EB%B2%84-naver/id393499958', rating: 4.7, reviewCount: 892 },
+        {
+          name: 'Google Play',
+          icon: '🤖',
+          url: 'https://play.google.com/store/apps/details?id=com.openai.chatgpt&hl=ko',
+          rating: 4.8,
+          reviewCount: 1250,
+        },
+        {
+          name: 'App Store',
+          icon: '🍎',
+          url: 'https://apps.apple.com/kr/app/%EB%84%A4%EC%9D%B4%EB%B2%84-naver/id393499958',
+          rating: 4.7,
+          reviewCount: 892,
+        },
       ],
       color: 'bg-red-500',
     },
@@ -53,10 +63,34 @@ export default function PortalLandingPage() {
       title: '포스 앱',
       subtitle: '주문, 예약, 웨이팅, 리워드 통합 관리 앱',
       platforms: [
-        { name: 'Google Play', icon: '🤖', url: 'https://play.google.com/store/apps/details?id=com.openai.chatgpt&hl=ko', rating: 4.6, reviewCount: 756 },
-        { name: 'App Store', icon: '🍎', url: 'https://apps.apple.com/kr/app/%EB%84%A4%EC%9D%B4%EB%B2%84-naver/id393499958', rating: 4.5, reviewCount: 634 },
-        { name: 'Windows', icon: '💻', url: 'https://github.com/FORCU27/', rating: null, reviewCount: null },
-        { name: 'Mac', icon: '💻', url: 'https://github.com/FORCU27/', rating: null, reviewCount: null },
+        {
+          name: 'Google Play',
+          icon: '🤖',
+          url: 'https://play.google.com/store/apps/details?id=com.openai.chatgpt&hl=ko',
+          rating: 4.6,
+          reviewCount: 756,
+        },
+        {
+          name: 'App Store',
+          icon: '🍎',
+          url: 'https://apps.apple.com/kr/app/%EB%84%A4%EC%9D%B4%EB%B2%84-naver/id393499958',
+          rating: 4.5,
+          reviewCount: 634,
+        },
+        {
+          name: 'Windows',
+          icon: '💻',
+          url: 'https://github.com/FORCU27/',
+          rating: null,
+          reviewCount: null,
+        },
+        {
+          name: 'Mac',
+          icon: '💻',
+          url: 'https://github.com/FORCU27/',
+          rating: null,
+          reviewCount: null,
+        },
       ],
       color: 'bg-red-500',
     },
@@ -64,8 +98,20 @@ export default function PortalLandingPage() {
       title: '매장 앱',
       subtitle: '웨이팅, 리워드 앱',
       platforms: [
-        { name: 'Google Play', icon: '🤖', url: 'https://play.google.com/store/apps/details?id=com.openai.chatgpt&hl=ko', rating: 4.9, reviewCount: 2103 },
-        { name: 'App Store', icon: '🍎', url: 'https://apps.apple.com/kr/app/%EB%84%A4%EC%9D%B4%EB%B2%84-naver/id393499958', rating: 4.8, reviewCount: 1547 },
+        {
+          name: 'Google Play',
+          icon: '🤖',
+          url: 'https://play.google.com/store/apps/details?id=com.openai.chatgpt&hl=ko',
+          rating: 4.9,
+          reviewCount: 2103,
+        },
+        {
+          name: 'App Store',
+          icon: '🍎',
+          url: 'https://apps.apple.com/kr/app/%EB%84%A4%EC%9D%B4%EB%B2%84-naver/id393499958',
+          rating: 4.8,
+          reviewCount: 1547,
+        },
       ],
       color: 'bg-red-500',
     },
@@ -99,6 +145,7 @@ export default function PortalLandingPage() {
                         headers: { 'Content-Type': 'application/json' },
                       });
                       if (response.ok) {
+                        clearStore();
                         window.location.href = '/';
                       }
                     }}

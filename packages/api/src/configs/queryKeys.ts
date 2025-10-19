@@ -46,6 +46,11 @@ export const queryKeys = {
       update: 'ceoCouponUpdate',
       delete: 'ceoCouponDelete',
     },
+    pointShop: {
+      list: 'ceoStoreGetPointShopList',
+      detail: 'ceoStoreGetPointShopDetail',
+      status: 'ceoStoreGetPointShopStatus',
+    },
   },
   pos: {},
   user: {

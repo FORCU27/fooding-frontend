@@ -6,31 +6,70 @@ import {
   GetStoreListResponse,
   GetStoreOperatingHourResponse,
   StoreOperatingHourBody,
+  GetStorePointShopListResponse,
+  GetStorePointShopResponse,
+  CreateStorePointShopResponse,
+  GetStorePointShopStatusResponse,
+  PointShopQuery,
+  CreateStorePointShopItemBody,
   UpdateStoreBody,
+  GetStorePointShopNullResponse,
 } from './type';
 import { api } from '../../shared';
 
 export * from './type';
 export * from './mock';
 
+const ENDPOINT = '/ceo/stores';
+
 export const storeApi = {
   getStores: async (config?: AxiosRequestConfig) => {
-    const response = await api.get(`/ceo/stores`, config);
+    const response = await api.get(ENDPOINT, config);
     return GetStoreListResponse.parse(response);
   },
   createStore: async (body: CreateStoreBody) => {
-    await api.post(`/ceo/stores`, body);
+    await api.post(ENDPOINT, body);
   },
   getStore: async (id: number, config?: AxiosRequestConfig) => {
-    const response = await api.get(`/ceo/stores/${id}`, config);
+    const response = await api.get(`${ENDPOINT}/${id}`, config);
     return GetStoreResponse.parse(response);
   },
   getStoreOperatingHour: async (id: number) => {
-    const response = await api.get(`/ceo/stores/${id}/operating-hour`);
+    const response = await api.get(`${ENDPOINT}/${id}/operating-hour`);
     return GetStoreOperatingHourResponse.parse(response);
   },
   createStoreOperatingHour: async (id: number, body: StoreOperatingHourBody) => {
-    await api.post(`/ceo/stores/${id}/operating-hour`, body);
+    await api.post(`${ENDPOINT}/${id}/operating-hour`, body);
+  },
+  getStorePointShopList: async (storeId: string, query: PointShopQuery) => {
+    const response = await api.get(`${ENDPOINT}/${storeId}/point-shop`, {
+      params: query,
+    });
+    return GetStorePointShopListResponse.parse(response);
+  },
+  getStorePointShopItemById: async (storeId: string, id: string) => {
+    const response = await api.get(`${ENDPOINT}/${storeId}/point-shop/${id}`);
+    return GetStorePointShopResponse.parse(response);
+  },
+  createStorePointShopItem: async (storeId: number, body: CreateStorePointShopItemBody) => {
+    const response = await api.post(`${ENDPOINT}/${storeId}/point-shop`, body);
+    return CreateStorePointShopResponse.parse(response);
+  },
+  updateStorePointShopItem: async (
+    storeId: string,
+    id: string,
+    body: CreateStorePointShopItemBody,
+  ) => {
+    const response = await api.put(`${ENDPOINT}/${storeId}/point-shop/${id}`, body);
+    return GetStorePointShopNullResponse.parse(response);
+  },
+  updateStorePointShopItemActive: async (storeId: number, id: number) => {
+    const response = await api.put(`${ENDPOINT}/${storeId}/point-shop/${id}/active`);
+    return GetStorePointShopStatusResponse.parse(response);
+  },
+  updateStorePointShopItemInactive: async (storeId: number, id: number) => {
+    const response = await api.put(`${ENDPOINT}/${storeId}/point-shop/${id}/inactive`);
+    return GetStorePointShopStatusResponse.parse(response);
   },
   updateStore: async ({ id, body }: { id: number; body: UpdateStoreBody }) => {
     await api.put(`/ceo/stores/${id}`, body);
