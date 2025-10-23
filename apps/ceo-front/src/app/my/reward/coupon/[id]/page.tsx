@@ -184,9 +184,11 @@ const CouponDetailPage = () => {
           <SortToggle
             value={sortOrder}
             onSortChange={(value) => {
-              setSortOrder(value);
-              // 정렬 변경시 첫 페이지로 이동
-              setPagination({ ...pagination, pageIndex: 0 });
+              if (value === 'RECENT' || value === 'OLD') {
+                setSortOrder(value);
+                // 정렬 변경시 첫 페이지로 이동
+                setPagination({ ...pagination, pageIndex: 0 });
+              }
             }}
           />
         </div>

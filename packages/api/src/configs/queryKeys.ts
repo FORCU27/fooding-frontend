@@ -19,6 +19,7 @@ export const queryKeys = {
   ceo: {
     me: 'ceoMe',
     devices: 'ceoDevices',
+    notifications: 'ceoNotifications',
     store: {
       selectedStore: 'ceoSelectedStore',
       storeList: 'ceoStoreList',
