@@ -6,6 +6,8 @@ import { useState } from 'react';
 import { Button, Card, DataTable, Pagination } from '@repo/design-system/components/ceo';
 import type { ColumnDef, PaginationState } from '@tanstack/react-table';
 
+import { AndroidIcon } from '@/components/icons/AndroidIcon';
+import { IOSIcon } from '@/components/icons/IOSIcon';
 import { useGetDevice } from '@/hooks/devices/useGetDevice';
 
 // 변경이력 타입 (API가 없으므로 임시)
@@ -41,9 +43,9 @@ const DeviceDetailPage = () => {
 
   const getPlatformIcon = (platform: 'IOS' | 'ANDROID') => {
     if (platform === 'IOS') {
-      return '🍎'; // Apple icon placeholder
+      return <IOSIcon size={30} />;
     }
-    return '🤖'; // Android icon placeholder
+    return <AndroidIcon size={30} />;
   };
 
   const handleDisconnect = () => {

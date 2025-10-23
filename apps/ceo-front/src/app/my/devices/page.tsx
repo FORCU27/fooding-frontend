@@ -6,6 +6,8 @@ import { useState } from 'react';
 import { Card, Pagination, SortToggle } from '@repo/design-system/components/ceo';
 import type { PaginationState } from '@tanstack/react-table';
 
+import { AndroidIcon } from '@/components/icons/AndroidIcon';
+import { IOSIcon } from '@/components/icons/IOSIcon';
 import { useGetDevices } from '@/hooks/devices/useGetDevices';
 import { useSelectedStoreId } from '@/hooks/useSelectedStoreId';
 
@@ -37,9 +39,9 @@ const DevicesPage = () => {
 
   const getPlatformIcon = (platform: 'IOS' | 'ANDROID') => {
     if (platform === 'IOS') {
-      return '🍎'; // Apple icon placeholder
+      return <IOSIcon size={30} />;
     }
-    return '🤖'; // Android icon placeholder
+    return <AndroidIcon size={30} />;
   };
 
   const handleCardClick = (deviceId: number) => {
