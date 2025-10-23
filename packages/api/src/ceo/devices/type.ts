@@ -2,15 +2,17 @@ import { z } from 'zod/v4';
 
 import { PageResponse } from '../../shared';
 
+export const DevicePlatform = z.enum(['IOS', 'ANDROID']);
+export type DevicePlatform = z.infer<typeof DevicePlatform>;
+
 export const CeoDeviceResponseSchema = z.object({
   id: z.number(),
-  platform: z.string(),
+  platform: DevicePlatform,
   name: z.string(),
   packageName: z.string(),
   osVersion: z.string(),
   installedAt: z.string(),
   lastConnectedAt: z.string(),
-  serviceType: z.string(),
 });
 
 export const CeoDeviceConnnectRequestSchema = z.object({
