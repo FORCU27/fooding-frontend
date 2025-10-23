@@ -19,4 +19,5 @@ export type GetStoreNotificationsParams = {
   storeId: number;
   pageNum?: number;
   pageSize?: number;
+  sortType?: 'RECENT' | 'OLD';
 };

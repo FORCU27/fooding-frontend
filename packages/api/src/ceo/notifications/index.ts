@@ -13,12 +13,17 @@ export const notificationApi = {
     storeId,
     pageNum = 1,
     pageSize = 10,
+    sortType,
   }: GetStoreNotificationsParams) => {
     const params = new URLSearchParams({
       storeId: storeId.toString(),
       pageNum: pageNum.toString(),
       pageSize: pageSize.toString(),
     });
+
+    if (sortType) {
+      params.append('sortType', sortType);
+    }
 
     const response = await api.get(`${ENDPOINT}?${params.toString()}`);
     return GetStoreNotificationsResponse.parse(response);
