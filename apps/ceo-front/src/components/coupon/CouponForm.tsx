@@ -36,6 +36,7 @@ export interface CouponFormData {
 
 interface CouponFormProps {
   title: string;
+  mode?: 'create' | 'edit' | 'gift';
   initialData?: Partial<CouponFormData>;
   initialDateRange?: SelectedRangeItem | null;
   onSubmit: (data: CouponFormData, dateRange: SelectedRangeItem | null) => Promise<void>;
@@ -46,6 +47,7 @@ interface CouponFormProps {
 
 export const CouponForm = ({
   title,
+  mode = 'create',
   initialData,
   initialDateRange,
   onSubmit,
@@ -287,63 +289,71 @@ export const CouponForm = ({
         </CardSubtitle>
       </Card>
 
-      <Card>
-        <CardSubtitle label='쿠폰 사용 대상' required>
-          <ToggleGroup
-            type='single'
-            value={formData.couponUsageType}
-            onValueChange={(value) => setFormData((prev) => ({ ...prev, couponUsageType: value }))}
-            className='grid grid-cols-2 gap-4'
-          >
-            <ToggleGroupItem value='all' className='flex-col items-start p-6 h-auto'>
-              <div className='text-lg font-medium mb-2'>모든 사용자</div>
-              <div className='text-sm text-gray-500'>
-                모든 고객이 사용할 수 있는 쿠폰을 만들어보세요
-              </div>
-            </ToggleGroupItem>
-            <ToggleGroupItem value='regular' className='flex-col items-start p-6 h-auto'>
-              <div className='text-lg font-medium mb-2'>단골 전용</div>
-              <div className='text-sm text-gray-500'>
-                단골 고객만 사용할 수 있는 특별한 쿠폰을 만들어보세요
-              </div>
-            </ToggleGroupItem>
-          </ToggleGroup>
-        </CardSubtitle>
-      </Card>
+      {mode !== 'gift' && (
+        <>
+          <Card>
+            <CardSubtitle label='쿠폰 사용 대상' required>
+              <ToggleGroup
+                type='single'
+                value={formData.couponUsageType}
+                onValueChange={(value) =>
+                  setFormData((prev) => ({ ...prev, couponUsageType: value }))
+                }
+                className='grid grid-cols-2 gap-4'
+              >
+                <ToggleGroupItem value='all' className='flex-col items-start p-6 h-auto'>
+                  <div className='text-lg font-medium mb-2'>모든 사용자</div>
+                  <div className='text-sm text-gray-500'>
+                    모든 고객이 사용할 수 있는 쿠폰을 만들어보세요
+                  </div>
+                </ToggleGroupItem>
+                <ToggleGroupItem value='regular' className='flex-col items-start p-6 h-auto'>
+                  <div className='text-lg font-medium mb-2'>단골 전용</div>
+                  <div className='text-sm text-gray-500'>
+                    단골 고객만 사용할 수 있는 특별한 쿠폰을 만들어보세요
+                  </div>
+                </ToggleGroupItem>
+              </ToggleGroup>
+            </CardSubtitle>
+          </Card>
 
-      <Card>
-        <CardSubtitle label='발급 개수'>
-          <div className='flex flex-row gap-4'>
-            <RadioButton
-              label='제한 있어요'
-              value='limited'
-              checked={formData.issueType === 'limited'}
-              onChange={() => setFormData((prev) => ({ ...prev, issueType: 'limited' }))}
-            />
-            <RadioButton
-              label='제한 없어요'
-              value='unlimited'
-              checked={formData.issueType === 'unlimited'}
-              onChange={() =>
-                setFormData((prev) => ({ ...prev, issueType: 'unlimited', issueCount: '' }))
-              }
-            />
-          </div>
-          {formData.issueType === 'limited' && (
-            <div className='mt-4 flex items-center gap-2'>
-              <div className='w-32'>
-                <Input
-                  type='text'
-                  value={formData.issueCount || ''}
-                  onChange={(e) => setFormData((prev) => ({ ...prev, issueCount: e.target.value }))}
-                  placeholder='100'
-                  suffix='개'
+          <Card>
+            <CardSubtitle label='발급 개수'>
+              <div className='flex flex-row gap-4'>
+                <RadioButton
+                  label='제한 있어요'
+                  value='limited'
+                  checked={formData.issueType === 'limited'}
+                  onChange={() => setFormData((prev) => ({ ...prev, issueType: 'limited' }))}
+                />
+                <RadioButton
+                  label='제한 없어요'
+                  value='unlimited'
+                  checked={formData.issueType === 'unlimited'}
+                  onChange={() =>
+                    setFormData((prev) => ({ ...prev, issueType: 'unlimited', issueCount: '' }))
+                  }
                 />
               </div>
-            </div>
-          )}
-        </CardSubtitle>
-      </Card>
+              {formData.issueType === 'limited' && (
+                <div className='mt-4 flex items-center gap-2'>
+                  <div className='w-32'>
+                    <Input
+                      type='text'
+                      value={formData.issueCount || ''}
+                      onChange={(e) =>
+                        setFormData((prev) => ({ ...prev, issueCount: e.target.value }))
+                      }
+                      placeholder='100'
+                      suffix='개'
+                    />
+                  </div>
+                </div>
+              )}
+            </CardSubtitle>
+          </Card>
+        </>
+      )}
 
       <Card>
         <CardSubtitle label='사용 기한' required>
@@ -393,30 +403,6 @@ export const CouponForm = ({
         </CardSubtitle>
       </Card>
 
-      <Card>
-        <CardSubtitle label='미리보기'>
-          <Coupon
-            title={formData.couponName || '쿠폰 이름'}
-            period={
-              selectedDateRange
-                ? `${selectedDateRange.startDate.toLocaleDateString('ko-KR')} ~ ${selectedDateRange.endDate.toLocaleDateString('ko-KR')}`
-                : '기간 미설정'
-            }
-            statuses={formData.couponUsageType === 'regular' ? ['단골 전용', '발급중'] : ['발급중']}
-            receivedCount={
-              formData.issueType === 'limited' && formData.issueCount
-                ? parseInt(formData.issueCount)
-                : 0
-            }
-            purchaseCount={0}
-            usedCount={0}
-            canceledCount={0}
-            details={formData.usageConditions || '사용 조건 없음'}
-            isActive={true}
-          />
-        </CardSubtitle>
-      </Card>
-
       <div className='flex justify-center gap-4 mb-17'>
         {onCancel && (
           <Button type='button' variant='outlined' onClick={onCancel}>
@@ -427,6 +413,38 @@ export const CouponForm = ({
           {isSubmitting ? '처리 중...' : submitText}
         </Button>
       </div>
+
+      <Card>
+        <CardSubtitle label='미리보기'>
+          <Coupon
+            title={formData.couponName || '쿠폰 이름'}
+            period={
+              selectedDateRange
+                ? `${selectedDateRange.startDate.toLocaleDateString('ko-KR')} ~ ${selectedDateRange.endDate.toLocaleDateString('ko-KR')}`
+                : '기간 미설정'
+            }
+            statuses={
+              mode === 'gift'
+                ? ['단골 전용']
+                : formData.couponUsageType === 'regular'
+                  ? ['단골 전용', '발급중']
+                  : ['발급중']
+            }
+            receivedCount={
+              mode === 'gift'
+                ? undefined
+                : formData.issueType === 'limited' && formData.issueCount
+                  ? parseInt(formData.issueCount)
+                  : 0
+            }
+            purchaseCount={mode === 'gift' ? undefined : 0}
+            usedCount={mode === 'gift' ? undefined : 0}
+            canceledCount={mode === 'gift' ? undefined : 0}
+            details={formData.usageConditions || '사용 조건 없음'}
+            isActive={true}
+          />
+        </CardSubtitle>
+      </Card>
     </CardForm>
   );
 };
