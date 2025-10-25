@@ -46,6 +46,7 @@ export const queryKeys = {
       update: 'ceoCouponUpdate',
       delete: 'ceoCouponDelete',
     },
+    review: 'ceoReviewList',
   },
   pos: {},
   user: {

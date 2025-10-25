@@ -4,6 +4,7 @@ import Script from 'next/script';
 import { ReactNode, Suspense } from 'react';
 
 import { queryKeys } from '@repo/api/configs/query-keys';
+import { MSWProvider } from '@repo/msw';
 import { QueryClient, dehydrate } from '@tanstack/react-query';
 import { Metadata } from 'next';
 import { OverlayProvider } from 'overlay-kit';
@@ -72,16 +73,18 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
           </>
         )}
 
-        <ReactQueryProvider dehydratedState={dehydratedState}>
-          <Suspense>
-            <OverlayProvider>
-              <AuthProvider>
-                {children}
-                <Analytics />
-              </AuthProvider>
-            </OverlayProvider>
-          </Suspense>
-        </ReactQueryProvider>
+        <MSWProvider>
+          <ReactQueryProvider dehydratedState={dehydratedState}>
+            <Suspense>
+              <OverlayProvider>
+                <AuthProvider>
+                  {children}
+                  <Analytics />
+                </AuthProvider>
+              </OverlayProvider>
+            </Suspense>
+          </ReactQueryProvider>
+        </MSWProvider>
       </body>
     </html>
   );
