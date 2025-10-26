@@ -2,18 +2,17 @@
 
 import { useState, useEffect } from 'react';
 
-import { UserSchema } from '@repo/api/ceo';
+import { UserResponse } from '@repo/api/ceo';
 import { Input, Card, Dialog, Button } from '@repo/design-system/components/ceo';
 
 import { useSearchUsers } from '@/hooks/user/useSearchUsers';
 
 interface UserSearchInputProps {
-  storeId: number | null;
-  selectedUser: UserSchema | null;
-  onSelectUser: (user: UserSchema | null) => void;
+  selectedUser: UserResponse | null;
+  onSelectUser: (user: UserResponse | null) => void;
 }
 
-export const UserSearchInput = ({ storeId, selectedUser, onSelectUser }: UserSearchInputProps) => {
+export const UserSearchInput = ({ selectedUser, onSelectUser }: UserSearchInputProps) => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [keyword, setKeyword] = useState('');
   const [debouncedKeyword, setDebouncedKeyword] = useState('');
@@ -28,9 +27,14 @@ export const UserSearchInput = ({ storeId, selectedUser, onSelectUser }: UserSea
   }, [keyword]);
 
   // 고객 검색
-  const { data: searchResult, isLoading } = useSearchUsers(storeId, debouncedKeyword);
+  const { data: searchResult, isLoading } = useSearchUsers(debouncedKeyword);
 
-  const handleSelectUser = (user: UserSchema) => {
+  // 디버깅용 로그
+  console.log('searchResult:', searchResult);
+  console.log('isLoading:', isLoading);
+  console.log('debouncedKeyword:', debouncedKeyword);
+
+  const handleSelectUser = (user: UserResponse) => {
     onSelectUser(user);
     setKeyword('');
     setIsDialogOpen(false);
@@ -47,11 +51,8 @@ export const UserSearchInput = ({ storeId, selectedUser, onSelectUser }: UserSea
         <Card>
           <div className='flex justify-between items-center p-4'>
             <div>
-              <div className='font-medium text-gray-900'>{selectedUser.name}</div>
-              <div className='text-sm text-gray-500'>{selectedUser.phoneNumber}</div>
-              {selectedUser.visitCount !== undefined && (
-                <div className='text-sm text-gray-400 mt-1'>방문 횟수: {selectedUser.visitCount}회</div>
-              )}
+              <div className='font-medium text-gray-900'>{selectedUser.nickname}</div>
+              <div className='text-sm text-gray-500'>{selectedUser.email}</div>
             </div>
             <button
               onClick={handleRemoveUser}
@@ -96,9 +97,9 @@ export const UserSearchInput = ({ storeId, selectedUser, onSelectUser }: UserSea
                   </div>
                 ) : isLoading ? (
                   <div className='p-4 text-center text-gray-500'>검색 중...</div>
-                ) : searchResult && searchResult.list.length > 0 ? (
+                ) : searchResult?.data && searchResult.data.list.length > 0 ? (
                   <ul className='divide-y divide-gray-200'>
-                    {searchResult.list.map((user) => (
+                    {searchResult.data.list.map((user) => (
                       <li
                         key={user.id}
                         className='p-3 hover:bg-gray-50 cursor-pointer transition-colors'
@@ -106,12 +107,9 @@ export const UserSearchInput = ({ storeId, selectedUser, onSelectUser }: UserSea
                       >
                         <div className='flex justify-between items-center'>
                           <div>
-                            <div className='font-medium text-gray-900'>{user.name}</div>
-                            <div className='text-sm text-gray-500'>{user.phoneNumber}</div>
+                            <div className='font-medium text-gray-900'>{user.nickname}</div>
+                            <div className='text-sm text-gray-500'>{user.email}</div>
                           </div>
-                          {user.visitCount !== undefined && (
-                            <div className='text-sm text-gray-400'>방문 {user.visitCount}회</div>
-                          )}
                         </div>
                       </li>
                     ))}

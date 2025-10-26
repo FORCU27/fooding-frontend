@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 
-import { GiftCouponBody, UserSchema } from '@repo/api/ceo';
+import { GiftCouponBody, UserResponse } from '@repo/api/ceo';
 import { Card } from '@repo/design-system/components/ceo';
 import type { SelectedRangeItem } from '@repo/design-system/components/ceo';
 
@@ -14,7 +14,7 @@ import { useSelectedStoreId } from '@/hooks/useSelectedStoreId';
 const GiftCouponPage = () => {
   const giftCoupon = useGiftCoupon();
   const { selectedStoreId, isLoading: isLoadingStoreId, isInitialized } = useSelectedStoreId();
-  const [selectedUser, setSelectedUser] = useState<UserSchema | null>(null);
+  const [selectedUser, setSelectedUser] = useState<UserResponse | null>(null);
 
   const handleSubmit = async (
     formData: CouponFormData,
@@ -86,11 +86,7 @@ const GiftCouponPage = () => {
       <Card>
         <div className='p-6'>
           <h3 className='text-lg font-semibold mb-4'>대상 고객 *</h3>
-          <UserSearchInput
-            storeId={selectedStoreId}
-            selectedUser={selectedUser}
-            onSelectUser={setSelectedUser}
-          />
+          <UserSearchInput selectedUser={selectedUser} onSelectUser={setSelectedUser} />
         </div>
       </Card>
 

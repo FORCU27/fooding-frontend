@@ -87,7 +87,7 @@ export const couponApiV2 = {
 
   // 쿠폰 선물
   giftCoupon: async (body: GiftCouponBody): Promise<void> => {
-    await api.post(`${ENDPOINT}/gift`, body);
+    await api.post('/ceo/user-coupons/gift', body);
   },
 
   // 고객 검색 (단골 고객)
