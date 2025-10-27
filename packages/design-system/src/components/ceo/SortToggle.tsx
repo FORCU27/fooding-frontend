@@ -5,7 +5,7 @@ import { useState, useEffect } from 'react';
 import { IconProps } from '../../icons';
 import { cn } from '../../utils/cn';
 
-export type SortOrder = 'TOTAL' | 'RECENT' | 'OLD';
+export type SortOrder = 'RECENT' | 'OLD'; // 'TOTAL'
 
 export interface SortToggleProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   value?: SortOrder;
