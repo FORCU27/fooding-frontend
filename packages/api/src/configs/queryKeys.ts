@@ -36,6 +36,13 @@ export const queryKeys = {
       update: 'ceoMenuUpdate',
       delete: 'ceoMenuDelete',
     },
+    menuBoard: {
+      list: 'ceoMenuBoardList',
+      detail: 'ceoMenuBoardDetail',
+      create: 'ceoMenuBoardCreate',
+      update: 'ceoMenuBoardUpdate',
+      delete: 'ceoMenuBoardDelete',
+    },
     storeInformation: {
       get: 'ceoStoreInformationGet',
     },
@@ -45,6 +52,12 @@ export const queryKeys = {
       create: 'ceoCouponCreate',
       update: 'ceoCouponUpdate',
       delete: 'ceoCouponDelete',
+      usages: 'ceoCouponUsages',
+    },
+    pointShop: {
+      list: 'ceoStoreGetPointShopList',
+      detail: 'ceoStoreGetPointShopDetail',
+      status: 'ceoStoreGetPointShopStatus',
     },
     review: 'ceoReviewList',
   },

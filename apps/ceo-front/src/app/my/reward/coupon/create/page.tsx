@@ -63,8 +63,18 @@ const CouponPage = () => {
 
   if (isLoadingStoreId || !isInitialized) {
     return (
-      <div className='flex items-center justify-center py-8'>
-        <div className='text-gray-600'>스토어 정보를 불러오는 중...</div>
+      <div className='space-y-4'>
+        <div className='headline-2'>쿠폰 생성</div>
+        <div className='bg-white rounded-lg shadow p-6'>
+          <div className='flex items-center justify-center py-8'>
+            <div className='text-center'>
+              <div className='mb-4'>
+                <div className='inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-current border-r-transparent motion-reduce:animate-[spin_1.5s_linear_infinite]' />
+              </div>
+              <div className='text-gray-600'>스토어 정보를 불러오는 중...</div>
+            </div>
+          </div>
+        </div>
       </div>
     );
   }

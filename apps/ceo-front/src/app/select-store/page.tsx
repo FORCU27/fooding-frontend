@@ -13,6 +13,7 @@ import { Suspense } from '@suspensive/react';
 import { overlay } from 'overlay-kit';
 
 import { FoodingLogo } from '@/components/FoodingLogo';
+import { useStore } from '@/context/StoreContext';
 import { useCreateStore } from '@/hooks/store/useCreateStore';
 import { useDeleteStore } from '@/hooks/store/useDeleteStore';
 import { useGetStoreList } from '@/hooks/store/useGetStoreList';
@@ -54,7 +55,7 @@ export default function StoreSelectPage() {
 
 const StoreSetupCard = () => {
   const { data: stores } = useGetStoreList();
-
+  const { setStoreId } = useStore();
   const router = useRouter();
 
   const [selectedStoreId, setSelectedStoreId] = useState<string | null>(null);
@@ -70,6 +71,11 @@ const StoreSetupCard = () => {
       console.error('');
       return;
     }
+
+    if (selectedStoreId) {
+      setStoreId(selectedStoreId);
+    }
+
     router.push('/my');
   };
 

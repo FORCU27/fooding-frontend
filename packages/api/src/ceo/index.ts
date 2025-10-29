@@ -4,6 +4,7 @@ export * from './store';
 export * from './image';
 export * from './menu-category';
 export * from './menu';
+export * from './menu-board';
 export * from './store-information';
 export * from './coupon';
 export * from './post';

@@ -5,7 +5,7 @@ import { useState, useEffect } from 'react';
 import { IconProps } from '../../icons';
 import { cn } from '../../utils/cn';
 
-export type SortOrder = 'RECENT' | 'OLD';
+export type SortOrder = 'RECENT' | 'OLD'; // TODO 'TOTAL' 로 사용되는 부분 있는지 확인 필요
 
 export interface SortToggleProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   value?: SortOrder;
@@ -39,11 +39,7 @@ export const SortToggle = ({
   const handleSelect = (newValue: SortOrder) => {
     setSelectedValue(newValue);
     onSortChange(newValue);
-    if (keepSelectedOpen) {
-      setIsOpen(false);
-    } else {
-      setIsOpen(false);
-    }
+    setIsOpen(false);
   };
 
   const selectedLabel = selectedValue === 'RECENT' ? '최신순' : '오래된순';

@@ -1,0 +1,1 @@
+export { EllipsisVertical as EllipsisVerticalIcon } from 'lucide-react';
