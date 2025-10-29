@@ -79,6 +79,19 @@ const FavoritePage = () => {
     }
   };
 
+  const handleStarButton = async (bookmarkId: number, isStarred: boolean | null) => {
+    if (!selectedStoreId || !isStarred) return;
+    try {
+      await bookmarkApi.putStarred(selectedStoreId, bookmarkId, { isStarred: isStarred });
+      setTargetBookmarkId(null);
+      await queryClient.invalidateQueries({
+        queryKey: [queryKeys.ceo.bookmark.list],
+      });
+    } catch (err) {
+      console.error('별 버튼 클릭', err);
+    }
+  };
+
   const columns: ColumnDef<StoreBookmark>[] = [
     {
       header: '',
@@ -90,6 +103,7 @@ const FavoritePage = () => {
           color={row.original.isStarred ? '#FFD83D' : '#E2DFDF'}
           fill={row.original.isStarred ? '#FFD83D' : '#E2DFDF'}
           stroke={row.original.isStarred ? '#FFD83D' : '#E2DFDF'}
+          onClick={() => handleStarButton(row.original.id, row.original.isStarred)}
         />
       ),
     },

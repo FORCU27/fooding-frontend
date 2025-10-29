@@ -13,6 +13,6 @@ export const bookmarkApi = {
     await api.delete(`${ENDPOINT}/${storeId}/bookmarks/${bookmarkId}`);
   },
   putStarred: async (storeId: number, bookmarkId: number, body: { isStarred: boolean }) => {
-    await api.put(`${ENDPOINT}/${storeId}/bookmarks/${bookmarkId}`, body);
+    await api.put(`${ENDPOINT}/${storeId}/bookmarks/${bookmarkId}/starred`, body);
   },
 };
