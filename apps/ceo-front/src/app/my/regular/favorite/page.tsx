@@ -42,7 +42,6 @@ const FavoritePage = () => {
   const queryClient = useQueryClient();
   const { selectedStoreId, isInitialized } = useSelectedStoreId();
 
-  const [sorting, setSorting] = useState<SortingState>([]);
   const [sortOrder, setSortOrder] = useState<BookmarkSortType>('RECENT');
   const [pagination, setPagination] = useState<PaginationState>({
     pageIndex: 0,
@@ -173,15 +172,7 @@ const FavoritePage = () => {
       <div className='headline-2'>단골</div>
       <div className='bg-white rounded-lg shadow overflow-hidden'>
         <div className='flex justify-end p-4'>
-          <SortToggle
-            value={sortOrder}
-            onSortChange={(value) => {
-              setSortOrder(value);
-              setSorting(
-                value === 'RECENT' ? [{ id: 'name', desc: true }] : [{ id: 'name', desc: false }],
-              );
-            }}
-          />
+          <SortToggle value={sortOrder} onSortChange={setSortOrder} />
         </div>
         <DataTable
           columns={columns}
@@ -189,13 +180,10 @@ const FavoritePage = () => {
           emptyRenderer='등록된 단골이 없습니다.'
           options={{
             manualPagination: false,
-            state: { pagination, sorting },
-            onPaginationChange: setPagination,
-            onSortingChange: setSorting,
+            manualSorting: true,
           }}
         />
       </div>
-
       {bookmarkList?.data.pageInfo && (
         <div className='flex justify-center mt-4 mb-[80px]'>
           <Pagination
