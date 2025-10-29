@@ -7,6 +7,7 @@ import { useQuery } from '@tanstack/react-query';
 
 import { ReviewCard } from './components/ReviewCard';
 import { useGetSelf } from '@/hooks/auth/useGetSelf';
+import { formatDotDate } from '@/utils/date';
 
 const ReviewPage = () => {
   const { data: me } = useGetSelf();
@@ -22,8 +23,8 @@ const ReviewPage = () => {
       {reviews?.map((review) => (
         <ReviewCard
           key={review.id}
-          author='민수엄마'
-          date='2025.10.10'
+          author={review.writerName}
+          date={formatDotDate(review.createdAt)}
           rating={review.totalScore}
           content={review.content}
         />

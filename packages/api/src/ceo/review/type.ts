@@ -10,12 +10,23 @@ export type GetReviewParams = {
   storeId: number;
 };
 
+export type PostReviewReplyParams = {
+  storeId: number;
+  userId: number;
+  reviewId: number;
+  content: string;
+};
+
 export const Review = z.object({
   id: z.number(),
   storeId: z.number(),
-  writerId: z.number(),
   content: z.string(),
   visitPurposeType: z.enum(['MEETING', 'DATE', 'FRIEND', 'FAMILY', 'BUSINESS', 'PARTY']),
+  parentId: z.number(),
+  writerId: z.number(),
+  writerName: z.string(),
+  writerReviewCount: z.number(),
+  createdAt: z.string(),
   totalScore: z.number().optional(),
   tasteScore: z.number().optional(),
   moodScore: z.number().optional(),
