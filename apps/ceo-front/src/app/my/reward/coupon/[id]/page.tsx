@@ -10,6 +10,7 @@ import {
   Coupon,
   DataTable,
   Pagination,
+  SortOrder,
   SortToggle,
   type CouponStatus,
 } from '@repo/design-system/components/ceo';
@@ -27,7 +28,7 @@ const CouponDetailPage = () => {
     pageSize: 10,
   });
 
-  const [sortOrder, setSortOrder] = useState<'RECENT' | 'OLD'>('RECENT');
+  const [sortOrder, setSortOrder] = useState<SortOrder>('RECENT');
 
   const { data: coupon, isLoading } = useQuery({
     queryKey: [queryKeys.ceo.coupon.detail, couponId],
