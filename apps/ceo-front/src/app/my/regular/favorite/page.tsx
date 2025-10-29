@@ -1,6 +1,5 @@
 'use client';
 import Image from 'next/image';
-import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
 import { bookmarkApi, BookmarkSortType, StoreBookmark } from '@repo/api/ceo';
@@ -12,9 +11,10 @@ import {
   Pagination,
 } from '@repo/design-system/components/ceo';
 import { StarIcon, EllipsisVerticalIcon } from '@repo/design-system/icons';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import type { ColumnDef, SortingState, PaginationState } from '@tanstack/react-table';
 
+import ConfirmModal from '@/components/ConfirmModal';
 import { useSelectedStoreId } from '@/hooks/useSelectedStoreId';
 import { getDaysSince } from '@/utils/date';
 
@@ -39,82 +39,96 @@ const ProfileImage = () => (
 );
 
 const FavoritePage = () => {
-  const router = useRouter();
+  const queryClient = useQueryClient();
+  const { selectedStoreId, isInitialized } = useSelectedStoreId();
 
   const [sorting, setSorting] = useState<SortingState>([]);
   const [sortOrder, setSortOrder] = useState<BookmarkSortType>('RECENT');
-  const { selectedStoreId, isInitialized } = useSelectedStoreId();
-
   const [pagination, setPagination] = useState<PaginationState>({
     pageIndex: 0,
     pageSize: 10,
   });
+
+  const [confirmOpen, setConfirmOpen] = useState(false);
+  const [targetBookmarkId, setTargetBookmarkId] = useState<number | null>(null);
+
+  const { data: bookmarkList } = useQuery({
+    queryKey: [queryKeys.ceo.bookmark.list, selectedStoreId, pagination, sortOrder],
+    queryFn: () =>
+      bookmarkApi.get(selectedStoreId || 0, {
+        searchString: '',
+        pageNum: pagination.pageIndex + 1,
+        pageSize: pagination.pageSize,
+        sortType: sortOrder,
+      }),
+    enabled: !!selectedStoreId && isInitialized,
+  });
+
+  const handleDelete = async () => {
+    if (!selectedStoreId || !targetBookmarkId) return;
+    try {
+      await bookmarkApi.delete(selectedStoreId, targetBookmarkId);
+      setConfirmOpen(false);
+      setTargetBookmarkId(null);
+      // 리스트 갱신
+      await queryClient.invalidateQueries({
+        queryKey: [queryKeys.ceo.bookmark.list],
+      });
+    } catch (err) {
+      console.error('삭제 실패:', err);
+    }
+  };
 
   const columns: ColumnDef<StoreBookmark>[] = [
     {
       header: '',
       id: 'actions-starring',
       size: 68,
-      minSize: 60,
-      maxSize: 68,
       cell: ({ row }) => (
-        <div>
-          <StarIcon
-            size={24}
-            color={row.original.isStarred ? '#FFD83D' : '#E2DFDF'} // 노란색 / 회색
-            fill={row.original.isStarred ? '#FFD83D' : '#E2DFDF'}
-            stroke={row.original.isStarred ? '#FFD83D' : '#E2DFDF'}
-          />
-        </div>
+        <StarIcon
+          size={24}
+          color={row.original.isStarred ? '#FFD83D' : '#E2DFDF'}
+          fill={row.original.isStarred ? '#FFD83D' : '#E2DFDF'}
+          stroke={row.original.isStarred ? '#FFD83D' : '#E2DFDF'}
+        />
       ),
     },
     {
       header: '',
       id: 'image',
       size: 68,
-      minSize: 60,
-      maxSize: 68,
-      cell: ({ row }) => (
-        <div>
-          {row.original.profileImage ? (
-            <Image src={row.original.profileImage} alt='profile image' width={68} height={68} />
-          ) : (
-            <ProfileImage />
-          )}
-        </div>
-      ),
+      cell: ({ row }) =>
+        row.original.profileImage ? (
+          <Image src={row.original.profileImage} alt='profile image' width={68} height={68} />
+        ) : (
+          <ProfileImage />
+        ),
     },
     {
       accessorKey: 'nickname',
       header: () => <div className='text-left'>닉네임</div>,
       size: 300,
-      minSize: 200,
       cell: ({ getValue }) => <div>{getValue<string>()}</div>,
     },
     {
       header: '지역',
       accessorKey: 'address',
-      size: 104,
       cell: ({ getValue }) => <div className='text-center'>{getValue<string>()}</div>,
     },
     {
       header: '인증',
-      size: 82,
       cell: ({ row }) => (
         <div className='text-center'>{row.original.verifiedCount.toLocaleString()}</div>
       ),
     },
     {
       header: '기간',
-      size: 114,
       cell: ({ row }) => <div className='text-center'>{getDaysSince(row.original.createdAt)}</div>,
     },
     {
       header: '',
       id: 'actions-dropdown',
       size: 68,
-      minSize: 60,
-      maxSize: 68,
       cell: ({ row }) => (
         <div className='flex justify-center'>
           <DropdownMenu>
@@ -126,7 +140,10 @@ const FavoritePage = () => {
             <DropdownMenu.Content side='left'>
               <DropdownMenu.Item
                 variant='danger'
-                // onClick={}
+                onClick={() => {
+                  setTargetBookmarkId(row.original.id);
+                  setConfirmOpen(true);
+                }}
               >
                 삭제
               </DropdownMenu.Item>
@@ -137,22 +154,10 @@ const FavoritePage = () => {
     },
   ];
 
-  const { data: bookmarkList } = useQuery({
-    queryKey: [queryKeys.ceo.bookmark.list, selectedStoreId, pagination],
-    queryFn: () =>
-      bookmarkApi.getBookmarks(selectedStoreId || 0, {
-        searchString: '',
-        pageNum: pagination.pageIndex + 1,
-        pageSize: pagination.pageSize,
-        sortType: sortOrder,
-      }),
-    enabled: !!selectedStoreId && isInitialized,
-  });
-
   return (
     <div className='space-y-4'>
       <div className='headline-2'>단골</div>
-      <div className='bg-white rounded-lg shadow overflow-hiddent'>
+      <div className='bg-white rounded-lg shadow overflow-hidden'>
         <div className='flex justify-end p-4'>
           <SortToggle
             value={sortOrder}
@@ -170,15 +175,13 @@ const FavoritePage = () => {
           emptyRenderer='등록된 단골이 없습니다.'
           options={{
             manualPagination: false,
-            state: {
-              pagination,
-              sorting,
-            },
+            state: { pagination, sorting },
             onPaginationChange: setPagination,
             onSortingChange: setSorting,
           }}
         />
       </div>
+
       {bookmarkList?.data.pageInfo && (
         <div className='flex justify-center mt-4 mb-[80px]'>
           <Pagination
@@ -188,6 +191,12 @@ const FavoritePage = () => {
           />
         </div>
       )}
+      <ConfirmModal
+        open={confirmOpen}
+        title='단골 목록에서 삭제하시겠습니까?'
+        onConfirm={handleDelete}
+        onCancel={() => setConfirmOpen(false)}
+      />
     </div>
   );
 };
