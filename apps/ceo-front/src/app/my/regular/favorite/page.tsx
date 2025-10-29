@@ -12,7 +12,7 @@ import {
 } from '@repo/design-system/components/ceo';
 import { StarIcon, EllipsisVerticalIcon } from '@repo/design-system/icons';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import type { ColumnDef, SortingState, PaginationState } from '@tanstack/react-table';
+import type { ColumnDef, PaginationState } from '@tanstack/react-table';
 
 import ConfirmModal from '@/components/ConfirmModal';
 import { useSelectedStoreId } from '@/hooks/useSelectedStoreId';
