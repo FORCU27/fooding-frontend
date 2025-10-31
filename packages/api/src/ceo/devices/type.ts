@@ -26,3 +26,22 @@ export const CeoDeviceConnnectRequestSchema = z.object({
 });
 
 export const GetCeoDeviceListResponse = PageResponse(CeoDeviceResponseSchema);
+
+// Device Logs
+export const DeviceLogSchema = z.object({
+  logId: z.number(),
+  deviceId: z.number(),
+  date: z.string(),
+  time: z.string(),
+  operation: z.string(),
+});
+
+export type DeviceLogSchema = z.infer<typeof DeviceLogSchema>;
+
+export const GetDeviceLogsResponse = PageResponse(DeviceLogSchema);
+
+export type GetDeviceLogsParams = {
+  deviceId: number;
+  pageNum?: number;
+  pageSize?: number;
+};

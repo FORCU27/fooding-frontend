@@ -1,4 +1,9 @@
-import { CeoDeviceResponseSchema, GetCeoDeviceListResponse } from './type';
+import {
+  CeoDeviceResponseSchema,
+  GetCeoDeviceListResponse,
+  GetDeviceLogsResponse,
+  GetDeviceLogsParams,
+} from './type';
 import { api } from '../../shared';
 
 export * from './type';
@@ -32,5 +37,16 @@ export const deviceApi = {
   getDevice: async (deviceId: number) => {
     const response = await api.get(`${ENDPOINT}/${deviceId}`);
     return CeoDeviceResponseSchema.parse(response);
+  },
+
+  getDeviceLogs: async ({ deviceId, pageNum = 1, pageSize = 10 }: GetDeviceLogsParams) => {
+    const params = new URLSearchParams({
+      deviceId: deviceId.toString(),
+      pageNum: pageNum.toString(),
+      pageSize: pageSize.toString(),
+    });
+
+    const response = await api.get(`${ENDPOINT}/logs?${params.toString()}`);
+    return GetDeviceLogsResponse.parse(response);
   },
 };
