@@ -18,7 +18,7 @@ import {
 } from '@repo/design-system/components/ceo';
 
 export interface CouponFormData {
-  couponName: string;
+  couponName?: string; // gift 모드에서는 선택적
   benefitType: string;
   discountType: string;
   discountPercentage: string;
@@ -43,6 +43,7 @@ interface CouponFormProps {
   onCancel?: () => void;
   submitText?: string;
   isSubmitting?: boolean;
+  previewCouponName?: string; // gift 모드용 미리보기 쿠폰 이름
 }
 
 export const CouponForm = ({
@@ -54,6 +55,7 @@ export const CouponForm = ({
   onCancel,
   submitText = '생성하기',
   isSubmitting = false,
+  previewCouponName,
 }: CouponFormProps) => {
   const [formData, setFormData] = useState<CouponFormData>({
     couponName: '',
@@ -104,7 +106,8 @@ export const CouponForm = ({
   };
 
   const handleSubmit = async () => {
-    if (!formData.couponName) {
+    // gift 모드가 아닐 때만 쿠폰 이름 체크
+    if (mode !== 'gift' && !formData.couponName) {
       alert('쿠폰 이름을 입력해주세요.');
       return;
     }
@@ -156,7 +159,7 @@ export const CouponForm = ({
           </ToggleGroup>
 
           {formData.benefitType === 'discount' && (
-            <div className='mt-4 p-6'>
+            <div className='mt-4 p-2 w-[50%]'>
               <div className='space-y-4'>
                 <div className='flex items-center gap-4'>
                   <div className='min-w-[100px]'>
@@ -226,7 +229,7 @@ export const CouponForm = ({
           )}
 
           {formData.benefitType === 'gift' && (
-            <div className='mt-4 p-6'>
+            <div className='mt-4 p-2 w-[50%]'>
               <div className='space-y-4'>
                 <div className='flex items-center gap-4'>
                   <div className='min-w-[120px]'>
@@ -279,15 +282,17 @@ export const CouponForm = ({
         </CardSubtitle>
       </Card>
 
-      <Card>
-        <CardSubtitle label='쿠폰 이름' required>
-          <Input
-            value={formData.couponName || ''}
-            onChange={(e) => setFormData((prev) => ({ ...prev, couponName: e.target.value }))}
-            placeholder='가정의 달 쿠폰'
-          />
-        </CardSubtitle>
-      </Card>
+      {mode !== 'gift' && (
+        <Card>
+          <CardSubtitle label='쿠폰 이름' required>
+            <Input
+              value={formData.couponName || ''}
+              onChange={(e) => setFormData((prev) => ({ ...prev, couponName: e.target.value }))}
+              placeholder='가정의 달 쿠폰'
+            />
+          </CardSubtitle>
+        </Card>
+      )}
 
       {mode !== 'gift' && (
         <>
@@ -417,7 +422,11 @@ export const CouponForm = ({
       <Card>
         <CardSubtitle label='미리보기'>
           <Coupon
-            title={formData.couponName || '쿠폰 이름'}
+            title={
+              mode === 'gift'
+                ? previewCouponName || '대상 고객을 선택해주세요'
+                : formData.couponName || '쿠폰 이름'
+            }
             period={
               selectedDateRange
                 ? `${selectedDateRange.startDate.toLocaleDateString('ko-KR')} ~ ${selectedDateRange.endDate.toLocaleDateString('ko-KR')}`

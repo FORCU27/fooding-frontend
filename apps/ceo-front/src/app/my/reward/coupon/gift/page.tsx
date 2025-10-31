@@ -35,6 +35,9 @@ const GiftCouponPage = () => {
       return;
     }
 
+    // 쿠폰 이름 자동 생성: "{닉네임}님을 위한 쿠폰"
+    const couponName = `${selectedUser.nickname}님을 위한 쿠폰`;
+
     // API 요청 데이터 변환
     const apiData: GiftCouponBody = {
       userId: selectedUser.id,
@@ -46,7 +49,7 @@ const GiftCouponPage = () => {
             ? 'PERCENT'
             : 'FIXED'
           : 'FIXED',
-      name: formData.couponName,
+      name: couponName,
       conditions: formData.usageConditions || undefined,
       discountValue:
         formData.benefitType === 'discount'
@@ -97,6 +100,7 @@ const GiftCouponPage = () => {
         onSubmit={handleSubmit}
         submitText='선물하기'
         isSubmitting={giftCoupon.isPending}
+        previewCouponName={selectedUser ? `${selectedUser.nickname}님을 위한 쿠폰` : undefined}
       />
     </div>
   );
