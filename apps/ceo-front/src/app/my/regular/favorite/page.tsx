@@ -78,10 +78,10 @@ const FavoritePage = () => {
     }
   };
 
-  const handleStarButton = async (bookmarkId: number, isStarred: boolean | null) => {
-    if (!selectedStoreId || !isStarred) return;
+  const handleStarButton = async (bookmarkId: number, isStarred: boolean) => {
+    if (!selectedStoreId) return;
     try {
-      await bookmarkApi.putStarred(selectedStoreId, bookmarkId, { isStarred: isStarred });
+      await bookmarkApi.putStarred(selectedStoreId, bookmarkId, { isStarred: !isStarred });
       setTargetBookmarkId(null);
       await queryClient.invalidateQueries({
         queryKey: [queryKeys.ceo.bookmark.list],

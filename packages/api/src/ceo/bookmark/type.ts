@@ -20,7 +20,7 @@ export const StoreBookmark = z.object({
   verifiedCount: z.number(),
   address: z.string().nullable(),
   addressDetail: z.string().nullable(),
-  isStarred: z.boolean().nullable(),
+  isStarred: z.boolean(),
   createdAt: z.string(),
 });
 export type StoreBookmark = z.infer<typeof StoreBookmark>;
