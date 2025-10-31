@@ -1,6 +1,6 @@
 'use client';
 import Image from 'next/image';
-import { useState } from 'react';
+import { useMemo, useCallback, useState } from 'react';
 
 import { bookmarkApi, BookmarkSortType, StoreBookmark } from '@repo/api/ceo';
 import { queryKeys } from '@repo/api/configs/query-keys';
@@ -11,13 +11,14 @@ import {
   Pagination,
 } from '@repo/design-system/components/ceo';
 import { StarIcon, EllipsisVerticalIcon } from '@repo/design-system/icons';
-import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useQuery, useQueryClient, useMutation, keepPreviousData } from '@tanstack/react-query';
 import type { ColumnDef, PaginationState } from '@tanstack/react-table';
 
 import ConfirmModal from '@/components/ConfirmModal';
 import { useSelectedStoreId } from '@/hooks/useSelectedStoreId';
 import { getDaysSince } from '@/utils/date';
 
+// TODO 리뷰페이지에서 활용하는 ProfileImage 와 재사용화 예정
 const ProfileImage = () => (
   <svg width='68' height='68' viewBox='0 0 68 68' fill='none' xmlns='http://www.w3.org/2000/svg'>
     <rect width='68' height='68' rx='34' fill='#F1F3F5' />
@@ -52,7 +53,13 @@ const FavoritePage = () => {
   const [targetBookmarkId, setTargetBookmarkId] = useState<number | null>(null);
 
   const { data: bookmarkList } = useQuery({
-    queryKey: [queryKeys.ceo.bookmark.list, selectedStoreId, pagination, sortOrder],
+    queryKey: [
+      queryKeys.ceo.bookmark.list,
+      selectedStoreId,
+      pagination.pageIndex,
+      pagination.pageSize,
+      sortOrder,
+    ],
     queryFn: () =>
       bookmarkApi.get(selectedStoreId || 0, {
         searchString: '',
@@ -61,111 +68,122 @@ const FavoritePage = () => {
         sortType: sortOrder,
       }),
     enabled: !!selectedStoreId && isInitialized,
+    placeholderData: keepPreviousData,
   });
 
-  const handleDelete = async () => {
-    if (!selectedStoreId || !targetBookmarkId) return;
-    try {
-      await bookmarkApi.delete(selectedStoreId, targetBookmarkId);
+  const deleteBookmark = useMutation({
+    mutationFn: (bookmarkId: number) => bookmarkApi.delete(selectedStoreId!, bookmarkId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [queryKeys.ceo.bookmark.list, selectedStoreId] });
       setConfirmOpen(false);
       setTargetBookmarkId(null);
-      // 리스트 갱신
-      await queryClient.invalidateQueries({
-        queryKey: [queryKeys.ceo.bookmark.list],
-      });
-    } catch (err) {
-      console.error('삭제 실패:', err);
-    }
-  };
+    },
+    onError: (err) => console.error('삭제 실패:', err),
+  });
 
-  const handleStarButton = async (bookmarkId: number, isStarred: boolean) => {
-    if (!selectedStoreId) return;
-    try {
-      await bookmarkApi.putStarred(selectedStoreId, bookmarkId, { isStarred: !isStarred });
+  const putStarBookmark = useMutation({
+    mutationFn: ({ bookmarkId, isStarred }: { bookmarkId: number; isStarred: boolean }) =>
+      bookmarkApi.putStarred(selectedStoreId!, bookmarkId, { isStarred: !isStarred }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: [queryKeys.ceo.bookmark.list, selectedStoreId],
+      });
       setTargetBookmarkId(null);
-      await queryClient.invalidateQueries({
-        queryKey: [queryKeys.ceo.bookmark.list],
-      });
-    } catch (err) {
-      console.error('별 버튼 클릭', err);
-    }
+    },
+    onError: (err) => console.error('즐겨찾기 실패:', err),
+  });
+
+  const handleDelete = () => {
+    if (targetBookmarkId) deleteBookmark.mutate(targetBookmarkId);
   };
 
-  const columns: ColumnDef<StoreBookmark>[] = [
-    {
-      header: '',
-      id: 'actions-starring',
-      size: 68,
-      cell: ({ row }) => (
-        <StarIcon
-          size={24}
-          color={row.original.isStarred ? '#FFD83D' : '#E2DFDF'}
-          fill={row.original.isStarred ? '#FFD83D' : '#E2DFDF'}
-          stroke={row.original.isStarred ? '#FFD83D' : '#E2DFDF'}
-          onClick={() => handleStarButton(row.original.id, row.original.isStarred)}
-        />
-      ),
+  const handleStarButton = useCallback(
+    (bookmarkId: number, isStarred: boolean) => {
+      if (bookmarkId && isStarred) putStarBookmark.mutate({ bookmarkId, isStarred });
     },
-    {
-      header: '',
-      id: 'image',
-      size: 68,
-      cell: ({ row }) =>
-        row.original.profileImage ? (
-          <Image src={row.original.profileImage} alt='profile image' width={68} height={68} />
-        ) : (
-          <ProfileImage />
+    [putStarBookmark],
+  );
+
+  const columns = useMemo<ColumnDef<StoreBookmark>[]>(
+    () => [
+      {
+        header: '',
+        id: 'actions-starring',
+        size: 68,
+        cell: ({ row }) => (
+          <StarIcon
+            size={24}
+            color={row.original.isStarred ? '#FFD83D' : '#E2DFDF'}
+            fill={row.original.isStarred ? '#FFD83D' : '#E2DFDF'}
+            stroke={row.original.isStarred ? '#FFD83D' : '#E2DFDF'}
+            onClick={() => handleStarButton(row.original.id, row.original.isStarred)}
+          />
         ),
-    },
-    {
-      accessorKey: 'nickname',
-      header: () => <div className='text-left'>닉네임</div>,
-      size: 300,
-      cell: ({ getValue }) => <div>{getValue<string>()}</div>,
-    },
-    {
-      header: '지역',
-      accessorKey: 'address',
-      cell: ({ getValue }) => <div className='text-center'>{getValue<string>()}</div>,
-    },
-    {
-      header: '인증',
-      cell: ({ row }) => (
-        <div className='text-center'>{row.original.verifiedCount.toLocaleString()}</div>
-      ),
-    },
-    {
-      header: '기간',
-      cell: ({ row }) => <div className='text-center'>{getDaysSince(row.original.createdAt)}</div>,
-    },
-    {
-      header: '',
-      id: 'actions-dropdown',
-      size: 68,
-      cell: ({ row }) => (
-        <div className='flex justify-center'>
-          <DropdownMenu>
-            <DropdownMenu.Trigger asChild>
-              <button className='size-6 flex justify-center items-center cursor-pointer'>
-                <EllipsisVerticalIcon className='size-5' />
-              </button>
-            </DropdownMenu.Trigger>
-            <DropdownMenu.Content side='left'>
-              <DropdownMenu.Item
-                variant='danger'
-                onClick={() => {
-                  setTargetBookmarkId(row.original.id);
-                  setConfirmOpen(true);
-                }}
-              >
-                삭제
-              </DropdownMenu.Item>
-            </DropdownMenu.Content>
-          </DropdownMenu>
-        </div>
-      ),
-    },
-  ];
+      },
+      {
+        header: '',
+        id: 'image',
+        size: 68,
+        cell: ({ row }) =>
+          row.original.profileImage ? (
+            <Image src={row.original.profileImage} alt='profile image' width={68} height={68} />
+          ) : (
+            <ProfileImage />
+          ),
+      },
+      {
+        accessorKey: 'nickname',
+        header: () => <div className='text-left'>닉네임</div>,
+        size: 300,
+        cell: ({ getValue }) => <div>{getValue<string>()}</div>,
+      },
+      {
+        header: '지역',
+        accessorKey: 'address',
+        cell: ({ getValue }) => <div className='text-center'>{getValue<string>()}</div>,
+      },
+      {
+        header: '인증',
+        cell: ({ row }) => (
+          <div className='text-center'>{row.original.verifiedCount.toLocaleString()}</div>
+        ),
+      },
+      {
+        header: '기간',
+        cell: ({ row }) => (
+          <div className='text-center'>{getDaysSince(row.original.createdAt)}</div>
+        ),
+      },
+      {
+        header: '',
+        id: 'actions-dropdown',
+        size: 68,
+        cell: ({ row }) => (
+          <div className='flex justify-center'>
+            <DropdownMenu>
+              <DropdownMenu.Trigger asChild>
+                <button className='size-6 flex justify-center items-center cursor-pointer'>
+                  <EllipsisVerticalIcon className='size-5' />
+                </button>
+              </DropdownMenu.Trigger>
+              <DropdownMenu.Content side='left'>
+                <DropdownMenu.Item
+                  variant='danger'
+                  onClick={() => {
+                    setTargetBookmarkId(row.original.id);
+                    setConfirmOpen(true);
+                  }}
+                >
+                  삭제
+                </DropdownMenu.Item>
+              </DropdownMenu.Content>
+            </DropdownMenu>
+          </div>
+        ),
+      },
+    ],
+    [handleStarButton],
+  );
 
   return (
     <div className='space-y-4'>
