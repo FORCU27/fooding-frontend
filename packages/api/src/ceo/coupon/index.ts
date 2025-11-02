@@ -7,6 +7,9 @@ import {
   CouponSchema,
   GetCouponUsageParams,
   GetCouponUsageResponse,
+  GiftCouponBody,
+  SearchUserParams,
+  SearchUserResponse,
 } from './type';
 import { api } from '../../shared';
 
@@ -79,6 +82,17 @@ export const couponApiV2 = {
     const response = await api.get<GetCouponUsageResponse>(`${ENDPOINT}/${couponId}/usages`, {
       params,
     });
+    return response.data;
+  },
+
+  // 쿠폰 선물
+  giftCoupon: async (body: GiftCouponBody): Promise<void> => {
+    await api.post('/ceo/user-coupons/gift', body);
+  },
+
+  // 고객 검색 (단골 고객)
+  searchUsers: async (params: SearchUserParams): Promise<SearchUserResponse['data']> => {
+    const response = await api.get<SearchUserResponse>('/ceo/users/search', { params });
     return response.data;
   },
 };
