@@ -53,11 +53,18 @@ export const queryKeys = {
       update: 'ceoCouponUpdate',
       delete: 'ceoCouponDelete',
       usages: 'ceoCouponUsages',
+      gift: 'ceoCouponGift',
+    },
+    user: {
+      search: 'ceoUserSearch',
     },
     pointShop: {
       list: 'ceoStoreGetPointShopList',
       detail: 'ceoStoreGetPointShopDetail',
       status: 'ceoStoreGetPointShopStatus',
+    },
+    bookmark: {
+      list: 'ceoBookmarkList',
     },
     review: 'ceoReviewList',
   },
