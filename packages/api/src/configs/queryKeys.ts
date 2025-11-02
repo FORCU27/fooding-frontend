@@ -63,6 +63,9 @@ export const queryKeys = {
       detail: 'ceoStoreGetPointShopDetail',
       status: 'ceoStoreGetPointShopStatus',
     },
+    bookmark: {
+      list: 'ceoBookmarkList',
+    },
   },
   pos: {},
   user: {
