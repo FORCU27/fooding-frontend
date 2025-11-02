@@ -15,7 +15,7 @@ import { useQuery, useQueryClient, useMutation, keepPreviousData } from '@tansta
 import type { ColumnDef, PaginationState } from '@tanstack/react-table';
 
 import ConfirmModal from '@/components/ConfirmModal';
-import { useSelectedStoreId } from '@/hooks/useSelectedStoreId';
+import { useStore } from '@/context/StoreContext';
 import { getDaysSince } from '@/utils/date';
 
 // TODO 리뷰페이지에서 활용하는 ProfileImage 와 재사용화 예정
@@ -41,7 +41,8 @@ const ProfileImage = () => (
 
 const FavoritePage = () => {
   const queryClient = useQueryClient();
-  const { selectedStoreId, isInitialized } = useSelectedStoreId();
+  const { storeId } = useStore();
+  const selectedStoreId = Number(storeId);
 
   const [sortOrder, setSortOrder] = useState<BookmarkSortType>('RECENT');
   const [pagination, setPagination] = useState<PaginationState>({
@@ -55,7 +56,7 @@ const FavoritePage = () => {
   const { data: bookmarkList } = useQuery({
     queryKey: [
       queryKeys.ceo.bookmark.list,
-      selectedStoreId,
+      storeId,
       pagination.pageIndex,
       pagination.pageSize,
       sortOrder,
@@ -67,12 +68,12 @@ const FavoritePage = () => {
         pageSize: pagination.pageSize,
         sortType: sortOrder,
       }),
-    enabled: !!selectedStoreId && isInitialized,
+    enabled: !!storeId,
     placeholderData: keepPreviousData,
   });
 
   const deleteBookmark = useMutation({
-    mutationFn: (bookmarkId: number) => bookmarkApi.delete(selectedStoreId!, bookmarkId),
+    mutationFn: (bookmarkId: number) => bookmarkApi.delete(selectedStoreId, bookmarkId),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [queryKeys.ceo.bookmark.list, selectedStoreId] });
       setConfirmOpen(false);
