@@ -1,4 +1,3 @@
-import { Button } from '@repo/design-system/components/ceo';
 import { StarIcon } from '@repo/design-system/icons';
 
 export interface ReviewCardProps {
@@ -7,16 +6,17 @@ export interface ReviewCardProps {
   rating?: number;
   content: string;
   images?: string[];
-  onReplyClick?: () => void;
+  children?: React.ReactNode;
 }
 
-interface ReviewCardActionsProps {
-  onReplyClick?: () => void;
-  isReplied?: boolean;
-}
-
-const ProfileImage = () => (
-  <svg width='40' height='40' viewBox='0 0 40 40' fill='none' xmlns='http://www.w3.org/2000/svg'>
+export const ProfileImage = ({ size = 40 }: { size: number }) => (
+  <svg
+    width={size}
+    height={size}
+    viewBox='0 0 40 40'
+    fill='none'
+    xmlns='http://www.w3.org/2000/svg'
+  >
     <circle cx='20' cy='20' r='20' fill='#F1F3F5' />
     <path
       d='M19.9979 23C16.8278 23 14.0087 24.5306 12.2139 26.906C11.8276 27.4172 11.6345 27.6728 11.6408 28.0183C11.6457 28.2852 11.8133 28.6219 12.0233 28.7867C12.2951 29 12.6718 29 13.4251 29H26.5707C27.324 29 27.7007 29 27.9725 28.7867C28.1825 28.6219 28.3501 28.2852 28.355 28.0183C28.3613 27.6728 28.1682 27.4172 27.7819 26.906C25.9871 24.5306 23.168 23 19.9979 23Z'
@@ -35,14 +35,14 @@ const ProfileImage = () => (
   </svg>
 );
 
-const ReviewCard = ({ author, date, rating, content, images, onReplyClick }: ReviewCardProps) => {
+const ReviewCard = ({ author, date, rating, content, images, children }: ReviewCardProps) => {
   return (
     <div className='flex flex-col items-center gap-[20px]'>
       <div className='rounded-[20px] shadow-[0_0_2px_rgba(0,0,0,0.06),0_0_3px_rgba(0,0,0,0.1)] pt-[32px] px-[32px] pb-[40px] bg-white'>
         <ReviewCard.Header author={author} date={date} rating={rating} />
         <ReviewCard.Content content={content} images={images} />
+        {children}
       </div>
-      <ReviewCard.Actions onReplyClick={onReplyClick} />
     </div>
   );
 };
@@ -96,16 +96,7 @@ const ReviewCardContent = ({ content }: any) => (
   </div>
 );
 
-const ReviewCardActions = ({ onReplyClick, isReplied = false }: ReviewCardActionsProps) => (
-  <div>
-    <Button className='subtitle-5' onClick={onReplyClick}>
-      {isReplied ? '수정하기' : '답글쓰기'}
-    </Button>
-  </div>
-);
-
 ReviewCard.Header = ReviewCardHeader;
 ReviewCard.Content = ReviewCardContent;
-ReviewCard.Actions = ReviewCardActions;
 
 export { ReviewCard };
