@@ -2,6 +2,7 @@ import { z } from 'zod';
 
 export const ReviewSortType = z.enum(['RECENT', 'REVIEW']);
 export const SortDirection = z.enum(['ASCENDING', 'DESCENDING']);
+export const PurposeType = z.enum(['MEETING', 'DATE', 'FRIEND', 'FAMILY', 'BUSINESS', 'PARTY']);
 
 export const UserRetrieveReviewRequest = z.object({
   sortType: ReviewSortType,
@@ -22,7 +23,7 @@ export const UserReviewResponse = z.object({
     mood: z.number(),
     service: z.number(),
   }),
-  purpose: z.string(),
+  purpose: PurposeType,
   likeCount: z.number(),
   userReviewCount: z.number(),
   createdAt: z.string(),
@@ -54,3 +55,4 @@ export type GetMyReviewListData = z.infer<typeof GetMyReviewListData>;
 export type GetMyReviewListResponse = z.infer<typeof GetMyReviewListResponse>;
 export type ReviewSortType = z.infer<typeof ReviewSortType>;
 export type SortDirection = z.infer<typeof SortDirection>;
+export type PurposeType = z.infer<typeof PurposeType>;
