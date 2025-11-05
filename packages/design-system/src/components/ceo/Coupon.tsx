@@ -8,10 +8,10 @@ type CouponProps = {
   title: string;
   period: string;
   statuses: CouponStatus[];
-  receivedCount: number;
-  purchaseCount: number;
-  usedCount: number;
-  canceledCount: number;
+  receivedCount?: number;
+  purchaseCount?: number;
+  usedCount?: number;
+  canceledCount?: number;
   details?: ReactNode;
   isActive?: boolean;
   className?: string;
@@ -33,6 +33,12 @@ const Coupon = ({
     '단골 전용': 'bg-[#FF2B3D1A] text-primary-pink',
     발급중: 'bg-[#0080F81A] text-[#0080F8]',
   };
+
+  const showCounts =
+    receivedCount !== undefined ||
+    purchaseCount !== undefined ||
+    usedCount !== undefined ||
+    canceledCount !== undefined;
 
   return (
     <div
@@ -63,24 +69,26 @@ const Coupon = ({
             <h3 className='mb-1 text-xl font-semibold text-gray-900'>{title}</h3>
             <p className='text-sm text-gray-5'>{period}</p>
           </div>
-          <div className='ml-6 grid grid-cols-4 gap-6 text-center'>
-            <div>
-              <p className='text-base text-gray-5 whitespace-nowrap'>총 발급수</p>
-              <p className='mt-1 text-xl font-semibold text-black'>{receivedCount}</p>
+          {showCounts && (
+            <div className='ml-6 grid grid-cols-4 gap-6 text-center'>
+              <div>
+                <p className='text-base text-gray-5 whitespace-nowrap'>총 발급수</p>
+                <p className='mt-1 text-xl font-semibold text-black'>{receivedCount ?? 0}</p>
+              </div>
+              <div>
+                <p className='text-base text-gray-5 whitespace-nowrap'>구매 수량</p>
+                <p className='mt-1 text-xl font-semibold text-black'>{purchaseCount ?? 0}</p>
+              </div>
+              <div>
+                <p className='text-base text-gray-5 whitespace-nowrap'>사용 수량</p>
+                <p className='mt-1 text-xl font-semibold text-black'>{usedCount ?? 0}</p>
+              </div>
+              <div>
+                <p className='text-base text-gray-5 whitespace-nowrap'>남은 수량</p>
+                <p className='mt-1 text-xl font-semibold text-black'>{canceledCount ?? 0}</p>
+              </div>
             </div>
-            <div>
-              <p className='text-base text-gray-5 whitespace-nowrap'>구매 수량</p>
-              <p className='mt-1 text-xl font-semibold text-black'>{purchaseCount}</p>
-            </div>
-            <div>
-              <p className='text-base text-gray-5 whitespace-nowrap'>사용 수량</p>
-              <p className='mt-1 text-xl font-semibold text-black'>{usedCount}</p>
-            </div>
-            <div>
-              <p className='text-base text-gray-5 whitespace-nowrap'>남은 수량</p>
-              <p className='mt-1 text-xl font-semibold text-black'>{canceledCount}</p>
-            </div>
-          </div>
+          )}
         </div>
 
         {details && (
