@@ -173,4 +173,4 @@ const PointListPage = () => {
   );
 };
 
-export default PointListPage;
+export default FavoritePage;

@@ -104,7 +104,7 @@ const CouponEditPage = () => {
             : 'FIXED'
           : 'FIXED', // 필수값이므로 기본값 설정
       provideType: formData.couponUsageType === 'regular' ? 'REGULAR_CUSTOMER' : 'ALL',
-      name: formData.couponName,
+      name: formData.couponName || '',
       conditions: formData.usageConditions || '',
       totalQuantity:
         formData.issueType === 'limited' && formData.issueCount
