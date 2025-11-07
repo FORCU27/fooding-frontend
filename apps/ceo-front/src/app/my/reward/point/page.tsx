@@ -9,7 +9,7 @@ import type { ColumnDef, PaginationState } from '@tanstack/react-table';
 import { useStoreRewardHistory } from '@/hooks/reward/useStoreRewardHistory';
 import { useSelectedStoreId } from '@/hooks/useSelectedStoreId';
 
-const PointListPage = () => {
+export default function PointListPage() {
   const { selectedStoreId, isLoading: isLoadingStoreId } = useSelectedStoreId();
   const [sortOrder, setSortOrder] = useState<'RECENT' | 'OLD'>('RECENT');
 
@@ -171,6 +171,4 @@ const PointListPage = () => {
       )}
     </div>
   );
-};
-
-export default FavoritePage;
+}
