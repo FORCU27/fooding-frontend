@@ -50,17 +50,21 @@ const PointListPage = () => {
 
   const columns: ColumnDef<CeoRewardHistoryResponse>[] = [
     {
-      header: '번호',
+      header: () => <div className='text-left text-body-2'>번호</div>,
       accessorKey: 'phoneNumber',
+      size: 300,
       cell: ({ row }) => (
-        <span className='text-sm text-gray-900'>{formatPhoneNumber(row.original.phoneNumber)}</span>
+        <span className='text-body-2 text-gray-900'>
+          {formatPhoneNumber(row.original.phoneNumber)}
+        </span>
       ),
     },
     {
-      header: '포인트',
+      header: () => <div className='text-left text-body-2'>포인트</div>,
       accessorKey: 'target',
+      size: 100,
       cell: ({ row }) => (
-        <span className='text-sm font-medium text-gray-900'>{row.original.target} P</span>
+        <span className='text-body-2 font-medium text-gray-900'>{row.original.target} P</span>
       ),
     },
     // {
@@ -69,14 +73,16 @@ const PointListPage = () => {
     //   cell: ({ row }) => <span className='text-sm text-gray-900'>{row.original.rewardType}</span>,
     // },
     {
-      header: '채널',
+      header: () => <div className='text-left text-body-2'>채널</div>,
       accessorKey: 'channel',
-      cell: ({ row }) => <span className='text-sm text-gray-900'>{row.original.channel}</span>,
+      size: 80,
+      cell: ({ row }) => <span className='text-body-2 text-gray-900'>{row.original.channel}</span>,
     },
     {
-      header: '종류',
+      header: () => <div className='text-left text-body-2'>종류</div>,
       accessorKey: 'category',
-      cell: ({ row }) => <span className='text-sm text-gray-900'>{row.original.category}</span>,
+      size: 80,
+      cell: ({ row }) => <span className='text-body-2 text-gray-900'>{row.original.category}</span>,
     },
     // {
     //   header: '작업',
@@ -84,12 +90,17 @@ const PointListPage = () => {
     //   cell: ({ row }) => <span className='text-sm text-gray-900'>{row.original.operation}</span>,
     // },
     {
-      header: '적립시간',
+      header: () => <div className='text-left text-body-2'>적립시간</div>,
       accessorKey: 'createdAt',
+      size: 120,
       cell: ({ row }) => (
         <div className='text-right'>
-          <div className='text-sm text-gray-900'>{formatDate(row.original.createdAt)}</div>
-          <div className='text-sm text-gray-500'>{formatTime(row.original.createdAt)}</div>
+          <div className='text-sm text-gray-900 text-body-2'>
+            {formatDate(row.original.createdAt)}
+          </div>
+          <div className='text-sm text-gray-500 text-body-2'>
+            {formatTime(row.original.createdAt)}
+          </div>
         </div>
       ),
     },
