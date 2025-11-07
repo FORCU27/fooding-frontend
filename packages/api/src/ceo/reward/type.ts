@@ -23,3 +23,9 @@ export const GetCeoRewardHistoryListResponse = ApiResponse(
 );
 
 export type GetCeoRewardHistoryListResponse = z.infer<typeof GetCeoRewardHistoryListResponse>;
+
+// 리워드 히스토리 조회 파라미터
+export type GetStoreRewardHistoryParams = {
+  storeId: number;
+  sortType?: 'RECENT' | 'OLD';
+};

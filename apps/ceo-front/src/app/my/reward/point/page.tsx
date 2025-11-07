@@ -11,16 +11,17 @@ import { useSelectedStoreId } from '@/hooks/useSelectedStoreId';
 
 const PointListPage = () => {
   const { selectedStoreId, isLoading: isLoadingStoreId } = useSelectedStoreId();
+  const [sortOrder, setSortOrder] = useState<'RECENT' | 'OLD'>('RECENT');
+
   const { data: rewardHistoryResponse, isLoading: isLoadingHistory } = useStoreRewardHistory(
     selectedStoreId || 0,
+    sortOrder,
   );
 
   const [pagination, setPagination] = useState<PaginationState>({
     pageIndex: 0,
     pageSize: 10,
   });
-
-  const [sortOrder, setSortOrder] = useState<'RECENT' | 'OLD'>('RECENT');
 
   // 전화번호 마스킹 처리 (010 **** 0000)
   const formatPhoneNumber = (phoneNumber: string) => {
@@ -126,14 +127,6 @@ const PointListPage = () => {
 
   const rewardList = rewardHistoryResponse?.data ?? [];
 
-  // 정렬 적용된 데이터
-  const sortedData = [...rewardList].sort((a, b) => {
-    if (sortOrder === 'RECENT') {
-      return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
-    }
-    return new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
-  });
-
   return (
     <div className='space-y-5'>
       <div className='flex justify-between items-center mb-6'>
@@ -154,7 +147,7 @@ const PointListPage = () => {
         </div>
         <DataTable
           columns={columns}
-          data={sortedData}
+          data={rewardList}
           emptyRenderer='적립 내역이 없습니다.'
           options={{
             manualPagination: true,
@@ -162,16 +155,16 @@ const PointListPage = () => {
               pagination,
             },
             onPaginationChange: setPagination,
-            pageCount: Math.ceil(sortedData.length / pagination.pageSize),
+            pageCount: Math.ceil(rewardList.length / pagination.pageSize),
           }}
         />
       </div>
 
-      {sortedData.length > 0 && (
+      {rewardList.length > 0 && (
         <div className='flex justify-center mt-4'>
           <Pagination
             page={pagination.pageIndex + 1}
-            total={Math.ceil(sortedData.length / pagination.pageSize)}
+            total={Math.ceil(rewardList.length / pagination.pageSize)}
             onChange={(page) => setPagination((prev) => ({ ...prev, pageIndex: page - 1 }))}
           />
         </div>
