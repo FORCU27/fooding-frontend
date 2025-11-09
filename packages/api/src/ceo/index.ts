@@ -8,5 +8,6 @@ export * from './menu-board';
 export * from './store-information';
 export * from './coupon';
 export * from './post';
+export * from './reward';
 export * from './bookmark';
 export * from './users';
