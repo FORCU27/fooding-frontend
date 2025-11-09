@@ -88,7 +88,7 @@ const NewsPage = () => {
     <div className='space-y-4'>
       <div className='headline-2'>소식</div>
       <div className='flex justify-end'>
-        <Button className='w-fit' onClick={() => router.push('/my/reward/news/create')}>
+        <Button className='w-fit' onClick={() => router.push('/my/regular/news/create')}>
           소식작성
         </Button>
       </div>
