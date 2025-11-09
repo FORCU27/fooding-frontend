@@ -1,0 +1,241 @@
+import Image from 'next/image';
+import { useState } from 'react';
+
+import { Review, StoreInfo } from '@repo/api/user';
+import { BottomSheet, Button, Dialog, toast } from '@repo/design-system/components/b2c';
+import { FoodingIcon, HeartIcon } from '@repo/design-system/icons';
+import { useFlow } from '@stackflow/react/future';
+import { overlay } from 'overlay-kit';
+
+import { ImageGallery } from '@/components/ImageGallery';
+import { StarRating } from '@/components/Store/StarRating';
+import { useDeleteStoreReview } from '@/hooks/store/useDeleteStoreReview';
+import { useGetStoreInfo } from '@/hooks/store/useGetStoreInfo';
+import { isNonEmptyArray } from '@/utils/array';
+import { formatDotDate } from '@/utils/date';
+
+interface MyReviewCardProps {
+  review: Review;
+  storeId: number;
+}
+
+export const MyReviewCard = ({ review, storeId }: MyReviewCardProps) => {
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [isBottomSheetOpen, setIsBottomSheetOpen] = useState(false);
+
+  const storeInfoQuery = useGetStoreInfo(storeId ? Number(storeId) : undefined);
+  const storeInfo = storeInfoQuery.data;
+
+  const flow = useFlow();
+
+  const { imageUrls } = review;
+
+  const deleteStoreReview = useDeleteStoreReview();
+
+  const onDeleteButtonClick = () => {
+    if (deleteStoreReview.isPending) return;
+
+    deleteStoreReview.mutate(review.reviewId, {
+      onSuccess: () => {
+        setIsDialogOpen(false);
+        flow.pop();
+        toast.success('삭제가 완료되었습니다.');
+      },
+      onError: () => {
+        toast.error('에러가 발생했습니다. 잠시 후 다시 시도해주세요.');
+      },
+    });
+  };
+
+  const onImageClick = (imageIndex: number) => {
+    overlay.open(({ isOpen, close }) => (
+      <ImageGallery
+        isOpen={isOpen}
+        onClose={close}
+        imageUrls={imageUrls}
+        title={storeInfo?.name || ''}
+        initialPage={imageIndex + 1}
+      />
+    ));
+  };
+
+  return (
+    <div className='flex flex-col w-full'>
+      <div className='flex justify-between'>
+        <div className='flex'>
+          <div className='mr-3'>
+            {storeInfo?.images?.[0]?.imageUrl ? (
+              <Image
+                src={storeInfo?.images[0]?.imageUrl}
+                alt='프로필 이미지'
+                width={48}
+                height={48}
+                className='w-10 h-10 object-cover rounded-md'
+              />
+            ) : (
+              <div className='flex justify-center items-center w-10 h-10 rounded-full bg-gray-1'>
+                <FoodingIcon width={25} height={28} color='rgba(17, 17, 17, 0.1)' />
+              </div>
+            )}
+          </div>
+
+          <div className='flex flex-col'>
+            <div className='flex items-center'>
+              <p className='subtitle-5 mr-2'>{storeInfo?.name || '가게정보가 없습니다.'}</p>
+            </div>
+            <div className='flex gap-2'>
+              <StarRating score={review.score.total} />
+              <p className='body-8 text-gray-5'>{formatDotDate(review.createdAt)}</p>
+            </div>
+          </div>
+        </div>
+
+        <div className='flex justify-center items-center w-[42px] h-[22px] rounded-[4px] bg-[rgba(255,43,61,0.1)]'>
+          <span className='body-7 text-primary-pink'>BEST</span>
+        </div>
+      </div>
+
+      <div className='flex flex-col'>
+        <p className='my-4 body-8 text-gray-5'>{review.content}</p>
+        {imageUrls.length > 0 && (
+          <div className='flex overflow-x-auto scrollbar-hide gap-3'>
+            {imageUrls.map((url, idx) => (
+              <button key={idx} onClick={() => onImageClick(idx)}>
+                <Image
+                  width={140}
+                  height={140}
+                  src={url}
+                  alt={`리뷰이미지_${idx}`}
+                  className='size-[140px] rounded-2xl shrink-0 object-cover'
+                />
+              </button>
+            ))}
+          </div>
+        )}
+      </div>
+
+      <div className='flex justify-between items-center mt-3 gap-5'>
+        <div className='flex gap-2'>
+          <HeartIcon size={12} />
+          <span className='body-7 text-gray-6'>{review.likeCount}</span>
+        </div>
+        <button
+          type='button'
+          onClick={() => setIsBottomSheetOpen(true)}
+          className='w-6 h-6 hover:bg-gray-1 rounded-xl'
+        >
+          <DotsHorizontalIcon />
+        </button>
+      </div>
+
+      <BottomSheet open={isBottomSheetOpen} onOpenChange={setIsBottomSheetOpen}>
+        <BottomSheet.Content>
+          <BottomSheet.Header>
+            <BottomSheet.Title className='headline-3'>리뷰관리</BottomSheet.Title>
+          </BottomSheet.Header>
+          <BottomSheet.Body>
+            <div className='p-5 gap-3 rounded-xl bg-gray-1'>
+              {storeInfo && <StoreCard store={storeInfo} review={review} />}
+            </div>
+            <div className='flex flex-col gap-4 px-5 mt-4 mb-5'>
+              <button
+                className='text-left'
+                type='button'
+                onClick={() => {
+                  flow.push('ReviewModifyScreen', { review });
+                  setIsBottomSheetOpen(false);
+                }}
+              >
+                수정
+              </button>
+              <button
+                className='text-error-red text-left'
+                type='button'
+                onClick={() => setIsDialogOpen(true)}
+              >
+                삭제
+              </button>
+
+              <Dialog open={isDialogOpen}>
+                <Dialog.Content className='p-5'>
+                  <Dialog.Title className='text-center'>리뷰 삭제</Dialog.Title>
+                  <Dialog.Body className='flex flex-col text-center py-10'>
+                    <p className='subtitle-1'>리뷰를 삭제하시겠습니까?</p>
+                    <p className='body-6 text-gray-5'>한번 삭제하면 복구할 수 없어요!</p>
+                    <div className='p-5 gap-3 rounded-xl bg-gray-1 mt-10'>
+                      {storeInfo ? (
+                        <StoreCard review={review} store={storeInfo} />
+                      ) : (
+                        <p>가게 정보가 없습니다.</p>
+                      )}
+                    </div>
+                  </Dialog.Body>
+                  <Dialog.Footer className='gap-4'>
+                    <Dialog.Close asChild>
+                      <Button
+                        className='w-[136px]'
+                        variant='outlined'
+                        onClick={() => setIsDialogOpen(false)}
+                      >
+                        취소
+                      </Button>
+                    </Dialog.Close>
+                    <Button type='button' onClick={onDeleteButtonClick}>
+                      삭제하기
+                    </Button>
+                  </Dialog.Footer>
+                </Dialog.Content>
+              </Dialog>
+            </div>
+          </BottomSheet.Body>
+        </BottomSheet.Content>
+      </BottomSheet>
+    </div>
+  );
+};
+
+export const StoreCard = ({ review, store }: { review: Review; store?: StoreInfo }) => {
+  return (
+    <div className='flex gap-3 items-center'>
+      {store?.images && isNonEmptyArray(store.images) ? (
+        <div className='flex justify-center items-center w-[48px] h-[48px]'>
+          <Image
+            src={store.images[0].imageUrl}
+            alt='스토어 이미지'
+            width={56}
+            height={56}
+            className='w-full h-full object-cover rounded-lg'
+          />
+        </div>
+      ) : (
+        <div className='flex justify-center items-center w-[48px] h-[48px] rounded-lg bg-white'>
+          <FoodingIcon className='text-gray-2' />
+        </div>
+      )}
+      <div className='flex flex-col'>
+        <p className='subtitle-4 text-left'>{store?.name}</p>
+        <div className='flex items-center gap-2'>
+          <StarRating score={review.score.total} />
+          <p className='body-8 text-gray-5'>{formatDotDate(review.createdAt)}</p>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export const DotsHorizontalIcon = () => (
+  <svg width='24' height='24' viewBox='0 0 24 24' fill='none' xmlns='http://www.w3.org/2000/svg'>
+    {[12, 19, 5].map((cx, i) => (
+      <circle
+        key={i}
+        cx={cx}
+        cy='12'
+        r='1'
+        stroke='black'
+        strokeWidth='2'
+        strokeLinecap='round'
+        strokeLinejoin='round'
+      />
+    ))}
+  </svg>
+);
