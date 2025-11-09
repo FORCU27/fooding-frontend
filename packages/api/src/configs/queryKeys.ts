@@ -20,6 +20,12 @@ export const queryKeys = {
     me: 'ceoMe',
     devices: 'ceoDevices',
     notifications: 'ceoNotifications',
+    device: {
+      logs: 'ceoDeviceLogs',
+    },
+    reward: {
+      history: 'ceoRewardHistory',
+    },
     store: {
       selectedStore: 'ceoSelectedStore',
       storeList: 'ceoStoreList',

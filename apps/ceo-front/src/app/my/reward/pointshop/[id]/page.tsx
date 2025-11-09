@@ -41,6 +41,11 @@ const PointShopInfoPage = () => {
           purchaseCount={pointShopItem.issuedQuantity}
           receivedCount={pointShopItem.totalQuantity}
           registrationDate={formatDate(pointShopItem.createdAt, { format: 'dot' }) || '-'}
+          dateRange={
+            pointShopItem.issueStartOn && pointShopItem.issueEndOn
+              ? `${pointShopItem.issueStartOn} ~ ${pointShopItem.issueEndOn}`
+              : undefined
+          }
           status={pointShopItem.isActive ? '발급중' : '발급중지'}
           title={pointShopItem.name}
           usedCount={0}

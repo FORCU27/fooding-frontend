@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import { CreateStorePointShopItemBody } from '@repo/api/ceo';
 import {
@@ -15,17 +15,20 @@ import {
   TextArea,
   CoinProduct,
   ImageUploader,
+  DatePickerWithDialog,
 } from '@repo/design-system/components/ceo';
 import { Controller, useForm } from 'react-hook-form';
 
 interface PointShopFormProps {
   originValue?: CreateStorePointShopItemBody & {
     image?: { id: string; name: string; url: string; size: number };
+    dateRange?: Date[] | null;
   };
   onSubmit: (
     data: CreateStorePointShopItemBody & {
       file?: File | null;
       image?: { id: string; name: string; url: string; size: number };
+      dateRange?: Date[] | null;
     },
   ) => void;
 }
@@ -39,21 +42,28 @@ const PointShopForm = ({ originValue, onSubmit }: PointShopFormProps) => {
     handleSubmit,
     control,
     watch,
+    setValue,
     formState: { errors },
-  } = useForm<CreateStorePointShopItemBody & { quantityLimit: boolean }>({
-    mode: 'onSubmit',
-    defaultValues: {
-      name: originValue?.name || '',
-      point: originValue?.point || 0,
-      provideType: originValue?.provideType || 'ALL',
-      conditions: originValue?.conditions || '',
-      totalQuantity: originValue?.totalQuantity || 0,
-      quantityLimit: originValue ? originValue.totalQuantity > 0 : false,
-      issueStartOn: originValue?.issueStartOn || '',
-      issueEndOn: originValue?.issueEndOn || '',
-      imageId: originValue?.image?.id || '',
+  } = useForm<CreateStorePointShopItemBody & { quantityLimit: boolean; dateRange?: Date[] | null }>(
+    {
+      mode: 'onSubmit',
+      defaultValues: {
+        name: originValue?.name || '',
+        point: originValue?.point || 0,
+        provideType: originValue?.provideType || 'ALL',
+        conditions: originValue?.conditions || '',
+        totalQuantity: originValue?.totalQuantity || 0,
+        quantityLimit: originValue ? originValue.totalQuantity > 0 : false,
+        imageId: originValue?.image?.id || '',
+        dateRange:
+          originValue?.issueStartOn && originValue?.issueEndOn
+            ? [new Date(originValue.issueStartOn), new Date(originValue.issueEndOn)]
+            : null,
+        issueStartOn: originValue?.issueStartOn ?? null,
+        issueEndOn: originValue?.issueEndOn ?? null,
+      },
     },
-  });
+  );
 
   const dataURLtoFile = (dataurl: string, filename = 'upload.png') => {
     const arr = dataurl.split(',');
@@ -85,7 +95,7 @@ const PointShopForm = ({ originValue, onSubmit }: PointShopFormProps) => {
   };
 
   const handleFormSubmit = async (
-    data: CreateStorePointShopItemBody & { quantityLimit: boolean },
+    data: CreateStorePointShopItemBody & { quantityLimit: boolean; dateRange?: Date[] | null },
   ) => {
     try {
       setLoading(true);
@@ -103,6 +113,20 @@ const PointShopForm = ({ originValue, onSubmit }: PointShopFormProps) => {
   const point = Number(watch('point') ?? 0);
   const name = watch('name') ?? '';
   const conditions = watch('conditions') ?? '';
+  const issueStartOn = watch('issueStartOn');
+  const issueEndOn = watch('issueEndOn');
+
+  const dateRange = watch('dateRange');
+
+  useEffect(() => {
+    if (dateRange && dateRange.length === 2) {
+      setValue('issueStartOn', dateRange[0]?.toISOString().split('T')[0] || null);
+      setValue('issueEndOn', dateRange[1]?.toISOString().split('T')[0] || null);
+    } else {
+      setValue('issueStartOn', null);
+      setValue('issueEndOn', null);
+    }
+  }, [dateRange, setValue]);
 
   return (
     <div>
@@ -238,6 +262,61 @@ const PointShopForm = ({ originValue, onSubmit }: PointShopFormProps) => {
         </Form.Item>
 
         <Form.Item
+          label={<Form.Label>사용기한</Form.Label>}
+          error={!!errors.conditions}
+          className='bg-white rounded-2xl p-8 border border-gray-3'
+        >
+          <Form.Control>
+            <Controller
+              name='dateRange'
+              control={control}
+              render={({ field }) => {
+                const startDate = field.value?.[0] ?? null;
+                const endDate = field.value?.[1] ?? null;
+
+                return (
+                  <DatePickerWithDialog
+                    datePickerMode='range'
+                    selectedRanges={startDate && endDate ? [{ startDate, endDate }] : []}
+                    onRangeChange={(ranges) => {
+                      let updatedDates: Date[] | null = null;
+
+                      if (ranges) {
+                        if (Array.isArray(ranges) && ranges.length > 0) {
+                          const first = ranges[0];
+                          if (first?.startDate && first?.endDate) {
+                            updatedDates = [first.startDate, first.endDate];
+                          }
+                        } else if ('startDate' in ranges && 'endDate' in ranges) {
+                          updatedDates = [ranges.startDate, ranges.endDate];
+                        }
+                      }
+
+                      field.onChange(updatedDates);
+
+                      setValue(
+                        'issueStartOn',
+                        updatedDates?.[0]?.toISOString().split('T')[0] ?? null,
+                      );
+                      setValue(
+                        'issueEndOn',
+                        updatedDates?.[1]?.toISOString().split('T')[0] ?? null,
+                      );
+                    }}
+                    placeholder={
+                      startDate && endDate
+                        ? `${startDate.toLocaleDateString()} ~ ${endDate.toLocaleDateString()}`
+                        : '날짜를 선택해주세요'
+                    }
+                  />
+                );
+              }}
+            />
+          </Form.Control>
+          <Form.ErrorMessage>{errors.conditions?.message}</Form.ErrorMessage>
+        </Form.Item>
+
+        <Form.Item
           label={<Form.Label>사용조건</Form.Label>}
           error={!!errors.conditions}
           className='bg-white rounded-2xl p-8 border border-gray-3'
@@ -292,6 +371,7 @@ const PointShopForm = ({ originValue, onSubmit }: PointShopFormProps) => {
           imageAlt={name}
           purchaseCount={0}
           receivedCount={quantityLimit ? totalQuantity : 0}
+          dateRange={issueStartOn && issueEndOn ? `${issueStartOn} ~ ${issueEndOn}` : undefined}
           registrationDate='2025.00.00'
           status='발급중'
           title={name || '쿠폰이름'}
