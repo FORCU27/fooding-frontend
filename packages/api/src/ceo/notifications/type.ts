@@ -8,7 +8,7 @@ export const CeoStoreNotificationResponseSchema = z.object({
   content: z.string(),
   category: z.string(),
   linkUrl: z.string().optional(),
-  createdAt: z.string(),
+  createdAt: z.string().nullable(),
 });
 
 export type CeoStoreNotificationResponse = z.infer<typeof CeoStoreNotificationResponseSchema>;

@@ -71,7 +71,8 @@ const NotificationsPage = () => {
     sortType: sortOrder,
   });
 
-  const formatDate = (dateString: string) => {
+  const formatDate = (dateString: string | null) => {
+    if (!dateString) return '-';
     const date = new Date(dateString);
     return date.toLocaleDateString('ko-KR', {
       year: 'numeric',
@@ -80,7 +81,8 @@ const NotificationsPage = () => {
     });
   };
 
-  const formatTime = (dateString: string) => {
+  const formatTime = (dateString: string | null) => {
+    if (!dateString) return '-';
     const date = new Date(dateString);
     return date.toLocaleTimeString('ko-KR', {
       hour: '2-digit',
@@ -89,13 +91,13 @@ const NotificationsPage = () => {
   };
 
   const getCategoryIcon = (category: string) => {
-    // 카테고리별 아이콘 매핑
+    // 카테고리별 아이콘 매핑 (영문 대문자)
     switch (category) {
-      case '예약':
+      case 'RESERVATION':
         return '📅';
-      case '리뷰':
+      case 'REVIEW':
         return '⭐';
-      case '문의':
+      case 'INQUIRY':
         return '💬';
       default:
         return '📢';
@@ -110,24 +112,24 @@ const NotificationsPage = () => {
       cell: ({ row }) => {
         const notification = row.original;
         return (
-          <div className='flex gap-4 items-start py-2'>
+          <div className='flex gap-4 py-2 items-center'>
             <div className='flex-shrink-0'>
               <div className='w-12 h-12 rounded-full bg-gray-100 flex items-center justify-center text-2xl'>
                 {getCategoryIcon(notification.category)}
               </div>
             </div>
             <div className='flex-1 min-w-0'>
-              <p className='text-sm text-gray-600'>{notification.content}</p>
-              {notification.linkUrl && (
+              <p className='text-body-2 text-gray-600'>{notification.content}</p>
+              {/* {notification.linkUrl && (
                 <a
                   href={notification.linkUrl}
-                  className='text-sm text-blue-600 hover:underline mt-1 inline-block'
+                  className='text-body-2 text-blue-600 hover:underline mt-1 inline-block'
                   target='_blank'
                   rel='noopener noreferrer'
                 >
                   자세히 보기 →
                 </a>
-              )}
+              )} */}
             </div>
           </div>
         );
@@ -178,8 +180,8 @@ const NotificationsPage = () => {
     );
   }
 
-  // API 데이터 사용 (없으면 하드코딩된 샘플 데이터 사용)
-  const notificationList = notificationsResponse?.data?.list ?? SAMPLE_NOTIFICATIONS;
+  // API 데이터 사용
+  const notificationList = notificationsResponse?.data?.list ?? [];
   const totalPages = notificationsResponse?.data?.pageInfo?.totalPages ?? 1;
 
   return (
