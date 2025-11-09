@@ -9,53 +9,6 @@ import type { ColumnDef, PaginationState } from '@tanstack/react-table';
 import { useGetStoreNotifications } from '@/hooks/notifications/useGetStoreNotifications';
 import { useSelectedStoreId } from '@/hooks/useSelectedStoreId';
 
-// 하드코딩된 샘플 데이터
-const SAMPLE_NOTIFICATIONS: CeoStoreNotificationResponse[] = [
-  {
-    id: 1,
-    title: '예약',
-    content: '푸딩 동영상 리뷰 이벤트 당첨자 안내',
-    category: '예약',
-    linkUrl: 'https://ceo.fooding.com/reservations/1234',
-    createdAt: '2025-02-01T23:12:02',
-  },
-  {
-    id: 2,
-    title: '예약',
-    content: '홍길동님이 예약하셨습니다',
-    category: '예약',
-    createdAt: '2025-02-01T23:12:02',
-  },
-  {
-    id: 3,
-    title: '예약',
-    content: '푸딩 동영상 리뷰 이벤트 당첨자 안내',
-    category: '예약',
-    createdAt: '2025-02-01T23:12:02',
-  },
-  {
-    id: 4,
-    title: '리뷰',
-    content: '홍길동님이 예약하셨습니다',
-    category: '리뷰',
-    createdAt: '2025-02-01T23:12:02',
-  },
-  {
-    id: 5,
-    title: '예약',
-    content: '푸딩 동영상 리뷰 이벤트 당첨자 안내',
-    category: '예약',
-    createdAt: '2025-02-01T23:12:02',
-  },
-  {
-    id: 6,
-    title: '리뷰',
-    content: '홍길동님이 예약하셨습니다',
-    category: '리뷰',
-    createdAt: '2025-02-01T23:12:02',
-  },
-];
-
 const NotificationsPage = () => {
   const { selectedStoreId, isLoading: isLoadingStoreId, isInitialized } = useSelectedStoreId();
   const [pagination, setPagination] = useState<PaginationState>({
