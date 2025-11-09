@@ -1,5 +1,5 @@
 import { EmptyState } from '@repo/design-system/components/b2c';
-import { ActivityComponentType, useFlow } from '@stackflow/react/future';
+import { ActivityComponentType } from '@stackflow/react/future';
 
 import { MyReviewCard } from './components/MyReviewCard';
 import { Header } from '@/components/Layout/Header';
@@ -7,8 +7,6 @@ import { Screen } from '@/components/Layout/Screen';
 import { useGetMyReviewList } from '@/hooks/review/useGetMyReviewList';
 
 export const MyReviewsScreen: ActivityComponentType<'MyReviewsScreen'> = () => {
-  const flow = useFlow();
-
   const { data: reviews } = useGetMyReviewList({
     sortType: 'RECENT',
     sortDirection: 'DESCENDING',
