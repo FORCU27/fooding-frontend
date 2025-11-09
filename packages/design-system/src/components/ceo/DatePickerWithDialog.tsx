@@ -30,6 +30,7 @@ function formatDateRange(startDate: Date | undefined, endDate: Date | undefined)
 
 interface DatePickerWithDialogProps {
   title?: string;
+  mode?: string;
   placeholder?: string;
   radioOptions?: RadioOption[];
   hasCloseBtn?: boolean;
@@ -163,7 +164,7 @@ export const DatePickerWithDialog = ({
                   className='flex gap-6 mt-4 justify-center'
                 />
               )}
-              <div className='flex w-full mt-3'>
+              <div className='flex mt-3'>
                 {chipOptions.length > 0 && (
                   <ChipList
                     value={chipOptions.map((c) => c.value)}
