@@ -133,11 +133,10 @@ const Content = () => {
           </div>
         </div>
         <div className='flex justify-around items-center h-[88px] mt-5 p-5'>
-          <div 
+          <div
             className='flex flex-col justify-center items-center gap-1 cursor-pointer'
             onClick={() => {
-              // TODO: 내 리뷰 목록 화면으로 이동하는 기능 구현 필요
-              console.log('내 리뷰 목록으로 이동');
+              flow.push('MyReviewsScreen', {});
             }}
           >
             <MessageDotsSquareIcon />

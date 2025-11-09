@@ -1,4 +1,6 @@
-import { z } from 'zod';
+import z from 'zod/v4';
+
+import { VISIT_PURPOSES } from '../stores/type';
 
 export const ReviewSortType = z.enum(['RECENT', 'REVIEW']);
 export const SortDirection = z.enum(['ASCENDING', 'DESCENDING']);
@@ -23,11 +25,12 @@ export const UserReviewResponse = z.object({
     mood: z.number(),
     service: z.number(),
   }),
-  purpose: PurposeType,
+  purpose: z.enum(VISIT_PURPOSES),
   likeCount: z.number(),
   userReviewCount: z.number(),
-  createdAt: z.string(),
-  updatedAt: z.string(),
+  createdAt: z.iso.datetime({ local: true }),
+  updatedAt: z.iso.datetime({ local: true }),
+  storeId: z.number(),
   planId: z.string().nullable(),
 });
 

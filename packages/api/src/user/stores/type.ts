@@ -257,7 +257,7 @@ export type ModifyStoreReviewBody = {
 export type GetStoreReviewResponse = z.infer<typeof GetStoreReviewResponse>;
 export const GetStoreReviewResponse = z.object({
   status: z.string(),
-  data: null,
+  data: z.null(),
 });
 
 export type StoreReward = z.infer<typeof StoreReward>;

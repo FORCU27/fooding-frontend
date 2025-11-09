@@ -2,7 +2,6 @@
 import { PropsWithoutRef, useState } from 'react';
 
 import { StoreOperatingHourBody } from '@repo/api/ceo';
-import { Select } from '@repo/design-system/components/b2c';
 import {
   Card,
   CardSubtitle,
@@ -17,6 +16,8 @@ import {
   DatePickerWithDialog,
   DatePicker,
   type SelectedItem,
+  Checkbox,
+  ChipList,
 } from '@repo/design-system/components/ceo';
 import { ClockIcon } from '@repo/design-system/icons';
 import { Controller, useForm } from 'react-hook-form';
@@ -52,13 +53,26 @@ export const OperatingHoursForm = ({ handleSubmit }: PropsWithoutRef<OperatingHo
     mode: 'onSubmit',
     defaultValues: {
       customHolidays: [],
-      hasHoliday: false,
     },
   });
 
-  const hasHoliday = watch('hasHoliday');
   const [mode, setMode] = useState<OperatingMode>('same_everyday');
   const [breakMode, setBreakMode] = useState<BreakMode>('none');
+  const closedHolidays = watch('closedNationalHolidays') || [];
+  const customHolidays = watch('customHolidays') as string[] | undefined;
+
+  const customHolidaysArr = (customHolidays ?? [])
+    .map((date) => new Date(date))
+    .filter((d) => !isNaN(d.getTime()));
+
+  const handleTotalSelect = () => {
+    const isAllSelected = closedHolidays.length === NationalHolidays.length;
+    if (isAllSelected) {
+      setValue('closedNationalHolidays', []);
+    } else {
+      setValue('closedNationalHolidays', NationalHolidays);
+    }
+  };
 
   const getStoreStatus = (item: {
     openTime?: string;
@@ -97,11 +111,6 @@ export const OperatingHoursForm = ({ handleSubmit }: PropsWithoutRef<OperatingHo
   );
   const status = todayItem ? getStoreStatus(todayItem) : '영업종료';
 
-  const customHolidays = watch('customHolidays') as string[] | undefined;
-  const customHolidaysArr = customHolidays
-    ? customHolidays.map((date) => new Date(date)).filter((date) => !isNaN(date.getTime()))
-    : [];
-
   return (
     <form
       onSubmit={formSubmit(handleSubmit)}
@@ -125,123 +134,75 @@ export const OperatingHoursForm = ({ handleSubmit }: PropsWithoutRef<OperatingHo
         </CardSubtitle>
       </Card>
 
+      {/* 공휴일 휴무 */}
       <Card className='w-full'>
-        <CardSubtitle label='휴무일이 있나요?'>
-          <ToggleGroup
-            type='single'
-            value={String(watch('hasHoliday'))}
-            {...register('hasHoliday')}
-            className='grid grid-cols-2'
-            onValueChange={(value) => {
-              setValue('hasHoliday', value === 'true');
-            }}
-          >
-            <ToggleGroupItem value='true'>휴무일이 있어요</ToggleGroupItem>
-            <ToggleGroupItem value='false'>휴무일이 없어요</ToggleGroupItem>
-          </ToggleGroup>
+        <CardSubtitle label='공휴일 중 휴무일이 있나요?'>
+          <Checkbox
+            labelText='전체 선택'
+            checked={closedHolidays.length === NationalHolidays.length}
+            onClick={handleTotalSelect}
+          />
+          <Controller
+            name='closedNationalHolidays'
+            control={control}
+            render={({ field }) => (
+              <ToggleGroup
+                type='multiple'
+                value={field.value || []}
+                onValueChange={(vals) => field.onChange(vals)}
+                className='w-full mt-4'
+              >
+                {NationalHolidays.map((holiday) => (
+                  <ToggleGroupItem key={holiday} value={holiday}>
+                    {holiday}
+                  </ToggleGroupItem>
+                ))}
+              </ToggleGroup>
+            )}
+          />
         </CardSubtitle>
       </Card>
 
-      {hasHoliday && (
-        <>
-          {/* 정기 휴무일 */}
-          <Card className='w-full'>
-            <CardSubtitle label='정기 휴무일이 있나요?'>
-              <div className='flex gap-3 items-center'>
-                <Controller
-                  name='regularHolidayType'
-                  control={control}
-                  render={({ field }) => (
-                    <Select {...field} className='min-w-[150px] w-full'>
-                      <Select.Option value='' disabled>
-                        주기
-                      </Select.Option>
-                      <Select.Option value='WEEKLY'>주</Select.Option>
-                      <Select.Option value='MONTHLY'>월</Select.Option>
-                    </Select>
-                  )}
-                />
-                <Controller
-                  name='regularHoliday'
-                  control={control}
-                  render={({ field }) => (
-                    <ToggleGroup
-                      type='multiple'
-                      value={field.value || []}
-                      onValueChange={(vals) => field.onChange(vals)}
-                      className='w-full'
-                    >
-                      {['월', '화', '수', '목', '금', '토', '일'].map((day) => (
-                        <ToggleGroupItem key={day} value={day}>
-                          {day}
-                        </ToggleGroupItem>
-                      ))}
-                    </ToggleGroup>
-                  )}
-                />
-              </div>
-            </CardSubtitle>
-          </Card>
+      {/* 그 외 휴무일 */}
+      <Card className='w-full'>
+        <CardSubtitle label='그 외 휴무일이 있다면?'>
+          <ToolTip>임시 휴무일은 영업시간 조회에 표시되지 않습니다. 휴무일을 선택해주세요.</ToolTip>
 
-          {/* 공휴일 휴무 */}
-          <Card className='w-full'>
-            <CardSubtitle label='공휴일 중 휴무일이 있나요?'>
-              <Controller
-                name='closedNationalHolidays'
-                control={control}
-                render={({ field }) => (
-                  <ToggleGroup
-                    type='multiple'
-                    value={field.value || []}
-                    onValueChange={(vals) => field.onChange(vals)}
-                    className='w-full mt-4'
-                  >
-                    {NationalHolidays.map((holiday) => (
-                      <ToggleGroupItem key={holiday} value={holiday}>
-                        {holiday}
-                      </ToggleGroupItem>
-                    ))}
-                  </ToggleGroup>
-                )}
-              />
-            </CardSubtitle>
-          </Card>
+          <Controller
+            name='customHolidays'
+            control={control}
+            defaultValue={[]}
+            render={({ field }) => (
+              <>
+                <DatePickerWithDialog
+                  title='휴무일'
+                  placeholder='휴무일을 선택해주세요'
+                  selectionMode='multiple'
+                  selectedDates={
+                    field.value?.map((date) => ({ date: new Date(date), option: undefined })) || []
+                  }
+                  onChange={(selected) =>
+                    field.onChange(
+                      Array.isArray(selected)
+                        ? selected.map((item) => item.date.toISOString().substring(0, 10))
+                        : selected && typeof selected === 'object' && 'date' in selected
+                          ? [(selected as SelectedItem).date.toISOString().substring(0, 10)]
+                          : [],
+                    )
+                  }
+                />
 
-          {/* 그 외 휴무일 */}
-          <Card className='w-full'>
-            <CardSubtitle label='그 외 휴무일이 있다면?'>
-              <ToolTip>
-                임시 휴무일은 영업시간 조회에 표시되지 않습니다. 휴무일을 선택해주세요.
-              </ToolTip>
-              <Controller
-                name='customHolidays'
-                control={control}
-                defaultValue={[]}
-                render={({ field }) => (
-                  <DatePickerWithDialog
-                    title='휴무일'
-                    placeholder='휴무일을 선택해주세요'
-                    selectionMode='multiple'
-                    selectedDates={
-                      field.value?.map((date) => ({ date: new Date(date), option: undefined })) ||
-                      []
-                    }
-                    onChange={(selected) =>
-                      field.onChange(
-                        Array.isArray(selected)
-                          ? selected.map((item) => item.date.toISOString().substring(0, 10))
-                          : selected && typeof selected === 'object' && 'date' in selected
-                            ? [(selected as SelectedItem).date.toISOString().substring(0, 10)]
-                            : [],
-                      )
-                    }
-                  />
-                )}
-              />
-            </CardSubtitle>
-          </Card>
-        </>
-      )}
+                <ChipList
+                  value={field.value ?? []}
+                  options={(field.value ?? []).map((d: string) => ({ name: d, value: d }))}
+                  onValueChange={(vals) => field.onChange(vals)}
+                  type='multiple'
+                />
+              </>
+            )}
+          />
+        </CardSubtitle>
+      </Card>
 
       <div className='w-full flex flex-col'>
         <h1 className='headline-2 px-10'>미리보기</h1>
@@ -249,11 +210,7 @@ export const OperatingHoursForm = ({ handleSubmit }: PropsWithoutRef<OperatingHo
           미리보기에서 설정한 정보가 정확히 반영되었는지 다시 확인해 주세요
         </ToolTip>
         <div className='flex items-center gap-5 p-3'>
-          <DatePicker
-            selectionMode='multiple'
-            values={customHolidaysArr}
-            className='pointer-events-none'
-          />
+          <DatePicker selectionMode='multiple' values={customHolidaysArr} />
           <div className='flex flex-col justify-center w-[320px] min-h-[320px] h-full py-3 px-6 bg-white border border-gray-2 rounded-lg body-2'>
             <div className='flex gap-3 mb-6'>
               <ClockIcon />
