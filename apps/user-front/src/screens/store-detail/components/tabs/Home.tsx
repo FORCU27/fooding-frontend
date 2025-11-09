@@ -13,7 +13,7 @@ import { Section } from '@/components/Layout/Section';
 import { MenuCard } from '@/components/Store/MenuCard';
 import { ReviewsList } from '@/components/Store/ReviewsList';
 import { StoresList } from '@/components/Store/StoresList';
-import { SubwayLineBadge } from '@/components/SubwayLineBadge';
+import { SubwayLine, SubwayLineBadge } from '@/components/SubwayLineBadge';
 import { useGetStoreImmediateEntryList } from '@/hooks/store/useGetStoreImmediateEntryList';
 import { useGetStoreList } from '@/hooks/store/useGetStoreList';
 import { useGetStoreMenuList } from '@/hooks/store/useGetStoreMenuList';
@@ -134,7 +134,16 @@ export const StoreDetailHomeTab = ({
           </span>
           <span className='body-6 flex items-center'>
             <TrainIcon className='mr-[10px] size-[18px] stroke-1' />
-            <SubwayLineBadge className='mr-1' line={6} />
+
+            {store.stations &&
+              store.stations.map((station) => (
+                <SubwayLineBadge
+                  key={station.id}
+                  className='mr-1'
+                  line={station.line as SubwayLine}
+                />
+              ))}
+
             {store.direction}
           </span>
         </div>
