@@ -157,11 +157,11 @@ export type GetStoreReviewListRequest = {
   params: {
     sortType: SortType;
     sortDirection: SortDirection;
-    searchString: string;
+    searchString?: string;
     pageNum: number;
     pageSize: number;
-    writerId: number;
-    reviewId: number;
+    writerId?: string;
+    parentId?: string;
   };
 };
 
