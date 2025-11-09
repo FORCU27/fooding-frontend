@@ -149,6 +149,11 @@ export type GetStoreReviewListRequest = {
   params: {
     sortType: SortType;
     sortDirection: SortDirection;
+    searchString?: string;
+    pageNum: number;
+    pageSize: number;
+    writerId?: string;
+    parentId?: string;
   };
 };
 
