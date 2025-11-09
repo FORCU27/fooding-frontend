@@ -7,6 +7,7 @@ type CoinProductProps = {
   status: '발급중' | string;
   title: string;
   registrationDate: string;
+  dateRange?: string;
   exchangePoint: number;
   receivedCount: number;
   purchaseCount: number;
@@ -24,6 +25,7 @@ const CoinProduct = ({
   status,
   title,
   registrationDate,
+  dateRange,
   exchangePoint,
   receivedCount,
   purchaseCount,
@@ -71,6 +73,7 @@ const CoinProduct = ({
           </span>
           <h3 className='mb-1 text-xl font-semibold text-gray-900'>{title}</h3>
 
+          {dateRange && <p className='text-sm text-gray-5 whitespace-nowrap'>{dateRange}</p>}
           <p className='text-sm text-gray-5 whitespace-nowrap'>등록일 {registrationDate}</p>
         </div>
       </div>

@@ -16,7 +16,9 @@ const PointShopCreatePage = () => {
   const selectedStoreId = Number(storeId);
   const { mutateAsync: uploadFile } = useUploadFile();
 
-  const handleSubmit = async (data: CreateStorePointShopItemBody & { file?: File | null }) => {
+  const handleSubmit = async (
+    data: CreateStorePointShopItemBody & { file?: File | null; dateRange?: Date[] | null },
+  ) => {
     try {
       if (data.file) {
         const formData = new FormData();
