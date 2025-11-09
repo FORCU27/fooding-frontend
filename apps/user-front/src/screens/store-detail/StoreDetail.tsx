@@ -30,6 +30,7 @@ import { StoreDetailHomeTab } from './components/tabs/Home';
 import { StoreDetailMenuTab } from './components/tabs/Menu';
 import { StoreDetailPhotoTab } from './components/tabs/Photo';
 import { StoreDetailReviewTab } from './components/tabs/ReviewDetail';
+import { StoreDetailInfoTab } from './components/tabs/StoreInfo';
 import { StoreDetailPostListTab } from './components/tabs/StorePostList';
 import { StoreRewardListTab } from './components/tabs/StoreRewardList';
 import { useLoginBottomSheet } from '@/components/Auth/LoginBottomSheet';
@@ -150,7 +151,7 @@ const StoreDetail = ({ storeId, showHeader, initialTab = 'home' }: StoreDetailPr
         onError: () => {
           toast.error('줄서기에 실패했어요. 잠시 후 다시 시도해주세요.');
         },
-      }
+      },
     );
   };
 
@@ -236,6 +237,9 @@ const StoreDetail = ({ storeId, showHeader, initialTab = 'home' }: StoreDetailPr
               </ChipTabs.Content>
               <ChipTabs.Content value='reward'>
                 <StoreRewardListTab storeId={storeId} />
+              </ChipTabs.Content>
+              <ChipTabs.Content value='info'>
+                <StoreDetailInfoTab store={store} />
               </ChipTabs.Content>
             </Suspense>
           </DefaultErrorBoundary>

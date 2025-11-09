@@ -87,10 +87,18 @@ export const Store = z.object({
   images: z.array(StoreImage).nullable(),
 });
 
+export const StationInfo = z.object({
+  id: z.number(),
+  address: z.string(),
+  line: z.string(),
+  name: z.string(),
+});
+
 export type StoreInfo = z.infer<typeof StoreInfo>;
 export const StoreInfo = Store.extend({
   address: z.string(),
   addressDetail: z.string().nullable(),
+  stations: z.array(StationInfo),
   category: z.enum(STORE_CATEGORIES),
   description: z.string(),
   contactNumber: z.string(),

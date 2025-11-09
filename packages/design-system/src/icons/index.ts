@@ -3,6 +3,8 @@ export * from './arrowIcons';
 export * from './chevronIcons';
 export * from './socialIcons';
 export * from './b2b';
+export * from './facilitiesIcons';
+export * from './SNSIcons';
 
 export { default as CloseIcon } from './CloseIcon';
 export { default as VisibilityIcon } from './VisibilityIcon';

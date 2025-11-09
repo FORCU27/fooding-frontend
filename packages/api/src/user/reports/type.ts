@@ -22,5 +22,5 @@ export type CreateReportBody = {
 export type GetUserReportResponse = z.infer<typeof GetUserReportResponse>;
 export const GetUserReportResponse = z.object({
   status: z.string(),
-  data: null,
+  data: z.null(),
 });
