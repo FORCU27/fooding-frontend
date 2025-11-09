@@ -63,7 +63,7 @@ const ReviewPage = () => {
             rating={review.totalScore}
             content={review.content}
           />
-          <ReviewReply reviewId={review.id} isReplied={review?.replies?.length > 0} />
+          <ReviewReply initialReply={review.replies?.[0]} />
         </div>
       ))}
     </CardForm>
