@@ -72,6 +72,7 @@ export const queryKeys = {
     bookmark: {
       list: 'ceoBookmarkList',
     },
+    review: 'ceoReviewList',
   },
   pos: {},
   user: {
