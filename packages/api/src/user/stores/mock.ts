@@ -107,6 +107,26 @@ export const mockStoreByIdResponse: GetStoreByIdResponse = {
     latitude: 37.5665,
     longitude: 126.978,
     bookmarkCount: 2,
+    stations: [
+      {
+        id: 8,
+        name: '신논현역',
+        line: '9호선',
+        address: '서울 강남구 봉은사로 지하 102',
+      },
+      {
+        id: 9,
+        name: '강남역',
+        line: '2호선',
+        address: '서울 강남구 강남대로 지하 396',
+      },
+      {
+        id: 10,
+        name: '신논현역',
+        line: '신분당선',
+        address: '서울 강남구 강남대로 302-2',
+      },
+    ],
     images: [
       {
         id: 1,
