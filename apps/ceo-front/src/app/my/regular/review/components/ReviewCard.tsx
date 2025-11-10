@@ -9,7 +9,7 @@ export interface ReviewCardProps {
   children?: React.ReactNode;
 }
 
-export const ProfileImage = ({ size = 40 }: { size: number }) => (
+export const ProfileImage = ({ size = 40 }: { size?: number }) => (
   <svg
     width={size}
     height={size}
