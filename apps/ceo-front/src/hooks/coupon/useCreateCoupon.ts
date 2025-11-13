@@ -21,7 +21,7 @@ export const useCreateCoupon = () => {
       alert('쿠폰이 생성되었습니다.');
 
       // 쿠폰 목록 페이지로 이동
-      router.push('/reward/coupon');
+      router.push('/my/reward/coupon');
     },
 
     onError: (error: unknown) => {

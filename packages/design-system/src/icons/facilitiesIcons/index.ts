@@ -1,0 +1,15 @@
+export { default as BankNoteIcon } from './BankNoteIcon';
+export { default as CalendarPlusIcon } from './CalendarPlusIcon';
+export { default as CarIcon } from './CarIcon';
+export { default as ChairIcon } from './ChairIcon';
+export { default as CreditCardIcon } from './CreditCardIcon';
+export { default as FaceHappyIcon } from './FaceHappyIcon';
+export { default as GroupIcon } from './GroupIcon';
+export { default as HourGlassIcon } from './HourGlassIcon';
+export { default as KidsIcon } from './KidsIcon';
+export { default as LuggageIcon } from './LuggageIcon';
+export { default as SmartPhoneIcon } from './SmartPhoneIcon';
+export { default as ShoppingBagIcon } from './ShoppingBagIcon';
+export { default as TruckIcon } from './TruckIcon';
+export { default as UsersIcon } from './UsersIcon';
+export { default as WifiIcon } from './WifiIcon';

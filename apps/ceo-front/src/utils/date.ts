@@ -1,3 +1,5 @@
+import dayjs from 'dayjs';
+
 type FormatOption = 'korean' | 'dot' | 'dash';
 /**
  * ISO 8601을 특정 형식으로 변환합니다.
@@ -143,7 +145,6 @@ export const formatYearMonth = (dateStr: string) => {
 /**
  * @param createdAt → "MM.dd HH:mm" 변환
  */
-
 export const formatMonthDayTime = (createdAt: string) => {
   const d = new Date(createdAt);
   const month = String(d.getMonth() + 1).padStart(2, '0');
@@ -151,4 +152,18 @@ export const formatMonthDayTime = (createdAt: string) => {
   const hours = String(d.getHours()).padStart(2, '0');
   const minutes = String(d.getMinutes()).padStart(2, '0');
   return `${month}.${day} ${hours}:${minutes}`;
+};
+
+/**
+ * 생성일 기준으로 오늘이 몇일째인지 반환
+ *
+ * @param createdAt ISO 8601 날짜 문자열 (예: "2025-10-26T11:18:16.782Z")
+ * @returns 생성일 포함하여 몇일째인지 나타내는 문자열 (예: "3일째")
+ */
+export const getDaysSince = (createdAt: string) => {
+  const start = dayjs(createdAt).startOf('day'); // 생성일 0시 기준
+  const today = dayjs().startOf('day'); // 오늘 0시 기준
+
+  const diff = today.diff(start, 'day');
+  return `${diff + 1}일째`; // 생성일 포함
 };

@@ -22,6 +22,9 @@ export const queryKeys = {
     device: {
       logs: 'ceoDeviceLogs',
     },
+    reward: {
+      history: 'ceoRewardHistory',
+    },
     store: {
       selectedStore: 'ceoSelectedStore',
       storeList: 'ceoStoreList',
@@ -56,11 +59,18 @@ export const queryKeys = {
       update: 'ceoCouponUpdate',
       delete: 'ceoCouponDelete',
       usages: 'ceoCouponUsages',
+      gift: 'ceoCouponGift',
+    },
+    user: {
+      search: 'ceoUserSearch',
     },
     pointShop: {
       list: 'ceoStoreGetPointShopList',
       detail: 'ceoStoreGetPointShopDetail',
       status: 'ceoStoreGetPointShopStatus',
+    },
+    bookmark: {
+      list: 'ceoBookmarkList',
     },
   },
   pos: {},

@@ -12,6 +12,7 @@ import { BookmarkListScreen } from '@/screens/bookmarks/Bookmarks';
 import { JoinFormScreen } from '@/screens/join/JoinFormScreen';
 import { MenuDetailScreen, MenuDetailScreenParams } from '@/screens/menu-detail/MenuDetail';
 import { MyCouponListScreen } from '@/screens/my-coupons/MyCoupons';
+import { MyReviewsScreen } from '@/screens/my-reveiws/MyReveiws';
 import { MyRewardDetailScreen } from '@/screens/my-reward-detail/MyRewardDetail';
 import { MyRewardListScreen } from '@/screens/my-rewards/MyRewards';
 import { NotificationListScreen } from '@/screens/notifications/Notifications';
@@ -72,6 +73,7 @@ declare module '@stackflow/config' {
     MyRewardDetailScreen: { storeId: number };
     ReviewReportCreateScreen: { review: Review; store: StoreInfo; type: 'REVIEW' | 'POST' };
     RecentlyViewedStoreListScreen: object;
+    MyReviewsScreen: object;
   }
 }
 
@@ -102,6 +104,7 @@ const config = defineConfig({
     { name: 'MyRewardDetailScreen' },
     { name: 'ReviewReportCreateScreen' },
     { name: 'RecentlyViewedStoreListScreen' },
+    { name: 'MyReviewsScreen' },
   ],
 
   transitionDuration: SCREEN_TRANSITION_DURATION,
@@ -136,6 +139,7 @@ export const { Stack } = stackflow({
     MyRewardDetailScreen,
     ReviewReportCreateScreen,
     RecentlyViewedStoreListScreen,
+    MyReviewsScreen,
   },
   plugins: [
     basicRendererPlugin(),
