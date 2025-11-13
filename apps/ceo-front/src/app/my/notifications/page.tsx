@@ -6,11 +6,12 @@ import type { CeoStoreNotificationResponse } from '@repo/api/ceo';
 import { DataTable, Pagination, SortToggle } from '@repo/design-system/components/ceo';
 import type { ColumnDef, PaginationState } from '@tanstack/react-table';
 
+import { useStore } from '@/context/StoreContext';
 import { useGetStoreNotifications } from '@/hooks/notifications/useGetStoreNotifications';
-import { useSelectedStoreId } from '@/hooks/useSelectedStoreId';
+import { formatDotDate, formatTime } from '@/utils/date';
 
 const NotificationsPage = () => {
-  const { selectedStoreId, isLoading: isLoadingStoreId, isInitialized } = useSelectedStoreId();
+  const { storeId } = useStore();
   const [pagination, setPagination] = useState<PaginationState>({
     pageIndex: 0,
     pageSize: 10,
@@ -18,30 +19,11 @@ const NotificationsPage = () => {
   const [sortOrder, setSortOrder] = useState<'RECENT' | 'OLD'>('OLD');
 
   const { data: notificationsResponse, isLoading } = useGetStoreNotifications({
-    storeId: selectedStoreId,
+    storeId: Number(storeId),
     pageNum: pagination.pageIndex + 1,
     pageSize: pagination.pageSize,
     sortType: sortOrder,
   });
-
-  const formatDate = (dateString: string | null) => {
-    if (!dateString) return '-';
-    const date = new Date(dateString);
-    return date.toLocaleDateString('ko-KR', {
-      year: 'numeric',
-      month: '2-digit',
-      day: '2-digit',
-    });
-  };
-
-  const formatTime = (dateString: string | null) => {
-    if (!dateString) return '-';
-    const date = new Date(dateString);
-    return date.toLocaleTimeString('ko-KR', {
-      hour: '2-digit',
-      minute: '2-digit',
-    });
-  };
 
   const getCategoryIcon = (category: string) => {
     // 카테고리별 아이콘 매핑 (영문 대문자)
@@ -93,14 +75,14 @@ const NotificationsPage = () => {
       header: '일시',
       cell: ({ row }) => (
         <div className='text-right'>
-          <div className='text-sm text-gray-900'>{formatDate(row.original.createdAt)}</div>
+          <div className='text-sm text-gray-900'>{formatDotDate(row.original.createdAt || '')}</div>
           <div className='text-sm text-gray-500'>{formatTime(row.original.createdAt)}</div>
         </div>
       ),
     },
   ];
 
-  if (!isInitialized || isLoadingStoreId || isLoading) {
+  if (isLoading) {
     return (
       <div className='space-y-4'>
         <div className='headline-2'>알림</div>
@@ -118,7 +100,7 @@ const NotificationsPage = () => {
     );
   }
 
-  if (!selectedStoreId) {
+  if (!storeId) {
     return (
       <div className='space-y-4'>
         <div className='headline-2'>알림</div>
