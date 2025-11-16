@@ -9,6 +9,7 @@ interface Props {
 
 const MainContent = ({ children, isSidebarOpen = false }: Props) => (
   <main
+    aria-hidden={isSidebarOpen}
     className='flex flex-col overflow-hidden h-[calc(100vh-60px)] mt-[60px] w-full bg-gray-1'
   >
     <div className='w-full h-full overflow-auto'>
