@@ -1,21 +1,21 @@
 'use client';
 
-import { reviewApi } from '@repo/api/ceo';
-import { queryKeys } from '@repo/api/configs/query-keys';
+// import { reviewApi } from '@repo/api/ceo';
+// import { queryKeys } from '@repo/api/configs/query-keys';
 import { CardForm } from '@repo/design-system/components/ceo';
-import { useQuery } from '@tanstack/react-query';
+// import { useQuery } from '@tanstack/react-query';
 
 import { ReviewCard } from './components/ReviewCard';
 import ReviewReply from './components/ReviewReply';
-import { useGetSelf } from '@/hooks/auth/useGetSelf';
+// import { useGetSelf } from '@/hooks/auth/useGetSelf';
 import { formatDotDate } from '@/utils/date';
 
 const ReviewPage = () => {
-  const { data: me } = useGetSelf();
-  const { data: reviewResponse } = useQuery({
-    queryKey: [queryKeys.ceo.review],
-    queryFn: () => reviewApi.getReviews({ pageNum: 1, pageSize: 20, storeId: 23, ceoId: me.id }),
-  });
+  // const { data: me } = useGetSelf();
+  // const { data: reviewResponse } = useQuery({
+  //   queryKey: [queryKeys.ceo.review],
+  //   queryFn: () => reviewApi.getReviews({ pageNum: 1, pageSize: 20, storeId: 23, ceoId: me.id }),
+  // });
   const mockReviews = [
     {
       id: 1,
@@ -50,7 +50,6 @@ const ReviewPage = () => {
     },
   ];
   const reviews = mockReviews;
-  console.log('reviewResponse', reviewResponse);
 
   return (
     <CardForm className='mb-[180px]'>
