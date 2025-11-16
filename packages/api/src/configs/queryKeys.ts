@@ -26,13 +26,6 @@ export const queryKeys = {
     reward: {
       history: 'ceoRewardHistory',
     },
-    notifications: 'ceoNotifications',
-    device: {
-      logs: 'ceoDeviceLogs',
-    },
-    reward: {
-      history: 'ceoRewardHistory',
-    },
     store: {
       selectedStore: 'ceoSelectedStore',
       storeList: 'ceoStoreList',
