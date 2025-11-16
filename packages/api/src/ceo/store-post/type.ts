@@ -1,6 +1,14 @@
 import { z } from 'zod/v4';
 
-import { ApiResponse } from '../../shared';
+import { ApiResponse, PageResponse } from '../../shared';
+
+export type GetStorePostsParams = {
+  searchString: string;
+  pageNum: number;
+  pageSize: number;
+  storeId: number;
+  sortType: 'RECENT' | 'OLD';
+};
 
 export type CreateStorePostParams = {
   storeId: number;
@@ -33,7 +41,7 @@ export const StorePost = z.object({
   id: z.number(),
   title: z.string(),
   content: z.string(),
-  tags: z.array(z.string()).nullable(),
+  tags: z.array(z.string()).optional().default([]),
   isFixed: z.boolean(),
   isNotice: z.boolean(),
   isCommentAvailable: z.boolean(),
@@ -42,10 +50,12 @@ export const StorePost = z.object({
   commentCount: z.number(),
   viewCount: z.number(),
   createdAt: z.string(),
-  images: StorePostImage.nullable(),
+  images: z.array(StorePostImage).optional(),
 });
 
-export const GetStorePostsResponse = ApiResponse(z.array(StorePost));
+export type StorePost = z.infer<typeof StorePost>;
+
+export const GetStorePostsResponse = PageResponse(StorePost);
 export type GetStorePostsResponse = z.infer<typeof GetStorePostsResponse>;
 
 export const GetStorePostResponse = ApiResponse(StorePost);

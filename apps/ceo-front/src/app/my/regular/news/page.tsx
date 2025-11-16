@@ -1,61 +1,119 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import { useState, useMemo } from 'react';
+import { useMemo, useState } from 'react';
 
+import { storePostApi, StorePost } from '@repo/api/ceo';
+import { queryKeys } from '@repo/api/configs/query-keys';
 import {
   SortToggle,
+  Switch,
   DataTable,
   DropdownMenu,
   Pagination,
   Button,
 } from '@repo/design-system/components/ceo';
 import { EllipsisVerticalIcon } from '@repo/design-system/icons';
-import type { PaginationState } from '@tanstack/react-table';
+import { useQuery, useMutation, useQueryClient, keepPreviousData } from '@tanstack/react-query';
+import type { ColumnDef } from '@tanstack/react-table';
+
+import { useStore } from '@/context/StoreContext';
+
+const PAGE_SIZE = 10;
 
 const NewsPage = () => {
   const router = useRouter();
+  const queryClient = useQueryClient();
+  const { storeId } = useStore();
+  const selectedStoreId = Number(storeId);
 
-  const [sortOrder, setSortOrder] = useState('RECENT');
-  const [pagination, setPagination] = useState<PaginationState>({
-    pageIndex: 0,
-    pageSize: 10,
+  const [sortType, setSortType] = useState<'RECENT' | 'OLD'>('RECENT');
+  const [pageNum, setPageNum] = useState(1);
+
+  const { data } = useQuery({
+    queryKey: [queryKeys.ceo.storePost.list, storeId, sortType, pageNum],
+    queryFn: () =>
+      storePostApi.getStorePosts({
+        searchString: '',
+        pageNum,
+        pageSize: PAGE_SIZE,
+        storeId: selectedStoreId,
+        sortType,
+      }),
+    enabled: !!selectedStoreId,
+    placeholderData: keepPreviousData,
   });
-  const [targetId, setTargetId] = useState<number | null>(null);
-  const [confirmOpen, setConfirmOpen] = useState(false);
 
-  const columns = useMemo(
+  const list = data?.data.list ?? [];
+  const pageInfo = data?.data?.pageInfo;
+
+  const deleteMutation = useMutation({
+    mutationFn: (id: number) => storePostApi.deleteStorePost(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [queryKeys.ceo.storePost.list, storeId] });
+      alert('삭제되었습니다.');
+    },
+    onError: () => alert('삭제에 실패했습니다.'),
+  });
+
+  const columns: ColumnDef<StorePost>[] = useMemo(
     () => [
       {
         header: '사진',
         id: 'photo',
         size: 68,
+        cell: ({ row }) =>
+          row.original.images ? (
+            <img
+              src={row.original.images?.[0]?.imageUrl}
+              className='size-[56px] object-cover rounded-md'
+            />
+          ) : (
+            <div className='text-gray-4 text-sm'>-</div>
+          ),
       },
       {
         header: '내용',
         id: 'content',
         size: 300,
+        cell: ({ row }) => (
+          <div className='flex flex-col'>
+            <div className='font-medium'>{row.original.title}</div>
+            <div className='text-gray-5 text-sm line-clamp-2'>{row.original.content}</div>
+          </div>
+        ),
       },
       {
         header: '공개여부',
-        id: 'content',
+        accessorKey: 'status',
         size: 95,
+        cell: ({ row }) => (
+          <div className='flex justify-center'>
+            <Switch
+              checked={row.original.isActive === true}
+              // onChange
+            />
+          </div>
+        ),
       },
       {
         header: '조회',
+        accessorKey: 'viewCount',
         size: 82,
       },
       {
-        header: '조아요',
+        header: '좋아요',
+        accessorKey: 'likeCount',
         size: 82,
       },
       {
         header: '댓글',
+        accessorKey: 'commentCount',
         size: 82,
       },
       {
         header: '',
-        id: 'actions-dropdown',
+        id: 'actions',
         size: 68,
         cell: ({ row }) => (
           <div className='flex justify-center'>
@@ -67,11 +125,14 @@ const NewsPage = () => {
               </DropdownMenu.Trigger>
               <DropdownMenu.Content side='left'>
                 <DropdownMenu.Item
+                  variant='default'
+                  // onClick={() => deleteMutation.mutate(row.original.id)}
+                >
+                  수정
+                </DropdownMenu.Item>
+                <DropdownMenu.Item
                   variant='danger'
-                  onClick={() => {
-                    setTargetId(row.original.id);
-                    setConfirmOpen(true);
-                  }}
+                  onClick={() => deleteMutation.mutate(row.original.id)}
                 >
                   삭제
                 </DropdownMenu.Item>
@@ -94,25 +155,27 @@ const NewsPage = () => {
       </div>
       <div className='bg-white rounded-lg shadow overflow-hidden'>
         <div className='flex justify-end p-4'>
-          <SortToggle value={'RECENT'} onSortChange={setSortOrder} />
+          <SortToggle value={sortType} onSortChange={setSortType} />
         </div>
         <DataTable
           columns={columns}
-          data={[]}
+          data={list}
           emptyRenderer='등록된 소식이 없습니다.'
           options={{
-            manualPagination: false,
             manualSorting: true,
+            manualPagination: true,
           }}
         />
       </div>
-      <div className='flex justify-center mt-4 mb-[80px]'>
-        <Pagination
-          page={1}
-          total={1}
-          onChange={(page) => setPagination((prev) => ({ ...prev, pageIndex: page - 1 }))}
-        />
-      </div>
+      {pageInfo && (
+        <div className='flex justify-center mt-4 mb-[80px]'>
+          <Pagination
+            page={pageInfo.pageNum}
+            total={pageInfo.totalPages}
+            onChange={(page) => setPageNum(page)}
+          />
+        </div>
+      )}
     </div>
   );
 };

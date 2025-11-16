@@ -1,4 +1,9 @@
-import { CreateStorePostParams, GetStorePostsResponse, PutStorePostParams } from './type';
+import {
+  CreateStorePostParams,
+  GetStorePostsParams,
+  GetStorePostsResponse,
+  PutStorePostParams,
+} from './type';
 import { api } from '../../shared';
 
 export * from './type';
@@ -6,8 +11,8 @@ export * from './type';
 const ENDPOINT = '/ceo/store-posts';
 
 export const storePostApi = {
-  getStorePosts: async () => {
-    const response = await api.get(ENDPOINT);
+  getStorePosts: async (params: GetStorePostsParams) => {
+    const response = await api.get(ENDPOINT, { params });
     return GetStorePostsResponse.parse(response);
   },
   getStorePostById: async (id: number) => {
