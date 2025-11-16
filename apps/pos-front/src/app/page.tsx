@@ -1,14 +1,12 @@
 'use client';
 
 import { useState } from 'react';
+
+import { Button } from '@repo/design-system/components/b2b';
 import dayjs from 'dayjs';
 import 'dayjs/locale/ko';
 
-import { Button } from '@repo/design-system/components/b2b';
-
 dayjs.locale('ko');
-
-type TabType = '주문' | '리워드' | '웨이팅';
 
 interface Notice {
   id: number;
@@ -56,7 +54,6 @@ const DashboardPage = () => {
   };
 
   const startOfMonth = currentDate.startOf('month');
-  const endOfMonth = currentDate.endOf('month');
   const daysInMonth = currentDate.daysInMonth();
   const firstDayOfWeek = startOfMonth.day();
 
