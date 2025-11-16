@@ -14,6 +14,8 @@ import {
   CreateStorePointShopItemBody,
   UpdateStoreBody,
   GetStorePointShopNullResponse,
+  GetStoreStatisticsResponse,
+  GetStoreStatisticsParams,
 } from './type';
 import { api } from '../../shared';
 
@@ -76,5 +78,11 @@ export const storeApi = {
   },
   deleteStore: async (id: number) => {
     await api.delete(`/ceo/stores/${id}`);
+  },
+  getStatistics: async ({ storeId, date }: GetStoreStatisticsParams) => {
+    const response = await api.get(`${ENDPOINT}/${storeId}/statistics`, {
+      params: { date },
+    });
+    return GetStoreStatisticsResponse.parse(response);
   },
 };

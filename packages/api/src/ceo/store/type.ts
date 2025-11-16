@@ -201,3 +201,24 @@ export type UpdateStoreBody = {
   latitude: Store['latitude'];
   longitude: Store['longitude'];
 };
+
+// Statistics
+export const CeoStoreStatisticsResponse = z.object({
+  totalSales: z.number(),
+  totalSalesChangeRate: z.number(),
+  totalVisitors: z.number(),
+  visitorChangeRate: z.number(),
+  annualTargetSalesRate: z.number(),
+  currentWaitingCount: z.number(),
+  expectedWaitingTime: z.number(),
+  lastEntranceMinutesAgo: z.number(),
+});
+
+export type CeoStoreStatistics = z.infer<typeof CeoStoreStatisticsResponse>;
+
+export const GetStoreStatisticsResponse = ApiResponse(CeoStoreStatisticsResponse);
+
+export type GetStoreStatisticsParams = {
+  storeId: number;
+  date: string; // YYYY-MM-DD format
+};
