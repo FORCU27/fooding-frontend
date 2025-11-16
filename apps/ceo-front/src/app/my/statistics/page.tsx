@@ -15,8 +15,14 @@ const StatisticsPage = () => {
   // 선택된 날짜 상태 관리
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
 
-  // Get selected date in YYYY-MM-DD format
-  const dateString = selectedDate.toISOString().split('T')[0] || '';
+  // Get selected date in YYYY-MM-DD format (로컬 타임존 유지)
+  const formatDateToString = (date: Date) => {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  };
+  const dateString = formatDateToString(selectedDate);
 
   const {
     data: statisticsResponse,
