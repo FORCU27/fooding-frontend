@@ -17,6 +17,7 @@ import { EllipsisVerticalIcon } from '@repo/design-system/icons';
 import { useQuery, useMutation, useQueryClient, keepPreviousData } from '@tanstack/react-query';
 import type { ColumnDef } from '@tanstack/react-table';
 
+import ConfirmModal from '@/components/ConfirmModal';
 import { useStore } from '@/context/StoreContext';
 
 const PAGE_SIZE = 10;
@@ -29,6 +30,11 @@ const NewsPage = () => {
 
   const [sortType, setSortType] = useState<'RECENT' | 'OLD'>('RECENT');
   const [pageNum, setPageNum] = useState(1);
+
+  const [confirmOpen, setConfirmOpen] = useState(false);
+  const [confirmType, setConfirmType] = useState<'toggle' | 'delete' | null>(null);
+  const [targetId, setTargetId] = useState<number | null>(null);
+  const [nextActiveStatus, setNextActiveStatus] = useState<'active' | 'inactive' | null>(null);
 
   const { data } = useQuery({
     queryKey: [queryKeys.ceo.storePost.list, storeId, sortType, pageNum],
@@ -69,6 +75,21 @@ const NewsPage = () => {
     onError: () => alert('삭제에 실패했습니다.'),
   });
 
+  const handleConfirm = () => {
+    if (confirmType === 'toggle' && targetId && nextActiveStatus) {
+      toggleActivatePost.mutate({ id: targetId, isActive: nextActiveStatus });
+    }
+
+    if (confirmType === 'delete' && targetId) {
+      deletePost.mutate(targetId);
+    }
+
+    setConfirmOpen(false);
+    setConfirmType(null);
+    setTargetId(null);
+    setNextActiveStatus(null);
+  };
+
   const columns: ColumnDef<StorePost>[] = useMemo(
     () => [
       {
@@ -76,9 +97,9 @@ const NewsPage = () => {
         id: 'photo',
         size: 68,
         cell: ({ row }) =>
-          row.original.images ? (
+          row.original.images?.[0] ? (
             <img
-              src={row.original.images?.[0]?.imageUrl}
+              src={row.original.images[0].imageUrl}
               className='size-[56px] object-cover rounded-md'
             />
           ) : (
@@ -102,15 +123,16 @@ const NewsPage = () => {
         size: 95,
         cell: ({ row }) => {
           const { id, isActive } = row.original;
+
           return (
             <div className='flex justify-center'>
               <Switch
                 checked={!!isActive}
                 onChange={(checked) => {
-                  toggleActivatePost.mutate({
-                    id,
-                    isActive: checked ? 'active' : 'inactive',
-                  });
+                  setTargetId(id);
+                  setNextActiveStatus(checked ? 'active' : 'inactive');
+                  setConfirmType('toggle');
+                  setConfirmOpen(true);
                 }}
               />
             </div>
@@ -145,15 +167,14 @@ const NewsPage = () => {
                 </button>
               </DropdownMenu.Trigger>
               <DropdownMenu.Content side='left'>
-                <DropdownMenu.Item
-                  variant='default'
-                  // onClick={() => deleteMutation.mutate(row.original.id)}
-                >
-                  수정
-                </DropdownMenu.Item>
+                <DropdownMenu.Item variant='default'>수정</DropdownMenu.Item>
                 <DropdownMenu.Item
                   variant='danger'
-                  onClick={() => deletePost.mutate(row.original.id)}
+                  onClick={() => {
+                    setTargetId(row.original.id);
+                    setConfirmType('delete');
+                    setConfirmOpen(true);
+                  }}
                 >
                   삭제
                 </DropdownMenu.Item>
@@ -174,6 +195,7 @@ const NewsPage = () => {
           소식작성
         </Button>
       </div>
+
       <div className='bg-white rounded-lg shadow overflow-hidden'>
         <div className='flex justify-end p-4'>
           <SortToggle value={sortType} onSortChange={setSortType} />
@@ -188,6 +210,7 @@ const NewsPage = () => {
           }}
         />
       </div>
+
       {pageInfo && (
         <div className='flex justify-center mt-4 mb-[80px]'>
           <Pagination
@@ -197,6 +220,13 @@ const NewsPage = () => {
           />
         </div>
       )}
+
+      <ConfirmModal
+        open={confirmOpen}
+        title={confirmType === 'toggle' ? '공개 여부를 변경하시겠습니까?' : '삭제하시겠습니까?'}
+        onConfirm={handleConfirm}
+        onCancel={() => setConfirmOpen(false)}
+      />
     </div>
   );
 };
