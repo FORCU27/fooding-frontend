@@ -39,12 +39,26 @@ export const deviceApi = {
     return CeoDeviceResponseSchema.parse(response);
   },
 
-  getDeviceLogs: async ({ deviceId, pageNum = 1, pageSize = 10 }: GetDeviceLogsParams) => {
+  getDeviceLogs: async ({
+    deviceId,
+    pageNum = 1,
+    pageSize = 10,
+    searchString,
+    serviceType,
+  }: GetDeviceLogsParams) => {
     const params = new URLSearchParams({
       deviceId: deviceId.toString(),
       pageNum: pageNum.toString(),
       pageSize: pageSize.toString(),
     });
+
+    if (searchString) {
+      params.append('searchString', searchString);
+    }
+
+    if (serviceType) {
+      params.append('serviceType', serviceType);
+    }
 
     const response = await api.get(`${ENDPOINT}/logs?${params.toString()}`);
     return GetDeviceLogsResponse.parse(response);

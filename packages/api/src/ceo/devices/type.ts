@@ -44,4 +44,6 @@ export type GetDeviceLogsParams = {
   deviceId: number;
   pageNum?: number;
   pageSize?: number;
+  searchString?: string;
+  serviceType?: string;
 };
