@@ -25,6 +25,8 @@ export const Review = z.object({
   parentId: z.number(),
   writerId: z.number(),
   writerName: z.string(),
+  writerProfileImage: z.string(),
+  // replies: any,
   writerReviewCount: z.number(),
   createdAt: z.string(),
   totalScore: z.number().optional(),
