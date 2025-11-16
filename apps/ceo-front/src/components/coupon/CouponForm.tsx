@@ -369,25 +369,24 @@ export const CouponForm = ({
             datePickerMode='range'
             selectedRanges={selectedDateRange}
             onRangeChange={(range) => {
+              let newRange: SelectedRangeItem | null = null;
+
               if (typeof range === 'function') {
-                const newRange = range(selectedDateRange);
-                if (!Array.isArray(newRange) && newRange) {
-                  setSelectedDateRange(newRange);
-                  if (newRange.startDate && newRange.endDate) {
-                    setFormData((prev) => ({
-                      ...prev,
-                      startDate: newRange.startDate.toISOString().split('T')[0] || '',
-                      endDate: newRange.endDate.toISOString().split('T')[0] || '',
-                    }));
-                  }
+                const result = range(selectedDateRange);
+                if (!Array.isArray(result)) {
+                  newRange = result;
                 }
-              } else if (!Array.isArray(range) && range) {
-                setSelectedDateRange(range);
-                if (range.startDate && range.endDate) {
+              } else if (!Array.isArray(range)) {
+                newRange = range;
+              }
+
+              if (newRange) {
+                setSelectedDateRange(newRange);
+                if (newRange.startDate && newRange.endDate) {
                   setFormData((prev) => ({
                     ...prev,
-                    startDate: range.startDate.toISOString().split('T')[0] || '',
-                    endDate: range.endDate.toISOString().split('T')[0] || '',
+                    startDate: newRange.startDate.toISOString().split('T')[0] || '',
+                    endDate: newRange.endDate.toISOString().split('T')[0] || '',
                   }));
                 }
               }

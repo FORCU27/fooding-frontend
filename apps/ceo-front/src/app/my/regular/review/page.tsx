@@ -10,6 +10,9 @@ import ReviewReply from './components/ReviewReply';
 // import { useGetSelf } from '@/hooks/auth/useGetSelf';
 import { formatDotDate } from '@/utils/date';
 
+// 동적 렌더링 강제 (빌드 시 pre-rendering 방지)
+export const dynamic = 'force-dynamic';
+
 const ReviewPage = () => {
   // const { data: me } = useGetSelf();
   // const { data: reviewResponse } = useQuery({
