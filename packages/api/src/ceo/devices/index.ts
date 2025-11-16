@@ -3,6 +3,10 @@ import {
   GetCeoDeviceListResponse,
   GetDeviceLogsResponse,
   GetDeviceLogsParams,
+  ChangeDeviceServiceParams,
+  ChangeDeviceServiceResponse,
+  DisconnectDeviceParams,
+  DisconnectDeviceResponse,
 } from './type';
 import { api } from '../../shared';
 
@@ -62,5 +66,20 @@ export const deviceApi = {
 
     const response = await api.get(`${ENDPOINT}/logs?${params.toString()}`);
     return GetDeviceLogsResponse.parse(response);
+  },
+
+  changeDeviceService: async ({ deviceId, storeId, serviceType }: ChangeDeviceServiceParams) => {
+    const params = new URLSearchParams({
+      serviceType,
+      storeId: storeId.toString(),
+    });
+
+    const response = await api.post(`${ENDPOINT}/${deviceId}/service?${params.toString()}`);
+    return ChangeDeviceServiceResponse.parse(response);
+  },
+
+  disconnectDevice: async ({ deviceId }: DisconnectDeviceParams) => {
+    const response = await api.post(`${ENDPOINT}/${deviceId}/user/disconnect`);
+    return DisconnectDeviceResponse.parse(response);
   },
 };
