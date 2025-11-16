@@ -3,6 +3,9 @@
 import { useParams, useRouter } from 'next/navigation';
 import { useState, useEffect } from 'react';
 
+import type { CeoDeviceResponseSchema, ServiceType } from '@repo/api/ceo';
+import { deviceApi } from '@repo/api/ceo';
+import { queryKeys } from '@repo/api/configs/query-keys';
 import {
   Button,
   Card,
@@ -11,19 +14,15 @@ import {
   Dialog,
   RadioButton,
 } from '@repo/design-system/components/ceo';
-import type { ColumnDef, PaginationState } from '@tanstack/react-table';
-import type { CeoDeviceResponseSchema, ServiceType } from '@repo/api/ceo';
-import { deviceApi } from '@repo/api/ceo';
-import { queryKeys } from '@repo/api/configs/query-keys';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
+import type { ColumnDef, PaginationState } from '@tanstack/react-table';
 import { z } from 'zod/v4';
 
 import { AndroidIcon } from '@/components/icons/AndroidIcon';
 import { IOSIcon } from '@/components/icons/IOSIcon';
+import { useStore } from '@/context/StoreContext';
 import { useDeviceLogs } from '@/hooks/device/useDeviceLogs';
 import { useGetDevices } from '@/hooks/devices/useGetDevices';
-import { useSelectedStoreId } from '@/hooks/useSelectedStoreId';
-import { formatDotDate, formatTime } from '@/utils/date';
 
 type DeviceLog = {
   logId: number;
@@ -40,7 +39,8 @@ const DeviceDetailPage = () => {
   const router = useRouter();
   const queryClient = useQueryClient();
   const deviceId = Number(params.id);
-  const { selectedStoreId, isLoading: isLoadingStoreId } = useSelectedStoreId();
+  const { storeId } = useStore();
+  const selectedStoreId = storeId ? Number(storeId) : null;
 
   const [device, setDevice] = useState<Device | null>(null);
   const [pagination, setPagination] = useState<PaginationState>({
@@ -157,7 +157,7 @@ const DeviceDetailPage = () => {
 
   const logList = logsResponse?.data?.list ?? [];
   const pageInfo = logsResponse?.data?.pageInfo;
-  const isLoading = isLoadingStoreId || isLoadingDevices || isLoadingLogs;
+  const isLoading = isLoadingDevices || isLoadingLogs;
 
   return (
     <div className='space-y-6'>
