@@ -51,6 +51,8 @@ export const DatePickerWithDialog = ({
   hasRadioButtonGroup,
   selectionMode = 'single',
   datePickerMode = 'single',
+  selectedDates,
+  selectedRanges,
   onChange,
   onRangeChange,
 }: DatePickerWithDialogProps) => {
@@ -62,6 +64,26 @@ export const DatePickerWithDialog = ({
 
   const setSelectedDates = onChange ?? (() => {});
   const setSelectedRanges = onRangeChange ?? (() => {});
+
+  // 선택된 날짜 표시용 텍스트 생성
+  const getDisplayText = () => {
+    if (datePickerMode === 'range') {
+      if (selectionMode === 'single' && selectedRanges && !Array.isArray(selectedRanges)) {
+        return formatDateRange(selectedRanges.startDate, selectedRanges.endDate);
+      }
+      if (selectionMode === 'multiple' && Array.isArray(selectedRanges) && selectedRanges.length > 0) {
+        return selectedRanges.map(r => formatDateRange(r.startDate, r.endDate)).join(', ');
+      }
+    } else {
+      if (selectionMode === 'single' && selectedDates && !Array.isArray(selectedDates)) {
+        return formatDate(selectedDates.date);
+      }
+      if (selectionMode === 'multiple' && Array.isArray(selectedDates) && selectedDates.length > 0) {
+        return selectedDates.map(d => formatDate(d.date)).join(', ');
+      }
+    }
+    return placeholder;
+  };
 
   const handleOptionChange = (value: string) => {
     setSelectedOption(value);
@@ -127,7 +149,7 @@ export const DatePickerWithDialog = ({
               'focus-within:ring-2 focus-within:ring-fooding-purple',
             )}
           >
-            {placeholder}
+            {getDisplayText()}
             <Calendar className='w-6 h-6 text-gray-5' />
           </div>
         </Dialog.Trigger>
