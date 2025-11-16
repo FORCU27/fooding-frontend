@@ -3,6 +3,7 @@ import React from 'react';
 import { Slot } from 'radix-ui';
 import { tv, VariantProps } from 'tailwind-variants';
 
+import { MobileProgressDotIcon } from '../../icons';
 import { cn } from '../../utils';
 
 const buttonVariants = tv({
@@ -15,6 +16,7 @@ const buttonVariants = tv({
       primary: 'bg-primary-pink text-white active:bg-pink-button-press',
       gray: 'bg-gray-1 text-black active:bg-[#D4D8DC]',
       outlined: 'border border-gray-3 text-black bg-white active:bg-gray-1',
+      loading: 'bg-primary-pink text-white cursor-not-allowed',
     },
     size: {
       small: 'h-[41px] px-4 rounded-[8px] text-sm',
@@ -47,9 +49,13 @@ export const Button = ({
     <Component
       className={buttonVariants({ variant, size, className })}
       type={asChild ? undefined : 'button'}
+      disabled={props.disabled}
       {...props}
     >
-      {children}
+      <>
+        {variant === 'loading' && <MobileProgressDotIcon className='w-6 h-6' />}
+        {variant !== 'loading' && children}
+      </>
     </Component>
   );
 };
