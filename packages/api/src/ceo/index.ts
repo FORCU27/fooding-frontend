@@ -9,6 +9,7 @@ export * from './store-information';
 export * from './image';
 export * from './coupon';
 export * from './post';
+export * from './notifications';
 export * from './reward';
 export * from './review';
 export * from './bookmark';
