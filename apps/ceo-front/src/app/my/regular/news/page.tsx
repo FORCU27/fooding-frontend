@@ -167,7 +167,11 @@ const NewsPage = () => {
                 </button>
               </DropdownMenu.Trigger>
               <DropdownMenu.Content side='left'>
-                <DropdownMenu.Item variant='default'>수정</DropdownMenu.Item>
+                <DropdownMenu.Item
+                  onClick={() => router.push(`/my/regular/news/${row.original.id}/edit`)}
+                >
+                  수정
+                </DropdownMenu.Item>
                 <DropdownMenu.Item
                   variant='danger'
                   onClick={() => {

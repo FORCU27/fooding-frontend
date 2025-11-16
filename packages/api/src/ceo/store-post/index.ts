@@ -2,6 +2,7 @@ import {
   CreateStorePostParams,
   GetStorePostsParams,
   GetStorePostsResponse,
+  GetStorePostResponse,
   PutStorePostParams,
 } from './type';
 import { api } from '../../shared';
@@ -17,7 +18,7 @@ export const storePostApi = {
   },
   getStorePostById: async (id: number) => {
     const response = await api.get(`${ENDPOINT}/${id}`);
-    return GetStorePostsResponse.parse(response);
+    return GetStorePostResponse.parse(response);
   },
   createStorePost: async (body: CreateStorePostParams) => {
     await api.post(ENDPOINT, body);
