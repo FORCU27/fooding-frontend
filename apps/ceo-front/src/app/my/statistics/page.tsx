@@ -3,7 +3,7 @@
 import { useState } from 'react';
 
 import { DatePicker } from '@repo/design-system/components/ceo';
-import { Area, AreaChart, ResponsiveContainer, XAxis, YAxis } from 'recharts';
+import { Area, AreaChart, CartesianGrid, ResponsiveContainer, XAxis, YAxis } from 'recharts';
 
 import { useStore } from '@/context/StoreContext';
 import { useStatistics } from '@/hooks/store/useStatistics';
@@ -227,67 +227,50 @@ const StatisticsPage = () => {
             </div>
           </div>
 
-          {/* 웨이팅 상태 및 차트 카드 */}
+          {/* 웨이팅 현황 차트 카드 */}
           {showSkeleton ? (
-            <div className='bg-white rounded-lg shadow-sm p-6 animate-pulse lg:col-span-2'>
-              <div className='grid grid-cols-3 gap-4 mb-6'>
-                {[1, 2, 3].map((i) => (
-                  <div key={i} className='text-center'>
-                    <div className='h-8 bg-gray-200 rounded w-20 mx-auto mb-2'></div>
-                    <div className='h-4 bg-gray-200 rounded w-16 mx-auto'></div>
-                  </div>
-                ))}
-              </div>
-              <div className='h-48 bg-gray-200 rounded'></div>
+            <div className='bg-white rounded-lg shadow-sm p-8 animate-pulse lg:col-span-2'>
+              <div className='h-6 bg-gray-200 rounded w-32 mb-8'></div>
+              <div className='h-60 bg-gray-200 rounded'></div>
             </div>
           ) : (
-            <div className='bg-white rounded-lg shadow-sm p-6 lg:col-span-2'>
-              <div className='grid grid-cols-3 gap-4 mb-6'>
-                <div className='text-center'>
-                  <div className='text-2xl font-bold text-gray-900'>
-                    {formatNumber(statistics.currentWaitingCount)} 팀
-                  </div>
-                  <div className='text-sm text-gray-600'>현재 웨이팅</div>
-                </div>
-                <div className='text-center'>
-                  <div className='text-2xl font-bold text-gray-900'>
-                    {statistics.expectedWaitingTime} 분
-                  </div>
-                  <div className='text-sm text-gray-600'>예상 시간</div>
-                </div>
-                <div className='text-center'>
-                  <div className='text-2xl font-bold text-gray-900'>
-                    {statistics.lastEntranceMinutesAgo} 분전
-                  </div>
-                  <div className='text-sm text-gray-600'>최근 입장</div>
-                </div>
-              </div>
+            <div className='bg-white rounded-lg shadow-sm p-8 lg:col-span-2'>
+              <h2 className='text-gray-600 text-sm mb-2'>웨이팅 현황</h2>
 
-              <div className='h-48'>
+              <div className='h-60'>
                 <ResponsiveContainer width='100%' height='100%'>
                   <AreaChart data={chartData}>
+                    <defs>
+                      <linearGradient id='colorValue' x1='0' y1='0' x2='0' y2='1'>
+                        <stop offset='0%' stopColor='#8B5CF6' stopOpacity={0.8} />
+                        <stop offset='100%' stopColor='#8B5CF6' stopOpacity={0.1} />
+                      </linearGradient>
+                    </defs>
+                    <CartesianGrid strokeDasharray='0' stroke='#E5E7EB' vertical={false} />
                     <XAxis
                       dataKey='time'
                       axisLine={false}
                       tickLine={false}
-                      tick={{ fontSize: 12, fill: '#6B7280' }}
+                      tick={{ fontSize: 14, fill: '#9CA3AF' }}
+                      dy={10}
                     />
                     <YAxis
+                      orientation='right'
                       axisLine={false}
                       tickLine={false}
-                      tick={{ fontSize: 12, fill: '#6B7280' }}
+                      tick={{ fontSize: 14, fill: '#D1D5DB' }}
                       domain={[0, 100]}
                       ticks={[0, 10, 30, 50, 70, 100]}
+                      dx={10}
                     />
                     <Area
                       type='monotone'
                       dataKey='value'
                       stroke='#8B5CF6'
-                      fill='#8B5CF6'
-                      fillOpacity={0.3}
-                      strokeWidth={2}
-                      dot={{ fill: '#8B5CF6', strokeWidth: 2, r: 4 }}
-                      activeDot={{ r: 6, fill: '#8B5CF6' }}
+                      fill='url(#colorValue)'
+                      strokeWidth={3}
+                      dot={false}
+                      activeDot={{ r: 6, fill: '#8B5CF6', strokeWidth: 0 }}
                     />
                   </AreaChart>
                 </ResponsiveContainer>
