@@ -14,3 +14,4 @@ export * from './reward';
 export * from './review';
 export * from './bookmark';
 export * from './users';
+export * from './store-post';
