@@ -73,6 +73,9 @@ export const queryKeys = {
     bookmark: {
       list: 'ceoBookmarkList',
     },
+    storePost: {
+      list: 'ceoStorePosts',
+    },
     review: 'ceoReviewList',
   },
   pos: {},

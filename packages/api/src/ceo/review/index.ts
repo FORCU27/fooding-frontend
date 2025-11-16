@@ -2,7 +2,6 @@ import { GetReviewParams, GetReviewResponse, PostReviewReplyParams } from './typ
 import { api } from '../../shared';
 
 export * from './type';
-export * from './mock';
 
 const ENDPOINT = '/ceo/review';
 

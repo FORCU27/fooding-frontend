@@ -49,8 +49,8 @@ const ReviewPage = () => {
         '잘먹었습니다. 감사합니다. 단골인데 항상 챙겨주시고 사장님도 너무 친절해요~^^ 어쩌구 저쩌구 너무 맛잇고 맛좋코 또 오고싶고 어쩌ㅇ구쩌구...잘먹었습니다. 감사합니다. 단골인데 항상 챙겨주시고 사장님도 너무 친절해요~^^ 어쩌구 저쩌구 너무 맛잇고 맛좋코 또 오고싶고 어쩌ㅇ구쩌구...잘먹었습니다. 감사합니다. 단골인데 항상 챙겨주시고 사장님도 너무 친절해요~^^ 어쩌구 저쩌구 너무 맛잇고 맛좋코 또 오고싶고 어쩌ㅇ구쩌구...',
     },
   ];
-  const reviews = reviewResponse?.data?.list.length > 0 ? reviewResponse?.data.list : mockReviews;
-  console.log('reviews', reviews);
+  const reviews = mockReviews;
+  console.log('reviewResponse', reviewResponse);
 
   return (
     <CardForm className='mb-[180px]'>
