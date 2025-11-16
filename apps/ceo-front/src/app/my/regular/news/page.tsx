@@ -47,7 +47,20 @@ const NewsPage = () => {
   const list = data?.data.list ?? [];
   const pageInfo = data?.data?.pageInfo;
 
-  const deleteMutation = useMutation({
+  const toggleActivatePost = useMutation({
+    mutationFn: ({ id, isActive }: { id: number; isActive: 'active' | 'inactive' }) =>
+      storePostApi.activateStorePost(id, isActive),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: [queryKeys.ceo.storePost.list, storeId],
+      });
+    },
+    onError: () => {
+      alert('공개 여부 변경에 실패했습니다.');
+    },
+  });
+
+  const deletePost = useMutation({
     mutationFn: (id: number) => storePostApi.deleteStorePost(id),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [queryKeys.ceo.storePost.list, storeId] });
@@ -87,14 +100,22 @@ const NewsPage = () => {
         header: '공개여부',
         accessorKey: 'status',
         size: 95,
-        cell: ({ row }) => (
-          <div className='flex justify-center'>
-            <Switch
-              checked={row.original.isActive === true}
-              // onChange
-            />
-          </div>
-        ),
+        cell: ({ row }) => {
+          const { id, isActive } = row.original;
+          return (
+            <div className='flex justify-center'>
+              <Switch
+                checked={!!isActive}
+                onChange={(checked) => {
+                  toggleActivatePost.mutate({
+                    id,
+                    isActive: checked ? 'active' : 'inactive',
+                  });
+                }}
+              />
+            </div>
+          );
+        },
       },
       {
         header: '조회',
@@ -132,7 +153,7 @@ const NewsPage = () => {
                 </DropdownMenu.Item>
                 <DropdownMenu.Item
                   variant='danger'
-                  onClick={() => deleteMutation.mutate(row.original.id)}
+                  onClick={() => deletePost.mutate(row.original.id)}
                 >
                   삭제
                 </DropdownMenu.Item>

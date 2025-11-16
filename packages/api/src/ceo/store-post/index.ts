@@ -28,7 +28,7 @@ export const storePostApi = {
   editStorePost: async (storePostId: number, body: PutStorePostParams) => {
     await api.put(`${ENDPOINT}/${storePostId}`, body);
   },
-  activateStorePost: async (storePostId: number, isActive: boolean) => {
+  activateStorePost: async (storePostId: number, isActive: 'active' | 'inactive') => {
     await api.put(`${ENDPOINT}/${storePostId}/${isActive}`);
   },
 };
