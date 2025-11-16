@@ -15,6 +15,7 @@ type DatePickerProps = {
   selectionMode?: 'single' | 'multiple';
   onChange?: (date: Date | Date[] | null) => void;
   onRangeChange?: (startDate: Date | null, endDate: Date | null) => void;
+  disablePast?: boolean; // 과거 날짜 선택 비활성화 (기본값: true)
   className?: string;
 } & Omit<InputHTMLAttributes<HTMLInputElement>, 'value' | 'onChange'>;
 
@@ -32,6 +33,7 @@ export const DatePicker = forwardRef<HTMLInputElement, DatePickerProps>(
       selectionMode = 'single',
       onChange,
       onRangeChange,
+      disablePast = true,
       className,
       ...props
     },
@@ -103,7 +105,7 @@ export const DatePicker = forwardRef<HTMLInputElement, DatePickerProps>(
       const selected = new Date(year, month, day);
       selected.setHours(0, 0, 0, 0);
 
-      if (selected < today) return;
+      if (disablePast && selected < today) return;
 
       if (mode === 'single') {
         if (selectionMode === 'single') {
@@ -269,7 +271,7 @@ export const DatePicker = forwardRef<HTMLInputElement, DatePickerProps>(
                     onClick={() => onSelectDate(day)}
                     onMouseEnter={() => mode === 'range' && setHoverDate(dateObj)}
                     onMouseLeave={() => mode === 'range' && setHoverDate(null)}
-                    disabled={isPast}
+                    disabled={disablePast && isPast}
                     className={cn(
                       'rounded-full w-8 h-8 flex body-5 items-center justify-center transition-colors relative',
                       // 선택된 날짜일 때 (단일 모드 또는 범위 모드의 시작/끝)
@@ -279,7 +281,7 @@ export const DatePicker = forwardRef<HTMLInputElement, DatePickerProps>(
                           isInRange
                           ? 'bg-fooding-purple/20 text-black cursor-pointer'
                           : // 과거 날짜
-                            isPast
+                            disablePast && isPast
                             ? 'text-gray-4 cursor-not-allowed bg-transparent hover:bg-transparent hover:text-gray-4'
                             : // 활성화된 날짜
                               'text-black cursor-pointer hover:bg-fooding-purple hover:text-white',
@@ -288,14 +290,14 @@ export const DatePicker = forwardRef<HTMLInputElement, DatePickerProps>(
                         !isStartDate &&
                         !isEndDate &&
                         !isInRange &&
-                        !isPast &&
+                        !(disablePast && isPast) &&
                         'text-error-red',
                       isSaturday &&
                         !isSelected &&
                         !isStartDate &&
                         !isEndDate &&
                         !isInRange &&
-                        !isPast &&
+                        !(disablePast && isPast) &&
                         'text-info-blue',
                       isToday &&
                         !isSelected &&
@@ -304,7 +306,7 @@ export const DatePicker = forwardRef<HTMLInputElement, DatePickerProps>(
                         'border border-fooding-purple',
                     )}
                     aria-current={isSelected || isStartDate || isEndDate ? 'date' : undefined}
-                    aria-disabled={isPast}
+                    aria-disabled={disablePast && isPast}
                   >
                     {day}
                   </button>
