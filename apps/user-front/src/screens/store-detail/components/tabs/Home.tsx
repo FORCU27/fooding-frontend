@@ -52,11 +52,7 @@ export const StoreDetailHomeTab = ({
     isPending: isReviewsPending,
     isFetching: isReviewsFetching,
   } = useGetStoreReviewList(store.id);
-  const {
-    data: stores,
-    isPending: isStoresPending,
-    isFetching: isStoresFetching,
-  } = useGetStoreList({ sortType: 'RECENT' });
+  const { data: stores, isPending: isStoresPending } = useGetStoreList({ sortType: 'RECENT' });
   const {
     data: immediateEntryStores,
     isPending: isImmediatePending,
