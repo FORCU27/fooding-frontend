@@ -5,6 +5,7 @@ import { Masonry } from 'react-plock';
 
 import { ImageGallery } from '@/components/ImageGallery';
 import { IntersectionObserver } from '@/components/IntersectionObserver';
+import { LoadingScreen } from '@/components/Layout/LoadingScreen';
 import { Section } from '@/components/Layout/Section';
 import { useGetInfiniteStoreImageList } from '@/hooks/store/useGetInfiniteStoreImageList';
 
@@ -13,7 +14,10 @@ type StoreDetailPhotoTabProps = {
 };
 
 export const StoreDetailPhotoTab = ({ store }: StoreDetailPhotoTabProps) => {
-  const { images, fetchNextPage } = useGetInfiniteStoreImageList({ storeId: store.id });
+  const { images, fetchNextPage, isPending, isFetching, isFetchingNextPage } =
+    useGetInfiniteStoreImageList({
+      storeId: store.id,
+    });
 
   const onImageClick = (id: number) => {
     const index = images.findIndex((img) => img.id === id);
@@ -28,6 +32,8 @@ export const StoreDetailPhotoTab = ({ store }: StoreDetailPhotoTabProps) => {
       />
     ));
   };
+
+  if (isPending || isFetching || isFetchingNextPage) return <LoadingScreen />;
 
   if (images.length === 0) {
     return <EmptyState className='py-[100px]' title='올라온 사진이 없어요!' />;

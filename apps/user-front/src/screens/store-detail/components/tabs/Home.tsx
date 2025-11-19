@@ -9,6 +9,7 @@ import {
 } from '@repo/design-system/icons';
 
 import { Divider } from '@/components/Layout/Divider';
+import { LoadingScreen } from '@/components/Layout/LoadingScreen';
 import { Section } from '@/components/Layout/Section';
 import { MenuCard } from '@/components/Store/MenuCard';
 import { ReviewsList } from '@/components/Store/ReviewsList';
@@ -41,13 +42,42 @@ export const StoreDetailHomeTab = ({
   onSeeMoreReviews,
   onSeeMoreMenus,
 }: StoreDetailHomeTabProps) => {
-  const { data: storeMenus } = useGetStoreMenuList(store.id);
-  const { data: reviews } = useGetStoreReviewList(store.id);
-  const { data: stores } = useGetStoreList({ sortType: 'RECENT' });
-  const { data: immediateEntryStores } = useGetStoreImmediateEntryList({
+  const {
+    data: storeMenus,
+    isPending: isMenusPending,
+    isFetching: isMenusFetching,
+  } = useGetStoreMenuList(store.id);
+  const {
+    data: reviews,
+    isPending: isReviewsPending,
+    isFetching: isReviewsFetching,
+  } = useGetStoreReviewList(store.id);
+  const {
+    data: stores,
+    isPending: isStoresPending,
+    isFetching: isStoresFetching,
+  } = useGetStoreList({ sortType: 'RECENT' });
+  const {
+    data: immediateEntryStores,
+    isPending: isImmediatePending,
+    isFetching: isImmediateFetching,
+  } = useGetStoreImmediateEntryList({
     pageNum: 1,
     pageSize: 10,
   });
+
+  const isLoading =
+    isMenusPending ||
+    isMenusFetching ||
+    isReviewsPending ||
+    isReviewsFetching ||
+    isStoresPending ||
+    isImmediatePending ||
+    isImmediateFetching;
+
+  if (isLoading) {
+    return <LoadingScreen />;
+  }
 
   return (
     <div className='flex flex-col'>

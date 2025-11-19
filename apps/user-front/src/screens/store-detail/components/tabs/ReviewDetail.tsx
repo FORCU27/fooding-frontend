@@ -2,6 +2,7 @@ import { StoreInfo } from '@repo/api/user';
 import { EmptyState } from '@repo/design-system/components/b2c';
 import { ChevronDownIcon, StarIcon } from '@repo/design-system/icons';
 
+import { LoadingScreen } from '@/components/Layout/LoadingScreen';
 import { Section } from '@/components/Layout/Section';
 import { ReviewsDetailList } from '@/components/Store/ReviewsDetailList';
 import { useGetStoreDetail } from '@/hooks/store/useGetStoreDetail';
@@ -13,8 +14,16 @@ type StoreDetailReviewTabProps = {
 };
 
 export const StoreDetailReviewTab = ({ store }: StoreDetailReviewTabProps) => {
-  const { data: storeInfo } = useGetStoreDetail(store.id);
-  const { data: reviews } = useGetStoreReviewList(store.id);
+  const {
+    data: storeInfo,
+    isPending: storeInfoPending,
+    isFetching: storeInfoFetching,
+  } = useGetStoreDetail(store.id);
+  const {
+    data: reviews,
+    isPending: reviewsPending,
+    isFetching: reviewsFetching,
+  } = useGetStoreReviewList(store.id);
 
   const ratingCounts: { [score: number]: number } = (() => {
     const counts: { [score: number]: number } = {};
@@ -26,6 +35,10 @@ export const StoreDetailReviewTab = ({ store }: StoreDetailReviewTabProps) => {
 
     return counts;
   })();
+
+  const isLoading = storeInfoPending || storeInfoFetching || reviewsPending || reviewsFetching;
+
+  if (isLoading) return <LoadingScreen />;
 
   return (
     <Section className='flex flex-col'>
