@@ -20,7 +20,7 @@ const buttonVariants = tv({
     size: {
       small: 'h-[41px] px-4 rounded-[8px] body-5',
       banner: 'h-[36px] px-3 rounded-[8px] body-5',
-      large: 'h-[56px] rounded-[12px] subtitle-5 px-[139px]',
+      large: 'w-full h-[56px] rounded-[12px] subtitle-5',
     },
   },
   defaultVariants: {

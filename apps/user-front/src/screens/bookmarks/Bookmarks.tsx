@@ -6,15 +6,20 @@ import { EmptyState } from '@repo/design-system/components/b2c';
 import { ActivityComponentType } from '@stackflow/react/future';
 
 import { LoadingToggle } from '@/components/Devtool/LoadingToggle';
+import BottomTab from '@/components/Layout/BottomTab';
 import { DefaultErrorBoundary } from '@/components/Layout/DefaultErrorBoundary';
 import { Header } from '@/components/Layout/Header';
+import { LoadingScreen } from '@/components/Layout/LoadingScreen';
 import { Screen } from '@/components/Layout/Screen';
 import { StoreListItem } from '@/components/Store/StoreListItem';
 import { useGetBookmarkList } from '@/hooks/bookmark/useGetBookmarkList';
 
 export const BookmarkListScreen: ActivityComponentType<'BookmarkListScreen'> = () => {
   return (
-    <Screen header={<Header title='찜해 둔 레스토랑' left={<Header.Back />} />}>
+    <Screen
+      header={<Header title='찜해 둔 레스토랑' left={<Header.Back />} />}
+      bottomTab={<BottomTab currentTab='mypage' />}
+    >
       <DefaultErrorBoundary>
         <LoadingToggle fallback={<LoadingFallback />}>
           <Suspense fallback={<LoadingFallback />}>
@@ -27,10 +32,16 @@ export const BookmarkListScreen: ActivityComponentType<'BookmarkListScreen'> = (
 };
 
 const BookmarkContent = () => {
-  const { data: bookmarks } = useGetBookmarkList({
+  const {
+    data: bookmarks,
+    isPending,
+    isFetching,
+  } = useGetBookmarkList({
     pageNum: 1,
     pageSize: 100,
   });
+
+  if (isPending || isFetching) return <LoadingScreen />;
 
   if (bookmarks.list.length === 0) {
     return <EmptyState className='flex-1' title='북마크가 아무것도 없어요!' />;
@@ -38,9 +49,9 @@ const BookmarkContent = () => {
 
   return (
     <ul className='px-grid-margin flex flex-col divide-y divide-gray-2'>
-      {bookmarks.list.map((bookmark) => (
+      {bookmarks.list.map((bookmark, idx) => (
         <StoreListItem
-          key={bookmark.id}
+          key={`${bookmark.id}-${idx}`}
           store={{
             address: '제주 제주시 서해안로 654', // TODO: address 추가
             category: 'ASIAN', // TODO: category 추가

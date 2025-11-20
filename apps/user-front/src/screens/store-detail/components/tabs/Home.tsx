@@ -213,7 +213,10 @@ const PathfindingButton = ({ className, latitude, longitude, name }: Pathfinding
       className={className}
       variant='gray'
       size='large'
-      onClick={() => getKakaoMapDirectionUrl({ latitude, longitude, name })}
+      onClick={() => {
+        const url = getKakaoMapDirectionUrl({ latitude, longitude, name });
+        window.open(url, '_blank');
+      }}
     >
       <CompassIcon />
       <span className='ml-1'>길찾기</span>
