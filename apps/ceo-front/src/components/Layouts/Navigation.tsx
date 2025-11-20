@@ -9,7 +9,6 @@ import {
   B2BCeoSidebarReqularIcon,
   B2BCeoSidebarDeviceIcon,
   B2BCeoSidebarRewardIcon,
-  B2BCeoSidebarStatisticsIcon,
   ChevronDownIcon,
   ChevronRightIcon,
 } from '@repo/design-system/icons';

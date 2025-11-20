@@ -167,8 +167,6 @@ const MenusPage = () => {
           const serverCat = menuCategories.find((mc) => mc.id.toString() === cat.id);
           if (!serverCat) return cat;
 
-          const cachedMenuItems = menuCacheRef.current[serverCat.id] || [];
-
           if (selectedCategoryId === serverCat.id) {
             return {
               id: cat.id,
@@ -188,8 +186,6 @@ const MenusPage = () => {
         // 초기 로드: 서버 순서로 설정
         const sortedCategories = [...menuCategories].sort((a, b) => a.sortOrder - b.sortOrder);
         const mappedCategories: Category[] = sortedCategories.map((cat) => {
-          const cachedMenuItems = menuCacheRef.current[cat.id] || [];
-
           if (selectedCategoryId === cat.id) {
             return {
               id: cat.id.toString(),
@@ -207,6 +203,7 @@ const MenusPage = () => {
         setCategories(mappedCategories);
       }
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [menuCategories, menuData, selectedCategoryId]);
 
   const handleCategoriesChange = (newCategories: Category[]) => {

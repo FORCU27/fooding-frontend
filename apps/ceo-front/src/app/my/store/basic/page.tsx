@@ -56,11 +56,9 @@ const BasicInfoPage = () => {
 
   // React Hook Form 설정
   const {
-    register,
     handleSubmit,
     setValue,
     watch,
-    reset,
     formState: { errors },
   } = useForm<StoreFormData>({
     resolver: zodResolver(storeFormSchema),
@@ -196,13 +194,7 @@ const BasicInfoPage = () => {
   };
 
   const onSubmit = (data: StoreFormData) => {
-    console.log('Form submitted with data:', data);
-    console.log('Form errors:', errors);
-    console.log('selectedStoreId:', selectedStoreId);
-    console.log('store:', store);
-
     if (!store || !selectedStoreId) {
-      console.log('Missing store or selectedStoreId', { store, selectedStoreId });
       toast.error('가게 정보를 불러올 수 없습니다. 페이지를 새로고침 해주세요.');
       return;
     }
@@ -221,14 +213,10 @@ const BasicInfoPage = () => {
       longitude: data.longitude || store.longitude || undefined,
     };
 
-    console.log('Put body:', putBody);
-
     // undefined 값만 제거 (빈 문자열은 유지)
     const cleanedBody = Object.fromEntries(
       Object.entries(putBody).filter(([, value]) => value !== undefined),
     ) as PutStoreBody;
-
-    console.log('Cleaned body:', cleanedBody);
 
     putStoreMutation.mutate(
       { id: selectedStoreId, body: cleanedBody },

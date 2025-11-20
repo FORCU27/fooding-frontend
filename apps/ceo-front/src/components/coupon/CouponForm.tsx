@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 
+import { toast } from '@repo/design-system/components/b2c';
 import {
   Button,
   Card,
@@ -16,7 +17,6 @@ import {
   ToggleGroupItem,
   type SelectedRangeItem,
 } from '@repo/design-system/components/ceo';
-import { toast } from '@repo/design-system/components/b2c';
 
 export interface CouponFormData {
   couponName?: string; // gift 모드에서는 선택적
