@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from 'react';
 
 import { menuApi, type MenuItem as ApiMenuItem } from '@repo/api/ceo';
 import { queryKeys } from '@repo/api/configs/query-keys';
+import { toast, Toaster } from '@repo/design-system/components/b2c';
 import {
   CardForm,
   Card,
@@ -135,9 +136,6 @@ const MenusPage = () => {
   // API 데이터로 카테고리 및 메뉴 초기화
   useEffect(() => {
     if (menuCategories) {
-      // sortOrder로 정렬
-      const sortedCategories = [...menuCategories].sort((a, b) => a.sortOrder - b.sortOrder);
-
       // 현재 선택된 카테고리의 메뉴 데이터가 있으면 캐시에 저장
       if (selectedCategoryId && menuData) {
         const menuItems = menuData.list.map((menu: ApiMenuItem) => ({
@@ -162,35 +160,52 @@ const MenusPage = () => {
         menuCacheRef.current[selectedCategoryId] = menuItems;
       }
 
-      const mappedCategories: Category[] = sortedCategories.map((cat) => {
-        // 캐시에서 메뉴 가져오기
-        const cachedMenuItems = menuCacheRef.current[cat.id] || [];
+      // 기존 categories가 있으면 순서 유지, 없으면 서버 순서로 초기화
+      if (categories.length > 0) {
+        // 기존 순서 유지하면서 items만 업데이트
+        const updatedCategories = categories.map((cat) => {
+          const serverCat = menuCategories.find((mc) => mc.id.toString() === cat.id);
+          if (!serverCat) return cat;
 
-        // 선택된 카테고리만 메뉴 표시 (캐시된 데이터 우선 사용)
-        if (selectedCategoryId === cat.id) {
-          // 새 데이터가 있으면 사용, 없으면 캐시 사용
-          if (menuData) {
+          const cachedMenuItems = menuCacheRef.current[serverCat.id] || [];
+
+          if (selectedCategoryId === serverCat.id) {
+            return {
+              id: cat.id,
+              name: serverCat.name,
+              items: menuCacheRef.current[serverCat.id] || [],
+            };
+          }
+
+          return {
+            id: cat.id,
+            name: serverCat.name,
+            items: [],
+          };
+        });
+        setCategories(updatedCategories);
+      } else {
+        // 초기 로드: 서버 순서로 설정
+        const sortedCategories = [...menuCategories].sort((a, b) => a.sortOrder - b.sortOrder);
+        const mappedCategories: Category[] = sortedCategories.map((cat) => {
+          const cachedMenuItems = menuCacheRef.current[cat.id] || [];
+
+          if (selectedCategoryId === cat.id) {
             return {
               id: cat.id.toString(),
               name: cat.name,
               items: menuCacheRef.current[cat.id] || [],
             };
           }
+
           return {
             id: cat.id.toString(),
             name: cat.name,
-            items: cachedMenuItems,
+            items: [],
           };
-        }
-
-        // 선택되지 않은 카테고리는 빈 배열
-        return {
-          id: cat.id.toString(),
-          name: cat.name,
-          items: [],
-        };
-      });
-      setCategories(mappedCategories);
+        });
+        setCategories(mappedCategories);
+      }
     }
   }, [menuCategories, menuData, selectedCategoryId]);
 
@@ -350,7 +365,17 @@ const MenusPage = () => {
             onAdd={handleAddCategory}
             trigger={<MenuButton>카테고리 등록</MenuButton>}
           />
-          <MenuButton onClick={() => setShowAddMenuDialog(true)}>메뉴 추가</MenuButton>
+          <MenuButton
+            onClick={() => {
+              if (!selectedCategoryId) {
+                toast.error('카테고리를 먼저 선택해주세요.');
+                return;
+              }
+              setShowAddMenuDialog(true);
+            }}
+          >
+            메뉴 추가
+          </MenuButton>
         </div>
         <MenuBoard
           categories={categories}
@@ -451,12 +476,13 @@ const MenusPage = () => {
               },
               onError: (error) => {
                 console.error('메뉴 삭제 실패:', error);
-                alert('메뉴 삭제에 실패했습니다.');
+                toast.error('메뉴 삭제에 실패했습니다.');
               },
             });
           }}
         />
       )}
+      <Toaster />
     </CardForm>
   );
 };
