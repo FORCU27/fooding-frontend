@@ -37,7 +37,7 @@ const Input = ({
     <div className='relative flex w-full items-center'>
       <input
         className={cn(
-          'focus-visible:outline-none focus-visible:border-fooding-purple mx-[20px] px-[20px] body-2',
+          'focus-visible:outline-none focus-visible:border-fooding-purple px-[20px] body-2',
           'flex h-[58px] w-full rounded-[8px] border border-gray-3 bg-white placeholder:text-gray-4',
           { 'pr-14': inputType && !suffix },
           { 'pl-6 pr-9': suffix }, // suffix가 있을 때 오른쪽 패딩 추가
