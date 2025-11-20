@@ -1,5 +1,6 @@
 import { couponApiV2 } from '@repo/api/ceo';
 import { queryKeys } from '@repo/api/configs/query-keys';
+import { toast } from '@repo/design-system/components/b2c';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 export const useDeleteCoupon = () => {
@@ -15,7 +16,7 @@ export const useDeleteCoupon = () => {
         queryKey: [queryKeys.ceo.coupon.list],
       });
 
-      alert('쿠폰이 삭제되었습니다.');
+      toast.success('쿠폰이 삭제되었습니다.');
     },
 
     onError: (error: unknown) => {
@@ -27,7 +28,7 @@ export const useDeleteCoupon = () => {
         const err = error as { response?: { data?: { message?: string } } };
         message = err.response?.data?.message || message;
       }
-      alert(message);
+      toast.error(message);
     },
   });
 };

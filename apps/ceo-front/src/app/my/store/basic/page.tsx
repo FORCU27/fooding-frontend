@@ -2,7 +2,9 @@
 
 import { useState, useEffect } from 'react';
 
+import { zodResolver } from '@hookform/resolvers/zod';
 import { PutStoreBody } from '@repo/api/ceo';
+import { toast, Toaster } from '@repo/design-system/components/b2c';
 import {
   CardForm,
   Button,
@@ -16,6 +18,8 @@ import {
   UrlLinkList,
 } from '@repo/design-system/components/ceo';
 import DaumPostcode from 'react-daum-postcode';
+import { useForm } from 'react-hook-form';
+import { z } from 'zod';
 
 import KakaoMap from '@/components/KakoMap';
 import LocationEditDialog from '@/components/LocationEditDialog';
@@ -24,54 +28,80 @@ import { usePutStore } from '@/hooks/store/usePutStore';
 import { useKakaoMap } from '@/hooks/useKakaoMap';
 import { useSelectedStoreId } from '@/hooks/useSelectedStoreId';
 
+// 폼 유효성 검사 스키마
+const storeFormSchema = z.object({
+  name: z.string().min(1, '업체명을 입력해주세요'),
+  category: z.string().optional(),
+  contactNumber: z.string().min(1, '매장번호를 입력해주세요'),
+  address: z.string().min(1, '주소를 입력해주세요'),
+  direction: z.string().optional(),
+  description: z.string().optional(),
+  information: z.string().optional(),
+  latitude: z.number().optional(),
+  longitude: z.number().optional(),
+});
+
+type StoreFormData = z.infer<typeof storeFormSchema>;
+
 const BasicInfoPage = () => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isAddressDialogOpen, setIsAddressDialogOpen] = useState(false);
-  const [isInitialized, setIsInitialized] = useState(false);
   const [mapMarker, setMapMarker] = useState<kakao.maps.Marker | null>(null);
 
   // selectedStoreId 가져오기
   const { selectedStoreId, isLoading: isLoadingStoreId } = useSelectedStoreId();
 
   // selectedStoreId가 있을 때만 가게 데이터 조회
-  const { data: store } = useGetStore(selectedStoreId);
+  const { data: store, isLoading: isLoadingStore } = useGetStore(selectedStoreId);
   const putStoreMutation = usePutStore();
 
-  // 폼 상태 관리
-  const [formData, setFormData] = useState({
-    name: '',
-    category: '',
-    contactNumber: '',
-    address: '',
-    direction: '',
-    information: '',
-    latitude: 0,
-    longitude: 0,
+  // React Hook Form 설정
+  const {
+    handleSubmit,
+    setValue,
+    watch,
+    formState: { errors },
+  } = useForm<StoreFormData>({
+    resolver: zodResolver(storeFormSchema),
+    defaultValues: {
+      name: '',
+      category: '',
+      contactNumber: '',
+      address: '',
+      direction: '',
+      description: '',
+      information: '',
+      latitude: 0,
+      longitude: 0,
+    },
   });
 
-  // store 데이터로 폼 초기화 (초기 로드 시 한 번만)
+  const formData = watch();
+
+  // store 데이터로 폼 초기화
   useEffect(() => {
-    if (store && !isInitialized) {
-      setFormData({
-        name: store.name || '',
-        category: store.category || '',
-        contactNumber: store.contactNumber || '',
-        address: store.address || '',
-        direction: store.direction || '',
-        information: store.addressDetail || '', // addressDetail을 information 필드에 매핑
-        latitude: store.latitude || 0,
-        longitude: store.longitude || 0,
-      });
-      setIsInitialized(true);
+    if (store) {
+      // reset 대신 각 필드를 개별적으로 설정
+      setValue('name', store.name ?? '');
+      setValue('category', store.category ?? '');
+      setValue('contactNumber', store.contactNumber ?? '');
+      setValue('address', store.address ?? '');
+      setValue('direction', store.direction ?? '');
+      setValue('description', store.description ?? '');
+      setValue('information', store.addressDetail ?? '');
+      setValue('latitude', store.latitude ?? 0);
+      setValue('longitude', store.longitude ?? 0);
     }
-  }, [store, isInitialized]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [store]);
 
   // 메인 지도용 훅 - store 데이터가 있으면 해당 위치로, 없으면 기본값
   const { mapContainerRef, map, isMapInitialized, handleScriptLoad, reinitializeMap } = useKakaoMap(
     {
-      center: store
-        ? { lat: store.latitude, lng: store.longitude }
-        : { lat: 33.450701, lng: 126.570667 },
+      center:
+        store && store.latitude && store.longitude
+          ? { lat: store.latitude, lng: store.longitude }
+          : { lat: 33.450701, lng: 126.570667 },
       level: 3,
     },
   );
@@ -86,7 +116,7 @@ const BasicInfoPage = () => {
 
   // store 데이터가 로드되고 지도가 초기화되면 중심점 업데이트
   useEffect(() => {
-    if (store && map && isMapInitialized) {
+    if (store && map && isMapInitialized && store.latitude && store.longitude) {
       const newCenter = new window.kakao.maps.LatLng(store.latitude, store.longitude);
       map.setCenter(newCenter);
 
@@ -129,12 +159,9 @@ const BasicInfoPage = () => {
             const lng = parseFloat(result[0].x);
 
             // 주소와 좌표를 함께 업데이트
-            setFormData((prev) => ({
-              ...prev,
-              address: fullAddress,
-              latitude: lat,
-              longitude: lng,
-            }));
+            setValue('address', fullAddress);
+            setValue('latitude', lat);
+            setValue('longitude', lng);
 
             // 메인 지도도 새 위치로 이동
             if (map && isMapInitialized) {
@@ -155,53 +182,57 @@ const BasicInfoPage = () => {
             }
           } else {
             // 좌표 변환 실패 시 주소만 업데이트
-            setFormData((prev) => ({ ...prev, address: fullAddress }));
+            setValue('address', fullAddress);
           }
         },
       );
     } else {
       // Kakao Maps API가 없으면 주소만 업데이트
-      setFormData((prev) => ({ ...prev, address: fullAddress }));
+      setValue('address', fullAddress);
     }
 
     setIsAddressDialogOpen(false); // 다이얼로그 자동 닫기
   };
 
-  const handleSave = () => {
-    if (!store || !selectedStoreId) return;
+  const onSubmit = (data: StoreFormData) => {
+    if (!store || !selectedStoreId) {
+      toast.error('가게 정보를 불러올 수 없습니다. 페이지를 새로고침 해주세요.');
+      return;
+    }
 
-    // 빈 문자열이나 undefined 값을 필터링
+    // 필수 필드와 선택 필드 구분
     const putBody: PutStoreBody = {
-      name: formData.name || undefined,
-      category: formData.category || undefined,
-      contactNumber: formData.contactNumber || undefined,
-      address: formData.address || undefined,
-      addressDetail: formData.information || undefined, // information을 addressDetail로 매핑
-      direction: formData.direction || undefined,
-      description: store.description || undefined,
+      name: data.name || undefined,
+      category: data.category || undefined,
+      contactNumber: data.contactNumber || undefined,
+      address: data.address || undefined,
+      addressDetail: data.information || undefined, // information을 addressDetail로 매핑
+      direction: data.direction || undefined,
+      description: data.description ?? '', // 필수 필드이므로 빈 문자열이라도 전송
       // 위도 경도는 formData에서 가져옴 (수정된 경우 반영)
-      latitude: formData.latitude || store.latitude || undefined,
-      longitude: formData.longitude || store.longitude || undefined,
+      latitude: data.latitude || store.latitude || undefined,
+      longitude: data.longitude || store.longitude || undefined,
     };
 
-    // undefined 값을 제거
+    // undefined 값만 제거 (빈 문자열은 유지)
     const cleanedBody = Object.fromEntries(
       Object.entries(putBody).filter(([, value]) => value !== undefined),
     ) as PutStoreBody;
 
-    // selectedStoreId 사용
-    const storeIdToUpdate = selectedStoreId;
-
     putStoreMutation.mutate(
-      { id: storeIdToUpdate, body: cleanedBody },
+      { id: selectedStoreId, body: cleanedBody },
       {
-        onSuccess: () => {},
-        onError: () => {},
+        onSuccess: () => {
+          toast.success('저장되었습니다.');
+        },
+        onError: (error) => {
+          toast.error('저장 중 오류가 발생했습니다.');
+          console.error(error);
+        },
       },
     );
   };
 
-  // 로딩 중이거나 storeId가 없으면 대체 UI 표시
   if (isLoadingStoreId) {
     return (
       <CardForm className='p-grid-margin'>
@@ -212,7 +243,7 @@ const BasicInfoPage = () => {
               <div className='mb-4'>
                 <div className='inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-current border-r-transparent motion-reduce:animate-[spin_1.5s_linear_infinite]' />
               </div>
-              <div className='text-gray-600'>가게 정보를 불러오는 중...</div>
+              <div className='text-gray-600'>로딩 중...</div>
             </div>
           </div>
         </Card>
@@ -238,109 +269,90 @@ const BasicInfoPage = () => {
     );
   }
 
+  if (isLoadingStore) {
+    return (
+      <CardForm className='p-grid-margin'>
+        <div className='headline-2'>기본 정보</div>
+        <Card>
+          <div className='flex items-center justify-center py-8'>
+            <div className='text-center'>
+              <div className='mb-4'>
+                <div className='inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-current border-r-transparent motion-reduce:animate-[spin_1.5s_linear_infinite]' />
+              </div>
+              <div className='text-gray-600'>가게 정보를 불러오는 중...</div>
+            </div>
+          </div>
+        </Card>
+      </CardForm>
+    );
+  }
+
+  const onFormError = (validationErrors: typeof errors) => {
+    console.log('Form validation errors:', validationErrors);
+
+    // 첫 번째 에러 메시지 찾기
+    const firstError = Object.values(validationErrors)[0];
+    if (firstError?.message) {
+      toast.error(firstError.message);
+    } else {
+      toast.error('입력 정보를 확인해주세요.');
+    }
+  };
+
   return (
-    <CardForm className='' onSubmit={(e) => e.preventDefault()}>
+    <CardForm className='' onSubmit={handleSubmit(onSubmit, onFormError)}>
       <div className='headline-2'>기본 정보</div>
       <Card>
         <CardSubtitle label='업체명' required>
-          <Input
-            id='name'
-            value={formData.name}
-            onChange={(e) => setFormData((prev) => ({ ...prev, name: e.target.value }))}
-          />
+          <div>
+            <Input
+              id='name'
+              value={formData.name || ''}
+              onChange={(e) => setValue('name', e.target.value)}
+            />
+            {errors.name && <p className='text-red-500 text-sm mt-1'>{errors.name.message}</p>}
+          </div>
         </CardSubtitle>
       </Card>
       <Card>
         <CardSubtitle label='업종' required>
-          <SelectBox
-            options={[
-              { value: 'KOREAN', label: '한식' },
-              { value: 'CHINESE', label: '중식' },
-              { value: 'WESTERN', label: '양식' },
-              { value: 'JAPANESE', label: '일식' },
-              { value: 'ASIAN', label: '아시안' },
-              { value: 'SNACK', label: '분식' },
-              { value: 'CAFE', label: '카페' },
-              { value: 'FAST_FOOD', label: '패스트푸드' },
-              { value: 'CHICKEN', label: '치킨' },
-            ]}
-            label='업종 선택'
-            value={formData.category}
-            onValueChange={(value) => {
-              setFormData((prev) => ({ ...prev, category: value }));
-            }}
-            placeholder='업종을 선택해주세요'
-          />
+          <div>
+            <SelectBox
+              key={formData.category}
+              options={[
+                { value: 'KOREAN', label: '한식' },
+                { value: 'CHINESE', label: '중식' },
+                { value: 'WESTERN', label: '양식' },
+                { value: 'JAPANESE', label: '일식' },
+                { value: 'ASIAN', label: '아시안' },
+                { value: 'SNACK', label: '분식' },
+                { value: 'CAFE', label: '카페' },
+                { value: 'FAST_FOOD', label: '패스트푸드' },
+                { value: 'CHICKEN', label: '치킨' },
+              ]}
+              label='업종 선택'
+              value={formData.category}
+              onValueChange={(value) => setValue('category', value)}
+              placeholder='업종을 선택해주세요'
+            />
+            {errors.category && (
+              <p className='text-red-500 text-sm mt-1'>{errors.category.message}</p>
+            )}
+          </div>
         </CardSubtitle>
       </Card>
       <Card>
         <CardSubtitle label='매장소개' required>
-          <TextArea id='name' maxLength={1000} />
-        </CardSubtitle>
-      </Card>
-      <Card>
-        <CardSubtitle label='주차 정보' required>
-          <></>
-          {/* <ToggleGroup
-            type='single'
-            defaultValue={parkingInfo}
-            onValueChange={(value) => {
-              if (value) setParkingInfo(value);
-            }}
-            className='w-full'
-          >
-            <ToggleGroupItem value='possible' className='flex-1'>
-              주차 가능
-            </ToggleGroupItem>
-            <ToggleGroupItem value='impossible' className='flex-1'>
-              주차 불가능
-            </ToggleGroupItem>
-          </ToggleGroup>
-          {parkingInfo === 'possible' && (
-            <div className='mt-4'>
-              <Input placeholder='주차 관련 안내사항을 입력하세요.' />
-            </div>
-          )} */}
-        </CardSubtitle>
-      </Card>
-      <Card>
-        <CardSubtitle label='홈페이지 주소'>
-          <UrlLinkList />
-        </CardSubtitle>
-      </Card>
-      <Card>
-        <CardSubtitle label='편의시설'>
-          {/* <ToggleGroup type='multiple' value={amenities} onValueChange={setAmenities}>
-            <ToggleGroupItem value='group'>단체이용 가능</ToggleGroupItem>
-            <ToggleGroupItem value='takeout'>포장</ToggleGroupItem>
-            <ToggleGroupItem value='delivery'>배달</ToggleGroupItem>
-            <ToggleGroupItem value='reception'>방문접수/출장</ToggleGroupItem>
-            <ToggleGroupItem value='reservation'>예약</ToggleGroupItem>
-            <ToggleGroupItem value='wifi'>무선인터넷</ToggleGroupItem>
-            <ToggleGroupItem value='kids'>유아시설/놀이방</ToggleGroupItem>
-            <ToggleGroupItem value='toilet'>남/녀 화장실 구분</ToggleGroupItem>
-            <ToggleGroupItem value='chair'>유아의자</ToggleGroupItem>
-            <ToggleGroupItem value='waiting'>대기공간</ToggleGroupItem>
-            <ToggleGroupItem value='no-kids'>노키즈존</ToggleGroupItem>
-          </ToggleGroup> */}
-          <></>
-        </CardSubtitle>
-      </Card>
-      <Card>
-        <CardSubtitle label='영업시간을 알려주세요'>
-          <BusinessHours />
-        </CardSubtitle>
-      </Card>
-      <Card>
-        <CardSubtitle label='매장번호' required>
-          <Input
-            id='contactNumber'
-            value={formData.contactNumber}
-            onChange={(e) => setFormData((prev) => ({ ...prev, contactNumber: e.target.value }))}
+          <TextArea
+            id='description'
+            rows={3}
+            maxLength={1000}
+            value={formData.description || ''}
+            onChange={(e) => setValue('description', e.target.value)}
+            placeholder='매장소개를 입력하세요'
           />
         </CardSubtitle>
       </Card>
-
       <Card>
         <CardSubtitle label='주소' required>
           <div className='w-full h-[180px] relative'>
@@ -358,51 +370,60 @@ const BasicInfoPage = () => {
               위치 수정
             </button>
           </div>
-          <Dialog open={isAddressDialogOpen} onOpenChange={setIsAddressDialogOpen}>
-            <Dialog.Trigger asChild>
-              <Input
-                id='address'
-                inputType='search'
-                value={formData.address}
-                onChange={(e) => setFormData((prev) => ({ ...prev, address: e.target.value }))}
-                onClick={() => setIsAddressDialogOpen(true)}
-              />
-            </Dialog.Trigger>
-            <Dialog.Content>
-              <Dialog.Header>
-                <Dialog.Title>변경하실 주소를 알려주세요</Dialog.Title>
-              </Dialog.Header>
-              <Dialog.Body>
-                <DaumPostcode style={{ height: '500px' }} onComplete={onCompletePost} />
-              </Dialog.Body>
-              <Dialog.Footer>
-                <Button variant='outlined' onClick={() => setIsAddressDialogOpen(false)}>
-                  닫기
-                </Button>
-              </Dialog.Footer>
-            </Dialog.Content>
-          </Dialog>
+          <div>
+            <Dialog open={isAddressDialogOpen} onOpenChange={setIsAddressDialogOpen}>
+              <Dialog.Trigger asChild>
+                <Input
+                  id='address'
+                  inputType='search'
+                  value={formData.address}
+                  onClick={() => setIsAddressDialogOpen(true)}
+                  readOnly
+                />
+              </Dialog.Trigger>
+              <Dialog.Content>
+                <Dialog.Header>
+                  <Dialog.Title>변경하실 주소를 알려주세요</Dialog.Title>
+                </Dialog.Header>
+                <Dialog.Body>
+                  <DaumPostcode style={{ height: '500px' }} onComplete={onCompletePost} />
+                </Dialog.Body>
+                <Dialog.Footer>
+                  <Button variant='outlined' onClick={() => setIsAddressDialogOpen(false)}>
+                    닫기
+                  </Button>
+                </Dialog.Footer>
+              </Dialog.Content>
+            </Dialog>
+            {errors.address && (
+              <p className='text-red-500 text-sm mt-1'>{errors.address.message}</p>
+            )}
+          </div>
 
-          <Input
-            id='direction'
-            value={formData.direction}
-            onChange={(e) => setFormData((prev) => ({ ...prev, direction: e.target.value }))}
-          />
+          <div className='mt-4'>
+            <Input
+              id='information'
+              value={formData.information || ''}
+              onChange={(e) => setValue('information', e.target.value)}
+              placeholder='상세 주소를 입력하세요 (예: 3층 301호)'
+            />
+          </div>
         </CardSubtitle>
       </Card>
       <Card>
-        <CardSubtitle label='상세주소'>
+        <CardSubtitle label='찾아오시는 길'>
           <TextArea
-            id='information'
+            id='direction'
+            rows={3}
             maxLength={1000}
-            value={formData.information}
-            onChange={(e) => setFormData((prev) => ({ ...prev, information: e.target.value }))}
-            placeholder='상세 주소를 입력하세요 (예: 3층 301호)'
+            value={formData.direction || ''}
+            onChange={(e) => setValue('direction', e.target.value)}
+            placeholder='찾아오시는 길을 입력하세요'
           />
         </CardSubtitle>
       </Card>
       <div className='flex justify-center mb-17'>
-        <Button type='button' onClick={handleSave} disabled={putStoreMutation.isPending}>
+        <Button type='submit' disabled={putStoreMutation.isPending}>
           {putStoreMutation.isPending ? '저장 중...' : '저장'}
         </Button>
       </div>
@@ -411,14 +432,15 @@ const BasicInfoPage = () => {
       <LocationEditDialog
         isOpen={isDialogOpen}
         onOpenChange={setIsDialogOpen}
-        initialCenter={store ? { lat: store.latitude, lng: store.longitude } : undefined}
+        initialCenter={
+          store && store.latitude && store.longitude
+            ? { lat: store.latitude, lng: store.longitude }
+            : undefined
+        }
         onSaveLocation={(address, lat, lng) => {
-          setFormData((prev) => ({
-            ...prev,
-            address: address,
-            latitude: lat,
-            longitude: lng,
-          }));
+          setValue('address', address);
+          setValue('latitude', lat);
+          setValue('longitude', lng);
 
           // 메인 지도도 새 위치로 이동
           if (map && isMapInitialized) {
@@ -439,6 +461,7 @@ const BasicInfoPage = () => {
           }
         }}
       />
+      <Toaster />
     </CardForm>
   );
 };

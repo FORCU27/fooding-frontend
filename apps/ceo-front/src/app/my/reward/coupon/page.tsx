@@ -230,10 +230,14 @@ const CouponListPage = () => {
       </div>
 
       <div className='flex justify-end gap-4'>
-        <Button onClick={() => router.push('/my/reward/coupon/gift')}>쿠폰선물</Button>
-        <Button variant='primaryPink' onClick={() => router.push('/my/reward/coupon/create')}>
-          쿠폰생성
+        <Button
+          variant='primaryOutlined'
+          className='border-2'
+          onClick={() => router.push('/my/reward/coupon/gift')}
+        >
+          쿠폰선물
         </Button>
+        <Button onClick={() => router.push('/my/reward/coupon/create')}>쿠폰생성</Button>
       </div>
 
       <div className='bg-white rounded-lg shadow overflow-hidden'>

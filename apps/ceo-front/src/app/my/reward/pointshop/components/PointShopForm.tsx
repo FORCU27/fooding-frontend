@@ -4,6 +4,7 @@
 import { useEffect, useState } from 'react';
 
 import { CreateStorePointShopItemBody } from '@repo/api/ceo';
+import { toast } from '@repo/design-system/components/b2c';
 import {
   Button,
   Form,
@@ -102,12 +103,7 @@ const PointShopForm = ({ originValue, onSubmit }: PointShopFormProps) => {
       onSubmit({ ...data, file: imageFile });
     } catch (error: any) {
       console.error(error);
-      const errorMessage =
-        error instanceof Error
-          ? error.message
-          : (error as { response?: { data?: { message?: string } } })?.response?.data?.message ||
-            '등록 실패';
-      alert(errorMessage);
+      toast.error(error?.response?.data?.message || '등록 실패');
     } finally {
       setLoading(false);
     }
