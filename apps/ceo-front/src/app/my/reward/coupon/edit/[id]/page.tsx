@@ -4,6 +4,7 @@ import { useParams, useRouter } from 'next/navigation';
 
 import { couponApiV2, UpdateCouponBody } from '@repo/api/ceo';
 import { queryKeys } from '@repo/api/configs/query-keys';
+import { toast } from '@repo/design-system/components/b2c';
 import type { SelectedRangeItem } from '@repo/design-system/components/ceo';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
@@ -65,7 +66,7 @@ const CouponEditPage = () => {
       queryClient.invalidateQueries({
         queryKey: [queryKeys.ceo.coupon.detail, couponId],
       });
-      alert('쿠폰이 수정되었습니다.');
+      toast.success('쿠폰이 수정되었습니다.');
       router.push('/reward/coupon');
     },
     onError: (error: unknown) => {
@@ -75,7 +76,7 @@ const CouponEditPage = () => {
         const err = error as { response?: { data?: { message?: string } } };
         message = err.response?.data?.message || message;
       }
-      alert(message);
+      toast.error(message);
     },
   });
 
@@ -84,12 +85,12 @@ const CouponEditPage = () => {
     selectedDateRange: SelectedRangeItem | null,
   ) => {
     if (!selectedDateRange) {
-      alert('사용 기간을 선택해주세요.');
+      toast.error('사용 기간을 선택해주세요.');
       return;
     }
 
     if (!couponData) {
-      alert('쿠폰 데이터를 불러올 수 없습니다.');
+      toast.error('쿠폰 데이터를 불러올 수 없습니다.');
       return;
     }
 

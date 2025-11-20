@@ -16,6 +16,7 @@ import {
   ToggleGroupItem,
   type SelectedRangeItem,
 } from '@repo/design-system/components/ceo';
+import { toast } from '@repo/design-system/components/b2c';
 
 export interface CouponFormData {
   couponName?: string; // gift 모드에서는 선택적
@@ -108,24 +109,24 @@ export const CouponForm = ({
   const handleSubmit = async () => {
     // gift 모드가 아닐 때만 쿠폰 이름 체크
     if (mode !== 'gift' && !formData.couponName) {
-      alert('쿠폰 이름을 입력해주세요.');
+      toast.error('쿠폰 이름을 입력해주세요.');
       return;
     }
 
     if (formData.benefitType === 'discount') {
       if (!formData.discountPercentage && !formData.discountAmount) {
-        alert('할인율 또는 할인 금액을 입력해주세요.');
+        toast.error('할인율 또는 할인 금액을 입력해주세요.');
         return;
       }
     } else if (formData.benefitType === 'gift') {
       if (formData.giftType === 'threshold' && !formData.minOrderAmount) {
-        alert('증정 조건 금액을 입력해주세요.');
+        toast.error('증정 조건 금액을 입력해주세요.');
         return;
       }
     }
 
     if (!selectedDateRange || !selectedDateRange.startDate || !selectedDateRange.endDate) {
-      alert('사용 기간을 선택해주세요.');
+      toast.error('사용 기간을 선택해주세요.');
       return;
     }
 
