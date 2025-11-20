@@ -1,16 +1,24 @@
 import { IconProps } from './type';
 
-const MobileProgressDotIcon = ({ className = '' }: IconProps & { className?: string }) => {
+const MobileProgressDotIcon = ({
+  className = '',
+  color = 'currentColor',
+  size,
+  width = size ?? 39,
+  height = size ? (size * 8) / 39 : 8,
+  ...props
+}: IconProps) => {
   return (
     <svg
       className={className}
-      width='39'
-      height='8'
+      width={width}
+      height={height}
       viewBox='0 0 39 8'
       fill='none'
       xmlns='http://www.w3.org/2000/svg'
+      {...props}
     >
-      <circle cx='3.5' cy='4' r='3.5' fill='black'>
+      <circle cx='3.5' cy='4' r='3.5' fill={color}>
         <animate
           attributeName='fill-opacity'
           values='0.3;1;0.3'
@@ -19,7 +27,7 @@ const MobileProgressDotIcon = ({ className = '' }: IconProps & { className?: str
         />
       </circle>
 
-      <circle cx='19' cy='4' r='4' fill='black'>
+      <circle cx='19' cy='4' r='3.5' fill={color}>
         <animate
           attributeName='fill-opacity'
           values='0.3;1;0.3'
@@ -29,7 +37,7 @@ const MobileProgressDotIcon = ({ className = '' }: IconProps & { className?: str
         />
       </circle>
 
-      <circle cx='35' cy='4' r='4' fill='black'>
+      <circle cx='35' cy='4' r='3.5' fill={color}>
         <animate
           attributeName='fill-opacity'
           values='0.3;1;0.3'

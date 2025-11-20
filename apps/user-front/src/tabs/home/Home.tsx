@@ -14,6 +14,7 @@ import { MainStoreList } from './components/MainStoreList';
 import { LoadingToggle } from '@/components/Devtool/LoadingToggle';
 import BottomTab from '@/components/Layout/BottomTab';
 import { Divider } from '@/components/Layout/Divider';
+import { LoadingScreen } from '@/components/Layout/LoadingScreen';
 import { Screen } from '@/components/Layout/Screen';
 import { StoresList } from '@/components/Store/StoresList';
 import { usePreferredRegions } from '@/hooks/regions/usePreferredRegions';
@@ -79,7 +80,11 @@ type StoreSectionProps = {
 };
 
 const StoreSection = ({ selectedRegions, category }: StoreSectionProps) => {
-  const { data: stores } = useGetStoreList({
+  const {
+    data: stores,
+    isPending: storePending,
+    isFetching: storeFetching,
+  } = useGetStoreList({
     pageNum: 1,
     pageSize: 10,
     sortType: 'RECENT',
@@ -88,7 +93,11 @@ const StoreSection = ({ selectedRegions, category }: StoreSectionProps) => {
     category: category ?? undefined,
   });
 
-  const { data: popularStores } = useGetStoreList({
+  const {
+    data: popularStores,
+    isPending: poppularStorePending,
+    isFetching: poppularStoreFetching,
+  } = useGetStoreList({
     pageNum: 1,
     pageSize: 10,
     sortType: 'REVIEW',
@@ -97,7 +106,11 @@ const StoreSection = ({ selectedRegions, category }: StoreSectionProps) => {
     category: category ?? undefined,
   });
 
-  const { data: immediateEntryStores } = useGetStoreImmediateEntryList({
+  const {
+    data: immediateEntryStores,
+    isPending: immediateEntryStorePending,
+    isFetching: immediateEntryStoreFetching,
+  } = useGetStoreImmediateEntryList({
     pageNum: 1,
     pageSize: 10,
     regionIds: selectedRegions.map((region) => region.id),
@@ -105,6 +118,16 @@ const StoreSection = ({ selectedRegions, category }: StoreSectionProps) => {
   });
 
   const flow = useFlow();
+
+  const isLoading =
+    storePending ||
+    storeFetching ||
+    poppularStorePending ||
+    poppularStoreFetching ||
+    immediateEntryStorePending ||
+    immediateEntryStoreFetching;
+
+  if (isLoading) return <LoadingScreen />;
 
   return (
     <>

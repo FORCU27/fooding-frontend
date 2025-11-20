@@ -16,6 +16,7 @@ const progressCircleVariant = tv({
     },
     size: {
       default: 'w-8 h-8',
+      small: 'w-6 h-6',
     },
   },
   defaultVariants: {
@@ -36,6 +37,7 @@ export const ProgressCircle = ({
 }: ProgressCircleProps) => {
   const iconSizeMap = {
     default: 32,
+    small: 24,
   } as const;
 
   return (
