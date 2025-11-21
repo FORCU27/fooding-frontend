@@ -9,7 +9,6 @@ import {
   B2BCeoSidebarReqularIcon,
   B2BCeoSidebarDeviceIcon,
   B2BCeoSidebarRewardIcon,
-  B2BCeoSidebarStatisticsIcon,
   ChevronDownIcon,
   ChevronRightIcon,
 } from '@repo/design-system/icons';
@@ -54,13 +53,13 @@ export const allMenus: Menu[] = [
       { label: '포인트 샵', path: '/my/reward/pointshop' },
     ],
   },
-  {
-    type: 'link',
-    id: 'statistics',
-    label: '통계',
-    path: '/my/statistics',
-    icon: <B2BCeoSidebarStatisticsIcon size={20} />,
-  },
+  // {
+  //   type: 'link',
+  //   id: 'statistics',
+  //   label: '통계',
+  //   path: '/my/statistics',
+  //   icon: <B2BCeoSidebarStatisticsIcon size={20} />,
+  // },
   {
     type: 'link',
     id: 'devices',
