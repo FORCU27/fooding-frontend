@@ -27,6 +27,7 @@ type FormSchemaType = z.infer<typeof formSchema>;
 
 export interface ProfileFormProps {
   isUpdateMode: boolean;
+  isLoading?: boolean;
   editOriginValue: AuthUpdateUserBody & AuthUpdateUserProfileImageBody;
   handleSubmit: (data: AuthUpdateUserBody & { imageFile: File | null }) => void;
 }
@@ -35,6 +36,7 @@ export const ProfileForm = ({
   editOriginValue,
   handleSubmit,
   isUpdateMode,
+  isLoading,
 }: PropsWithoutRef<ProfileFormProps>) => {
   const { user } = useAuth();
 
@@ -52,8 +54,12 @@ export const ProfileForm = ({
   const [hasNicknameCheckClicked, setHasNicknameCheckClicked] = useState(false);
   const [isNicknameChanged, setIsNicknameChanged] = useState(false);
 
-  const { data: nicknameCheckData, refetch: checkNickname } =
-    useGetUserNicknameCheck(nicknameToCheck);
+  const {
+    data: nicknameCheckData,
+    refetch: checkNickname,
+    isPending,
+    isFetching,
+  } = useGetUserNicknameCheck(nicknameToCheck);
 
   const maxLength = 150;
 
@@ -153,7 +159,7 @@ export const ProfileForm = ({
                 </div>
               </div>
             </div>
-            <div className='flex justify-between gap-3'>
+            <div className='flex gap-3 w-full'>
               <Controller
                 name='nickname'
                 control={control}
@@ -205,6 +211,7 @@ export const ProfileForm = ({
                 className='w-1/4 mt-7'
                 onClick={handleNicknameCheck}
                 disabled={!isNicknameChanged}
+                isLoading={isPending || isFetching}
               >
                 중복확인
               </Button>
@@ -248,6 +255,7 @@ export const ProfileForm = ({
                   (isNicknameChanged &&
                     (!hasNicknameCheckClicked || nicknameCheckData?.isDuplicated))
                 }
+                isLoading={isLoading}
               >
                 저장
               </Button>
@@ -260,6 +268,7 @@ export const ProfileForm = ({
                   (isNicknameChanged &&
                     (nicknameCheckData?.isDuplicated || !hasNicknameCheckClicked))
                 }
+                isLoading={isLoading}
                 onClick={() => {
                   const formValues = getValues();
                   flow.push('ProfileUserInfoScreen', {

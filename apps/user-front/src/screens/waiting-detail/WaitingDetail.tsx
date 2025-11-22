@@ -256,7 +256,7 @@ const WaitingDetail = ({ waitingId }: StoreDetailProps) => {
           </div>
         </div>
         <Button variant='outlined' size='large' className='my-5'>
-          예약취소
+          줄서기 취소
         </Button>
       </div>
     </div>
