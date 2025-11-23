@@ -14,8 +14,6 @@ import {
   TextArea,
   CardSubtitle,
   Dialog,
-  BusinessHours,
-  UrlLinkList,
 } from '@repo/design-system/components/ceo';
 import DaumPostcode from 'react-daum-postcode';
 import { useForm } from 'react-hook-form';
@@ -353,6 +351,21 @@ const BasicInfoPage = () => {
           />
         </CardSubtitle>
       </Card>
+      <Card>
+        <CardSubtitle label='매장번호' required>
+          <div>
+            <Input
+              id='contactNumber'
+              value={formData.contactNumber || ''}
+              onChange={(e) => setValue('contactNumber', e.target.value)}
+            />
+            {errors.contactNumber && (
+              <p className='text-red-500 text-sm mt-1'>{errors.contactNumber.message}</p>
+            )}
+          </div>
+        </CardSubtitle>
+      </Card>
+
       <Card>
         <CardSubtitle label='주소' required>
           <div className='w-full h-[180px] relative'>

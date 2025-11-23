@@ -1,12 +1,26 @@
+import Image from 'next/image';
+
+import { Review } from '@repo/api/ceo';
 import { StarIcon } from '@repo/design-system/icons';
 
+import { formatDotDate } from '@/utils/date';
+
 export interface ReviewCardProps {
-  author: string;
-  date: string;
-  rating?: number;
-  content: string;
-  images?: string[];
+  review: Review;
   children?: React.ReactNode;
+}
+
+interface ReviewCardHeaderProps {
+  author: string;
+  authorProfileImage?: string | null;
+  reviewCount: number;
+  date: string;
+  rating: number;
+}
+
+interface ReviewCardContentProps {
+  content: string;
+  imageUrls: string[];
 }
 
 export const ProfileImage = ({ size = 40 }: { size?: number }) => (
@@ -35,25 +49,50 @@ export const ProfileImage = ({ size = 40 }: { size?: number }) => (
   </svg>
 );
 
-const ReviewCard = ({ author, date, rating, content, images, children }: ReviewCardProps) => {
+const ReviewCard = ({ review, children }: ReviewCardProps) => {
   return (
     <div className='flex flex-col items-center gap-[20px]'>
-      <div className='rounded-[20px] shadow-[0_0_2px_rgba(0,0,0,0.06),0_0_3px_rgba(0,0,0,0.1)] pt-[32px] px-[32px] pb-[40px] bg-white'>
-        <ReviewCard.Header author={author} date={date} rating={rating} />
-        <ReviewCard.Content content={content} images={images} />
+      <div className='rounded-[20px] shadow-[0_0_2px_rgba(0,0,0,0.06),0_0_3px_rgba(0,0,0,0.1)] pt-[32px] px-[32px] pb-[40px] bg-white w-full'>
+        <ReviewCard.Header
+          author={review.writerName}
+          authorProfileImage={review.writerProfileImage}
+          reviewCount={review.reviewCount}
+          date={formatDotDate(review.createdAt)}
+          rating={review.totalScore ?? 0}
+        />
+        <ReviewCard.Content content={review.content} imageUrls={review.imageUrls ?? []} />
         {children}
       </div>
     </div>
   );
 };
 
-const ReviewCardHeader = ({ author, date, rating }: any) => (
+const ReviewCardHeader = ({
+  author,
+  authorProfileImage,
+  reviewCount, 
+  date,
+  rating,
+}: ReviewCardHeaderProps) => (
   <div className='flex justify-between items-center mb-[20px]'>
     <div className='flex gap-[12px]'>
-      <ProfileImage />
+      <div className='w-[40px] h-[40px] rounded-full overflow-hidden bg-gray-200'>
+        {authorProfileImage ? (
+          <Image
+            src={authorProfileImage}
+            width={40}
+            height={40}
+            alt='profile image'
+            draggable={false}
+            className='object-cover w-[40px] h-[40px]'
+          />
+        ) : (
+          <ProfileImage size={40} />
+        )}
+      </div>
       <div className='flex flex-col gap-[2px]'>
         <span className='subtitle-2 leading-[24px]'>{author}</span>
-        <span className='text-gray-5 body-5 leading-[16px]'>리뷰 10 팔로워 100</span>
+        <span className='text-gray-5 body-5 leading-[16px]'>리뷰 {reviewCount}</span>
       </div>
     </div>
     <div className='flex flex-col items-end gap-[2px] py-[3px]'>
@@ -76,23 +115,23 @@ const ReviewCardHeader = ({ author, date, rating }: any) => (
   </div>
 );
 
-const IMG =
-  'https://images.unsplash.com/photo-1544025162-d76694265947?q=80&w=1600&auto=format&fit=crop';
-
-const ReviewCardContent = ({ content }: any) => (
-  <div>
+const ReviewCardContent = ({ content, imageUrls }: ReviewCardContentProps) => (
+  <div className=''>
     <p className='body-2 font-normal whitespace-pre-line'>{content}</p>
-    {/* {images?.length > 0 ? (
-      <div className='mt-[20px] grid grid-cols-4 gap-[20px]'>
-        {images.map((src) => (
-          <img key={src} src={IMG} alt='' className='rounded-md' />
+    {imageUrls.length > 0 ? (
+      <div className='mt-[20px] flex gap-[12px] overflow-x-auto whitespace-nowrap touch-pan-x'>
+        {imageUrls?.map((imageUrl) => (
+          <Image
+            key={imageUrl}
+            alt='image'
+            src={imageUrl}
+            width={239}
+            height={239}
+            className='rounded-md object-cover w-[239px] h-[239px] shrink-0'
+          />
         ))}
       </div>
-    ) : null} */}
-    <div className='mt-[20px] grid grid-cols-4 gap-[20px]'>
-      <img key={'image-1'} src={IMG} alt='' className='rounded-md' width={239} height={239} />
-      <img key={'image-2'} src={IMG} alt='' className='rounded-md' width={239} height={239} />
-    </div>
+    ) : null}
   </div>
 );
 

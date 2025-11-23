@@ -1,47 +1,68 @@
 'use client';
 
+import Image from 'next/image';
 import { useState } from 'react';
 
-import { Input, Button } from '@repo/design-system/components/ceo';
+import { reviewApi, ReviewReply as Reply } from '@repo/api/ceo';
+import { Button } from '@repo/design-system/components/ceo';
 import { ClockIcon } from '@repo/design-system/icons';
 
 import { ProfileImage } from './ReviewCard';
-// import { reviewApi } from '@repo/api/ceo';
+import { formatDotDate } from '@/utils/date';
 
 interface ReviewReplyProps {
-  initialReply?: {
-    content: string;
-    createdAt?: string;
-    writerName?: string;
+  reviewId: number;
+  initialReply?: Reply;
+  currentUser: {
+    id: number;
+    nickname: string | null;
   };
 }
 
-const ReviewReply = ({ initialReply }: ReviewReplyProps) => {
+const ReviewReply = ({ reviewId, currentUser, initialReply }: ReviewReplyProps) => {
   const [showInput, setShowInput] = useState(false);
-  const [replyText, setReplyText] = useState('');
-  const [localReply, setLocalReply] = useState(initialReply ?? null);
+  const [replyText, setReplyText] = useState(initialReply?.content ?? '');
+  const [localReply, setLocalReply] = useState<Partial<Reply> | null>(initialReply ?? null);
 
   const handleSubmit = async () => {
     if (!replyText.trim()) return;
 
     try {
-      // const { data } = await reviewApi.createReply({
-      //   parentId: reviewId,
-      //   content: replyText,
-      // });
+      // 답글 처음 작성하는 경우 -> 답글 생성 API POST
+      if (!localReply) {
+        await reviewApi.createReply(reviewId, {
+          userId: currentUser?.id,
+          content: replyText,
+        });
 
-      // 임시로 로컬에 추가 (낙관적 업데이트)
-      const newReply = {
-        writerName: '푸딩 사장님',
-        content: replyText,
-        createdAt: new Date().toISOString(),
-      };
+        // optimistic update
+        const newReply = {
+          writerName: '푸딩 사장님',
+          content: replyText,
+          createdAt: new Date().toISOString(),
+        };
+        setLocalReply(newReply);
+      }
 
-      setLocalReply(newReply);
+      // 기존 답글 수정 -> 답글 수정 API PATCH
+      else {
+        if (!initialReply?.id) return;
+
+        await reviewApi.editReply(initialReply.id, {
+          content: replyText,
+        });
+
+        // optimistic update
+        setLocalReply({
+          ...localReply,
+          content: replyText,
+        });
+      }
+
       setReplyText('');
       setShowInput(false);
     } catch (err) {
-      console.error('답글 등록 실패:', err);
+      console.error('❗ 답글 등록/수정 실패:', err);
     }
   };
 
@@ -57,8 +78,21 @@ const ReviewReply = ({ initialReply }: ReviewReplyProps) => {
           <div className='flex flex-col gap-[20px] rounded-[20px] shadow-[0_0_2px_rgba(0,0,0,0.06),0_0_3px_rgba(0,0,0,0.1)] px-[32px] pt-[32px] pb-[40px] bg-white'>
             <div className='flex justify-between items-center'>
               <div className='flex gap-[12px] items-center'>
-                <ProfileImage size={40} />
-                <span className='subtitle-2 leading-[24px]'>{localReply?.writerName}</span>
+                <div className='w-[40px] h-[40px] rounded-full overflow-hidden bg-gray-200'>
+                  {initialReply?.writerProfileImage ? (
+                    <Image
+                      src={initialReply.writerProfileImage}
+                      width={40}
+                      height={40}
+                      alt='profile image'
+                      draggable={false}
+                      className='object-cover w-[40px] h-[40px]'
+                    />
+                  ) : (
+                    <ProfileImage size={40} />
+                  )}
+                </div>
+                <span className='subtitle-2 leading-[24px]'>{localReply?.writerName} 사장님</span>
               </div>
               <span className='body-5 text-gray-5'>
                 {new Date(localReply?.createdAt || '').toLocaleDateString('ko-KR')}
@@ -89,11 +123,26 @@ const ReviewReply = ({ initialReply }: ReviewReplyProps) => {
           <div className='flex flex-col rounded-[20px] shadow-[0_0_2px_rgba(0,0,0,0.06),0_0_3px_rgba(0,0,0,0.1)] px-[32px] pt-[32px] pb-[40px] bg-white'>
             <div className='flex justify-between items-center pb-[20px]'>
               <div className='flex gap-[12px] items-center'>
-                <ProfileImage size={40} />
-                <span className='subtitle-2 leading-[24px]'>{localReply?.writerName}</span>
+                {initialReply?.writerProfileImage ? (
+                  <Image
+                    src={initialReply.writerProfileImage}
+                    width={40}
+                    height={40}
+                    alt='profile image'
+                    draggable={false}
+                    className='object-cover w-[40px] h-[40px]'
+                  />
+                ) : (
+                  <ProfileImage size={40} />
+                )}
+                <span className='subtitle-2 leading-[24px]'>
+                  {localReply?.writerName ?? currentUser.nickname} 사장님
+                </span>
               </div>
               <span className='body-5 text-gray-5'>
-                {new Date(localReply?.createdAt || '').toLocaleDateString('ko-KR')}
+                {localReply?.createdAt
+                  ? new Date(localReply.createdAt).toLocaleDateString('ko-KR')
+                  : formatDotDate(new Date().toISOString())}
               </span>
             </div>
             <textarea

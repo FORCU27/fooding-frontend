@@ -10,10 +10,13 @@ export const reviewApi = {
     const response = await api.get(ENDPOINT, { params });
     return GetReviewResponse.parse(response);
   },
-  createReply: async (body: PostReviewReplyParams) => {
-    await api.post(`${ENDPOINT}`, body);
+  createReply: async (reviewId: number, body: PostReviewReplyParams) => {
+    await api.post(`${ENDPOINT}/reply/${reviewId}`, body);
   },
-  editReply: async (id: number, body: { content: string }) => {
-    await api.patch(`${ENDPOINT}/${id}`, body);
+  editReply: async (replyId: number, body: { content: string }) => {
+    await api.patch(`${ENDPOINT}/reply/${replyId}`, body);
+  },
+  deleteReply: async (reviewId: number, deleteBy: number) => {
+    await api.delete(`${ENDPOINT}/reply/${reviewId}?deleteBy=${deleteBy}`);
   },
 };
