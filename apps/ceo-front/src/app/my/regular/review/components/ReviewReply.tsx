@@ -1,8 +1,9 @@
 'use client';
 
+import Image from 'next/image';
 import { useState } from 'react';
 
-import { reviewApi } from '@repo/api/ceo';
+import { reviewApi, ReviewReply as Reply } from '@repo/api/ceo';
 import { Button } from '@repo/design-system/components/ceo';
 import { ClockIcon } from '@repo/design-system/icons';
 
@@ -11,12 +12,7 @@ import { formatDotDate } from '@/utils/date';
 
 interface ReviewReplyProps {
   reviewId: number;
-  initialReply?: {
-    id?: number;
-    content: string;
-    createdAt?: string;
-    writerName?: string;
-  };
+  initialReply?: Reply;
   currentUser: {
     id: number;
     nickname: string | null;
@@ -26,7 +22,7 @@ interface ReviewReplyProps {
 const ReviewReply = ({ reviewId, currentUser, initialReply }: ReviewReplyProps) => {
   const [showInput, setShowInput] = useState(false);
   const [replyText, setReplyText] = useState(initialReply?.content ?? '');
-  const [localReply, setLocalReply] = useState(initialReply ?? null);
+  const [localReply, setLocalReply] = useState<Partial<Reply> | null>(initialReply ?? null);
 
   const handleSubmit = async () => {
     if (!replyText.trim()) return;
@@ -82,8 +78,21 @@ const ReviewReply = ({ reviewId, currentUser, initialReply }: ReviewReplyProps) 
           <div className='flex flex-col gap-[20px] rounded-[20px] shadow-[0_0_2px_rgba(0,0,0,0.06),0_0_3px_rgba(0,0,0,0.1)] px-[32px] pt-[32px] pb-[40px] bg-white'>
             <div className='flex justify-between items-center'>
               <div className='flex gap-[12px] items-center'>
-                <ProfileImage size={40} />
-                <span className='subtitle-2 leading-[24px]'>{localReply?.writerName}</span>
+                <div className='w-[40px] h-[40px] rounded-full overflow-hidden bg-gray-200'>
+                  {initialReply?.writerProfileImage ? (
+                    <Image
+                      src={initialReply.writerProfileImage}
+                      width={40}
+                      height={40}
+                      alt='profile image'
+                      draggable={false}
+                      className='object-cover w-[40px] h-[40px]'
+                    />
+                  ) : (
+                    <ProfileImage size={40} />
+                  )}
+                </div>
+                <span className='subtitle-2 leading-[24px]'>{localReply?.writerName} 사장님</span>
               </div>
               <span className='body-5 text-gray-5'>
                 {new Date(localReply?.createdAt || '').toLocaleDateString('ko-KR')}
@@ -114,7 +123,18 @@ const ReviewReply = ({ reviewId, currentUser, initialReply }: ReviewReplyProps) 
           <div className='flex flex-col rounded-[20px] shadow-[0_0_2px_rgba(0,0,0,0.06),0_0_3px_rgba(0,0,0,0.1)] px-[32px] pt-[32px] pb-[40px] bg-white'>
             <div className='flex justify-between items-center pb-[20px]'>
               <div className='flex gap-[12px] items-center'>
-                <ProfileImage size={40} />
+                {initialReply?.writerProfileImage ? (
+                  <Image
+                    src={initialReply.writerProfileImage}
+                    width={40}
+                    height={40}
+                    alt='profile image'
+                    draggable={false}
+                    className='object-cover w-[40px] h-[40px]'
+                  />
+                ) : (
+                  <ProfileImage size={40} />
+                )}
                 <span className='subtitle-2 leading-[24px]'>
                   {localReply?.writerName ?? currentUser.nickname} 사장님
                 </span>

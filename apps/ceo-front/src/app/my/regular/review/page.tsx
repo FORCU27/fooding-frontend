@@ -9,7 +9,6 @@ import { ReviewCard } from './components/ReviewCard';
 import ReviewReply from './components/ReviewReply';
 import { useStore } from '@/context/StoreContext';
 import { useGetSelf } from '@/hooks/auth/useGetSelf';
-import { formatDotDate } from '@/utils/date';
 
 const ReviewPage = () => {
   const { data: me } = useGetSelf();
@@ -21,19 +20,13 @@ const ReviewPage = () => {
     enabled: !!storeId,
   });
   const reviews = reviewResponse?.data.list;
-  console.log('reviews', reviews);
 
   return (
     <CardForm className='mb-[180px]'>
       <div className='headline-2'>리뷰</div>
       {reviews?.map((review) => (
         <div key={review.id} className='flex flex-col gap-[20px]'>
-          <ReviewCard
-            author={review.writerName}
-            date={formatDotDate(review.createdAt)}
-            rating={review.totalScore}
-            content={review.content}
-          />
+          <ReviewCard review={review} />
           <ReviewReply
             reviewId={review.id}
             initialReply={review.replies?.[0]}

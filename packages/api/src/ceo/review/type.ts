@@ -21,10 +21,11 @@ export const ReviewReply = z
     content: z.string(),
     writerId: z.number(),
     writerName: z.string(),
-    writerProfileImage: z.string(),
+    writerProfileImage: z.string().nullable(),
     createdAt: z.string(),
   })
   .loose();
+export type ReviewReply = z.infer<typeof ReviewReply>;
 
 export const Review = z.object({
   id: z.number(),
@@ -35,7 +36,8 @@ export const Review = z.object({
   writerName: z.string(),
   writerProfileImage: z.string().nullable(),
   replies: z.array(ReviewReply).nullable(),
-  // writerReviewCount: z.number(), <- TODO
+  reviewCount: z.number(),
+  imageUrls: z.array(z.string()).nullable(),
   createdAt: z.string(),
   totalScore: z.number().optional(),
   tasteScore: z.number().optional(),
