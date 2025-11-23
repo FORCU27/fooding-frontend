@@ -19,6 +19,13 @@ export const queryKeys = {
   ceo: {
     me: 'ceoMe',
     devices: 'ceoDevices',
+    notifications: 'ceoNotifications',
+    device: {
+      logs: 'ceoDeviceLogs',
+    },
+    reward: {
+      history: 'ceoRewardHistory',
+    },
     store: {
       selectedStore: 'ceoSelectedStore',
       storeList: 'ceoStoreList',
@@ -65,6 +72,9 @@ export const queryKeys = {
     },
     bookmark: {
       list: 'ceoBookmarkList',
+    },
+    storePost: {
+      list: 'ceoStorePosts',
     },
     review: 'ceoReviewList',
   },

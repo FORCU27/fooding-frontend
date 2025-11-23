@@ -1,6 +1,7 @@
 'use client';
 
 import { CreateCouponBody } from '@repo/api/ceo';
+import { toast } from '@repo/design-system/components/b2c';
 import type { SelectedRangeItem } from '@repo/design-system/components/ceo';
 
 import { CouponForm, type CouponFormData } from '@/components/coupon/CouponForm';
@@ -16,7 +17,7 @@ const CouponPage = () => {
     selectedDateRange: SelectedRangeItem | null,
   ) => {
     if (!selectedDateRange) {
-      alert('사용 기간을 선택해주세요.');
+      toast.error('사용 기간을 선택해주세요.');
       return;
     }
 

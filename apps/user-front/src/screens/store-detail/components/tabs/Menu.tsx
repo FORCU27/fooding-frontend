@@ -5,6 +5,7 @@ import { ChipTabs, EmptyState, Tag } from '@repo/design-system/components/b2c';
 import { FoodingIcon } from '@repo/design-system/icons';
 import { useFlow } from '@stackflow/react/future';
 
+import { LoadingScreen } from '@/components/Layout/LoadingScreen';
 import { useGetStoreMenuList } from '@/hooks/store/useGetStoreMenuList';
 import { isNonEmptyArray } from '@/utils/array';
 
@@ -13,7 +14,9 @@ type StoreDetailMenuTabProps = {
 };
 
 export const StoreDetailMenuTab = ({ store }: StoreDetailMenuTabProps) => {
-  const { data: storeMenuCategories } = useGetStoreMenuList(store.id);
+  const { data: storeMenuCategories, isPending, isFetching } = useGetStoreMenuList(store.id);
+
+  if (isPending || isFetching) return <LoadingScreen />;
 
   if (!isNonEmptyArray(storeMenuCategories)) {
     return <EmptyState className='my-16' title='등록된 메뉴가 없어요.' />;

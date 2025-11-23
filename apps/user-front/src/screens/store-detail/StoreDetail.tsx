@@ -30,6 +30,7 @@ import { StoreDetailHomeTab } from './components/tabs/Home';
 import { StoreDetailMenuTab } from './components/tabs/Menu';
 import { StoreDetailPhotoTab } from './components/tabs/Photo';
 import { StoreDetailReviewTab } from './components/tabs/ReviewDetail';
+import { StoreDetailInfoTab } from './components/tabs/StoreInfo';
 import { StoreDetailPostListTab } from './components/tabs/StorePostList';
 import { StoreRewardListTab } from './components/tabs/StoreRewardList';
 import { useLoginBottomSheet } from '@/components/Auth/LoginBottomSheet';
@@ -51,8 +52,8 @@ import { cn } from '@/utils/cn';
 
 // TODO: mock 데이터 제거
 const mock = {
-  realtimeViewers: 5,
-  waitingCount: 7,
+  realtimeViewers: 0,
+  waitingCount: 0,
   bookmarkCount: 103,
 } as const;
 
@@ -131,7 +132,16 @@ const StoreDetail = ({ storeId, showHeader, initialTab = 'home' }: StoreDetailPr
     if (mutation.isPending) return;
 
     mutation.mutate(store.id, {
+      onError: () => {
+        setIsBookmarked(bookmarkState);
+        toast.error('오류가 발생했습니다. 잠시 후 다시 시도해주세요.');
+      },
       onSuccess: () => {
+        if (bookmarkState) {
+          toast.error('북마크가 삭제되었어요.');
+        } else {
+          toast.success('북마크가 추가되었어요!');
+        }
         setIsBookmarked(!bookmarkState);
       },
     });
@@ -150,7 +160,7 @@ const StoreDetail = ({ storeId, showHeader, initialTab = 'home' }: StoreDetailPr
         onError: () => {
           toast.error('줄서기에 실패했어요. 잠시 후 다시 시도해주세요.');
         },
-      }
+      },
     );
   };
 
@@ -237,6 +247,9 @@ const StoreDetail = ({ storeId, showHeader, initialTab = 'home' }: StoreDetailPr
               <ChipTabs.Content value='reward'>
                 <StoreRewardListTab storeId={storeId} />
               </ChipTabs.Content>
+              <ChipTabs.Content value='info'>
+                <StoreDetailInfoTab store={store} />
+              </ChipTabs.Content>
             </Suspense>
           </DefaultErrorBoundary>
         </ChipTabs>
@@ -260,7 +273,11 @@ const StoreDetail = ({ storeId, showHeader, initialTab = 'home' }: StoreDetailPr
             {store.bookmarkCount + (!store.isBookmarked && isBookmarked ? 1 : 0)}
           </span>
         </button>
-        <Button disabled={!waitingAvailable.available} onClick={() => setIsBottomSheetOpen(true)}>
+        <Button
+          disabled={!waitingAvailable.available}
+          onClick={() => setIsBottomSheetOpen(true)}
+          className='w-full'
+        >
           줄서기
         </Button>
       </div>

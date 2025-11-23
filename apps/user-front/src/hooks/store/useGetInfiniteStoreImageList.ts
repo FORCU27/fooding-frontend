@@ -28,14 +28,16 @@ const infiniteStoreImageListQueryOptions = ({ storeId }: { storeId: number }) =>
   });
 
 export const useGetInfiniteStoreImageList = ({ storeId }: { storeId: number }) => {
-  const { data, fetchNextPage } = useSuspenseInfiniteQuery(
-    infiniteStoreImageListQueryOptions({ storeId }),
-  );
+  const { data, fetchNextPage, isPending, isFetching, isFetchingNextPage } =
+    useSuspenseInfiniteQuery(infiniteStoreImageListQueryOptions({ storeId }));
 
   const images = data.pages.flatMap((page) => page.data.list);
 
   return {
     images,
     fetchNextPage,
+    isPending,
+    isFetching,
+    isFetchingNextPage,
   };
 };

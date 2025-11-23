@@ -9,11 +9,12 @@ import {
 } from '@repo/design-system/icons';
 
 import { Divider } from '@/components/Layout/Divider';
+import { LoadingScreen } from '@/components/Layout/LoadingScreen';
 import { Section } from '@/components/Layout/Section';
 import { MenuCard } from '@/components/Store/MenuCard';
 import { ReviewsList } from '@/components/Store/ReviewsList';
 import { StoresList } from '@/components/Store/StoresList';
-import { SubwayLineBadge } from '@/components/SubwayLineBadge';
+import { SubwayLine, SubwayLineBadge } from '@/components/SubwayLineBadge';
 import { useGetStoreImmediateEntryList } from '@/hooks/store/useGetStoreImmediateEntryList';
 import { useGetStoreList } from '@/hooks/store/useGetStoreList';
 import { useGetStoreMenuList } from '@/hooks/store/useGetStoreMenuList';
@@ -41,13 +42,38 @@ export const StoreDetailHomeTab = ({
   onSeeMoreReviews,
   onSeeMoreMenus,
 }: StoreDetailHomeTabProps) => {
-  const { data: storeMenus } = useGetStoreMenuList(store.id);
-  const { data: reviews } = useGetStoreReviewList(store.id);
-  const { data: stores } = useGetStoreList({ sortType: 'RECENT' });
-  const { data: immediateEntryStores } = useGetStoreImmediateEntryList({
+  const {
+    data: storeMenus,
+    isPending: isMenusPending,
+    isFetching: isMenusFetching,
+  } = useGetStoreMenuList(store.id);
+  const {
+    data: reviews,
+    isPending: isReviewsPending,
+    isFetching: isReviewsFetching,
+  } = useGetStoreReviewList(store.id);
+  const { data: stores, isPending: isStoresPending } = useGetStoreList({ sortType: 'RECENT' });
+  const {
+    data: immediateEntryStores,
+    isPending: isImmediatePending,
+    isFetching: isImmediateFetching,
+  } = useGetStoreImmediateEntryList({
     pageNum: 1,
     pageSize: 10,
   });
+
+  const isLoading =
+    isMenusPending ||
+    isMenusFetching ||
+    isReviewsPending ||
+    isReviewsFetching ||
+    isStoresPending ||
+    isImmediatePending ||
+    isImmediateFetching;
+
+  if (isLoading) {
+    return <LoadingScreen />;
+  }
 
   return (
     <div className='flex flex-col'>
@@ -134,7 +160,16 @@ export const StoreDetailHomeTab = ({
           </span>
           <span className='body-6 flex items-center'>
             <TrainIcon className='mr-[10px] size-[18px] stroke-1' />
-            <SubwayLineBadge className='mr-1' line={6} />
+
+            {store.stations &&
+              store.stations.map((station) => (
+                <SubwayLineBadge
+                  key={station.id}
+                  className='mr-1'
+                  line={station.line as SubwayLine}
+                />
+              ))}
+
             {store.direction}
           </span>
         </div>
@@ -178,7 +213,10 @@ const PathfindingButton = ({ className, latitude, longitude, name }: Pathfinding
       className={className}
       variant='gray'
       size='large'
-      onClick={() => getKakaoMapDirectionUrl({ latitude, longitude, name })}
+      onClick={() => {
+        const url = getKakaoMapDirectionUrl({ latitude, longitude, name });
+        window.open(url, '_blank');
+      }}
     >
       <CompassIcon />
       <span className='ml-1'>길찾기</span>

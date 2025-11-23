@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 
 import { StoreInformationBody } from '@repo/api/ceo';
+import { toast, Toaster } from '@repo/design-system/components/b2c';
 import {
   CardForm,
   Button,
@@ -140,7 +141,7 @@ const AdditionalPage = () => {
       formData.parkingFeeType === 'paid' &&
       !formData.parkingTimeType
     ) {
-      alert('유료 주차의 경우 시간당 과금 또는 정액 과금을 선택해주세요.');
+      toast.error('유료 주차의 경우 시간당 과금 또는 정액 과금을 선택해주세요.');
       return;
     }
 
@@ -192,7 +193,7 @@ const AdditionalPage = () => {
 
     // storeInformation.id가 있으면 update, 없으면 create (현재는 update만 구현)
     if (!storeInformation?.id) {
-      alert('부가정보를 먼저 생성해야 합니다.');
+      toast.error('부가정보를 먼저 생성해야 합니다.');
       return;
     }
 
@@ -200,10 +201,10 @@ const AdditionalPage = () => {
       { storeId: selectedStoreId, informationId: storeInformation.id, body },
       {
         onSuccess: () => {
-          // alert('저장되었습니다.');
+          toast.success('저장되었습니다.');
         },
         onError: () => {
-          // alert('저장에 실패했습니다.');
+          toast.error('저장에 실패했습니다.');
         },
       },
     );
@@ -534,6 +535,7 @@ const AdditionalPage = () => {
           {updateInformationMutation.isPending ? '저장 중...' : '저장'}
         </Button>
       </div>
+      <Toaster />
     </CardForm>
   );
 };

@@ -46,6 +46,19 @@ export const formatDotDate = (isoString: string) => {
 };
 
 /**
+ * ISO 8601 -> HH:mm (로컬 타임존)
+ * null인 경우 "-" 반환
+ */
+export const formatTime = (isoString: string | null): string => {
+  if (!isoString) return '-';
+  const date = new Date(isoString);
+  const hours = String(date.getHours()).padStart(2, '0');
+  const minutes = String(date.getMinutes()).padStart(2, '0');
+
+  return `${hours}:${minutes}`;
+};
+
+/**
  * ISO 8601 -> YYYY-MM-DD HH:mm:ss
  */
 export const formatDashDateTime = (isoString: string) => {

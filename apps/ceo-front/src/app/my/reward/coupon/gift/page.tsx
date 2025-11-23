@@ -3,6 +3,7 @@
 import { useState } from 'react';
 
 import { GiftCouponBody, UserResponse } from '@repo/api/ceo';
+import { toast } from '@repo/design-system/components/b2c';
 import { Card } from '@repo/design-system/components/ceo';
 import type { SelectedRangeItem } from '@repo/design-system/components/ceo';
 
@@ -21,17 +22,17 @@ const GiftCouponPage = () => {
     selectedDateRange: SelectedRangeItem | null,
   ) => {
     if (!selectedUser) {
-      alert('선물받을 고객을 선택해주세요.');
+      toast.error('선물받을 고객을 선택해주세요.');
       return;
     }
 
     if (!selectedDateRange) {
-      alert('사용 기간을 선택해주세요.');
+      toast.error('사용 기간을 선택해주세요.');
       return;
     }
 
     if (!selectedStoreId) {
-      alert('스토어를 선택해주세요.');
+      toast.error('스토어를 선택해주세요.');
       return;
     }
 

@@ -17,6 +17,7 @@ import { ErrorBoundary, ErrorBoundaryFallbackProps, Suspense } from '@suspensive
 import { LoadingToggle } from '@/components/Devtool/LoadingToggle';
 import BottomTab from '@/components/Layout/BottomTab';
 import { Header } from '@/components/Layout/Header';
+import { LoadingScreen } from '@/components/Layout/LoadingScreen';
 import { Screen } from '@/components/Layout/Screen';
 import { useAuth } from '@/components/Provider/AuthProvider';
 import { StoresList } from '@/components/Store/StoresList';
@@ -52,7 +53,7 @@ export const MyPageTab: ActivityComponentType<'MyPageTab'> = () => {
     >
       <ErrorBoundary fallback={MyPageErrorFallback}>
         <LoadingToggle fallback={<MyPageLoadingFallback />}>
-          <Suspense fallback={null}>
+          <Suspense fallback={<LoadingScreen />}>
             <Content />
           </Suspense>
         </LoadingToggle>
@@ -133,11 +134,10 @@ const Content = () => {
           </div>
         </div>
         <div className='flex justify-around items-center h-[88px] mt-5 p-5'>
-          <div 
-            className='flex flex-col justify-center items-center gap-1 cursor-pointer'
+          <div
+            className='flex flex-col justify-center items-center gap-1 cursor-pointer w-full'
             onClick={() => {
-              // TODO: 내 리뷰 목록 화면으로 이동하는 기능 구현 필요
-              console.log('내 리뷰 목록으로 이동');
+              flow.push('MyReviewsScreen', {});
             }}
           >
             <MessageDotsSquareIcon />
@@ -146,7 +146,7 @@ const Content = () => {
           </div>
           <hr className='w-[2px] h-[81px] bg-gray-2 text-gray-2 mx-2' />
           <div
-            className='flex flex-col justify-center items-center gap-1 cursor-pointer'
+            className='flex flex-col justify-center items-center gap-1 cursor-pointer w-full'
             onClick={() => flow.push('MyCouponListScreen', {})}
           >
             <TicketIcon />
@@ -155,7 +155,7 @@ const Content = () => {
           </div>
           <hr className='w-[2px] h-[81px] bg-gray-2 text-gray-2 mx-2' />
           <div
-            className='flex flex-col justify-center items-center gap-1 cursor-pointer'
+            className='flex flex-col justify-center items-center gap-1 cursor-pointer w-full'
             onClick={() => flow.push('MyRewardListScreen', {})}
           >
             <GiftIcon />
@@ -178,8 +178,8 @@ const Content = () => {
             </button>
           </div>
           <ul className='flex px-grid-margin overflow-x-auto scrollbar-hide w-dvw gap-3'>
-            {bookmarks.list.map((bookmark) => (
-              <BookmarkCard bookmark={bookmark} key={bookmark.id} />
+            {bookmarks.list.map((bookmark, idx) => (
+              <BookmarkCard bookmark={bookmark} key={`${bookmark.id}-${idx}`} />
             ))}
           </ul>
         </div>

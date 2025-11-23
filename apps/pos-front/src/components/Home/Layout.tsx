@@ -43,7 +43,7 @@ const menuItems: MenuItem[] = [
 ];
 
 const Layout = ({ children }: LayoutProps) => {
-  const [mobileOpen, setMobileOpen] = useState(false);
+  const [mobileOpen, setMobileOpen] = useState(false); // 기본적으로 닫혀있음
   const pathname = usePathname();
   const isLoginPage = pathname === '/login';
 
@@ -55,7 +55,7 @@ const Layout = ({ children }: LayoutProps) => {
 
   return (
     <div className='flex'>
-      <AppBarSection />
+      <AppBarSection handleDrawerToggle={handleDrawerToggle} />
       <DrawerSection
         mobileOpen={mobileOpen}
         handleDrawerToggle={handleDrawerToggle}

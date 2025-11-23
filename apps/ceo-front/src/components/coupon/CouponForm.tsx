@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 
+import { toast } from '@repo/design-system/components/b2c';
 import {
   Button,
   Card,
@@ -108,24 +109,24 @@ export const CouponForm = ({
   const handleSubmit = async () => {
     // gift 모드가 아닐 때만 쿠폰 이름 체크
     if (mode !== 'gift' && !formData.couponName) {
-      alert('쿠폰 이름을 입력해주세요.');
+      toast.error('쿠폰 이름을 입력해주세요.');
       return;
     }
 
     if (formData.benefitType === 'discount') {
       if (!formData.discountPercentage && !formData.discountAmount) {
-        alert('할인율 또는 할인 금액을 입력해주세요.');
+        toast.error('할인율 또는 할인 금액을 입력해주세요.');
         return;
       }
     } else if (formData.benefitType === 'gift') {
       if (formData.giftType === 'threshold' && !formData.minOrderAmount) {
-        alert('증정 조건 금액을 입력해주세요.');
+        toast.error('증정 조건 금액을 입력해주세요.');
         return;
       }
     }
 
     if (!selectedDateRange || !selectedDateRange.startDate || !selectedDateRange.endDate) {
-      alert('사용 기간을 선택해주세요.');
+      toast.error('사용 기간을 선택해주세요.');
       return;
     }
 
@@ -369,25 +370,24 @@ export const CouponForm = ({
             datePickerMode='range'
             selectedRanges={selectedDateRange}
             onRangeChange={(range) => {
+              let newRange: SelectedRangeItem | null = null;
+
               if (typeof range === 'function') {
-                const newRange = range(selectedDateRange);
-                if (!Array.isArray(newRange) && newRange) {
-                  setSelectedDateRange(newRange);
-                  if (newRange.startDate && newRange.endDate) {
-                    setFormData((prev) => ({
-                      ...prev,
-                      startDate: newRange.startDate.toISOString().split('T')[0] || '',
-                      endDate: newRange.endDate.toISOString().split('T')[0] || '',
-                    }));
-                  }
+                const result = range(selectedDateRange);
+                if (!Array.isArray(result)) {
+                  newRange = result;
                 }
-              } else if (!Array.isArray(range) && range) {
-                setSelectedDateRange(range);
-                if (range.startDate && range.endDate) {
+              } else if (!Array.isArray(range)) {
+                newRange = range;
+              }
+
+              if (newRange) {
+                setSelectedDateRange(newRange);
+                if (newRange.startDate && newRange.endDate) {
                   setFormData((prev) => ({
                     ...prev,
-                    startDate: range.startDate.toISOString().split('T')[0] || '',
-                    endDate: range.endDate.toISOString().split('T')[0] || '',
+                    startDate: newRange.startDate.toISOString().split('T')[0] || '',
+                    endDate: newRange.endDate.toISOString().split('T')[0] || '',
                   }));
                 }
               }

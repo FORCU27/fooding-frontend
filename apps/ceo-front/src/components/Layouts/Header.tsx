@@ -97,7 +97,17 @@ const UserProfile = () => {
 };
 
 const Notifications = () => {
-  return <CeoBellIcon size={24} />;
+  const router = useRouter();
+
+  return (
+    <button
+      onClick={() => router.push('/my/notifications')}
+      className='p-2 hover:bg-gray-100 rounded-lg transition-colors cursor-pointer'
+      aria-label='알림'
+    >
+      <CeoBellIcon size={24} />
+    </button>
+  );
 };
 
 const XIcon = () => {

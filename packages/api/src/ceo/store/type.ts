@@ -125,7 +125,6 @@ export const StoreOperatingHour = z.object({
 });
 
 export const StoreOperatingHourBody = z.object({
-  hasHoliday: z.boolean(),
   regularHolidayType: z.enum(REGULAR_HOLIDAY_TYPES),
   regularHoliday: z.enum(DAY_OF_WEEK).array(),
   closedNationalHolidays: z.string().array(),

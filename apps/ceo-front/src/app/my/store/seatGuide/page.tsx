@@ -1,22 +1,25 @@
 'use client';
 
 import { StoreOperatingHourBody } from '@repo/api/ceo';
+import { toast } from '@repo/design-system/components/b2c';
 
 import { OperatingHoursForm } from './components/OperatingHourForm';
+import { useStore } from '@/context/StoreContext';
 import { useCreateStoreOperatingHour } from '@/hooks/store/useCreateStoreOperatingHour';
 
 const SeatGuidePage = () => {
   const { mutate } = useCreateStoreOperatingHour();
+  const { storeId } = useStore();
 
   const handleFormSubmit = (formData: StoreOperatingHourBody) => {
     mutate(
-      { id: 15, body: formData }, //FIXME: 추후수정
+      { id: Number(storeId), body: formData },
       {
         onSuccess: () => {
-          alert('저장되었습니다.');
+          toast.success('저장되었습니다.');
         },
         onError: () => {
-          alert('저장에 실패했습니다.');
+          toast.error('저장에 실패했습니다.');
         },
       },
     );

@@ -21,7 +21,22 @@ type DatePickerProps = {
 const WEEK_DAYS = ['일', '월', '화', '수', '목', '금', '토'];
 
 export const DatePicker = forwardRef<HTMLInputElement, DatePickerProps>(
-  ({ label, mode = 'single', value, values, startDate, endDate, selectionMode = 'single', onChange, onRangeChange, className, ...props }, ref) => {
+  (
+    {
+      label,
+      mode = 'single',
+      value,
+      values,
+      startDate,
+      endDate,
+      selectionMode = 'single',
+      onChange,
+      onRangeChange,
+      className,
+      ...props
+    },
+    ref,
+  ) => {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
 
@@ -220,7 +235,9 @@ export const DatePicker = forwardRef<HTMLInputElement, DatePickerProps>(
                         selectedDate.getDate() === day
                       : values?.some(
                           (d) =>
-                            d.getFullYear() === year && d.getMonth() === month && d.getDate() === day,
+                            d.getFullYear() === year &&
+                            d.getMonth() === month &&
+                            d.getDate() === day,
                         )
                     : false;
 
@@ -266,9 +283,25 @@ export const DatePicker = forwardRef<HTMLInputElement, DatePickerProps>(
                             ? 'text-gray-4 cursor-not-allowed bg-transparent hover:bg-transparent hover:text-gray-4'
                             : // 활성화된 날짜
                               'text-black cursor-pointer hover:bg-fooding-purple hover:text-white',
-                      isSunday && !isSelected && !isStartDate && !isEndDate && !isInRange && !isPast && 'text-error-red',
-                      isSaturday && !isSelected && !isStartDate && !isEndDate && !isInRange && !isPast && 'text-info-blue',
-                      isToday && !isSelected && !isStartDate && !isEndDate && 'border border-fooding-purple',
+                      isSunday &&
+                        !isSelected &&
+                        !isStartDate &&
+                        !isEndDate &&
+                        !isInRange &&
+                        !isPast &&
+                        'text-error-red',
+                      isSaturday &&
+                        !isSelected &&
+                        !isStartDate &&
+                        !isEndDate &&
+                        !isInRange &&
+                        !isPast &&
+                        'text-info-blue',
+                      isToday &&
+                        !isSelected &&
+                        !isStartDate &&
+                        !isEndDate &&
+                        'border border-fooding-purple',
                     )}
                     aria-current={isSelected || isStartDate || isEndDate ? 'date' : undefined}
                     aria-disabled={isPast}
@@ -279,7 +312,7 @@ export const DatePicker = forwardRef<HTMLInputElement, DatePickerProps>(
               })}
           </div>
 
-          {mode === 'range' && (selectedStartDate || selectedEndDate) && (
+          {/* {mode === 'range' && (selectedStartDate || selectedEndDate) && (
             <div className='mt-4 pt-4 border-t border-gray-1'>
               <div className='text-sm text-gray-6'>
                 {selectedStartDate && !selectedEndDate && (
@@ -293,7 +326,7 @@ export const DatePicker = forwardRef<HTMLInputElement, DatePickerProps>(
                 )}
               </div>
             </div>
-          )}
+          )} */}
         </div>
       </div>
     );

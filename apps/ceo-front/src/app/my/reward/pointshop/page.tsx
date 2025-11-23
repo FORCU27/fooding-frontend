@@ -66,6 +66,11 @@ const PointShopPage = () => {
             <CoinProduct
               className='border-fooding-purple'
               canceledCount={shop.totalQuantity - shop.issuedQuantity}
+              dateRange={
+                shop.issueStartOn && shop.issueEndOn
+                  ? `${shop.issueStartOn} ~ ${shop.issueEndOn}`
+                  : undefined
+              }
               exchangePoint={shop.point}
               imageAlt={shop.name}
               purchaseCount={shop.issuedQuantity}

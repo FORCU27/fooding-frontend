@@ -4,11 +4,7 @@ import { PropsWithoutRef } from 'react';
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import { AuthUpdateUserBody } from '@repo/api/auth';
-import {
-  BottomSheetSelect,
-  Button,
-  TextField,
-} from '@repo/design-system/components/b2c';
+import { BottomSheetSelect, Button, TextField } from '@repo/design-system/components/b2c';
 import { useFlow } from '@stackflow/react/future';
 import { Controller, useForm } from 'react-hook-form';
 import z from 'zod/v4';
@@ -35,6 +31,7 @@ const formSchema = z.object({
 type FormSchemaType = z.infer<typeof formSchema>;
 export interface ProfileFormProps {
   isUpdateMode: boolean;
+  isLoading?: boolean;
   editOriginValue: AuthUpdateUserBody;
   handleSubmit: (
     data: AuthUpdateUserBody & { imageFile?: File | null },
@@ -50,6 +47,7 @@ export const ProfileUserInfoForm = ({
   editOriginValue,
   handleSubmit,
   isUpdateMode,
+  isLoading,
 }: PropsWithoutRef<ProfileFormProps>) => {
   const { user } = useAuth();
   if (!user) {
@@ -183,6 +181,7 @@ export const ProfileUserInfoForm = ({
                 type='button'
                 disabled={!!errors.name || !!errors.phoneNumber}
                 onClick={handleSaveClick}
+                isLoading={isLoading}
               >
                 저장
               </Button>
@@ -195,6 +194,7 @@ export const ProfileUserInfoForm = ({
                   type='button'
                   disabled={!!errors.name || !!errors.phoneNumber}
                   onClick={handleSaveClick}
+                  isLoading={isLoading}
                 >
                   다음
                 </Button>

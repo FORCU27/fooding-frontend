@@ -6,6 +6,7 @@ import { BottomSheet, Button, Checkbox, EmptyState } from '@repo/design-system/c
 import { FoodingIcon, GiftIcon } from '@repo/design-system/icons';
 import { useFlow } from '@stackflow/react/future';
 
+import { LoadingScreen } from '@/components/Layout/LoadingScreen';
 import { Section } from '@/components/Layout/Section';
 import { useGetStoreDetail } from '@/hooks/store/useGetStoreDetail';
 import { useGetStoreRewardList } from '@/hooks/store/useGetStoreRewardList';
@@ -19,9 +20,20 @@ type StoreRewardListTabProps = {
 export const StoreRewardListTab = ({ storeId }: StoreRewardListTabProps) => {
   const flow = useFlow();
 
-  const { data: rewards } = useGetStoreRewardList(storeId);
-  const { data: store } = useGetStoreDetail(storeId);
+  const {
+    data: rewards,
+    isPending: rewardsPending,
+    isFetching: rewardsFetching,
+  } = useGetStoreRewardList(storeId);
+  const {
+    data: store,
+    isPending: storePending,
+    isFetching: storeFetching,
+  } = useGetStoreDetail(storeId);
 
+  const isLoading = rewardsPending || rewardsFetching || storePending || storeFetching;
+
+  if (isLoading) return <LoadingScreen />;
   return (
     <Section className='flex flex-col bg-gray-1'>
       <div className='flex flex-col gap-5 py-4 mb-25'>
