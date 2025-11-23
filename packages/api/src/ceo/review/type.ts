@@ -11,23 +11,31 @@ export type GetReviewParams = {
 };
 
 export type PostReviewReplyParams = {
-  storeId: number;
   userId: number;
-  reviewId: number;
   content: string;
 };
+
+export const ReviewReply = z
+  .object({
+    id: z.number(),
+    content: z.string(),
+    writerId: z.number(),
+    writerName: z.string(),
+    writerProfileImage: z.string(),
+    createdAt: z.string(),
+  })
+  .loose();
 
 export const Review = z.object({
   id: z.number(),
   storeId: z.number(),
   content: z.string(),
   visitPurposeType: z.enum(['MEETING', 'DATE', 'FRIEND', 'FAMILY', 'BUSINESS', 'PARTY']),
-  parentId: z.number(),
   writerId: z.number(),
   writerName: z.string(),
-  writerProfileImage: z.string(),
-  // replies: any,
-  writerReviewCount: z.number(),
+  writerProfileImage: z.string().nullable(),
+  replies: z.array(ReviewReply).nullable(),
+  // writerReviewCount: z.number(), <- TODO
   createdAt: z.string(),
   totalScore: z.number().optional(),
   tasteScore: z.number().optional(),

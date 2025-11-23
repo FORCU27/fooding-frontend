@@ -7,49 +7,20 @@ import { useQuery } from '@tanstack/react-query';
 
 import { ReviewCard } from './components/ReviewCard';
 import ReviewReply from './components/ReviewReply';
+import { useStore } from '@/context/StoreContext';
 import { useGetSelf } from '@/hooks/auth/useGetSelf';
 import { formatDotDate } from '@/utils/date';
 
 const ReviewPage = () => {
   const { data: me } = useGetSelf();
+  const { storeId } = useStore();
   const { data: reviewResponse } = useQuery({
     queryKey: [queryKeys.ceo.review],
-    queryFn: () => reviewApi.getReviews({ pageNum: 1, pageSize: 20, storeId: 23, ceoId: me.id }),
+    queryFn: () =>
+      reviewApi.getReviews({ pageNum: 1, pageSize: 20, storeId: Number(storeId), ceoId: me.id }),
+    enabled: !!storeId,
   });
-  const mockReviews = [
-    {
-      id: 1,
-      storeId: 1,
-      writerName: '홍길동',
-      visitPurposeType: 'MEETING',
-      parentId: 1,
-      writerId: 1,
-      writerReviewCount: 100,
-      createdAt: '2025-01-01',
-      totalScore: 4.5,
-      content: '잘먹었습니다.',
-      replies: [
-        {
-          id: 1,
-          content: '감사합니다. 또 방문해주세요',
-        },
-      ],
-    },
-    {
-      id: 2,
-      storeId: 2,
-      writerName: '임꺽정',
-      visitPurposeType: 'MEETING',
-      parentId: 2,
-      writerId: 2,
-      writerReviewCount: 100,
-      createdAt: '2025-01-01',
-      totalScore: 4.5,
-      content:
-        '잘먹었습니다. 감사합니다. 단골인데 항상 챙겨주시고 사장님도 너무 친절해요~^^ 어쩌구 저쩌구 너무 맛잇고 맛좋코 또 오고싶고 어쩌ㅇ구쩌구...잘먹었습니다. 감사합니다. 단골인데 항상 챙겨주시고 사장님도 너무 친절해요~^^ 어쩌구 저쩌구 너무 맛잇고 맛좋코 또 오고싶고 어쩌ㅇ구쩌구...잘먹었습니다. 감사합니다. 단골인데 항상 챙겨주시고 사장님도 너무 친절해요~^^ 어쩌구 저쩌구 너무 맛잇고 맛좋코 또 오고싶고 어쩌ㅇ구쩌구...',
-    },
-  ];
-  const reviews = reviewResponse?.data?.list.length > 0 ? reviewResponse?.data.list : mockReviews;
+  const reviews = reviewResponse?.data.list;
   console.log('reviews', reviews);
 
   return (
@@ -63,7 +34,11 @@ const ReviewPage = () => {
             rating={review.totalScore}
             content={review.content}
           />
-          <ReviewReply initialReply={review.replies?.[0]} />
+          <ReviewReply
+            reviewId={review.id}
+            initialReply={review.replies?.[0]}
+            currentUser={{ id: me.id, nickname: me.nickname }}
+          />
         </div>
       ))}
     </CardForm>
