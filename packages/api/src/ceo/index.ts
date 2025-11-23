@@ -13,3 +13,4 @@ export * from './reward';
 export * from './bookmark';
 export * from './users';
 export * from './store-post';
+export * from './auth';
