@@ -1,4 +1,6 @@
 'use client';
+import Image from 'next/image';
+
 import { reviewApi } from '@repo/api/ceo';
 import { queryKeys } from '@repo/api/configs/query-keys';
 import { CardForm } from '@repo/design-system/components/ceo';
@@ -13,7 +15,7 @@ const ReviewPage = () => {
   const { data: me } = useGetSelfQuery();
   const { storeId } = useStore();
   const { data: reviewResponse } = useQuery({
-    queryKey: [queryKeys.ceo.review],
+    queryKey: [queryKeys.ceo.review, storeId, me?.id],
     queryFn: () =>
       reviewApi.getReviews({
         pageNum: 1,
@@ -28,16 +30,27 @@ const ReviewPage = () => {
   return (
     <CardForm className='mb-[180px]'>
       <div className='headline-2'>리뷰</div>
-      {reviews?.map((review) => (
-        <div key={review.id} className='flex flex-col gap-[20px]'>
-          <ReviewCard review={review} />
-          <ReviewReply
-            reviewId={review.id}
-            initialReply={review.replies?.[0]}
-            currentUser={{ id: me?.id as number, nickname: me?.nickname as string }}
-          />
+      {reviews?.length === 0 ? (
+        <div className='rounded-[20px] bg-white pt-[32px] pb-[40px] px-[32px] shadow-2xs'>
+          <div className='flex flex-col items-center justify-center gap-4 py-[200px]'>
+            <Image src='/images/fooding-logo-gray.png' width={199} height={48} alt='gray logo' />
+            <p className='text-gray-3 body-2'>아직 리뷰가 없어요</p>
+          </div>
         </div>
-      ))}
+      ) : (
+        <>
+          {reviews?.map((review) => (
+            <div key={review.id} className='flex flex-col gap-[20px]'>
+              <ReviewCard review={review} />
+              <ReviewReply
+                reviewId={review.id}
+                initialReply={review.replies?.[0]}
+                currentUser={{ id: me?.id as number, nickname: me?.nickname as string }}
+              />
+            </div>
+          ))}
+        </>
+      )}
     </CardForm>
   );
 };
