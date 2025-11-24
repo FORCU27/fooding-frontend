@@ -1,7 +1,6 @@
 import { couponHandlers } from './coupon';
 import { keywordHandlers } from './keyword';
 import { notificationHandlers } from './notification';
-import { reviewHandlers } from './review';
 import { rewardHandlers } from './reward';
 import { storeHandlers } from './store';
 import { storePostHandlers } from './store-post';
@@ -12,7 +11,6 @@ export const mockHandlerGroups: MockHandlerGroup[] = [
   storeHandlers,
   storePostHandlers,
   couponHandlers,
-  reviewHandlers,
   rewardHandlers,
   keywordHandlers,
 ];
