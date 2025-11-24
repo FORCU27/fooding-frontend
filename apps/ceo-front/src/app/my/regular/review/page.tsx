@@ -1,5 +1,4 @@
 'use client';
-
 import { reviewApi } from '@repo/api/ceo';
 import { queryKeys } from '@repo/api/configs/query-keys';
 import { CardForm } from '@repo/design-system/components/ceo';
@@ -8,16 +7,21 @@ import { useQuery } from '@tanstack/react-query';
 import { ReviewCard } from './components/ReviewCard';
 import ReviewReply from './components/ReviewReply';
 import { useStore } from '@/context/StoreContext';
-import { useGetSelf } from '@/hooks/auth/useGetSelf';
+import { useGetSelfQuery } from '@/hooks/auth/useGetSelf';
 
 const ReviewPage = () => {
-  const { data: me } = useGetSelf();
+  const { data: me } = useGetSelfQuery();
   const { storeId } = useStore();
   const { data: reviewResponse } = useQuery({
     queryKey: [queryKeys.ceo.review],
     queryFn: () =>
-      reviewApi.getReviews({ pageNum: 1, pageSize: 20, storeId: Number(storeId), ceoId: me.id }),
-    enabled: !!storeId,
+      reviewApi.getReviews({
+        pageNum: 1,
+        pageSize: 20,
+        storeId: Number(storeId),
+        ceoId: Number(me?.id),
+      }),
+    enabled: !!storeId && !!me?.id,
   });
   const reviews = reviewResponse?.data.list;
 
@@ -30,7 +34,7 @@ const ReviewPage = () => {
           <ReviewReply
             reviewId={review.id}
             initialReply={review.replies?.[0]}
-            currentUser={{ id: me.id, nickname: me.nickname }}
+            currentUser={{ id: me?.id as number, nickname: me?.nickname as string }}
           />
         </div>
       ))}
