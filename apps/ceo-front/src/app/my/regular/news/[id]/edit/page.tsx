@@ -4,6 +4,7 @@ import { useParams, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
 import { storePostApi } from '@repo/api/ceo';
+import { Spinner } from '@repo/design-system/components/ceo';
 
 import NewsForm, { NewsFormInitialValue, NewsFormSubmitPayload } from '../../components/NewsForm';
 import { useUploadFile } from '@/hooks/useUploadFile';
@@ -71,7 +72,7 @@ const EditNewsPage = () => {
     }
   };
 
-  if (!initialValue) return <div>로딩 중...</div>;
+  if (!initialValue) return <Spinner size='lg' text='로딩 중...' />;
 
   return (
     <NewsForm

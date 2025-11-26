@@ -12,6 +12,7 @@ import {
   Pagination,
   SortToggle,
   Switch,
+  Spinner,
   type SortOrder,
 } from '@repo/design-system/components/ceo';
 import { EllipsisVerticalIcon } from '@repo/design-system/icons';
@@ -195,14 +196,7 @@ const CouponListPage = () => {
       <div className='space-y-4'>
         <div className='headline-2'>쿠폰</div>
         <div className='bg-white rounded-lg shadow p-6'>
-          <div className='flex items-center justify-center py-8'>
-            <div className='text-center'>
-              <div className='mb-4'>
-                <div className='inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-current border-r-transparent motion-reduce:animate-[spin_1.5s_linear_infinite]' />
-              </div>
-              <div className='text-gray-600'>쿠폰 목록을 불러오는 중...</div>
-            </div>
-          </div>
+          <Spinner text='쿠폰 목록을 불러오는 중...' />
         </div>
       </div>
     );

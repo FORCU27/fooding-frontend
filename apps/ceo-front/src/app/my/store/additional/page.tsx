@@ -15,6 +15,7 @@ import {
   UrlLinkList,
   ToolTip,
   Checkbox,
+  Spinner,
 } from '@repo/design-system/components/ceo';
 
 import { useGetStoreInformation } from '@/hooks/store-information/useGetStoreInformation';
@@ -264,14 +265,7 @@ const AdditionalPage = () => {
       <CardForm className=''>
         <div className='headline-2'>부가 정보</div>
         <Card>
-          <div className='flex items-center justify-center py-8'>
-            <div className='text-center'>
-              <div className='mb-4'>
-                <div className='inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-current border-r-transparent motion-reduce:animate-[spin_1.5s_linear_infinite]' />
-              </div>
-              <div className='text-gray-600'>부가정보를 불러오는 중...</div>
-            </div>
-          </div>
+          <Spinner text='부가정보를 불러오는 중...' />
         </Card>
       </CardForm>
     );

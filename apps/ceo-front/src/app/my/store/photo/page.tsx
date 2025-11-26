@@ -4,7 +4,7 @@ import { useRef, useState } from 'react';
 
 import { ImageTag, ImagesSortType } from '@repo/api/ceo';
 import { queryKeys } from '@repo/api/configs/query-keys';
-import { CardForm, Button } from '@repo/design-system/components/ceo';
+import { CardForm, Button, Spinner } from '@repo/design-system/components/ceo';
 import { useQuery } from '@tanstack/react-query';
 
 import EditTagModal from './components/EditTagModal';
@@ -150,7 +150,11 @@ const PhotoPage = () => {
           </div>
 
           {/* 목록 or 빈 상태 */}
-          {!storeId || isFetching || images?.data?.list.length === 0 ? (
+          {!storeId || isFetching ? (
+            <div className='pb-[200px]'>
+              <Spinner size='lg' text='사진을 불러오는 중...' />
+            </div>
+          ) : images?.data?.list.length === 0 ? (
             <div className='pb-[200px]'>
               <PhotoUploader onUploadClick={handleAddImage} />
             </div>

@@ -9,6 +9,7 @@ import {
   DataTable,
   DropdownMenu,
   Pagination,
+  Spinner,
 } from '@repo/design-system/components/ceo';
 import { StarIcon, EllipsisVerticalIcon } from '@repo/design-system/icons';
 import { useQuery, useQueryClient, useMutation, keepPreviousData } from '@tanstack/react-query';
@@ -53,7 +54,7 @@ const FavoritePage = () => {
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [targetBookmarkId, setTargetBookmarkId] = useState<number | null>(null);
 
-  const { data: bookmarkList } = useQuery({
+  const { data: bookmarkList, isPending } = useQuery({
     queryKey: [
       queryKeys.ceo.bookmark.list,
       storeId,
@@ -185,6 +186,17 @@ const FavoritePage = () => {
     ],
     [handleStarButton],
   );
+
+  if (isPending) {
+    return (
+      <div className='space-y-4'>
+        <div className='headline-2'>단골</div>
+        <div className='bg-white rounded-lg shadow p-6'>
+          <Spinner size='lg' text='단골 목록을 불러오는 중...' />
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className='space-y-4'>

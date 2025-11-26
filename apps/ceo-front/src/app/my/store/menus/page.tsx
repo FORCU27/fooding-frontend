@@ -12,6 +12,7 @@ import {
   AddCategoryDialog,
   EditCategoryDialog,
   MenuButton,
+  Spinner,
 } from '@repo/design-system/components/ceo';
 import { useQueries } from '@tanstack/react-query';
 
@@ -299,14 +300,7 @@ const MenusPage = () => {
       <CardForm className='p-grid-margin'>
         <div className='headline-2'>메뉴</div>
         <Card>
-          <div className='flex items-center justify-center py-8'>
-            <div className='text-center'>
-              <div className='mb-4'>
-                <div className='inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-current border-r-transparent motion-reduce:animate-[spin_1.5s_linear_infinite]' />
-              </div>
-              <div className='text-gray-600'>메뉴 정보를 불러오는 중...</div>
-            </div>
-          </div>
+          <Spinner text='메뉴 정보를 불러오는 중...' />
         </Card>
       </CardForm>
     );

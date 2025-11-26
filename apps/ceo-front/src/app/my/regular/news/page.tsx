@@ -12,6 +12,7 @@ import {
   DropdownMenu,
   Pagination,
   Button,
+  Spinner,
 } from '@repo/design-system/components/ceo';
 import { EllipsisVerticalIcon } from '@repo/design-system/icons';
 import { useQuery, useMutation, useQueryClient, keepPreviousData } from '@tanstack/react-query';
@@ -36,7 +37,7 @@ const NewsPage = () => {
   const [targetId, setTargetId] = useState<number | null>(null);
   const [nextActiveStatus, setNextActiveStatus] = useState<'active' | 'inactive' | null>(null);
 
-  const { data } = useQuery({
+  const { data, isPending } = useQuery({
     queryKey: [queryKeys.ceo.storePost.list, storeId, sortType, pageNum],
     queryFn: () =>
       storePostApi.getStorePosts({
@@ -191,6 +192,17 @@ const NewsPage = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [],
   );
+
+  if (isPending) {
+    return (
+      <div className='space-y-4'>
+        <div className='headline-2'>소식</div>
+        <div className='bg-white rounded-lg shadow p-6'>
+          <Spinner size='lg' text='소식을 불러오는 중...' />
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className='space-y-4'>
