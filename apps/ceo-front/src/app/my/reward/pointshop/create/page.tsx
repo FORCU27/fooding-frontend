@@ -4,7 +4,7 @@
 import { useRouter } from 'next/navigation';
 
 import { CreateStorePointShopItemBody, storeApi } from '@repo/api/ceo';
-import { toast } from '@repo/design-system/components/b2c';
+import { toast, Toaster } from '@repo/design-system/components/b2c';
 
 import PointShopForm from '../components/PointShopForm';
 import { useStore } from '@/context/StoreContext';
@@ -33,12 +33,16 @@ const PointShopCreatePage = () => {
       toast.success('포인트샵 상품이 등록되었습니다.');
       router.push('/my/reward/pointshop');
     } catch (error: any) {
-      console.error(error);
-      toast.error(error?.response?.data?.message || '등록 실패');
+      toast.error(error?.response?.data?.message || '등록에 실패했습니다.');
     }
   };
 
-  return <PointShopForm onSubmit={handleSubmit} />;
+  return (
+    <>
+      <PointShopForm onSubmit={handleSubmit} />
+      <Toaster />
+    </>
+  );
 };
 
 export default PointShopCreatePage;

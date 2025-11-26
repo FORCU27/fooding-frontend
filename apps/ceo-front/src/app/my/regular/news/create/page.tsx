@@ -4,8 +4,9 @@ import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
 import { storePostApi } from '@repo/api/ceo';
+import { toast, Toaster } from '@repo/design-system/components/b2c';
 
-import NewsForm, { NewsFormSubmitPayload} from '../components/NewsForm';
+import NewsForm, { NewsFormSubmitPayload } from '../components/NewsForm';
 import { useStore } from '@/context/StoreContext';
 import { useUploadFile } from '@/hooks/useUploadFile';
 
@@ -40,17 +41,21 @@ const NewsCreatePage = () => {
         imageIds,
       });
 
-      alert('소식이 등록되었습니다.');
+      toast.success('소식이 등록되었습니다.');
       router.push('/my/regular/news');
-    } catch (e) {
-      console.error(e);
-      alert('등록 실패');
+    } catch {
+      toast.error('등록에 실패했습니다.');
     } finally {
       setLoading(false);
     }
   };
 
-  return <NewsForm submitLabel='등록하기' onSubmit={handleCreate} loading={loading} />;
+  return (
+    <>
+      <NewsForm submitLabel='등록하기' onSubmit={handleCreate} loading={loading} />
+      <Toaster />
+    </>
+  );
 };
 
 export default NewsCreatePage;

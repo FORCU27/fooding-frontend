@@ -4,6 +4,7 @@ import { useMemo, useCallback, useState } from 'react';
 
 import { bookmarkApi, BookmarkSortType, StoreBookmark } from '@repo/api/ceo';
 import { queryKeys } from '@repo/api/configs/query-keys';
+import { toast, Toaster } from '@repo/design-system/components/b2c';
 import {
   SortToggle,
   DataTable,
@@ -77,22 +78,24 @@ const FavoritePage = () => {
     mutationFn: (bookmarkId: number) => bookmarkApi.delete(selectedStoreId, bookmarkId),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [queryKeys.ceo.bookmark.list, selectedStoreId] });
+      toast.success('삭제되었습니다.');
       setConfirmOpen(false);
       setTargetBookmarkId(null);
     },
-    onError: (err) => console.error('삭제 실패:', err),
+    onError: () => toast.error('삭제에 실패했습니다.'),
   });
 
   const putStarBookmark = useMutation({
     mutationFn: ({ bookmarkId, isStarred }: { bookmarkId: number; isStarred: boolean }) =>
       bookmarkApi.putStarred(selectedStoreId!, bookmarkId, { isStarred: !isStarred }),
-    onSuccess: () => {
+    onSuccess: (_data, variables) => {
       queryClient.invalidateQueries({
         queryKey: [queryKeys.ceo.bookmark.list, selectedStoreId],
       });
       setTargetBookmarkId(null);
+      toast.success(variables.isStarred ? '즐겨찾기가 해제되었습니다.' : '즐겨찾기에 추가되었습니다.');
     },
-    onError: (err) => console.error('즐겨찾기 실패:', err),
+    onError: () => toast.error('즐겨찾기 변경에 실패했습니다.'),
   });
 
   const handleDelete = () => {
@@ -230,6 +233,7 @@ const FavoritePage = () => {
         onConfirm={handleDelete}
         onCancel={() => setConfirmOpen(false)}
       />
+      <Toaster />
     </div>
   );
 };

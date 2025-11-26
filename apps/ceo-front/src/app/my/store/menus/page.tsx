@@ -216,10 +216,11 @@ const MenusPage = () => {
       { menuCategoryIds: categoryIds },
       {
         onSuccess: () => {
-          // console.log('카테고리 순서 저장 완료');
+          // 순서 변경은 성공 toast 없이 조용히 처리
         },
         onError: () => {
           setCategories(categories);
+          toast.error('카테고리 순서 변경에 실패했습니다.');
         },
       },
     );
@@ -239,11 +240,10 @@ const MenusPage = () => {
             items: [],
           };
           setCategories([...categories, newCategory]);
-          // alert('카테고리가 등록되었습니다.');
+          toast.success('카테고리가 등록되었습니다.');
         },
-        onError: (error) => {
-          console.error('카테고리 등록 실패:', error);
-          // alert('카테고리 등록에 실패했습니다.');
+        onError: () => {
+          toast.error('카테고리 등록에 실패했습니다.');
         },
       },
     );
@@ -265,10 +265,10 @@ const MenusPage = () => {
             prev.map((cat) => (cat.id === editingCategory.id ? { ...cat, name: newName } : cat)),
           );
           setEditingCategory(null);
-          // alert('카테고리가 수정되었습니다.');
+          toast.success('카테고리가 수정되었습니다.');
         },
         onError: () => {
-          // alert('카테고리 수정에 실패했습니다.');
+          toast.error('카테고리 수정에 실패했습니다.');
         },
       },
     );
@@ -282,10 +282,10 @@ const MenusPage = () => {
         // 로컬 상태에서도 제거
         setCategories((prev) => prev.filter((cat) => cat.id !== editingCategory.id));
         setEditingCategory(null);
-        // alert('카테고리가 삭제되었습니다.');
+        toast.success('카테고리가 삭제되었습니다.');
       },
       onError: () => {
-        // alert(message);
+        toast.error('카테고리 삭제에 실패했습니다.');
       },
     });
   };
@@ -464,9 +464,9 @@ const MenusPage = () => {
             deleteMenuMutation.mutate(deletingMenuItem.id, {
               onSuccess: () => {
                 setDeletingMenuItem(null);
+                toast.success('메뉴가 삭제되었습니다.');
               },
-              onError: (error) => {
-                console.error('메뉴 삭제 실패:', error);
+              onError: () => {
                 toast.error('메뉴 삭제에 실패했습니다.');
               },
             });

@@ -4,7 +4,7 @@ import { useParams, useRouter } from 'next/navigation';
 
 import { couponApiV2, UpdateCouponBody } from '@repo/api/ceo';
 import { queryKeys } from '@repo/api/configs/query-keys';
-import { toast } from '@repo/design-system/components/b2c';
+import { toast, Toaster } from '@repo/design-system/components/b2c';
 import { Spinner, type SelectedRangeItem } from '@repo/design-system/components/ceo';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
@@ -165,15 +165,18 @@ const CouponEditPage = () => {
   }
 
   return (
-    <CouponForm
-      title='쿠폰 수정'
-      initialData={initialFormData}
-      initialDateRange={initialDateRange}
-      onSubmit={handleSubmit}
-      onCancel={() => router.push('/reward/coupon')}
-      submitText='수정하기'
-      isSubmitting={updateCoupon.isPending}
-    />
+    <>
+      <CouponForm
+        title='쿠폰 수정'
+        initialData={initialFormData}
+        initialDateRange={initialDateRange}
+        onSubmit={handleSubmit}
+        onCancel={() => router.push('/reward/coupon')}
+        submitText='수정하기'
+        isSubmitting={updateCoupon.isPending}
+      />
+      <Toaster />
+    </>
   );
 };
 

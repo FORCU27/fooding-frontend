@@ -1,7 +1,7 @@
 'use client';
 
 import { CreateCouponBody } from '@repo/api/ceo';
-import { toast } from '@repo/design-system/components/b2c';
+import { toast, Toaster } from '@repo/design-system/components/b2c';
 import { Spinner, type SelectedRangeItem } from '@repo/design-system/components/ceo';
 
 import { CouponForm, type CouponFormData } from '@/components/coupon/CouponForm';
@@ -74,12 +74,15 @@ const CouponPage = () => {
   }
 
   return (
-    <CouponForm
-      title='쿠폰 생성'
-      onSubmit={handleSubmit}
-      submitText='생성하기'
-      isSubmitting={createCoupon.isPending}
-    />
+    <>
+      <CouponForm
+        title='쿠폰 생성'
+        onSubmit={handleSubmit}
+        submitText='생성하기'
+        isSubmitting={createCoupon.isPending}
+      />
+      <Toaster />
+    </>
   );
 };
 

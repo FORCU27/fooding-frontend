@@ -5,6 +5,7 @@ import { useState } from 'react';
 
 import { couponApiV2 } from '@repo/api/ceo';
 import { queryKeys } from '@repo/api/configs/query-keys';
+import { toast, Toaster } from '@repo/design-system/components/b2c';
 import {
   Button,
   DataTable,
@@ -79,9 +80,8 @@ const CouponListPage = () => {
       // 쿠폰 리스트 다시 불러오기
       queryClient.invalidateQueries({ queryKey: [queryKeys.ceo.coupon.list] });
     },
-    onError: (error) => {
-      console.error('쿠폰 상태 업데이트 실패:', error);
-      // TODO: 에러 토스트 메시지 표시
+    onError: () => {
+      toast.error('쿠폰 상태 변경에 실패했습니다.');
     },
   });
 
@@ -289,6 +289,7 @@ const CouponListPage = () => {
           }}
         />
       )}
+      <Toaster />
     </div>
   );
 };

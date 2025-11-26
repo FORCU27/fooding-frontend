@@ -4,6 +4,7 @@ import { useParams, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
 import { storePostApi } from '@repo/api/ceo';
+import { toast, Toaster } from '@repo/design-system/components/b2c';
 import { Spinner } from '@repo/design-system/components/ceo';
 
 import NewsForm, { NewsFormInitialValue, NewsFormSubmitPayload } from '../../components/NewsForm';
@@ -62,11 +63,10 @@ const EditNewsPage = () => {
         deleteImageIds: payload.deleteImageIds,
       });
 
-      alert('소식이 수정되었습니다.');
+      toast.success('소식이 수정되었습니다.');
       router.push('/my/regular/news');
-    } catch (err) {
-      console.error(err);
-      alert('수정 실패');
+    } catch {
+      toast.error('수정에 실패했습니다.');
     } finally {
       setLoading(false);
     }
@@ -75,12 +75,15 @@ const EditNewsPage = () => {
   if (!initialValue) return <Spinner size='lg' text='로딩 중...' />;
 
   return (
-    <NewsForm
-      initialValue={initialValue}
-      submitLabel='수정하기'
-      onSubmit={handleEdit}
-      loading={loading}
-    />
+    <>
+      <NewsForm
+        initialValue={initialValue}
+        submitLabel='수정하기'
+        onSubmit={handleEdit}
+        loading={loading}
+      />
+      <Toaster />
+    </>
   );
 };
 

@@ -102,8 +102,7 @@ const PointShopForm = ({ originValue, onSubmit }: PointShopFormProps) => {
       setLoading(true);
       onSubmit({ ...data, file: imageFile });
     } catch (error: any) {
-      console.error(error);
-      toast.error(error?.response?.data?.message || '등록 실패');
+      toast.error(error?.response?.data?.message || '처리에 실패했습니다.');
     } finally {
       setLoading(false);
     }

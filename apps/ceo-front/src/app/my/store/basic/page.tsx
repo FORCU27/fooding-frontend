@@ -225,9 +225,8 @@ const BasicInfoPage = () => {
         onSuccess: () => {
           toast.success('저장되었습니다.');
         },
-        onError: (error) => {
+        onError: () => {
           toast.error('저장 중 오류가 발생했습니다.');
-          console.error(error);
         },
       },
     );
@@ -274,8 +273,6 @@ const BasicInfoPage = () => {
   }
 
   const onFormError = (validationErrors: typeof errors) => {
-    console.log('Form validation errors:', validationErrors);
-
     // 첫 번째 에러 메시지 찾기
     const firstError = Object.values(validationErrors)[0];
     if (firstError?.message) {

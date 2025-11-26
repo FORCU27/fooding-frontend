@@ -5,6 +5,7 @@ import { useMemo, useState } from 'react';
 
 import { storePostApi, StorePost } from '@repo/api/ceo';
 import { queryKeys } from '@repo/api/configs/query-keys';
+import { toast, Toaster } from '@repo/design-system/components/b2c';
 import {
   SortToggle,
   Switch,
@@ -57,13 +58,14 @@ const NewsPage = () => {
   const toggleActivatePost = useMutation({
     mutationFn: ({ id, isActive }: { id: number; isActive: 'active' | 'inactive' }) =>
       storePostApi.activateStorePost(id, isActive),
-    onSuccess: () => {
+    onSuccess: (_data, variables) => {
       queryClient.invalidateQueries({
         queryKey: [queryKeys.ceo.storePost.list, storeId],
       });
+      toast.success(variables.isActive === 'active' ? '공개로 변경되었습니다.' : '비공개로 변경되었습니다.');
     },
     onError: () => {
-      alert('공개 여부 변경에 실패했습니다.');
+      toast.error('공개 여부 변경에 실패했습니다.');
     },
   });
 
@@ -71,9 +73,9 @@ const NewsPage = () => {
     mutationFn: (id: number) => storePostApi.deleteStorePost(id),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [queryKeys.ceo.storePost.list, storeId] });
-      alert('삭제되었습니다.');
+      toast.success('삭제되었습니다.');
     },
-    onError: () => alert('삭제에 실패했습니다.'),
+    onError: () => toast.error('삭제에 실패했습니다.'),
   });
 
   const handleConfirm = () => {
@@ -244,6 +246,7 @@ const NewsPage = () => {
         onConfirm={handleConfirm}
         onCancel={() => setConfirmOpen(false)}
       />
+      <Toaster />
     </div>
   );
 };

@@ -3,7 +3,7 @@
 import { useState } from 'react';
 
 import { GiftCouponBody, UserResponse } from '@repo/api/ceo';
-import { toast } from '@repo/design-system/components/b2c';
+import { toast, Toaster } from '@repo/design-system/components/b2c';
 import { Card, Spinner, type SelectedRangeItem } from '@repo/design-system/components/ceo';
 
 import { CouponForm, type CouponFormData } from '@/components/coupon/CouponForm';
@@ -95,6 +95,7 @@ const GiftCouponPage = () => {
         isSubmitting={giftCoupon.isPending}
         previewCouponName={selectedUser ? `${selectedUser.nickname}님을 위한 쿠폰` : undefined}
       />
+      <Toaster />
     </div>
   );
 };

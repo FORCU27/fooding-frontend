@@ -4,6 +4,7 @@ import { useRef, useState } from 'react';
 
 import { ImageTag, ImagesSortType } from '@repo/api/ceo';
 import { queryKeys } from '@repo/api/configs/query-keys';
+import { toast, Toaster } from '@repo/design-system/components/b2c';
 import { CardForm, Button, Spinner } from '@repo/design-system/components/ceo';
 import { useQuery } from '@tanstack/react-query';
 
@@ -87,15 +88,21 @@ const PhotoPage = () => {
         storeId,
         body: { imageId },
       });
-    } catch (err) {
-      console.error('이미지 업로드 실패:', err);
+      toast.success('이미지가 업로드되었습니다.');
+    } catch {
+      toast.error('이미지 업로드에 실패했습니다.');
     }
   };
 
   // 삭제 확인
   const handleConfirmDelete = async (photoId: number) => {
     if (!storeId) return;
-    await deleteImage.mutateAsync({ storeId, photoId });
+    try {
+      await deleteImage.mutateAsync({ storeId, photoId });
+      toast.success('사진이 삭제되었습니다.');
+    } catch {
+      toast.error('사진 삭제에 실패했습니다.');
+    }
     setModalType(null);
   };
 
@@ -106,11 +113,21 @@ const PhotoPage = () => {
     const targetPhoto = images?.data?.list.find((p) => p.id === modalType.photoId);
     if (!targetPhoto) return;
 
-    editImage.mutate({
-      storeId,
-      photoId,
-      body: { tags: selectedTags },
-    });
+    editImage.mutate(
+      {
+        storeId,
+        photoId,
+        body: { tags: selectedTags },
+      },
+      {
+        onSuccess: () => {
+          toast.success('태그가 수정되었습니다.');
+        },
+        onError: () => {
+          toast.error('태그 수정에 실패했습니다.');
+        },
+      },
+    );
 
     setModalType(null);
   };
@@ -167,11 +184,21 @@ const PhotoPage = () => {
               onDelete={(id) => setModalType({ type: 'delete', photoId: id })}
               onEditTag={(id) => setModalType({ type: 'editTag', photoId: id })}
               onToggleMain={(id, isMain) =>
-                registerMainImage.mutate({
-                  storeId,
-                  photoId: id,
-                  body: { isMain },
-                })
+                registerMainImage.mutate(
+                  {
+                    storeId,
+                    photoId: id,
+                    body: { isMain },
+                  },
+                  {
+                    onSuccess: () => {
+                      toast.success(isMain ? '대표 사진으로 설정되었습니다.' : '대표 사진 설정이 해제되었습니다.');
+                    },
+                    onError: () => {
+                      toast.error('대표 사진 설정에 실패했습니다.');
+                    },
+                  },
+                )
               }
             />
           )}
@@ -196,6 +223,7 @@ const PhotoPage = () => {
         onConfirm={() => modalType && handleConfirmEdit(modalType.photoId)}
         onCancel={() => setModalType(null)}
       />
+      <Toaster />
     </>
   );
 };

@@ -6,6 +6,7 @@ import { useState, useEffect } from 'react';
 import type { CeoDeviceResponseSchema, ServiceType } from '@repo/api/ceo';
 import { deviceApi } from '@repo/api/ceo';
 import { queryKeys } from '@repo/api/configs/query-keys';
+import { toast, Toaster } from '@repo/design-system/components/b2c';
 import {
   Button,
   Card,
@@ -77,6 +78,10 @@ const DeviceDetailPage = () => {
       setIsServiceDialogOpen(false);
       // Refresh device logs to show the new change
       queryClient.invalidateQueries({ queryKey: [queryKeys.ceo.device.logs, deviceId] });
+      toast.success('서비스가 변경되었습니다.');
+    },
+    onError: () => {
+      toast.error('서비스 변경에 실패했습니다.');
     },
   });
 
@@ -87,6 +92,10 @@ const DeviceDetailPage = () => {
       setIsDisconnectDialogOpen(false);
       // Refresh device logs to show the disconnect action
       queryClient.invalidateQueries({ queryKey: [queryKeys.ceo.device.logs, deviceId] });
+      toast.success('기기 연결이 해제되었습니다.');
+    },
+    onError: () => {
+      toast.error('기기 연결 해제에 실패했습니다.');
     },
   });
 
@@ -317,6 +326,7 @@ const DeviceDetailPage = () => {
           </Dialog.Footer>
         </Dialog.Content>
       </Dialog>
+      <Toaster />
     </div>
   );
 };

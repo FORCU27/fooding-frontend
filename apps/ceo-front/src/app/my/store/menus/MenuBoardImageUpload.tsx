@@ -89,8 +89,7 @@ const MenuBoardImageUpload = ({
 
       setDeletingImageId(null);
       toast.success('메뉴판이 삭제되었습니다.');
-    } catch (error) {
-      console.error('메뉴판 삭제 실패:', error);
+    } catch {
       toast.error('메뉴판 삭제에 실패했습니다.');
     }
   };
@@ -151,8 +150,7 @@ const MenuBoardImageUpload = ({
 
         onImagesChange(finalImages);
         toast.success('메뉴판이 추가되었습니다.');
-      } catch (error) {
-        console.error('메뉴판 추가 실패:', error);
+      } catch {
         toast.error('메뉴판 추가에 실패했습니다.');
       } finally {
         setIsUploading(false);
