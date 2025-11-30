@@ -50,3 +50,4 @@ export { X } from './XIcon';
 export { default as MoreVerticalIcon } from './MoreVerticalIcon';
 export { default as ProgressCircleIcon } from './ProgressCircleIcon';
 export { default as MobileProgressDotIcon } from './MobileProgressDotIcon';
+export { default as ImagePlaceholderIcon } from './ImagePlaceholderIcon';
