@@ -6,6 +6,7 @@ import { useState, useEffect } from 'react';
 import type { CeoDeviceResponseSchema, ServiceType } from '@repo/api/ceo';
 import { deviceApi } from '@repo/api/ceo';
 import { queryKeys } from '@repo/api/configs/query-keys';
+import { toast, Toaster } from '@repo/design-system/components/b2c';
 import {
   Button,
   Card,
@@ -13,6 +14,7 @@ import {
   Pagination,
   Dialog,
   RadioButton,
+  Spinner,
 } from '@repo/design-system/components/ceo';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import type { ColumnDef, PaginationState } from '@tanstack/react-table';
@@ -76,6 +78,10 @@ const DeviceDetailPage = () => {
       setIsServiceDialogOpen(false);
       // Refresh device logs to show the new change
       queryClient.invalidateQueries({ queryKey: [queryKeys.ceo.device.logs, deviceId] });
+      toast.success('서비스가 변경되었습니다.');
+    },
+    onError: () => {
+      toast.error('서비스 변경에 실패했습니다.');
     },
   });
 
@@ -86,6 +92,10 @@ const DeviceDetailPage = () => {
       setIsDisconnectDialogOpen(false);
       // Refresh device logs to show the disconnect action
       queryClient.invalidateQueries({ queryKey: [queryKeys.ceo.device.logs, deviceId] });
+      toast.success('기기 연결이 해제되었습니다.');
+    },
+    onError: () => {
+      toast.error('기기 연결 해제에 실패했습니다.');
     },
   });
 
@@ -171,14 +181,7 @@ const DeviceDetailPage = () => {
       {/* 기기 정보 */}
       {isLoading && !device ? (
         <Card className='p-6'>
-          <div className='flex items-center justify-center py-8'>
-            <div className='text-center'>
-              <div className='mb-4'>
-                <div className='inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-current border-r-transparent motion-reduce:animate-[spin_1.5s_linear_infinite]' />
-              </div>
-              <div className='text-gray-600'>기기 정보를 불러오는 중...</div>
-            </div>
-          </div>
+          <Spinner text='기기 정보를 불러오는 중...' />
         </Card>
       ) : device ? (
         <Card className='p-6'>
@@ -239,14 +242,7 @@ const DeviceDetailPage = () => {
       {/* 로그 테이블 */}
       <Card className='p-6'>
         {isLoadingLogs ? (
-          <div className='flex items-center justify-center py-8'>
-            <div className='text-center'>
-              <div className='mb-4'>
-                <div className='inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-current border-r-transparent motion-reduce:animate-[spin_1.5s_linear_infinite]' />
-              </div>
-              <div className='text-gray-600'>로그를 불러오는 중...</div>
-            </div>
-          </div>
+          <Spinner text='로그를 불러오는 중...' />
         ) : logList.length === 0 ? (
           <div className='text-center text-gray-500 py-8'>로그가 없습니다.</div>
         ) : (
@@ -330,6 +326,7 @@ const DeviceDetailPage = () => {
           </Dialog.Footer>
         </Dialog.Content>
       </Dialog>
+      <Toaster />
     </div>
   );
 };

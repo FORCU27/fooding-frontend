@@ -5,6 +5,7 @@ import { useState } from 'react';
 
 import { couponApiV2 } from '@repo/api/ceo';
 import { queryKeys } from '@repo/api/configs/query-keys';
+import { toast, Toaster } from '@repo/design-system/components/b2c';
 import {
   Button,
   DataTable,
@@ -12,6 +13,7 @@ import {
   Pagination,
   SortToggle,
   Switch,
+  Spinner,
   type SortOrder,
 } from '@repo/design-system/components/ceo';
 import { EllipsisVerticalIcon } from '@repo/design-system/icons';
@@ -78,9 +80,8 @@ const CouponListPage = () => {
       // 쿠폰 리스트 다시 불러오기
       queryClient.invalidateQueries({ queryKey: [queryKeys.ceo.coupon.list] });
     },
-    onError: (error) => {
-      console.error('쿠폰 상태 업데이트 실패:', error);
-      // TODO: 에러 토스트 메시지 표시
+    onError: () => {
+      toast.error('쿠폰 상태 변경에 실패했습니다.');
     },
   });
 
@@ -195,14 +196,7 @@ const CouponListPage = () => {
       <div className='space-y-4'>
         <div className='headline-2'>쿠폰</div>
         <div className='bg-white rounded-lg shadow p-6'>
-          <div className='flex items-center justify-center py-8'>
-            <div className='text-center'>
-              <div className='mb-4'>
-                <div className='inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-current border-r-transparent motion-reduce:animate-[spin_1.5s_linear_infinite]' />
-              </div>
-              <div className='text-gray-600'>쿠폰 목록을 불러오는 중...</div>
-            </div>
-          </div>
+          <Spinner text='쿠폰 목록을 불러오는 중...' />
         </div>
       </div>
     );
@@ -295,6 +289,7 @@ const CouponListPage = () => {
           }}
         />
       )}
+      <Toaster />
     </div>
   );
 };

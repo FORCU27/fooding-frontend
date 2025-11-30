@@ -53,3 +53,4 @@ export {
   type SelectedItem,
   type SelectedRangeItem,
 } from './DatePickerWithDialog';
+export * from './Spinner';

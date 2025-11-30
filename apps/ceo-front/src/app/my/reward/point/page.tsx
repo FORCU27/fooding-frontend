@@ -3,7 +3,7 @@
 import { useState } from 'react';
 
 import type { CeoRewardHistoryResponse } from '@repo/api/ceo';
-import { DataTable, Pagination, SortToggle } from '@repo/design-system/components/ceo';
+import { DataTable, Pagination, SortToggle, Spinner } from '@repo/design-system/components/ceo';
 import type { ColumnDef, PaginationState } from '@tanstack/react-table';
 
 import { useStoreRewardHistory } from '@/hooks/reward/useStoreRewardHistory';
@@ -112,14 +112,7 @@ export default function PointListPage() {
       <div className='space-y-4'>
         <div className='headline-2 ml-8'>적립</div>
         <div className='bg-white rounded-lg shadow p-6'>
-          <div className='flex items-center justify-center py-8'>
-            <div className='text-center'>
-              <div className='mb-4'>
-                <div className='inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-current border-r-transparent motion-reduce:animate-[spin_1.5s_linear_infinite]' />
-              </div>
-              <div className='text-gray-600'>리워드 내역을 불러오는 중...</div>
-            </div>
-          </div>
+          <Spinner text='리워드 내역을 불러오는 중...' />
         </div>
       </div>
     );

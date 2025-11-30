@@ -3,7 +3,7 @@
 import { useParams, useRouter } from 'next/navigation';
 
 import { EmptyState } from '@repo/design-system/components/b2c';
-import { CoinProduct } from '@repo/design-system/components/ceo';
+import { CoinProduct, Spinner } from '@repo/design-system/components/ceo';
 
 import { useStore } from '@/context/StoreContext';
 import { useGetStorePointShop } from '@/hooks/store/useGetStorePointShop';
@@ -23,8 +23,9 @@ const PointShopInfoPage = () => {
 
   if (isPending) {
     return (
-      <div className='flex items-center justify-center h-dvh'>
-        <p className='body-2 text-gray-4'>불러오는 중...</p>
+      <div className='flex flex-col gap-8'>
+        <p className='headline-2'>포인트 상품 상세</p>
+        <Spinner size='lg' text='불러오는 중...' />
       </div>
     );
   }

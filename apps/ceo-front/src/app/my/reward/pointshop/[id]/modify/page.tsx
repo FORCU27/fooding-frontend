@@ -4,7 +4,7 @@
 import { useParams, useRouter } from 'next/navigation';
 
 import { CreateStorePointShopItemBody, storeApi } from '@repo/api/ceo';
-import { EmptyState, toast } from '@repo/design-system/components/b2c';
+import { EmptyState, toast, Toaster } from '@repo/design-system/components/b2c';
 
 import PointShopForm from '../../components/PointShopForm';
 import { useStore } from '@/context/StoreContext';
@@ -38,21 +38,23 @@ const PointShopModifyPage = () => {
       toast.success('포인트샵 상품이 수정되었습니다.');
       router.push(`/my/reward/pointshop/${id}`);
     } catch (error: any) {
-      console.error(error);
-      toast.error(error?.response?.data?.message || '등록 실패');
+      toast.error(error?.response?.data?.message || '수정에 실패했습니다.');
     }
   };
 
   if (!pointShopItem) return <EmptyState title='포인트샵 아이템 정보가 없습니다.' />;
 
   return (
-    <PointShopForm
-      onSubmit={handleSubmit}
-      originValue={{
-        ...pointShopItem,
-        image: pointShopItem.image ?? undefined,
-      }}
-    />
+    <>
+      <PointShopForm
+        onSubmit={handleSubmit}
+        originValue={{
+          ...pointShopItem,
+          image: pointShopItem.image ?? undefined,
+        }}
+      />
+      <Toaster />
+    </>
   );
 };
 
