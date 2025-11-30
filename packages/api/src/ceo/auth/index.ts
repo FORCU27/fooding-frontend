@@ -14,7 +14,7 @@ export const authApi = {
     return GetAuthVerifyPhoneResponse.parse(response);
   },
   // SMS를 통한 비밀번호 재설정 주소 전달
-  getFindPasswordSms: async ({
+  postFindPasswordSms: async ({
     name,
     phoneNumber,
     code,
@@ -23,13 +23,12 @@ export const authApi = {
     phoneNumber: string;
     code: number;
   }) => {
-    const response = await api.get(
+    await api.post(
       `${ENDPOINT}/find/password/sms?name=${name}&phoneNumber=${phoneNumber}&code=${code}`,
     );
-    return response;
   },
   // 이메일을 통한 비밀번호 재설정 주소 전달
-  getFindPasswordEmail: async ({
+  postFindPasswordEmail: async ({
     name,
     phoneNumber,
     code,
@@ -38,10 +37,9 @@ export const authApi = {
     phoneNumber: string;
     code: number;
   }) => {
-    const response = await api.get(
+    await api.post(
       `${ENDPOINT}/find/password/email?name=${name}&phoneNumber=${phoneNumber}&code=${code}`,
     );
-    return response;
   },
   // 아이디 찾기 결과 전달
   getFindEmailResult: async (phoneNumber: string, code: number) => {

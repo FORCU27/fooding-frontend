@@ -17,7 +17,7 @@ export const pathConfig: Record<string, AuthType> = {
   '/select-store': AuthType.PRIVATE,
 };
 
-const PUBLIC_ROUTES = ['/login', '/register', '/find-account'];
+const PUBLIC_ROUTES = ['/login', '/register', '/find-account', '/change-password'];
 
 export async function middleware(request: NextRequest) {
   const path = request.nextUrl.pathname;

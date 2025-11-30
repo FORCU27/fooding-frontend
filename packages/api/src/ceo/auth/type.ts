@@ -3,7 +3,7 @@ import { z } from 'zod/v4';
 import { ApiResponse } from '../../shared';
 
 export const AuthPhone = z.object({
-  id: z.string(),
+  email: z.string(),
   phoneNumber: z.string(),
   code: z.number(),
   success: z.boolean(),
