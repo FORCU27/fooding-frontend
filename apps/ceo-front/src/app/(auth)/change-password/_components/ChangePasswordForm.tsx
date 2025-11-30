@@ -12,9 +12,7 @@ import { z } from 'zod';
 
 import { Input } from '../../_components/Input';
 
-const passwordSchema = z
-  .string()
-  .min(1, '비밀번호는 1자 이상이어야 합니다')
+const passwordSchema = z.string().min(1, '비밀번호는 1자 이상이어야 합니다');
 //   .regex(/[0-9]/, '숫자를 포함해야 합니다')
 //   .regex(/[a-zA-Z]/, '영문자를 포함해야 합니다');
 
@@ -51,7 +49,7 @@ const ChangePasswordForm = () => {
       alert('비밀번호가 변경되었습니다. 다시 로그인해주세요.');
       router.replace('/login');
     } catch (e) {
-      alert('비밀번호 재설정 중 오류가 발생했습니다.');
+      alert(`비밀번호 재설정 중 오류 ${e} 가 발생했습니다.`);
     }
   });
 
