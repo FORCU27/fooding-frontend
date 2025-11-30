@@ -4,7 +4,7 @@ import { Button } from '@repo/design-system/components/b2c';
 
 interface Props {
   target: 'id' | 'pw';
-  foundEmail: string;
+  foundEmail?: string;
   onSendSmsLink?: () => void;
   onSendEmailLink?: () => void;
 }

@@ -36,11 +36,8 @@ const FindAccountForm = () => {
 
   const onSendVerification = () => {
     if (!nameValue || !phoneValue) return;
-
     setShowVerifyInput(true);
     setCountdown(180); // 타이머 리셋
-    console.log('인증번호 전송');
-    // 인증번호 전송 API 호출
     authApi.postVerifyPhone(nameValue, phoneValue);
   };
 
@@ -111,7 +108,7 @@ const FindAccountForm = () => {
     <main className='w-[450px]'>
       <h1 className='headline-2'>아이디 · 비밀번호 찾기</h1>
 
-      {verified && foundEmail ? (
+      {verified ? (
         <VerificationResult
           target={activeTab}
           foundEmail={foundEmail}
