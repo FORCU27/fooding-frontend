@@ -1,4 +1,4 @@
-import { GetAuthVerifyPhoneResponse } from './type';
+import { GetAuthVerifyPhoneResponse, GetFindEmailResponse } from './type';
 import { api } from '../../shared';
 
 export * from './type';
@@ -46,7 +46,7 @@ export const authApi = {
     const response = await api.get(
       `${ENDPOINT}/find/email?phoneNumber=${phoneNumber}&code=${code}`,
     );
-    return response;
+    return GetFindEmailResponse.parse(response);
   },
   // 휴대폰 인증 진행
   postVerifyPhone: async (name: string, phoneNumber: string) => {

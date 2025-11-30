@@ -22,7 +22,6 @@ const FindAccountForm = () => {
   const [countdown, setCountdown] = useState(180); // 3분(180초)
   const [verified, setVerified] = useState(false); // 인증 완료 여부
   const [foundEmail, setFoundEmail] = useState<string>(''); // 아이디 찾기 결과
-  console.log('verified', verified);
 
   const {
     register,
@@ -46,19 +45,13 @@ const FindAccountForm = () => {
   };
 
   const onSubmit = async (data: FormFields) => {
-    console.log('🔥 onSubmit data', data);
-
     const code = data.verifyCode.trim();
-    console.log('🔥 trimmed code:', code);
-
     if (!code || code.length !== 6) {
       alert('인증번호 6자리를 정확하게 입력하세요');
       return;
     }
 
     const res = await authApi.getVerifyPhone(phoneValue, Number(code));
-    console.log('🔥 verify response', res);
-
     const success = res?.status ?? res?.data?.success;
 
     if (!success) {
@@ -70,8 +63,7 @@ const FindAccountForm = () => {
 
     if (activeTab === 'id') {
       const result = await authApi.getFindEmailResult(phoneValue, Number(data.verifyCode));
-      console.log('result ~~~', result);
-      setFoundEmail(result?.data?.email);
+      setFoundEmail(result?.data.email);
     }
   };
 

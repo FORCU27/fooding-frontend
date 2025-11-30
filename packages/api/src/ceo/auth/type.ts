@@ -11,4 +11,11 @@ export const AuthPhone = z.object({
 
 export type AuthPhone = z.infer<typeof AuthPhone>;
 
+export const FindEmailResult = z.object({
+  email: z.string(),
+});
+export type FindEmailResult = z.infer<typeof FindEmailResult>;
+
+export const GetFindEmailResponse = ApiResponse(FindEmailResult);
+
 export const GetAuthVerifyPhoneResponse = ApiResponse(AuthPhone);
