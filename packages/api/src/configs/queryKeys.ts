@@ -76,6 +76,7 @@ export const queryKeys = {
     storePost: {
       list: 'ceoStorePosts',
     },
+    review: 'ceoReviewList',
   },
   pos: {},
   user: {
