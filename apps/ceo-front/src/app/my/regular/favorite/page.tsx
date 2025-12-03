@@ -4,11 +4,13 @@ import { useMemo, useCallback, useState } from 'react';
 
 import { bookmarkApi, BookmarkSortType, StoreBookmark } from '@repo/api/ceo';
 import { queryKeys } from '@repo/api/configs/query-keys';
+import { toast, Toaster } from '@repo/design-system/components/b2c';
 import {
   SortToggle,
   DataTable,
   DropdownMenu,
   Pagination,
+  Spinner,
 } from '@repo/design-system/components/ceo';
 import { StarIcon, EllipsisVerticalIcon } from '@repo/design-system/icons';
 import { useQuery, useQueryClient, useMutation, keepPreviousData } from '@tanstack/react-query';
@@ -53,7 +55,7 @@ const FavoritePage = () => {
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [targetBookmarkId, setTargetBookmarkId] = useState<number | null>(null);
 
-  const { data: bookmarkList } = useQuery({
+  const { data: bookmarkList, isPending } = useQuery({
     queryKey: [
       queryKeys.ceo.bookmark.list,
       storeId,
@@ -76,22 +78,24 @@ const FavoritePage = () => {
     mutationFn: (bookmarkId: number) => bookmarkApi.delete(selectedStoreId, bookmarkId),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [queryKeys.ceo.bookmark.list, selectedStoreId] });
+      toast.success('삭제되었습니다.');
       setConfirmOpen(false);
       setTargetBookmarkId(null);
     },
-    onError: (err) => console.error('삭제 실패:', err),
+    onError: () => toast.error('삭제에 실패했습니다.'),
   });
 
   const putStarBookmark = useMutation({
     mutationFn: ({ bookmarkId, isStarred }: { bookmarkId: number; isStarred: boolean }) =>
       bookmarkApi.putStarred(selectedStoreId!, bookmarkId, { isStarred: !isStarred }),
-    onSuccess: () => {
+    onSuccess: (_data, variables) => {
       queryClient.invalidateQueries({
         queryKey: [queryKeys.ceo.bookmark.list, selectedStoreId],
       });
       setTargetBookmarkId(null);
+      toast.success(variables.isStarred ? '즐겨찾기가 해제되었습니다.' : '즐겨찾기에 추가되었습니다.');
     },
-    onError: (err) => console.error('즐겨찾기 실패:', err),
+    onError: () => toast.error('즐겨찾기 변경에 실패했습니다.'),
   });
 
   const handleDelete = () => {
@@ -186,6 +190,17 @@ const FavoritePage = () => {
     [handleStarButton],
   );
 
+  if (isPending) {
+    return (
+      <div className='space-y-4'>
+        <div className='headline-2'>단골</div>
+        <div className='bg-white rounded-lg shadow p-6'>
+          <Spinner size='lg' text='단골 목록을 불러오는 중...' />
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className='space-y-4'>
       <div className='headline-2'>단골</div>
@@ -218,6 +233,7 @@ const FavoritePage = () => {
         onConfirm={handleDelete}
         onCancel={() => setConfirmOpen(false)}
       />
+      <Toaster />
     </div>
   );
 };

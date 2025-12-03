@@ -27,11 +27,8 @@ import { MoreVertical } from 'lucide-react';
 
 import { DropdownMenu } from './DropdownMenu';
 import { MenuBadgeList, type BadgeType } from './MenuBadge';
-import { ChevronsLeftRightIcon, ChevronsUpDownIcon } from '../../icons';
+import { ChevronsLeftRightIcon, ChevronsUpDownIcon, ImagePlaceholderIcon } from '../../icons';
 import { cn } from '../../utils/cn';
-
-// Use a default placeholder image URL instead of importing PNG
-const menuItemImg = '/images/menu-item-placeholder.png';
 
 export type MenuItem = {
   id: string;
@@ -161,13 +158,17 @@ const SortableMenuItems = ({
           <div className='bg-white rounded-lg border-2 border-blue-500 p-3 shadow-lg'>
             <div className='flex items-center justify-between'>
               <div className='flex items-center gap-3'>
-                <Image
-                  src={activeItem.image || menuItemImg}
-                  alt={activeItem.name}
-                  width={64}
-                  height={64}
-                  className='rounded object-cover'
-                />
+                {activeItem.image ? (
+                  <Image
+                    src={activeItem.image}
+                    alt={activeItem.name}
+                    width={64}
+                    height={64}
+                    className='rounded object-cover'
+                  />
+                ) : (
+                  <ImagePlaceholderIcon size={64} />
+                )}
                 <div>
                   <div className='flex items-center gap-2'>
                     <span className='font-medium'>{activeItem.name}</span>
@@ -218,13 +219,17 @@ const SortableMenuItem = ({
         <ChevronsUpDownIcon className='h-4 w-4 text-gray-400' />
       </button>
 
-      <Image
-        src={item.image || menuItemImg}
-        alt={item.name}
-        width={64}
-        height={64}
-        className='rounded object-cover'
-      />
+      {item.image ? (
+        <Image
+          src={item.image}
+          alt={item.name}
+          width={64}
+          height={64}
+          className='rounded object-cover'
+        />
+      ) : (
+        <ImagePlaceholderIcon size={64} />
+      )}
 
       <div className='flex-1'>
         <div className='flex items-center gap-2'>

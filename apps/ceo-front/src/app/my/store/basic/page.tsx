@@ -14,6 +14,7 @@ import {
   TextArea,
   CardSubtitle,
   Dialog,
+  Spinner,
 } from '@repo/design-system/components/ceo';
 import DaumPostcode from 'react-daum-postcode';
 import { useForm } from 'react-hook-form';
@@ -224,9 +225,8 @@ const BasicInfoPage = () => {
         onSuccess: () => {
           toast.success('저장되었습니다.');
         },
-        onError: (error) => {
+        onError: () => {
           toast.error('저장 중 오류가 발생했습니다.');
-          console.error(error);
         },
       },
     );
@@ -237,14 +237,7 @@ const BasicInfoPage = () => {
       <CardForm className='p-grid-margin'>
         <div className='headline-2'>기본 정보</div>
         <Card>
-          <div className='flex items-center justify-center py-8'>
-            <div className='text-center'>
-              <div className='mb-4'>
-                <div className='inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-current border-r-transparent motion-reduce:animate-[spin_1.5s_linear_infinite]' />
-              </div>
-              <div className='text-gray-600'>로딩 중...</div>
-            </div>
-          </div>
+          <Spinner text='로딩 중...' />
         </Card>
       </CardForm>
     );
@@ -273,22 +266,13 @@ const BasicInfoPage = () => {
       <CardForm className='p-grid-margin'>
         <div className='headline-2'>기본 정보</div>
         <Card>
-          <div className='flex items-center justify-center py-8'>
-            <div className='text-center'>
-              <div className='mb-4'>
-                <div className='inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-current border-r-transparent motion-reduce:animate-[spin_1.5s_linear_infinite]' />
-              </div>
-              <div className='text-gray-600'>가게 정보를 불러오는 중...</div>
-            </div>
-          </div>
+          <Spinner text='가게 정보를 불러오는 중...' />
         </Card>
       </CardForm>
     );
   }
 
   const onFormError = (validationErrors: typeof errors) => {
-    console.log('Form validation errors:', validationErrors);
-
     // 첫 번째 에러 메시지 찾기
     const firstError = Object.values(validationErrors)[0];
     if (firstError?.message) {

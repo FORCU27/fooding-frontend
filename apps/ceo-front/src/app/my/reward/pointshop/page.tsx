@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
 import { EmptyState } from '@repo/design-system/components/b2c';
-import { Button, CoinProduct, SortOrder, SortToggle } from '@repo/design-system/components/ceo';
+import { Button, CoinProduct, SortOrder, SortToggle, Spinner } from '@repo/design-system/components/ceo';
 
 import { useStore } from '@/context/StoreContext';
 import { useGetStorePointShopList } from '@/hooks/store/useGetStorePointShopList';
@@ -23,8 +23,9 @@ const PointShopPage = () => {
 
   if (isPending) {
     return (
-      <div className='flex items-center justify-center h-dvh'>
-        <p className='body-2 text-gray-4'>불러오는 중...</p>
+      <div className='flex flex-col h-dvh w-full max-w-[1080px] gap-5'>
+        <h1 className='headline-2'>포인트샵</h1>
+        <Spinner size='lg' text='불러오는 중...' />
       </div>
     );
   }

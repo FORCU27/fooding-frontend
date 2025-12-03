@@ -71,9 +71,6 @@ const MenuDialog = ({
         return response.data[0].id;
       }
       return null;
-    } catch (error) {
-      console.error('이미지 업로드 실패:', error);
-      throw error;
     } finally {
       setIsUploadingImage(false);
     }
@@ -92,8 +89,7 @@ const MenuDialog = ({
           const newImageIds = await Promise.all(uploadPromises);
           const validIds = newImageIds.filter((id): id is string => id !== null);
           setUploadedImageIds((prev) => [...prev, ...validIds]);
-        } catch (error) {
-          console.error('이미지 업로드 실패:', error);
+        } catch {
           // 이미지 업로드 실패해도 메뉴는 생성 가능
         }
       }
@@ -135,8 +131,7 @@ const MenuDialog = ({
       });
       handleClose();
     },
-    onError: (error) => {
-      console.error('메뉴 추가 실패:', error);
+    onError: () => {
       toast.error('메뉴 추가에 실패했습니다.');
     },
   });
@@ -179,8 +174,7 @@ const MenuDialog = ({
       const validIds = imageIds.filter((id): id is string => id !== null);
 
       setUploadedImageIds((prev) => [...prev, ...validIds]);
-    } catch (error) {
-      console.error('이미지 업로드 실패:', error);
+    } catch {
       toast.error('이미지 업로드에 실패했습니다.');
     }
   };
