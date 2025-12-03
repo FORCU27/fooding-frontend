@@ -1,5 +1,6 @@
 'use client';
 
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useState, useEffect } from 'react';
 
@@ -136,7 +137,9 @@ export default function LoginForm() {
           />
           <label onClick={() => setIsRememberId((prev) => !prev)}>아이디 저장</label>
         </div>
-        <label className='body-6 text-gray-5'>아이디/비밀번호를 잊으셨나요?</label>
+        <Link href='/find-account'>
+          <span className='body-6 text-gray-5 cursor-pointer'>아이디/비밀번호를 잊으셨나요?</span>
+        </Link>
       </div>
       {form.formState.errors.root?.message && (
         <p className='mt-2 text-sm text-error-red whitespace-pre-wrap'>
