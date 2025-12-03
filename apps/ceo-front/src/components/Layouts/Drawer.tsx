@@ -73,7 +73,10 @@ export const Drawer = ({ trigger, isOpen, onOpenChange }: DrawerProps) => {
             </Suspense>
           </div>
           <Navigation />
-          <div className='px-8 py-[18px] flex justify-end border-t border-gray-8 bg-gray-7'>
+          <div className='px-8 py-[18px] flex justify-end border-t border-gray-8 bg-gray-7 gap-4'>
+            <Link href='/my' className='flex items-center gap-2 text-gray-5 body-2 cursor-pointer'>
+              내 상점
+            </Link>
             <button
               className='flex items-center gap-2 text-gray-5 body-2 cursor-pointer'
               onClick={handleLogoutClick}
