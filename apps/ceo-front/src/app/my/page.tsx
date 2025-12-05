@@ -1,7 +1,4 @@
-import { redirect } from 'next/navigation';
+'use client';
 
-const MyPage = () => {
-  redirect('/my/store/basic');
-};
-
-export default MyPage;
+import StatisticsPage from './statistics/page';
+export default StatisticsPage;
