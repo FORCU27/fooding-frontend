@@ -4,6 +4,7 @@ import Image from 'next/image';
 import { useState, useEffect } from 'react';
 
 import { fileApi } from '@repo/api/file';
+import { toast } from '@repo/design-system/components/b2c';
 import { MenuPan } from '@repo/design-system/components/ceo';
 
 import DeleteMenuBoardDialog from './DeleteMenuBoardDialog';
@@ -87,10 +88,10 @@ const MenuBoardImageUpload = ({
       onImagesChange(updatedImages);
 
       setDeletingImageId(null);
-      alert('메뉴판이 삭제되었습니다.');
+      toast.success('메뉴판이 삭제되었습니다.');
     } catch (error) {
       console.error('메뉴판 삭제 실패:', error);
-      alert('메뉴판 삭제에 실패했습니다.');
+      toast.error('메뉴판 삭제에 실패했습니다.');
     }
   };
 
@@ -149,10 +150,10 @@ const MenuBoardImageUpload = ({
         });
 
         onImagesChange(finalImages);
-        alert('메뉴판이 추가되었습니다.');
+        toast.success('메뉴판이 추가되었습니다.');
       } catch (error) {
         console.error('메뉴판 추가 실패:', error);
-        alert('메뉴판 추가에 실패했습니다.');
+        toast.error('메뉴판 추가에 실패했습니다.');
       } finally {
         setIsUploading(false);
       }

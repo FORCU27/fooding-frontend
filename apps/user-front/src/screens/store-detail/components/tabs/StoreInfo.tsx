@@ -29,6 +29,7 @@ import {
 import { cn } from '@repo/design-system/utils';
 
 import { Divider } from '@/components/Layout/Divider';
+import { LoadingScreen } from '@/components/Layout/LoadingScreen';
 import { Section } from '@/components/Layout/Section';
 import { StoresList } from '@/components/Store/StoresList';
 import { SubwayLine, SubwayLineBadge } from '@/components/SubwayLineBadge';
@@ -94,12 +95,14 @@ const facilityIconMap: Record<Facility, { label: string; icon: React.ReactNode }
 };
 
 export const StoreDetailInfoTab = ({ store }: StoreDetailInfoTabProps) => {
-  const { data: stores } = useGetStoreList({ sortType: 'RECENT' });
+  const { data: stores, isPending, isFetching } = useGetStoreList({ sortType: 'RECENT' });
   // const { data: info } = useGetStoreAdditionalInfo(store.id); //TODO: 추후 API 연결
   const { data: immediateEntryStores } = useGetStoreImmediateEntryList({
     pageNum: 1,
     pageSize: 10,
   });
+
+  if (isPending || isFetching) return <LoadingScreen />;
 
   return (
     <div className='flex flex-col'>

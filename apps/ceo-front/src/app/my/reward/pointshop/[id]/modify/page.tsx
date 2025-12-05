@@ -4,7 +4,7 @@
 import { useParams, useRouter } from 'next/navigation';
 
 import { CreateStorePointShopItemBody, storeApi } from '@repo/api/ceo';
-import { EmptyState } from '@repo/design-system/components/b2c';
+import { EmptyState, toast } from '@repo/design-system/components/b2c';
 
 import PointShopForm from '../../components/PointShopForm';
 import { useStore } from '@/context/StoreContext';
@@ -35,11 +35,11 @@ const PointShopModifyPage = () => {
       }
 
       await storeApi.updateStorePointShopItem(selectedStoreId, id, data);
-      alert('포인트샵 상품이 수정되었습니다.');
+      toast.success('포인트샵 상품이 수정되었습니다.');
       router.push(`/my/reward/pointshop/${id}`);
     } catch (error: any) {
       console.error(error);
-      alert(error?.response?.data?.message || '등록 실패');
+      toast.error(error?.response?.data?.message || '등록 실패');
     }
   };
 

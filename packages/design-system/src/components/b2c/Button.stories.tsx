@@ -105,3 +105,12 @@ export const AsChild: Story = {
     );
   },
 };
+export const Loading: Story = {
+  render: () => {
+    return (
+      <Button asChild size='small' isLoading>
+        버튼
+      </Button>
+    );
+  },
+};

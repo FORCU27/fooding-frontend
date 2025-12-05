@@ -2,6 +2,7 @@ import { useRouter } from 'next/navigation';
 
 import { couponApiV2, CreateCouponBody } from '@repo/api/ceo';
 import { queryKeys } from '@repo/api/configs/query-keys';
+import { toast } from '@repo/design-system/components/b2c';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 export const useCreateCoupon = () => {
@@ -18,7 +19,7 @@ export const useCreateCoupon = () => {
         queryKey: [queryKeys.ceo.coupon.list],
       });
 
-      alert('쿠폰이 생성되었습니다.');
+      toast.success('쿠폰이 생성되었습니다.');
 
       // 쿠폰 목록 페이지로 이동
       router.push('/my/reward/coupon');
@@ -33,7 +34,7 @@ export const useCreateCoupon = () => {
         const err = error as { response?: { data?: { message?: string } } };
         message = err.response?.data?.message || message;
       }
-      alert(message);
+      toast.error(message);
     },
   });
 };

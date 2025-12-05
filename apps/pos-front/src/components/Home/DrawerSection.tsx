@@ -20,30 +20,49 @@ const DrawerSection = ({
   handleDrawerToggle,
 }: DrawerSectionProps) => {
   return (
-    <div className='flex'>
-      {mobileOpen && (
-        <div className='fixed inset-0 z-40 flex sm:hidden' role='dialog' aria-modal='true'>
-          <div className='fixed inset-0 bg-black bg-opacity-25' onClick={handleDrawerToggle}></div>
-          <div
-            className='relative w-[240px] bg-white shadow-md z-50'
-            style={{ boxSizing: 'border-box' }}
-          >
-            <DrawerMenuList menuList={menuList} />
-          </div>
-        </div>
-      )}
-
+    <>
+      {/* 모바일 사이드바 */}
       <div
-        className='hidden sm:fixed sm:inset-y-0 sm:flex sm:w-[240px] bg-gray-100 pt-[65px]'
-        style={{ boxSizing: 'border-box' }}
+        className={`fixed inset-0 z-40 flex sm:hidden transition-opacity duration-300 ${
+          mobileOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'
+        }`}
+        role='dialog'
+        aria-modal='true'
       >
-        <DrawerMenuList menuList={menuList} />
+        <div
+          className={`fixed inset-0 bg-black transition-opacity duration-300 ${
+            mobileOpen ? 'bg-opacity-25' : 'bg-opacity-0'
+          }`}
+          onClick={handleDrawerToggle}
+        />
+        <div
+          className={`relative z-50 w-[240px] bg-white shadow-md transition-transform duration-300 ease-in-out ${
+            mobileOpen ? 'translate-x-0' : '-translate-x-full'
+          }`}
+        >
+          <DrawerMenuList menuList={menuList} />
+        </div>
       </div>
 
-      <div className='flex justify-items-center'>
-        <MainContent>{children}</MainContent>
+      {/* 데스크톱 사이드바 (overlay) */}
+      <div className='hidden sm:block'>
+        <div
+          className={`fixed left-0 right-0 top-[60px] bottom-0 z-30 transition-opacity duration-300 ${
+            mobileOpen ? 'opacity-100 bg-transparent' : 'opacity-0 pointer-events-none'
+          }`}
+          onClick={handleDrawerToggle}
+        />
+        <div
+          className={`fixed left-0 top-[60px] bottom-0 z-40 w-[240px] border-r border-gray-2 bg-white shadow-xl transition-transform duration-300 ease-in-out ${
+            mobileOpen ? 'translate-x-0' : '-translate-x-full'
+          }`}
+        >
+          <DrawerMenuList menuList={menuList} />
+        </div>
       </div>
-    </div>
+
+      <MainContent isSidebarOpen={mobileOpen}>{children}</MainContent>
+    </>
   );
 };
 

@@ -12,3 +12,4 @@ export * from './notifications';
 export * from './reward';
 export * from './bookmark';
 export * from './users';
+export * from './store-post';
