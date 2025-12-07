@@ -53,12 +53,12 @@ const BookmarkContent = () => {
         <StoreListItem
           key={`${bookmark.id}-${idx}`}
           store={{
-            address: '제주 제주시 서해안로 654', // TODO: address 추가
-            category: 'ASIAN', // TODO: category 추가
+            address: bookmark.address || '주소정보없음',
+            category: bookmark.category,
             averageRating: bookmark.averageRating,
             estimatedWaitingTimeMinutes: bookmark.estimatedWaitingTimeMinutes,
             id: bookmark.id,
-            images: bookmark.images,
+            images: bookmark.images ?? [],
             isBookmarked: true,
             name: bookmark.name,
             reviewCount: bookmark.reviewCount,

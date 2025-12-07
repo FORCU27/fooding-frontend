@@ -33,32 +33,12 @@ import { LoadingScreen } from '@/components/Layout/LoadingScreen';
 import { Section } from '@/components/Layout/Section';
 import { StoresList } from '@/components/Store/StoresList';
 import { SubwayLine, SubwayLineBadge } from '@/components/SubwayLineBadge';
+import { useGetStoreAdditionalInfo } from '@/hooks/store/useGetStoreAdditionalInfo';
 import { useGetStoreImmediateEntryList } from '@/hooks/store/useGetStoreImmediateEntryList';
 import { useGetStoreList } from '@/hooks/store/useGetStoreList';
 import { StoreInfoMap } from '@/libs/kakao-map/StoreInfoMap';
 import { getKakaoMapDirectionUrl } from '@/libs/kakao-map/utils';
 import { noop } from '@/utils/noop';
-
-// TODO: API 연동
-const mock = {
-  status: 'OK',
-  data: {
-    id: 1,
-    links: ['https://example.com/link1', 'https://example.com/link2'],
-    facilities: ['단체 이용 가능', '포장', '배달'],
-    paymentMethods: ['지역화폐(지류형)', '지역화폐(카드형)', '제로페이'],
-    parking: {
-      available: true,
-      type: 'PAID',
-      chargeType: 'HOURLY',
-      basicTimeMinutes: 30,
-      basicFee: 3000,
-      extraMinutes: 10,
-      extraFee: 500,
-      maxDailyFee: 99999,
-    },
-  },
-};
 
 type StoreDetailInfoTabProps = {
   store: StoreInfo;
@@ -96,7 +76,7 @@ const facilityIconMap: Record<Facility, { label: string; icon: React.ReactNode }
 
 export const StoreDetailInfoTab = ({ store }: StoreDetailInfoTabProps) => {
   const { data: stores, isPending, isFetching } = useGetStoreList({ sortType: 'RECENT' });
-  // const { data: info } = useGetStoreAdditionalInfo(store.id); //TODO: 추후 API 연결
+  const { data: info } = useGetStoreAdditionalInfo(store.id);
   const { data: immediateEntryStores } = useGetStoreImmediateEntryList({
     pageNum: 1,
     pageSize: 10,
@@ -159,12 +139,12 @@ export const StoreDetailInfoTab = ({ store }: StoreDetailInfoTabProps) => {
         <Section.Header>
           <Section.Title className='flex justify-center items-center gap-2'>
             편의시설 및 서비스
-            <span className='text-gray-5 subtitle-3'>{mock.data.facilities.length}</span>
+            <span className='text-gray-5 subtitle-3'>{info?.facilities.length}</span>
           </Section.Title>
         </Section.Header>
         <div className='grid grid-cols-4 gap-x-8 gap-y-10 place-items-center'>
           {ALL_FACILITIES.map((facility) => {
-            const has = mock.data.facilities.includes(facility);
+            const has = info?.facilities.includes(facility);
             const { icon, label } = facilityIconMap[facility];
 
             return (
@@ -188,7 +168,7 @@ export const StoreDetailInfoTab = ({ store }: StoreDetailInfoTabProps) => {
           <Section.Title>주차</Section.Title>
         </Section.Header>
         <div>
-          {mock.data.parking.available ? (
+          {info?.parkingAvailable ? (
             <div className='flex gap-2'>
               <CarIcon />
               <span>주차가능</span>
@@ -206,35 +186,38 @@ export const StoreDetailInfoTab = ({ store }: StoreDetailInfoTabProps) => {
         <Section.Header>
           <Section.Title className='flex justify-center items-center gap-2'>
             결제수단
-            <span className='text-gray-5 subtitle-3'>{mock.data.paymentMethods.length}</span>
+            <span className='text-gray-5 subtitle-3'>
+              {(info?.paymentMethods && info?.paymentMethods.length) || 0}
+            </span>
           </Section.Title>
         </Section.Header>
         <div className='flex gap-6 flex-col body-6'>
-          {mock.data.paymentMethods.map((method) => {
-            if (method === '지역화폐(카드형)') {
-              return (
-                <div key={method} className='flex items-center gap-2'>
-                  <CreditCardIcon /> 지역화폐(카드형)
-                </div>
-              );
-            }
-            if (method === '지역화폐(지류형)') {
-              return (
-                <div key={method} className='flex items-center gap-2'>
-                  <BankNoteIcon /> 지역화폐(지류형)
-                </div>
-              );
-            }
-            if (method === '제로페이') {
-              return (
-                <div key={method} className='flex items-center gap-2'>
-                  <SmartPhoneIcon />
-                  제로페이
-                </div>
-              );
-            }
-            return null;
-          })}
+          {info?.paymentMethods &&
+            info?.paymentMethods.map((method) => {
+              if (method === '지역화폐(카드형)') {
+                return (
+                  <div key={method} className='flex items-center gap-2'>
+                    <CreditCardIcon /> 지역화폐(카드형)
+                  </div>
+                );
+              }
+              if (method === '지역화폐(지류형)') {
+                return (
+                  <div key={method} className='flex items-center gap-2'>
+                    <BankNoteIcon /> 지역화폐(지류형)
+                  </div>
+                );
+              }
+              if (method === '제로페이') {
+                return (
+                  <div key={method} className='flex items-center gap-2'>
+                    <SmartPhoneIcon />
+                    제로페이
+                  </div>
+                );
+              }
+              return null;
+            })}
         </div>
       </Section>
       <Divider />
@@ -247,33 +230,49 @@ export const StoreDetailInfoTab = ({ store }: StoreDetailInfoTabProps) => {
             <div className='rounded-full w-10 h-10 flex justify-center items-center bg-black'>
               <InstagramIcon className='text-white' />
             </div>
-            <Link href={'/'} className='underline'>
-              {mock.data.links[0]}
-            </Link>
+            {info?.links && info.links[0] ? (
+              <Link href={'/'} className='underline'>
+                {info.links[0]}
+              </Link>
+            ) : (
+              <span className='text-gray-5'>링크가 없습니다.</span>
+            )}
           </div>
           <div className='flex gap-6 items-center'>
             <div className='rounded-full w-10 h-10 flex justify-center items-center bg-black'>
               <XIcon className='text-white' />
             </div>
-            <Link href={'/'} className='underline'>
-              {mock.data.links[0]}
-            </Link>
+            {info?.links && info.links[1] ? (
+              <Link href={'/'} className='underline'>
+                {info.links[1]}
+              </Link>
+            ) : (
+              <span className='text-gray-5'>링크가 없습니다.</span>
+            )}
           </div>
           <div className='flex gap-6 items-center'>
             <div className='rounded-full w-10 h-10 flex justify-center items-center bg-black'>
               <YoutubeIcon className='text-white' />
             </div>
-            <Link href={'/'} className='underline'>
-              {mock.data.links[0]}
-            </Link>
+            {info?.links && info.links[2] ? (
+              <Link href={'/'} className='underline'>
+                {info.links[2]}
+              </Link>
+            ) : (
+              <span className='text-gray-5'>링크가 없습니다.</span>
+            )}
           </div>
           <div className='flex gap-6 items-center'>
             <div className='rounded-full w-10 h-10 flex justify-center items-center bg-black'>
               <LinkIcon className='text-white' />
             </div>
-            <Link href={'/'} className='underline'>
-              {mock.data.links[0]}
-            </Link>
+            {info?.links && info.links[3] ? (
+              <Link href={'/'} className='underline'>
+                {info.links[3]}
+              </Link>
+            ) : (
+              <span className='text-gray-5'>링크가 없습니다.</span>
+            )}
           </div>
         </div>
       </Section>

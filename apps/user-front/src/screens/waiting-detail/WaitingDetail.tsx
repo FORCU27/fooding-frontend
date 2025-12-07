@@ -3,7 +3,7 @@
 import Image from 'next/image';
 import { useState } from 'react';
 
-import { Button, EmptyState, Skeleton } from '@repo/design-system/components/b2c';
+import { Button, EmptyState, Skeleton, toast } from '@repo/design-system/components/b2c';
 import {
   ChevronUpIcon,
   ClockIcon,
@@ -20,6 +20,7 @@ import { Header } from '@/components/Layout/Header';
 import { Screen } from '@/components/Layout/Screen';
 import { useGetPlanDetail } from '@/hooks/plan/useGetPlanDetail';
 import { useGetStoreDetail } from '@/hooks/store/useGetStoreDetail';
+import { useCancelStoreWaiting } from '@/hooks/store-waiting/useCancelStoreWaiting';
 import { useGetStoreWaitingDetail } from '@/hooks/store-waiting/useGetStoreWaitingDetail';
 import { StoreInfoMap } from '@/libs/kakao-map/StoreInfoMap';
 import { isNonEmptyArray } from '@/utils/array';
@@ -49,6 +50,8 @@ const WaitingDetail = ({ waitingId }: StoreDetailProps) => {
   const { data: planInfo } = useGetPlanDetail(waitingId);
   const { data: waiting } = useGetStoreWaitingDetail(planInfo.originId);
   const { data: storeInfo } = useGetStoreDetail(planInfo.storeId);
+  const cancelStoreWaiting = useCancelStoreWaiting();
+
   const [isAlertAccordionOpen, setIsAlertAccordionOpen] = useState(false);
   // const [isParkingAccordionOpen, setIsParkingAccordionOpen] = useState(false);
   // const onParkingAccordionClick = () => {
@@ -57,6 +60,19 @@ const WaitingDetail = ({ waitingId }: StoreDetailProps) => {
 
   const onAlertAccordionClick = () => {
     setIsAlertAccordionOpen((prev) => !prev);
+  };
+
+  const handleCancelPlanClick = (id: number) => {
+    if (cancelStoreWaiting.isPending) return;
+
+    cancelStoreWaiting.mutate(id, {
+      onSuccess: () => {
+        toast.success('취소 되었습니다.');
+      },
+      onError: () => {
+        toast.error('에러가 발생했습니다. 잠시 후 다시 시도해주세요.');
+      },
+    });
   };
 
   const getKakaoMapDirectionUrl = (latitude: number, longitude: number, name?: string) => {
@@ -255,7 +271,13 @@ const WaitingDetail = ({ waitingId }: StoreDetailProps) => {
             </div>
           </div>
         </div>
-        <Button variant='outlined' size='large' className='my-5'>
+        <Button
+          variant='outlined'
+          size='large'
+          className='my-5'
+          isLoading={cancelStoreWaiting.isPending}
+          onClick={() => handleCancelPlanClick(waiting.waitingUserId!)}
+        >
           줄서기 취소
         </Button>
       </div>

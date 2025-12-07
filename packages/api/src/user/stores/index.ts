@@ -28,6 +28,7 @@ const ENDPOINT = '/user/stores';
 export const storeApi = {
   getStoreList: async (params: GetStoreListParams) => {
     const response = await api.get(ENDPOINT, { params });
+
     return GetStoreListResponse.parse(response);
   },
   getStoreById: async (id: number) => {
@@ -95,5 +96,9 @@ export const storeApi = {
   getRecentlyViewedStoreList: async () => {
     const response = await api.get(`${ENDPOINT}/recent`);
     return GetRecentlyViewedStoreListResponse.parse(response);
+  },
+  getPopularViewedStoreList: async () => {
+    const response = await api.get(`${ENDPOINT}/popular`);
+    return GetStoreListResponse.parse(response);
   },
 };

@@ -1,5 +1,10 @@
 export * from './type';
-import { GetCreateWaitingReseponse, GetWaitingDetailResponse, StoreWaitingBody } from './type';
+import {
+  GetCancelWaitingResponse,
+  GetCreateWaitingReseponse,
+  GetWaitingDetailResponse,
+  StoreWaitingBody,
+} from './type';
 import { api } from '../../shared';
 
 const ENDPOINT = '/user/store-waitings';
@@ -12,5 +17,9 @@ export const storeWaitingApi = {
   createWaiting: async (body: StoreWaitingBody) => {
     const response = await api.post(ENDPOINT, body);
     return GetCreateWaitingReseponse.parse(response);
+  },
+  cancelWaiting: async (id: number) => {
+    const response = await api.post(`${ENDPOINT}/${id}/cancel`);
+    return GetCancelWaitingResponse.parse(response);
   },
 };
