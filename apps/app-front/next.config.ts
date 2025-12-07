@@ -9,6 +9,14 @@ const nextConfig = {
   eslint: {
     ignoreDuringBuilds: true,
   },
+  images: {
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'd27gz6v6wvae1d.cloudfront.net',
+      },
+    ],
+  },
   experimental: {
     serverActions: {
       allowedOrigins: ['appleid.apple.com', 'localhost.com', 'localhost:3000'],

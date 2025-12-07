@@ -1,12 +1,13 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
 import { storeApi } from '@repo/api/app';
 import { queryKeys } from '@repo/api/configs/query-keys';
 import { ArrowLeftIcon } from '@repo/design-system/icons';
 import { useQuery } from '@tanstack/react-query';
+import Image from 'next/image';
 
 import { StoreServiceType, STORE_SERVICE_PATHS } from './types';
 import { useStore } from '@/components/Provider/StoreClientProvider';
@@ -59,33 +60,98 @@ export default function StoreSelectPage() {
     setLastTouchTime(currentTime);
   };
 
+  const uniqueServiceList = useMemo(() => {
+    if (!storeServiceList?.data) return [];
+    const uniqueMap = new Map<string, (typeof storeServiceList.data)[number]>();
+    storeServiceList.data.forEach((item) => {
+      if (!uniqueMap.has(item.type)) {
+        uniqueMap.set(item.type, item);
+      }
+    });
+    return Array.from(uniqueMap.values());
+  }, [storeServiceList?.data]);
+
+  const gridColsClass =
+    uniqueServiceList.length >= 3 ? 'lg:grid-cols-3' : 'lg:grid-cols-2';
+
   return (
-    <div className='flex h-screen flex-col'>
-      <div className='flex-1  flex flex-col items-center justify-center'>
-        <button className='absolute top-[50px] left-[80px] w-[60px] h-[60px]'>
+    <div className='flex min-h-screen flex-col px-[80px]'>
+      <div className='relative flex-1 flex items-center justify-center text-center h-[160px]'>
+        <button
+          type='button'
+          className='absolute left-4 md:left-12 top-1/2 -translate-y-1/2 w-[52px] h-[52px] md:w-[60px] md:h-[60px] cursor-pointer'
+          onClick={() => router.back()}
+        >
           <ArrowLeftIcon />
         </button>
-        <div className='headline-3-2'>서비스 선택</div>
-        <div className='body-1 text-gray-5'>원하시는 서비스를 선택해주세요</div>
+        <div className='flex flex-col items-center gap-1'>
+          <div className='headline-4'>서비스 선택</div>
+          <div className='body-2 text-gray-5'>원하시는 서비스를 선택해주세요</div>
+        </div>
       </div>
-      <div className='flex-[4] flex flex-col items-center justify-center'>
-        <div className='flex gap-[34px]'>
-          {storeServiceList?.data?.map((service) => (
-            <div
-              key={service.id}
-              className='relative shadow bg-gray-1 rounded-[40px] px-[44px] pt-[56px] pb-[80px] flex flex-col items-center justify-center gap-[25px] touch-none select-none'
-              onDoubleClick={() => handleSelectService(service.type as StoreServiceType)}
-              onTouchStart={() => handleTouch(service.type as StoreServiceType)}
-            >
-              {selectedService === service.type && (
-                <div className='absolute inset-0 w-full h-full bg-black rounded-[40px] opacity-50 z-50'></div>
-              )}
-              <div className='w-[325px] h-[275px] bg-blue-400'></div>
-              <div className='headline-5 text-gray-5'>{service.type}</div>
-            </div>
-          ))}
+      <div className='flex flex-col items-center justify-center pb-6 flex-1'>
+        <div
+          className={`w-full flex ${gridColsClass} gap-[37px] item-center justify-center place-items-center`}
+        >
+          {uniqueServiceList.map((service) => {
+            const isSelected = selectedService === service.type;
+            return (
+              <div
+                key={service.id}
+                className={`w-full max-w-[412px] rounded-[32px] md:rounded-[40px] ${
+                  isSelected ? 'p-[6px] bg-gradient-to-r from-[#E8D400] to-[#00D218]' : ''
+                }`}
+              >
+                <div
+                  className={`relative shadow bg-gray-1 rounded-[28px] md:rounded-[36px] px-8 md:px-[44px] pt-12 md:pt-[56px] pb-14 md:pb-[80px] flex flex-col items-center justify-center gap-6 touch-none select-none ${
+                    isSelected ? 'bg-white' : ''
+                  }`}
+                  onDoubleClick={() => handleSelectService(service.type as StoreServiceType)}
+                  onTouchStart={() => handleTouch(service.type as StoreServiceType)}
+                >
+                  <div className='w-full h-[220px] md:h-[275px] relative'>
+                    <Image
+                      src={`/images/select-servics/${getServiceImageName(service.type)}.png`}
+                      alt={`${getServiceLabel(service.type)} 서비스 이미지`}
+                      fill
+                      className='object-contain rounded-[20px]'
+                      sizes='325px'
+                      priority
+                    />
+                  </div>
+                  <div className='headline-5 text-gray-5'>{getServiceLabel(service.type)}</div>
+                </div>
+              </div>
+            );
+          })}
         </div>
       </div>
     </div>
   );
 }
+
+const getServiceImageName = (serviceType: string) => {
+  switch (serviceType) {
+    case StoreServiceType.WAITING:
+      return 'wating';
+    case StoreServiceType.REWARD:
+      return 'reword';
+    case StoreServiceType.PAYMENT:
+      return 'wating';
+    default:
+      return 'wating';
+  }
+};
+
+const getServiceLabel = (serviceType: string) => {
+  switch (serviceType) {
+    case StoreServiceType.WAITING:
+      return '웨이팅 관리';
+    case StoreServiceType.REWARD:
+      return '리워드 관리';
+    case StoreServiceType.PAYMENT:
+      return '결제 관리';
+    default:
+      return serviceType;
+  }
+};
