@@ -7,7 +7,6 @@ import { ErrorFallback } from '@repo/design-system/components/b2c';
 import { ActivityComponentType, useFlow } from '@stackflow/react/future';
 import { ErrorBoundary, ErrorBoundaryFallbackProps } from '@suspensive/react';
 
-import { Banner } from './components/Banner';
 import { CategoryTabs } from './components/CategoryTabs';
 import { HomeLoadingFallback } from './components/HomeLoadingFallback';
 import { MainStoreList } from './components/MainStoreList';
@@ -18,6 +17,7 @@ import { LoadingScreen } from '@/components/Layout/LoadingScreen';
 import { Screen } from '@/components/Layout/Screen';
 import { StoresList } from '@/components/Store/StoresList';
 import { usePreferredRegions } from '@/hooks/regions/usePreferredRegions';
+import { useGetPopularViewedStoreList } from '@/hooks/store/useGetPopularVeiwedStoreList';
 import { useGetStoreImmediateEntryList } from '@/hooks/store/useGetStoreImmediateEntryList';
 import { useGetStoreList } from '@/hooks/store/useGetStoreList';
 import { Header } from '@/tabs/home/components/Header';
@@ -64,7 +64,7 @@ const ContentBody = () => {
         onSelectedRegionsChange={changePreferredRegions}
       />
       <div className='bg-white mb-3'>
-        <Banner />
+        {/* <Banner /> */}
         <CategoryTabs category={category} onCategoryChange={setCategory} />
         <Suspense>
           <StoreSection selectedRegions={preferredRegions} category={category} />
@@ -97,14 +97,7 @@ const StoreSection = ({ selectedRegions, category }: StoreSectionProps) => {
     data: popularStores,
     isPending: poppularStorePending,
     isFetching: poppularStoreFetching,
-  } = useGetStoreList({
-    pageNum: 1,
-    pageSize: 10,
-    sortType: 'REVIEW',
-    sortDirection: 'DESCENDING',
-    regionIds: selectedRegions.map((region) => region.id),
-    category: category ?? undefined,
-  });
+  } = useGetPopularViewedStoreList();
 
   const {
     data: immediateEntryStores,
@@ -136,7 +129,9 @@ const StoreSection = ({ selectedRegions, category }: StoreSectionProps) => {
       <StoresList
         subtitle='푸딩에서 인기 많은 식당이에요'
         stores={popularStores.list}
-        onClickTotalBtn={() => flow.push('SearchResultScreen', { keyword: '', regions: [] })}
+        onClickTotalBtn={() =>
+          flow.push('PopularViewedStoreListScreen', { keyword: '', regions: [] })
+        }
       />
       <StoresList
         className='pt-0'
@@ -148,7 +143,9 @@ const StoreSection = ({ selectedRegions, category }: StoreSectionProps) => {
         className='pt-0'
         subtitle='지금 바로 입장하실 수 있어요!'
         stores={immediateEntryStores.list}
-        onClickTotalBtn={() => flow.push('SearchResultScreen', { keyword: '', regions: [] })}
+        onClickTotalBtn={() =>
+          flow.push('ImmediateEntryStoreListScreen', { keyword: '', regions: [] })
+        }
       />
     </>
   );

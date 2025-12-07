@@ -10,6 +10,7 @@ import { useDeleteBookmark } from '@/hooks/bookmark/useDeleteBookmark';
 import { cn } from '@/utils/cn';
 
 interface StoreListItemProps {
+  hasBookMarkButton?: boolean;
   store: Pick<
     Store,
     | 'id'
@@ -26,7 +27,7 @@ interface StoreListItemProps {
   };
 }
 
-export const StoreListItem = ({ store }: StoreListItemProps) => {
+export const StoreListItem = ({ store, hasBookMarkButton = true }: StoreListItemProps) => {
   const flow = useFlow();
 
   return (
@@ -39,7 +40,9 @@ export const StoreListItem = ({ store }: StoreListItemProps) => {
           <div className='subtitle-2 max-w-[300px] truncate'>{store.name}</div>
           <div className='body-6 text-gray-5'>{STORE_CATEOGORY_LABELS[store.category]}</div>
         </div>
-        <BookmarkToggleButton isBookmarked={store.isBookmarked} storeId={store.id} />
+        {hasBookMarkButton && (
+          <BookmarkToggleButton isBookmarked={store.isBookmarked} storeId={store.id} />
+        )}
       </div>
       <div className='flex items-center mt-2'>
         <StarIcon size={18} fill='#FFD83D' color='#FFD83D' />
@@ -56,17 +59,14 @@ export const StoreListItem = ({ store }: StoreListItemProps) => {
       <div className='-mx-grid-margin mt-4'>
         <div className='flex gap-2 overflow-x-auto w-full scrollbar-hide px-grid-margin'>
           {store.images && store.images.length > 0 ? (
-            <div className='rounded-[12px] shrink-0 size-[128px] relative overflow-hidden'>
-              {store.images.map((image) => (
-                <Image
-                  className='object-cover'
-                  key={image.id}
-                  src={image.imageUrl}
-                  alt={store.name}
-                  fill
-                />
-              ))}
-            </div>
+            store.images.slice(0, 3).map((image) => (
+              <div
+                key={image.id}
+                className='rounded-[12px] flex-shrink-0 w-[128px] h-[128px] overflow-hidden relative'
+              >
+                <Image src={image.imageUrl} alt={store.name} fill className='object-cover' />
+              </div>
+            ))
           ) : (
             <div className='flex justify-center items-center bg-gray-1 w-[128px] h-[128px] rounded-[12px] shrink-0'>
               <FoodingIcon width={58} height={72} color='rgba(17, 17, 17, 0.1)' />

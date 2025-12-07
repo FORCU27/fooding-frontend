@@ -13,6 +13,7 @@ export const mockBookmarkStoreListResponse: GetBookmarkStoreListResponse = {
       {
         id: 1,
         storeId: 1,
+        category: 'ASIAN',
         name: '바다풍경 정육식당 흑돼지 용담탑동본점',
         images: [],
         averageRating: 4.9,
@@ -25,6 +26,7 @@ export const mockBookmarkStoreListResponse: GetBookmarkStoreListResponse = {
       {
         id: 2,
         name: '엉터리 생고기 엉생 무한리필 아산테크노본점',
+        category: 'ASIAN',
         storeId: 2,
         images: [],
         averageRating: 4.9,
@@ -37,6 +39,7 @@ export const mockBookmarkStoreListResponse: GetBookmarkStoreListResponse = {
       {
         id: 3,
         name: '민서네 김밥 홍대점',
+        category: 'ASIAN',
         storeId: 3,
         images: [],
         averageRating: 4.9,
@@ -49,6 +52,7 @@ export const mockBookmarkStoreListResponse: GetBookmarkStoreListResponse = {
       {
         id: 4,
         name: '민서네 김밥 홍대점',
+        category: 'ASIAN',
         storeId: 4,
         images: [],
         averageRating: 4.9,
@@ -61,6 +65,7 @@ export const mockBookmarkStoreListResponse: GetBookmarkStoreListResponse = {
       {
         id: 5,
         name: '민서네 김밥 홍대점',
+        category: 'ASIAN',
         images: [],
         averageRating: 4.9,
         estimatedWaitingTimeMinutes: 20,

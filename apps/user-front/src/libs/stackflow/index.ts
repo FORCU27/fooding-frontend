@@ -9,6 +9,7 @@ import { stackflow } from '@stackflow/react/future';
 import { SCREEN_TRANSITION_DURATION } from './configs';
 import { wrapPlugin } from './wrap-plugin';
 import { BookmarkListScreen } from '@/screens/bookmarks/Bookmarks';
+import { ImmediateEntryStoreListScreen } from '@/screens/immediate-entry-stores/ImmediateEntryStores';
 import { JoinFormScreen } from '@/screens/join/JoinFormScreen';
 import { MenuDetailScreen, MenuDetailScreenParams } from '@/screens/menu-detail/MenuDetail';
 import { MyCouponListScreen } from '@/screens/my-coupons/MyCoupons';
@@ -17,6 +18,7 @@ import { MyRewardDetailScreen } from '@/screens/my-reward-detail/MyRewardDetail'
 import { MyRewardListScreen } from '@/screens/my-rewards/MyRewards';
 import { NotificationListScreen } from '@/screens/notifications/Notifications';
 import { PlanDetailScreen } from '@/screens/plan-detail/PlanDetail';
+import { PopularViewedStoreListScreen } from '@/screens/popular-viewed-stores/PopularViewedStores';
 import { ProfileModifyScreen } from '@/screens/profile/ProfileModify';
 import { ProfileCompleteScreen } from '@/screens/profile-user-info/ProfileCompleteScreen';
 import { ProfileUserInfoScreen } from '@/screens/profile-user-info/ProfileUserInfo';
@@ -74,6 +76,8 @@ declare module '@stackflow/config' {
     ReviewReportCreateScreen: { review: Review; store: StoreInfo; type: 'REVIEW' | 'POST' };
     RecentlyViewedStoreListScreen: object;
     MyReviewsScreen: object;
+    PopularViewedStoreListScreen: object;
+    ImmediateEntryStoreListScreen: object;
   }
 }
 
@@ -105,6 +109,8 @@ const config = defineConfig({
     { name: 'ReviewReportCreateScreen' },
     { name: 'RecentlyViewedStoreListScreen' },
     { name: 'MyReviewsScreen' },
+    { name: 'PopularViewedStoreListScreen' },
+    { name: 'ImmediateEntryStoreListScreen' },
   ],
 
   transitionDuration: SCREEN_TRANSITION_DURATION,
@@ -140,6 +146,8 @@ export const { Stack } = stackflow({
     ReviewReportCreateScreen,
     RecentlyViewedStoreListScreen,
     MyReviewsScreen,
+    PopularViewedStoreListScreen,
+    ImmediateEntryStoreListScreen,
   },
   plugins: [
     basicRendererPlugin(),
