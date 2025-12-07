@@ -16,7 +16,18 @@ export function ReactQueryProvider({
   children: ReactNode;
   dehydratedState?: DehydratedState;
 }) {
-  const [client] = useState(() => new QueryClient());
+  const [client] = useState(
+    () =>
+      new QueryClient({
+        defaultOptions: {
+          queries: {
+            refetchOnWindowFocus: false, // 윈도우 포커스 시 재호출 방지
+            refetchOnMount: false, // 마운트 시 재호출 방지
+            retry: 1, // 실패 시 재시도 횟수
+          },
+        },
+      }),
+  );
 
   return (
     <QueryClientProvider client={client}>
