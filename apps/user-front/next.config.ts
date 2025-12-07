@@ -6,7 +6,26 @@ const nextConfig: NextConfig = {
     ignoreDuringBuilds: true,
   },
   images: {
-    domains: ['img.freepik.com', 'ducf0htkez9mz.cloudfront.net', 'd27gz6v6wvae1d.cloudfront.net'],
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'img.freepik.com',
+        port: '',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'ducf0htkez9mz.cloudfront.net',
+        port: '',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'd27gz6v6wvae1d.cloudfront.net',
+        port: '',
+        pathname: '/**',
+      },
+    ],
   },
 };
 
