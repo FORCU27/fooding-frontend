@@ -11,7 +11,7 @@ import { CompleteStep } from './components/CompleteStep';
 import { FoodImage } from './components/FoodImage';
 import { MainContent } from './components/MainContent';
 import ModalContent from './components/registerWating';
-import { WaitingListDialog, getMockWaitingList } from './components/WaitingListDialog';
+import { WaitingListDialog } from './components/WaitingListDialog';
 import { WatingLogo } from './components/WatingLogo';
 import { Step, WaitingRegisterData } from './types';
 import FullScreenPanel from '@/components/FullScreenPanel';
@@ -19,6 +19,7 @@ import Modal from '@/components/Modal';
 import { useStore } from '@/components/Provider/StoreClientProvider';
 import TermsAgreement from '@/components/TermsAgreement';
 import { useGetStoreWaitingOverview } from '@/hooks/store/useGetStoreWaitingOverview';
+import { useGetWaitingList } from '@/hooks/store/useGetWaitingList';
 
 export default function WaitingPage() {
   const { storeId } = useStore();
@@ -46,6 +47,7 @@ export default function WaitingPage() {
   });
 
   const { data: waitingOverview, dataUpdatedAt } = useGetStoreWaitingOverview(storeId);
+  const { data: waitingListData } = useGetWaitingList(storeId);
 
   // 마지막 업데이트 시간 표시용
   const lastUpdated = dataUpdatedAt
@@ -201,7 +203,7 @@ export default function WaitingPage() {
       <WaitingListDialog
         isOpen={openWaitingList}
         onClose={() => setOpenWaitingList(false)}
-        waitingList={getMockWaitingList()}
+        waitingList={waitingListData?.data?.list || []}
       />
     </div>
   );

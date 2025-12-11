@@ -1,17 +1,11 @@
 'use client';
 
-interface WaitingItem {
-  id: number;
-  callNumber: number;
-  totalCount: number;
-  waitingMinutes: number;
-  registeredTime: string;
-}
+import { GetWaitingDetailResponse } from '@repo/api/app';
 
 interface WaitingListDialogProps {
   isOpen: boolean;
   onClose: () => void;
-  waitingList: WaitingItem[];
+  waitingList: GetWaitingDetailResponse[];
 }
 
 export const WaitingListDialog = ({ isOpen, onClose, waitingList }: WaitingListDialogProps) => {
@@ -42,40 +36,50 @@ export const WaitingListDialog = ({ isOpen, onClose, waitingList }: WaitingListD
           
           {/* 스크롤 영역 */}
           <div className='p-[40px] h-full overflow-y-auto flex flex-col gap-3'>
-            {waitingList.map((item, index) => (
-              <div
-                key={item.id}
-                className='flex items-center gap-3'
-              >
-                {/* 순번 */}
-                <div className='w-12 h-12 mr-5 rounded-full bg-primary-pink text-white flex items-center justify-center font-bold subtitle-3'>
-                  {index + 1}
-                </div>
+            {waitingList.map((item, index) => {
+              const totalCount = item.adultCount + item.infantCount;
+              
+              return (
                 <div
-                  className='flex items-center flex-1 py-6 bg-gray-50 rounded-2xl px-8 subtitle-3'
+                  key={item.id}
+                  className='flex items-center gap-3'
                 >
-                  {/* 번호 */}
-                  <div className='flex-1 text-center'>
-                    <span className=''>{item.callNumber}번</span>
+                  {/* 순번 */}
+                  <div className='w-12 h-12 mr-5 rounded-full bg-primary-pink text-white flex items-center justify-center font-bold subtitle-3'>
+                    {index + 1}
                   </div>
-
-                  {/* 인원 */}
-                  <div className='flex-1 text-center subtitle-3'>
-                    <span className=''>총 {item.totalCount}명</span>
-                  </div>
-
-                  {/* 대기시간 */}
-                  <div className='flex-1 text-center'>
-                    <div className='text-primary-pink body-1 font-bold'>
-                      {item.waitingMinutes}분 웨이팅
+                  <div
+                    className='flex items-center flex-1 py-6 bg-gray-50 rounded-2xl px-8 subtitle-3'
+                  >
+                    {/* 번호 */}
+                    <div className='flex-1 text-center'>
+                      <span className=''>{item.callNumber}번</span>
                     </div>
-                    <div className='text-gray-400 body-3'>
-                      {item.registeredTime} 등록
+
+                    {/* 인원 */}
+                    <div className='flex-1 text-center subtitle-3'>
+                      <span className=''>총 {totalCount}명</span>
+                    </div>
+
+                    {/* 채널/상태 */}
+                    <div className='flex-1 text-center'>
+                      <div className='text-primary-pink body-1 font-bold'>
+                        {item.channel === 'IN_PERSON' ? '현장 등록' : '온라인'}
+                      </div>
+                      <div className='text-gray-400 body-3'>
+                        {item.infantChairCount > 0 ? `유아의자 ${item.infantChairCount}개` : ''}
+                      </div>
                     </div>
                   </div>
                 </div>
+              );
+            })}
+
+            {waitingList.length === 0 && (
+              <div className='flex-1 flex items-center justify-center text-gray-400'>
+                대기 중인 팀이 없습니다.
               </div>
-            ))}
+            )}
           </div>
           
           {/* 하단 그라디언트 */}
@@ -85,17 +89,3 @@ export const WaitingListDialog = ({ isOpen, onClose, waitingList }: WaitingListD
     </div>
   );
 };
-
-// 목데이터 생성 함수 (10개)
-export const getMockWaitingList = (): WaitingItem[] => [
-  { id: 1, callNumber: 25, totalCount: 2, waitingMinutes: 45, registeredTime: '02:47' },
-  { id: 2, callNumber: 26, totalCount: 8, waitingMinutes: 20, registeredTime: '02:47' },
-  { id: 3, callNumber: 27, totalCount: 7, waitingMinutes: 14, registeredTime: '02:47' },
-  { id: 4, callNumber: 28, totalCount: 2, waitingMinutes: 3, registeredTime: '02:47' },
-  { id: 5, callNumber: 29, totalCount: 3, waitingMinutes: 1, registeredTime: '02:47' },
-  { id: 6, callNumber: 30, totalCount: 4, waitingMinutes: 0, registeredTime: '02:50' },
-  { id: 7, callNumber: 31, totalCount: 5, waitingMinutes: 0, registeredTime: '02:52' },
-  { id: 8, callNumber: 32, totalCount: 2, waitingMinutes: 0, registeredTime: '02:55' },
-  { id: 9, callNumber: 33, totalCount: 6, waitingMinutes: 0, registeredTime: '02:58' },
-  { id: 10, callNumber: 34, totalCount: 3, waitingMinutes: 0, registeredTime: '03:00' },
-];
