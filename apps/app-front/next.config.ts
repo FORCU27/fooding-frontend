@@ -1,3 +1,4 @@
+import type { NextConfig } from 'next';
 import createNextIntlPlugin from 'next-intl/plugin';
 
 const isDev = process.env.NODE_ENV === 'development';
@@ -5,7 +6,7 @@ const isDev = process.env.NODE_ENV === 'development';
 // next-intl 플러그인 생성
 const withNextIntl = createNextIntlPlugin();
 
-const nextConfig = {
+const nextConfig: NextConfig = {
   eslint: {
     ignoreDuringBuilds: true,
   },
