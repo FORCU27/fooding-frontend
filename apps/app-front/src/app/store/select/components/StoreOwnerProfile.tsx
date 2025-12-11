@@ -56,9 +56,16 @@ export default function StoreOwnerProfile({ ownerName, profileImageSrc }: StoreO
           <div className='headline-3-1'>사장님</div>
         </div>
 
-        <div className='flex items-center justify-center mt-[32px] w-[400px] h-[400px] rounded-full bg-gray-3 overflow-hidden'>
+        <div className='relative flex items-center justify-center mt-[32px] w-[400px] h-[400px] rounded-full bg-gray-3 overflow-hidden'>
           {profileImageSrc ? (
-            <Image src={profileImageSrc} alt='프로필 이미지' fill style={{ objectFit: 'cover' }} />
+            <Image
+              src={profileImageSrc}
+              alt='프로필 이미지'
+              fill
+              priority
+              sizes='400px'
+              style={{ objectFit: 'cover' }}
+            />
           ) : (
             <UserIcon />
           )}
