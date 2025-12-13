@@ -1,9 +1,7 @@
 import { z } from 'zod/v4';
 
 import { ApiResponse, PageResponse, SortDirection, SortType } from '../../shared';
-
-export const VISIT_PURPOSES = ['MEETING', 'DATE', 'FRIEND', 'FAMILY', 'BUSINESS', 'PARTY'] as const;
-export type VisitPurpose = (typeof VISIT_PURPOSES)[number];
+import { Review } from '../reviews';
 
 export const PARKING_TYPES = ['PAID', 'FREE'] as const;
 export type ParkingType = (typeof PARKING_TYPES)[number];
@@ -124,26 +122,6 @@ export type GetStoreListParams = {
   longitude?: number;
 };
 
-export type Review = z.infer<typeof Review>;
-export const Review = z.object({
-  reviewId: z.number(),
-  nickname: z.string().nullable(),
-  profileUrl: z.string().nullable(),
-  imageUrls: z.string().array(),
-  content: z.string(),
-  score: z.object({
-    total: z.number(),
-    taste: z.number(),
-    mood: z.number(),
-    service: z.number(),
-  }),
-  purpose: z.enum(VISIT_PURPOSES),
-  likeCount: z.number(),
-  userReviewCount: z.number(),
-  createdAt: z.iso.datetime({ local: true }),
-  updatedAt: z.iso.datetime({ local: true }),
-});
-
 export type StoreMenu = z.infer<typeof StoreMenu>;
 export const StoreMenu = z.object({
   id: z.number(),
@@ -155,19 +133,6 @@ export const StoreMenu = z.object({
   signature: z.boolean(),
   recommend: z.boolean(),
 });
-
-export type GetStoreReviewListRequest = {
-  id: number;
-  params: {
-    sortType: SortType;
-    sortDirection: SortDirection;
-    searchString?: string;
-    pageNum: number;
-    pageSize: number;
-    writerId?: string;
-    parentId?: string;
-  };
-};
 
 export type GetStoreImageListRequest = {
   id: number;
@@ -245,32 +210,6 @@ export const GetStoreAdditionalInfoResponse = ApiResponse(
     })
     .nullable(),
 );
-
-export type CreateStoreReviewBody = {
-  storeId: number;
-  userId: number;
-  content: string;
-  visitPurpose: VisitPurpose;
-  total: number;
-  taste: number;
-  mood: number;
-  service: number;
-  imageUrls: string[];
-};
-
-export type ModifyStoreReviewBody = {
-  content: string;
-  visitPurpose: VisitPurpose;
-  taste: number;
-  mood: number;
-  service: number;
-};
-
-export type GetStoreReviewResponse = z.infer<typeof GetStoreReviewResponse>;
-export const GetStoreReviewResponse = z.object({
-  status: z.string(),
-  data: z.null(),
-});
 
 export type StoreReward = z.infer<typeof StoreReward>;
 export const StoreReward = z.object({

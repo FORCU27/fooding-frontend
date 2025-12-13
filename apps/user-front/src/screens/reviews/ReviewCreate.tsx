@@ -1,6 +1,6 @@
 'use client';
 
-import { CreateStoreReviewBody } from '@repo/api/user';
+import { CreateReviewBody } from '@repo/api/user';
 import { toast } from '@repo/design-system/components/b2c';
 import { ActivityComponentType, useFlow } from '@stackflow/react/future';
 
@@ -11,7 +11,7 @@ import { Header } from '@/components/Layout/Header';
 import { Screen } from '@/components/Layout/Screen';
 import { useAuth } from '@/components/Provider/AuthProvider';
 import { useGetPlanDetail } from '@/hooks/plan/useGetPlanDetail';
-import { useCreateStoreReview } from '@/hooks/store/useCreateStoreReview';
+import { useCreateReview } from '@/hooks/review/useCreateReview';
 
 export type ReviewCreateScreenParams = { planId: string };
 
@@ -25,9 +25,9 @@ export const ReviewCreateScreen: ActivityComponentType<'ReviewCreateScreen'> = (
   }
   const flow = useFlow();
 
-  const createReview = useCreateStoreReview();
+  const createReview = useCreateReview();
 
-  const handleFormSubmit = (formData: CreateStoreReviewBody) => {
+  const handleFormSubmit = (formData: CreateReviewBody) => {
     if (createReview.isPending) return;
 
     createReview.mutate(

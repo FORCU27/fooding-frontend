@@ -1,12 +1,12 @@
 import { queryKeys } from '@repo/api/configs/query-keys';
-import { storeApi } from '@repo/api/user';
+import { reviewApi } from '@repo/api/user';
 import { useSuspenseQuery } from '@tanstack/react-query';
 
-export const useGetStoreReviewList = (id: number) => {
+export const useGetReviewList = (id: number) => {
   return useSuspenseQuery({
     queryKey: [queryKeys.user.store.reviewList, id],
     queryFn: async () => {
-      const response = await storeApi.getStoreReviewList({
+      const response = await reviewApi.getReviewList({
         id,
         params: {
           sortType: 'RECENT',

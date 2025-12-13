@@ -18,7 +18,7 @@ import { SubwayLine, SubwayLineBadge } from '@/components/SubwayLineBadge';
 import { useGetStoreImmediateEntryList } from '@/hooks/store/useGetStoreImmediateEntryList';
 import { useGetStoreList } from '@/hooks/store/useGetStoreList';
 import { useGetStoreMenuList } from '@/hooks/store/useGetStoreMenuList';
-import { useGetStoreReviewList } from '@/hooks/store/useGetStoreReviewList';
+import { useGetReviewList } from '@/hooks/review/useGetReviewList';
 import { StoreInfoMap } from '@/libs/kakao-map/StoreInfoMap';
 import { getKakaoMapDirectionUrl } from '@/libs/kakao-map/utils';
 import { isNonEmptyArray } from '@/utils/array';
@@ -51,7 +51,7 @@ export const StoreDetailHomeTab = ({
     data: reviews,
     isPending: isReviewsPending,
     isFetching: isReviewsFetching,
-  } = useGetStoreReviewList(store.id);
+  } = useGetReviewList(store.id);
   const { data: stores, isPending: isStoresPending } = useGetStoreList({ sortType: 'RECENT' });
   const {
     data: immediateEntryStores,
