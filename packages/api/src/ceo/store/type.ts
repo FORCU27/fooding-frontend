@@ -110,44 +110,41 @@ export type Store = z.infer<typeof Store>;
 export const StoreOperatingHour = z.object({
   id: z.number(),
   hasHoliday: z.boolean(),
-  regularHolidayType: z.enum(REGULAR_HOLIDAY_TYPES),
-  regularHoliday: z.enum(DAY_OF_WEEK),
-  closedNationalHolidays: z.string().array(),
-  customHolidays: z.string().array(),
-  operatingNotes: z.string(),
-  dailyOperatingTimes: z.object({
-    dayOfWeek: z.enum(DAY_OF_WEEK),
-    openTime: z.string(),
-    closeTime: z.string(),
-    breakStartTime: z.string(),
-    breakEndTime: z.string(),
-  }),
-});
-
-export const StoreOperatingHourBody = z.object({
-  regularHolidayType: z.enum(REGULAR_HOLIDAY_TYPES),
-  regularHoliday: z.enum(DAY_OF_WEEK).array(),
+  regularHolidayType: z.enum(REGULAR_HOLIDAY_TYPES).nullable(),
+  regularHoliday: z.enum(DAY_OF_WEEK).nullable(),
   closedNationalHolidays: z.string().array(),
   customHolidays: z.string().array(),
   operatingNotes: z.string(),
   dailyOperatingTimes: z.array(
     z.object({
-      dayOfWeek: z.enum([
-        'MONDAY',
-        'TUESDAY',
-        'WEDNESDAY',
-        'THURSDAY',
-        'FRIDAY',
-        'SATURDAY',
-        'SUNDAY',
-      ]),
-      openTime: z.string(),
-      closeTime: z.string(),
-      breakStartTime: z.string(),
-      breakEndTime: z.string(),
+      id: z.number().optional(),
+      dayOfWeek: z.enum(DAY_OF_WEEK),
+      openTime: z.string().nullable(),
+      closeTime: z.string().nullable(),
+      breakStartTime: z.string().nullable(),
+      breakEndTime: z.string().nullable(),
     }),
   ),
 });
+
+export interface DailyOperatingTime {
+  id: number;
+  dayOfWeek: DayOfWeek;
+  openTime: string | null;
+  closeTime: string | null;
+  breakStartTime: string | null;
+  breakEndTime: string | null;
+}
+
+export interface StoreOperatingHourBody {
+  regularHolidayType: RegularHolidayType | null;
+  regularHoliday: DayOfWeek | null;
+  closedNationalHolidays: string[];
+  hasHoliday: boolean;
+  customHolidays: string[];
+  operatingNotes: string;
+  dailyOperatingTimes: DailyOperatingTime[];
+}
 
 export const GetStoreOperatingHourResponse = ApiResponse(StoreOperatingHour);
 
@@ -157,7 +154,7 @@ export const GetStoreListResponse = ApiResponse(z.array(Store));
 export type GetStore = z.infer<typeof GetStoreResponse>;
 export type GetStoreList = z.infer<typeof GetStoreListResponse>;
 
-export type StoreOperatingHourBody = z.infer<typeof StoreOperatingHourBody>;
+export type StoreOperatingHour = z.infer<typeof StoreOperatingHour>;
 
 export const GetStorePointShopResponse = ApiResponse(PointShop);
 export const GetStorePointShopListResponse = z.object({

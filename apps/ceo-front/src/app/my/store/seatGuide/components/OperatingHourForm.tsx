@@ -25,7 +25,17 @@ import { Controller, useForm } from 'react-hook-form';
 import { BusinessHourForm } from './BusinessHourForm';
 
 export interface OperatingHoursFormProps {
+  originValues?: StoreOperatingHourBody;
   handleSubmit: (data: StoreOperatingHourBody) => void;
+}
+
+export interface dailyOperatingTimesType {
+  id: number;
+  dayOfWeek: string;
+  openTime: string | null;
+  closeTime: string | null;
+  breakStartTime: string | null;
+  breakEndTime: string | null;
 }
 
 export const NationalHolidays = [
@@ -42,7 +52,10 @@ export const NationalHolidays = [
   '성탄절',
 ];
 
-export const OperatingHoursForm = ({ handleSubmit }: PropsWithoutRef<OperatingHoursFormProps>) => {
+export const OperatingHoursForm = ({
+  originValues,
+  handleSubmit,
+}: PropsWithoutRef<OperatingHoursFormProps>) => {
   const {
     register,
     handleSubmit: formSubmit,
@@ -52,14 +65,35 @@ export const OperatingHoursForm = ({ handleSubmit }: PropsWithoutRef<OperatingHo
   } = useForm<StoreOperatingHourBody>({
     mode: 'onSubmit',
     defaultValues: {
-      customHolidays: [],
+      regularHolidayType: originValues?.regularHolidayType || null,
+      regularHoliday: originValues?.regularHoliday || null,
+      closedNationalHolidays: originValues?.closedNationalHolidays || [],
+      hasHoliday: originValues?.hasHoliday || false,
+      customHolidays: originValues?.customHolidays || [],
+      operatingNotes: originValues?.operatingNotes || '',
+      dailyOperatingTimes:
+        originValues?.dailyOperatingTimes?.map((d: dailyOperatingTimesType) => ({
+          id: d.id,
+          dayOfWeek: d.dayOfWeek as
+            | 'MONDAY'
+            | 'TUESDAY'
+            | 'WEDNESDAY'
+            | 'THURSDAY'
+            | 'FRIDAY'
+            | 'SATURDAY'
+            | 'SUNDAY',
+          openTime: d.openTime,
+          closeTime: d.closeTime,
+          breakStartTime: d.breakStartTime,
+          breakEndTime: d.breakEndTime,
+        })) || [],
     },
   });
 
   const [mode, setMode] = useState<OperatingMode>('same_everyday');
   const [breakMode, setBreakMode] = useState<BreakMode>('none');
   const closedHolidays = watch('closedNationalHolidays') || [];
-  const customHolidays = watch('customHolidays') as string[] | undefined;
+  const customHolidays = watch('customHolidays') as string[];
 
   const customHolidaysArr = (customHolidays ?? [])
     .map((date) => new Date(date))
@@ -75,10 +109,10 @@ export const OperatingHoursForm = ({ handleSubmit }: PropsWithoutRef<OperatingHo
   };
 
   const getStoreStatus = (item: {
-    openTime?: string;
-    closeTime?: string;
-    breakStartTime?: string;
-    breakEndTime?: string;
+    openTime: string | null;
+    closeTime: string | null;
+    breakStartTime: string | null;
+    breakEndTime: string | null;
   }) => {
     const now = new Date();
     const toDate = (time: string) => {
@@ -122,6 +156,7 @@ export const OperatingHoursForm = ({ handleSubmit }: PropsWithoutRef<OperatingHo
         breakMode={breakMode}
         onModeChange={setMode}
         onBreakModeChange={setBreakMode}
+        originValues={originValues}
       />
 
       <Card className='w-full'>
