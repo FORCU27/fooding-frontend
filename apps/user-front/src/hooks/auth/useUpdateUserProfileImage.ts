@@ -7,9 +7,9 @@ export const useUpdateUserProfileImage = () => {
 
   return useMutation({
     mutationFn: authApi.updateProfileImage,
-    mutationKey: [queryKeys.me.user, 'update'],
+    mutationKey: [queryKeys.user.me, 'update'],
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: [queryKeys.me.user] });
+      queryClient.invalidateQueries({ queryKey: [queryKeys.user.me] });
     },
   });
 };

@@ -1,22 +1,22 @@
 'use client';
 
-import { ModifyStoreReviewBody, Review } from '@repo/api/user';
+import { ModifyReviewBody, Review } from '@repo/api/user';
 import { toast } from '@repo/design-system/components/b2c';
 import { ActivityComponentType, useFlow } from '@stackflow/react/future';
 
 import { ReviewForm } from './components/ReviewForm';
 import { Header } from '@/components/Layout/Header';
 import { Screen } from '@/components/Layout/Screen';
-import { useModifyStoreReview } from '@/hooks/store/useModifyStoreReview';
+import { useModifyReview } from '@/hooks/review/useModifyReview';
 
 export type ReviewModifyScreenParams = { review: Review };
 
 export const ReviewModifyScreen: ActivityComponentType<'ReviewModifyScreen'> = ({ params }) => {
   const flow = useFlow();
 
-  const modifyReview = useModifyStoreReview();
+  const modifyReview = useModifyReview();
 
-  const handleFormSubmit = (formData: ModifyStoreReviewBody) => {
+  const handleFormSubmit = (formData: ModifyReviewBody) => {
     if (modifyReview.isPending) return;
 
     modifyReview.mutate(

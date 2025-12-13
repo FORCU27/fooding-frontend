@@ -7,9 +7,9 @@ export const useUpdateUserNotificationStatus = () => {
 
   return useMutation({
     mutationFn: authApi.updateNotificationStatus,
-    mutationKey: [queryKeys.me.user, 'update'],
+    mutationKey: [queryKeys.user.me, 'update'],
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: [queryKeys.me.user] });
+      queryClient.invalidateQueries({ queryKey: [queryKeys.user.me] });
     },
   });
 };

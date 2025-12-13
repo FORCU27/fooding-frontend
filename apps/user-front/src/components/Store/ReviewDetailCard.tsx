@@ -10,7 +10,7 @@ import { overlay } from 'overlay-kit';
 import { StarRating } from './StarRating';
 import { ImageGallery } from '../ImageGallery';
 import { useAuth } from '../Provider/AuthProvider';
-import { useDeleteStoreReview } from '@/hooks/store/useDeleteStoreReview';
+import { useDeleteReview } from '@/hooks/review/useDeleteReview';
 import { isNonEmptyArray } from '@/utils/array';
 import { formatDotDate } from '@/utils/date';
 
@@ -28,7 +28,7 @@ export const ReviewDetailCard = ({ review, store }: ReviewCardProps) => {
   const { imageUrls } = review;
   const isMine = user?.nickname === review.nickname;
 
-  const deleteStoreReview = useDeleteStoreReview();
+  const deleteStoreReview = useDeleteReview();
 
   const onDeleteButtonClick = () => {
     if (deleteStoreReview.isPending) return;
@@ -50,7 +50,7 @@ export const ReviewDetailCard = ({ review, store }: ReviewCardProps) => {
       <ImageGallery
         isOpen={isOpen}
         onClose={close}
-        imageUrls={imageUrls}
+        imageUrls={imageUrls ?? []}
         title={store.name}
         initialPage={imageIndex + 1}
       />
@@ -96,7 +96,7 @@ export const ReviewDetailCard = ({ review, store }: ReviewCardProps) => {
 
       <div className='flex flex-col'>
         <p className='my-4 body-8 text-gray-5'>{review.content}</p>
-        {imageUrls.length > 0 && (
+        {imageUrls && imageUrls.length > 0 && (
           <div className='flex overflow-x-auto scrollbar-hide gap-3'>
             {imageUrls.map((url, idx) => (
               <button key={idx} onClick={() => onImageClick(idx)}>

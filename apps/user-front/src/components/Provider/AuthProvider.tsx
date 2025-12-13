@@ -22,7 +22,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const queryClient = useQueryClient();
 
   const { data: user, isLoading } = useQuery<AuthLoginUser | null>({
-    queryKey: [queryKeys.me.user],
+    queryKey: [queryKeys.user.me],
     queryFn: async () => {
       const accessToken = Cookies.get(STORAGE_KEYS.ACCESS_TOKEN);
       if (!accessToken) return null;
@@ -59,7 +59,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
       setTokens(accessToken, refreshToken, expiredIn, refreshExpiredIn);
 
-      await queryClient.invalidateQueries({ queryKey: [queryKeys.me.user] });
+      await queryClient.invalidateQueries({ queryKey: [queryKeys.user.me] });
     },
     [queryClient],
   );
@@ -71,7 +71,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
       setTokens(accessToken, refreshToken, expiredIn, refreshExpiredIn);
 
-      await queryClient.invalidateQueries({ queryKey: [queryKeys.me.user] });
+      await queryClient.invalidateQueries({ queryKey: [queryKeys.user.me] });
     },
     [queryClient],
   );
@@ -79,7 +79,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const logout = useCallback(() => {
     Cookies.remove(STORAGE_KEYS.ACCESS_TOKEN);
     Cookies.remove(STORAGE_KEYS.REFRESH_TOKEN);
-    queryClient.removeQueries({ queryKey: [queryKeys.me.user] });
+    queryClient.removeQueries({ queryKey: [queryKeys.user.me] });
   }, [queryClient]);
 
   return (

@@ -9,7 +9,7 @@ import { overlay } from 'overlay-kit';
 
 import { ImageGallery } from '@/components/ImageGallery';
 import { StarRating } from '@/components/Store/StarRating';
-import { useDeleteStoreReview } from '@/hooks/store/useDeleteStoreReview';
+import { useDeleteReview } from '@/hooks/review/useDeleteReview';
 import { useGetStoreInfo } from '@/hooks/store/useGetStoreInfo';
 import { isNonEmptyArray } from '@/utils/array';
 import { formatDotDate } from '@/utils/date';
@@ -30,7 +30,7 @@ export const MyReviewCard = ({ review, storeId }: MyReviewCardProps) => {
 
   const { imageUrls } = review;
 
-  const deleteStoreReview = useDeleteStoreReview();
+  const deleteStoreReview = useDeleteReview();
 
   const onDeleteButtonClick = () => {
     if (deleteStoreReview.isPending) return;
@@ -52,7 +52,7 @@ export const MyReviewCard = ({ review, storeId }: MyReviewCardProps) => {
       <ImageGallery
         isOpen={isOpen}
         onClose={close}
-        imageUrls={imageUrls}
+        imageUrls={imageUrls || []}
         title={storeInfo?.name || ''}
         initialPage={imageIndex + 1}
       />
@@ -97,7 +97,7 @@ export const MyReviewCard = ({ review, storeId }: MyReviewCardProps) => {
 
       <div className='flex flex-col'>
         <p className='my-4 body-8 text-gray-5'>{review.content}</p>
-        {imageUrls.length > 0 && (
+        {imageUrls && imageUrls.length > 0 && (
           <div className='flex overflow-x-auto scrollbar-hide gap-3'>
             {imageUrls.map((url, idx) => (
               <button key={idx} onClick={() => onImageClick(idx)}>

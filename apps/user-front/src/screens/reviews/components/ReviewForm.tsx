@@ -1,6 +1,6 @@
 import { PropsWithoutRef, useRef } from 'react';
 
-import { CreateStoreReviewBody, Review, VISIT_PURPOSES, VisitPurpose } from '@repo/api/user';
+import { CreateReviewBody, Review, VISIT_PURPOSES, VisitPurpose } from '@repo/api/user';
 import { Button, Select } from '@repo/design-system/components/b2c';
 import { CloseIcon, ImageIcon } from '@repo/design-system/icons';
 import { Controller, useForm } from 'react-hook-form';
@@ -9,7 +9,7 @@ import { StarRating } from '@/components/Store/StarRating';
 
 export interface ReviewFormProps {
   review?: Review;
-  handleSubmit: (data: CreateStoreReviewBody & { imageFiles: File[] }) => void;
+  handleSubmit: (data: CreateReviewBody & { imageFiles: File[] }) => void;
 }
 
 export const VisitPurposeLabels: Record<VisitPurpose, string> = {
@@ -31,7 +31,7 @@ export const ReviewForm = ({ review, handleSubmit }: PropsWithoutRef<ReviewFormP
     setValue,
     watch,
     control,
-  } = useForm<CreateStoreReviewBody & { imageFiles: File[] }>({
+  } = useForm<CreateReviewBody & { imageFiles: File[] }>({
     mode: 'onSubmit',
     defaultValues: {
       content: review?.content || '',
@@ -94,7 +94,7 @@ export const ReviewForm = ({ review, handleSubmit }: PropsWithoutRef<ReviewFormP
     });
   };
 
-  const onFormSubmit = (data: CreateStoreReviewBody & { imageFiles: File[] }) => {
+  const onFormSubmit = (data: CreateReviewBody & { imageFiles: File[] }) => {
     handleSubmit(data);
   };
 

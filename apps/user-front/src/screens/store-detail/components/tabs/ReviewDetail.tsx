@@ -6,7 +6,7 @@ import { LoadingScreen } from '@/components/Layout/LoadingScreen';
 import { Section } from '@/components/Layout/Section';
 import { ReviewsDetailList } from '@/components/Store/ReviewsDetailList';
 import { useGetStoreDetail } from '@/hooks/store/useGetStoreDetail';
-import { useGetStoreReviewList } from '@/hooks/store/useGetStoreReviewList';
+import { useGetReviewList } from '@/hooks/review/useGetReviewList';
 import { getRatingRatios } from '@/utils/rating';
 
 type StoreDetailReviewTabProps = {
@@ -23,7 +23,7 @@ export const StoreDetailReviewTab = ({ store }: StoreDetailReviewTabProps) => {
     data: reviews,
     isPending: reviewsPending,
     isFetching: reviewsFetching,
-  } = useGetStoreReviewList(store.id);
+  } = useGetReviewList(store.id);
 
   const ratingCounts: { [score: number]: number } = (() => {
     const counts: { [score: number]: number } = {};
