@@ -7,6 +7,7 @@ export const queryKeys = {
     store: {
       waiting: 'waiting',
       waitingOverview: 'waitingOverview',
+      waitingList: 'waitingList',
       storeInfo: 'storeStoreInfo',
       stores: 'storeStores',
     },

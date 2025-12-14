@@ -11,6 +11,7 @@ import { CompleteStep } from './components/CompleteStep';
 import { FoodImage } from './components/FoodImage';
 import { MainContent } from './components/MainContent';
 import ModalContent from './components/registerWating';
+import { WaitingListDialog } from './components/WaitingListDialog';
 import { WatingLogo } from './components/WatingLogo';
 import { Step, WaitingRegisterData } from './types';
 import FullScreenPanel from '@/components/FullScreenPanel';
@@ -18,6 +19,7 @@ import Modal from '@/components/Modal';
 import { useStore } from '@/components/Provider/StoreClientProvider';
 import TermsAgreement from '@/components/TermsAgreement';
 import { useGetStoreWaitingOverview } from '@/hooks/store/useGetStoreWaitingOverview';
+import { useGetWaitingList } from '@/hooks/store/useGetWaitingList';
 
 export default function WaitingPage() {
   const { storeId } = useStore();
@@ -44,11 +46,22 @@ export default function WaitingPage() {
     },
   });
 
-  const { data: waitingOverview } = useGetStoreWaitingOverview(storeId);
+  const { data: waitingOverview, dataUpdatedAt } = useGetStoreWaitingOverview(storeId);
+  const { data: waitingListData } = useGetWaitingList(storeId);
+
+  // 마지막 업데이트 시간 표시용
+  const lastUpdated = dataUpdatedAt
+    ? new Date(dataUpdatedAt).toLocaleTimeString('ko-KR', {
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+      })
+    : '-';
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [openTerms, setOpenTerms] = useState(false);
   const [openComplete, setOpenComplete] = useState(false);
+  const [openWaitingList, setOpenWaitingList] = useState(false);
 
   const [formData, setFormData] = useState<WaitingRegisterData>({
     name: '',
@@ -121,13 +134,22 @@ export default function WaitingPage() {
 
   return (
     <div className='flex h-screen border-l-20 border-primary-pink bg-primary-pink relative'>
+      {/* 새로고침 주기 표시 */}
+      <div className='absolute top-4 right-4 z-10 flex items-center gap-2 bg-white/90 px-3 py-2 rounded-full shadow-sm'>
+        <div className='w-2 h-2 rounded-full bg-green-500 animate-pulse' />
+        <span className='text-xs text-gray-600'>5초 주기 | {lastUpdated}</span>
+      </div>
       <div className='flex-[2] bg-white p-16 relative'>
-        <MainContent onClick={() => setIsModalOpen(true)} waitingOverview={waitingOverview} />
+        <MainContent
+          onClick={() => setIsModalOpen(true)}
+          waitingOverview={waitingOverview}
+          onClickWaitingList={() => setOpenWaitingList(true)}
+        />
       </div>
       <div className='flex-1 bg-primary-pink relative'>
         <WatingLogo />
       </div>
-      <div className='absolute bottom-20 right-20'>
+      <div className='absolute bottom-20 right-0'>
         <FoodImage />
       </div>
       <Modal
@@ -178,6 +200,11 @@ export default function WaitingPage() {
           currentWaiting={mutationResponse?.data}
         />
       )}
+      <WaitingListDialog
+        isOpen={openWaitingList}
+        onClose={() => setOpenWaitingList(false)}
+        waitingList={waitingListData?.data?.list || []}
+      />
     </div>
   );
 }

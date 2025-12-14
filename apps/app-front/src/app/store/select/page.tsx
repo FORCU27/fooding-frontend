@@ -1,46 +1,20 @@
-'use client';
+import { GetUserResponse, GetStoresResponse } from '@repo/api/app';
 
-import { useRouter } from 'next/navigation';
-import { Suspense, useState } from 'react';
+import StoreSelectContent from './components/StoreSelectContent';
+import { serverFetch } from '@/services/server-api';
 
-import { userApi, storeApi, Store } from '@repo/api/app';
-import { queryKeys } from '@repo/api/configs/query-keys';
-import { useQuery } from '@tanstack/react-query';
+export default async function StoreSelectPage() {
+  // 서버에서 데이터 가져오기 (인증 포함)
+  const [userResponse, storesResponse] = await Promise.all([
+    serverFetch<GetUserResponse>('/app/users'),
+    serverFetch<GetStoresResponse>('/app/stores'),
+  ]);
 
-import StoreList from './components/StoreList';
-import StoreOwnerProfile from './components/StoreOwnerProfile';
-import { setSelectedStoreId } from '@/services/locale';
-
-export default function StoreSelectPage() {
-  const router = useRouter();
-  const { data: user } = useQuery({
-    queryKey: [queryKeys.me.user],
-    queryFn: () => userApi.getUser(),
-  });
-  const { data: stores } = useQuery({
-    queryKey: [queryKeys.app.store.stores],
-    queryFn: () => storeApi.getStores(),
-  });
-
-  const [selectedStore, setSelectedStore] = useState<Store | null>(null);
   return (
-    // TODO useQuery suspense 키는 거 확인
-    <Suspense fallback={'fallback'}>
-      <div className='flex h-screen font-sans'>
-        <StoreOwnerProfile
-          ownerName={user?.data.nickname as string}
-          profileImageSrc={user?.data.profileImage as string}
-        />
-        <StoreList
-          stores={stores?.data}
-          selectedStore={selectedStore}
-          onSelectStore={setSelectedStore}
-          onSelectStoreId={setSelectedStoreId}
-          onConfirm={() => {
-            router.push(`/store/service-select`);
-          }}
-        />
-      </div>
-    </Suspense>
+    <StoreSelectContent
+      user={userResponse.data}
+      stores={storesResponse.data}
+    />
   );
 }
+
