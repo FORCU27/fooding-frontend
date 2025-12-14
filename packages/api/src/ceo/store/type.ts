@@ -114,7 +114,7 @@ export const StoreOperatingHour = z.object({
   regularHoliday: z.enum(DAY_OF_WEEK).nullable(),
   closedNationalHolidays: z.string().array(),
   customHolidays: z.string().array(),
-  operatingNotes: z.string(),
+  operatingNotes: z.string().nullable(),
   dailyOperatingTimes: z.array(
     z.object({
       id: z.number().optional(),
@@ -146,7 +146,12 @@ export interface StoreOperatingHourBody {
   dailyOperatingTimes: DailyOperatingTime[];
 }
 
-export const GetStoreOperatingHourResponse = ApiResponse(StoreOperatingHour);
+export const GetStoreOperatingHourResponse = z.object({
+  status: z.string(),
+  data: StoreOperatingHour,
+});
+export type StoreOperatingHourType = z.infer<typeof StoreOperatingHour>;
+export type GetStoreOperatingHourResponseType = z.infer<typeof GetStoreOperatingHourResponse>;
 
 export const GetStoreResponse = ApiResponse(Store);
 export const GetStoreListResponse = ApiResponse(z.array(Store));

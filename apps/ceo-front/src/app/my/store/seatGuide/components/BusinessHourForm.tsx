@@ -39,17 +39,21 @@ export const BusinessHourForm = ({
   onModeChange,
   onBreakModeChange,
 }: BusinessHourFormProps) => {
+  const toHHmm = (time?: string | null) => {
+    if (!time) return '';
+    return time.slice(0, 5);
+  };
   const defaultEverydayHours = originValues?.dailyOperatingTimes?.[0]
     ? {
-        start: originValues.dailyOperatingTimes[0].openTime || '09:00',
-        end: originValues.dailyOperatingTimes[0].closeTime || '22:00',
+        start: toHHmm(originValues.dailyOperatingTimes[0].openTime) || '09:00',
+        end: toHHmm(originValues.dailyOperatingTimes[0].closeTime) || '22:00',
       }
     : { start: '09:00', end: '22:00' };
 
   const defaultBreakEverydayHours = originValues?.dailyOperatingTimes?.[0]
     ? {
-        start: originValues.dailyOperatingTimes[0].breakStartTime || '13:00',
-        end: originValues.dailyOperatingTimes[0].breakEndTime || '17:00',
+        start: toHHmm(originValues.dailyOperatingTimes[0].breakStartTime) || '13:00',
+        end: toHHmm(originValues.dailyOperatingTimes[0].breakEndTime) || '17:00',
       }
     : { start: '13:00', end: '17:00' };
 
@@ -63,8 +67,8 @@ export const BusinessHourForm = ({
       return [
         day,
         {
-          start: item?.openTime || '09:00',
-          end: item?.closeTime || '22:00',
+          start: toHHmm(item?.openTime) || '09:00',
+          end: toHHmm(item?.closeTime) || '22:00',
           isClosed: !item || (!item.openTime && !item.closeTime),
         },
       ];
@@ -78,8 +82,8 @@ export const BusinessHourForm = ({
       return [
         day,
         {
-          start: item?.breakStartTime || '13:00',
-          end: item?.breakEndTime || '17:00',
+          start: toHHmm(item?.breakStartTime) || '13:00',
+          end: toHHmm(item?.breakEndTime) || '17:00',
           isClosed: !item || (!item.breakStartTime && !item.breakEndTime),
         },
       ];

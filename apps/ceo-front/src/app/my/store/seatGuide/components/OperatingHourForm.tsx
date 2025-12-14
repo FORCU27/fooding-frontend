@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { PropsWithoutRef, useState } from 'react';
+import { PropsWithoutRef, useEffect, useMemo, useState } from 'react';
 
-import { StoreOperatingHourBody } from '@repo/api/ceo';
+import { DayOfWeek, StoreOperatingHourBody } from '@repo/api/ceo';
 import {
   Card,
   CardSubtitle,
@@ -23,6 +23,7 @@ import { ClockIcon } from '@repo/design-system/icons';
 import { Controller, useForm } from 'react-hook-form';
 
 import { BusinessHourForm } from './BusinessHourForm';
+import { normalizeDailyOperatingTimes } from '../utils/normalizeDailyOperatingTimes';
 
 export interface OperatingHoursFormProps {
   originValues?: StoreOperatingHourBody;
@@ -56,42 +57,78 @@ export const OperatingHoursForm = ({
   originValues,
   handleSubmit,
 }: PropsWithoutRef<OperatingHoursFormProps>) => {
+  const getInitialMode = (): OperatingMode => {
+    if (!originValues?.dailyOperatingTimes || originValues.dailyOperatingTimes.length === 0) {
+      return 'same_everyday';
+    }
+
+    const originVal = originValues.dailyOperatingTimes[0];
+    const allSame = originValues.dailyOperatingTimes.every(
+      (item) =>
+        item.openTime === originVal?.openTime &&
+        item.closeTime === originVal?.closeTime &&
+        item.breakStartTime === originVal?.breakStartTime &&
+        item.breakEndTime === originVal?.breakEndTime,
+    );
+
+    return allSame ? 'same_everyday' : 'different_by_day';
+  };
+
+  const getInitialBreakMode = (): BreakMode => {
+    if (!originValues?.dailyOperatingTimes || originValues.dailyOperatingTimes.length === 0) {
+      return 'none';
+    }
+
+    // 브레이크 타임이 하나라도 있는지 확인
+    const hasAnyBreak = originValues.dailyOperatingTimes.some(
+      (item) => item.breakStartTime !== null && item.breakEndTime !== null,
+    );
+
+    if (!hasAnyBreak) return 'none';
+
+    // 모든 브레이크 타임이 동일한지 확인
+    const firstBreak = originValues.dailyOperatingTimes.find(
+      (item) => item.breakStartTime && item.breakEndTime,
+    );
+
+    if (!firstBreak) return 'none';
+
+    const allSameBreak = originValues.dailyOperatingTimes.every((item) => {
+      if (item.breakStartTime === null && item.breakEndTime === null) {
+        // 브레이크 없는 요일이 있으면 "different"로 간주
+        return false;
+      }
+      return (
+        item.breakStartTime === firstBreak.breakStartTime &&
+        item.breakEndTime === firstBreak.breakEndTime
+      );
+    });
+
+    return allSameBreak ? 'same_everyday' : 'different_by_day';
+  };
+  const [mode, setMode] = useState<OperatingMode>(getInitialMode());
+  const [breakMode, setBreakMode] = useState<BreakMode>(getInitialBreakMode());
+
   const {
     register,
     handleSubmit: formSubmit,
     watch,
     control,
+    reset,
     setValue,
   } = useForm<StoreOperatingHourBody>({
     mode: 'onSubmit',
     defaultValues: {
-      regularHolidayType: originValues?.regularHolidayType || null,
-      regularHoliday: originValues?.regularHoliday || null,
-      closedNationalHolidays: originValues?.closedNationalHolidays || [],
-      hasHoliday: originValues?.hasHoliday || false,
-      customHolidays: originValues?.customHolidays || [],
-      operatingNotes: originValues?.operatingNotes || '',
-      dailyOperatingTimes:
-        originValues?.dailyOperatingTimes?.map((d: dailyOperatingTimesType) => ({
-          id: d.id,
-          dayOfWeek: d.dayOfWeek as
-            | 'MONDAY'
-            | 'TUESDAY'
-            | 'WEDNESDAY'
-            | 'THURSDAY'
-            | 'FRIDAY'
-            | 'SATURDAY'
-            | 'SUNDAY',
-          openTime: d.openTime,
-          closeTime: d.closeTime,
-          breakStartTime: d.breakStartTime,
-          breakEndTime: d.breakEndTime,
-        })) || [],
+      hasHoliday: false,
+      regularHolidayType: null,
+      regularHoliday: null,
+      closedNationalHolidays: [],
+      customHolidays: [],
+      operatingNotes: '',
+      dailyOperatingTimes: [],
     },
   });
 
-  const [mode, setMode] = useState<OperatingMode>('same_everyday');
-  const [breakMode, setBreakMode] = useState<BreakMode>('none');
   const closedHolidays = watch('closedNationalHolidays') || [];
   const customHolidays = watch('customHolidays') as string[];
 
@@ -144,6 +181,36 @@ export const OperatingHoursForm = ({
     (item: any) => item.dayOfWeek === dayMap[todayIndex],
   );
   const status = todayItem ? getStoreStatus(todayItem) : '영업종료';
+  const formatTime = (time?: string | null) => (time ? time.slice(0, 5) : '');
+
+  const watchedDailyTimes = watch('dailyOperatingTimes');
+
+  const previewDailyTimes = useMemo(() => {
+    if (!watchedDailyTimes) return [];
+    return normalizeDailyOperatingTimes(watchedDailyTimes);
+  }, [watchedDailyTimes]);
+
+  useEffect(() => {
+    if (!originValues) return;
+
+    reset({
+      hasHoliday: originValues.hasHoliday ?? false,
+      regularHolidayType: originValues.regularHolidayType ?? null,
+      regularHoliday: originValues.regularHoliday ?? null,
+      closedNationalHolidays: originValues.closedNationalHolidays ?? [],
+      customHolidays: originValues.customHolidays ?? [],
+      operatingNotes: originValues.operatingNotes ?? '',
+      dailyOperatingTimes:
+        originValues.dailyOperatingTimes?.map((d) => ({
+          id: d.id,
+          dayOfWeek: d.dayOfWeek as DayOfWeek,
+          openTime: d.openTime,
+          closeTime: d.closeTime,
+          breakStartTime: d.breakStartTime,
+          breakEndTime: d.breakEndTime,
+        })) ?? [],
+    });
+  }, [originValues, reset]);
 
   return (
     <form
@@ -249,17 +316,20 @@ export const OperatingHoursForm = ({
           <div className='flex flex-col justify-center w-[320px] min-h-[320px] h-full py-3 px-6 bg-white border border-gray-2 rounded-lg body-2'>
             <div className='flex gap-3 mb-6'>
               <ClockIcon />
-              {mode === 'same_everyday' && <StoreStatusChip status={status} />}
-              {mode === 'same_everyday' ? '매일' : ''}
-              {watch('dailyOperatingTimes')?.[0] && (
+              <StoreStatusChip status={status} />
+              {mode === 'same_everyday' && '매일'}
+              {watchedDailyTimes?.[0] && (
                 <span>
-                  {watch('dailyOperatingTimes')[0]!.openTime} -{' '}
-                  {watch('dailyOperatingTimes')[0]!.closeTime}
+                  {formatTime(watchedDailyTimes[0].openTime)} -{' '}
+                  {formatTime(watchedDailyTimes[0].closeTime)}
                 </span>
               )}
             </div>
-            {watch('dailyOperatingTimes')?.map((item: any) => {
-              const dayMap: Record<string, string> = {
+
+            {previewDailyTimes.map((item) => {
+              const isClosed = !item.openTime && !item.closeTime;
+
+              const dayLabelMap: Record<DayOfWeek, string> = {
                 MONDAY: '월',
                 TUESDAY: '화',
                 WEDNESDAY: '수',
@@ -271,20 +341,21 @@ export const OperatingHoursForm = ({
 
               return (
                 <div key={item.dayOfWeek} className='flex gap-4 mb-2'>
-                  <div>{dayMap[item.dayOfWeek]}</div>
+                  <div className='w-6'>{dayLabelMap[item.dayOfWeek]}</div>
+
                   <div className='flex flex-col'>
                     <div>
-                      {item.openTime && item.closeTime
-                        ? `${item.openTime} - ${item.closeTime}`
-                        : '정기휴무'}
+                      {isClosed
+                        ? '정기휴무'
+                        : `${formatTime(item.openTime)} - ${formatTime(item.closeTime)}`}
                     </div>
-                    <div>
-                      {item.breakStartTime && item.breakEndTime
-                        ? `${item.breakStartTime} - ${item.breakEndTime} 브레이크 타임`
-                        : breakMode
-                          ? ''
-                          : '정기휴무'}
-                    </div>
+
+                    {!isClosed && item.breakStartTime && item.breakEndTime && (
+                      <div>
+                        {formatTime(item.breakStartTime)} - {formatTime(item.breakEndTime)} 브레이크
+                        타임
+                      </div>
+                    )}
                   </div>
                 </div>
               );
