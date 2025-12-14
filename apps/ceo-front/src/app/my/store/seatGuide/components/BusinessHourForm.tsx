@@ -26,6 +26,7 @@ type BusinessHourFormProps = {
   setValue: UseFormSetValue<StoreOperatingHourBody>;
   mode: OperatingMode;
   breakMode: BreakMode;
+  originValues?: StoreOperatingHourBody;
   onModeChange: Dispatch<SetStateAction<OperatingMode>>;
   onBreakModeChange: Dispatch<SetStateAction<BreakMode>>;
 };
@@ -34,38 +35,84 @@ export const BusinessHourForm = ({
   setValue,
   mode,
   breakMode,
+  originValues,
   onModeChange,
   onBreakModeChange,
 }: BusinessHourFormProps) => {
-  const [everydayHours, setEverydayHours] = useState({ start: '09:00', end: '22:00' });
+  const toHHmm = (time?: string | null) => {
+    if (!time) return '';
+    return time.slice(0, 5);
+  };
+  const defaultEverydayHours = originValues?.dailyOperatingTimes?.[0]
+    ? {
+        start: toHHmm(originValues.dailyOperatingTimes[0].openTime) || '09:00',
+        end: toHHmm(originValues.dailyOperatingTimes[0].closeTime) || '22:00',
+      }
+    : { start: '09:00', end: '22:00' };
 
-  const [bydayHours, setBydayHours] = useState<HoursByDay>(
-    Object.fromEntries(
-      daysOfWeekKor.map((day) => [day, { start: '09:00', end: '22:00', isClosed: false }]),
-    ) as HoursByDay,
-  );
+  const defaultBreakEverydayHours = originValues?.dailyOperatingTimes?.[0]
+    ? {
+        start: toHHmm(originValues.dailyOperatingTimes[0].breakStartTime) || '13:00',
+        end: toHHmm(originValues.dailyOperatingTimes[0].breakEndTime) || '17:00',
+      }
+    : { start: '13:00', end: '17:00' };
 
-  const [breakEverydayHours, setBreakEverydayHours] = useState({ start: '13:00', end: '17:00' });
-  const [breakBydayHours, setBreakBydayHours] = useState<HoursByDay>(
-    Object.fromEntries(
-      daysOfWeekKor.map((day) => [day, { start: '13:00', end: '17:00', isClosed: false }]),
-    ) as HoursByDay,
-  );
+  const mapDayToKor = (day: string) =>
+    Object.entries(dayMapping).find(([, eng]) => eng === day)?.[0] || '';
+
+  const defaultBydayHours: HoursByDay = Object.fromEntries(
+    daysOfWeekKor.map((day) => {
+      const engDay = dayMapping[day];
+      const item = originValues?.dailyOperatingTimes?.find((d) => d.dayOfWeek === engDay);
+      return [
+        day,
+        {
+          start: toHHmm(item?.openTime) || '09:00',
+          end: toHHmm(item?.closeTime) || '22:00',
+          isClosed: !item || (!item.openTime && !item.closeTime),
+        },
+      ];
+    }),
+  ) as HoursByDay;
+
+  const defaultBreakBydayHours: HoursByDay = Object.fromEntries(
+    daysOfWeekKor.map((day) => {
+      const engDay = dayMapping[day];
+      const item = originValues?.dailyOperatingTimes?.find((d) => d.dayOfWeek === engDay);
+      return [
+        day,
+        {
+          start: toHHmm(item?.breakStartTime) || '13:00',
+          end: toHHmm(item?.breakEndTime) || '17:00',
+          isClosed: !item || (!item.breakStartTime && !item.breakEndTime),
+        },
+      ];
+    }),
+  ) as HoursByDay;
+
+  const [everydayHours, setEverydayHours] = useState(defaultEverydayHours);
+  const [bydayHours, setBydayHours] = useState<HoursByDay>(defaultBydayHours);
+  const [breakEverydayHours, setBreakEverydayHours] = useState(defaultBreakEverydayHours);
+  const [breakBydayHours, setBreakBydayHours] = useState<HoursByDay>(defaultBreakBydayHours);
 
   useEffect(() => {
     const times = DAY_OF_WEEK.map((day) => {
-      // 영업시간
       let openTime = '';
       let closeTime = '';
+      let breakStartTime = '';
+      let breakEndTime = '';
 
+      const originItem = originValues?.dailyOperatingTimes?.find((d) => d.dayOfWeek === day);
+
+      // 영업시간
       if (mode === 'same_everyday') {
         openTime = everydayHours.start;
         closeTime = everydayHours.end;
       } else if (mode === 'different_by_day') {
-        const korDay = Object.entries(dayMapping).find(([, eng]) => eng === day)?.[0];
-        if (korDay) {
-          openTime = bydayHours[korDay]?.start || '';
-          closeTime = bydayHours[korDay]?.end || '';
+        const korDay = mapDayToKor(day);
+        if (korDay && bydayHours[korDay]) {
+          openTime = bydayHours[korDay].start || '';
+          closeTime = bydayHours[korDay].end || '';
         }
       } else if (mode === 'open_24h') {
         openTime = '00:00';
@@ -73,27 +120,41 @@ export const BusinessHourForm = ({
       }
 
       // 휴게시간
-      let breakStartTime = '';
-      let breakEndTime = '';
       if (breakMode === 'same_everyday') {
         breakStartTime = breakEverydayHours.start;
         breakEndTime = breakEverydayHours.end;
       } else if (breakMode === 'different_by_day') {
-        const korDay = Object.entries(dayMapping).find(([, eng]) => eng === day)?.[0];
-        if (korDay) {
-          breakStartTime = breakBydayHours[korDay]?.start || '';
-          breakEndTime = breakBydayHours[korDay]?.end || '';
+        const korDay = mapDayToKor(day);
+        if (korDay && breakBydayHours[korDay]) {
+          breakStartTime = breakBydayHours[korDay].start || '';
+          breakEndTime = breakBydayHours[korDay].end || '';
         }
       } else if (breakMode === 'none') {
         breakStartTime = '';
         breakEndTime = '';
       }
 
-      return { dayOfWeek: day, openTime, closeTime, breakStartTime, breakEndTime };
+      return {
+        id: originItem?.id ?? 0,
+        dayOfWeek: day,
+        openTime,
+        closeTime,
+        breakStartTime,
+        breakEndTime,
+      };
     });
 
     setValue('dailyOperatingTimes', times);
-  }, [mode, everydayHours, bydayHours, breakMode, breakEverydayHours, breakBydayHours, setValue]);
+  }, [
+    mode,
+    breakMode,
+    everydayHours,
+    bydayHours,
+    breakEverydayHours,
+    breakBydayHours,
+    setValue,
+    originValues,
+  ]);
 
   return (
     <div className='flex flex-col gap-4 w-full'>
@@ -114,7 +175,7 @@ export const BusinessHourForm = ({
       <Card>
         <CardSubtitle label='휴게 시간을 알려주세요'>
           <BusinessHours
-            BreakMode={breakMode}
+            breakMode={breakMode}
             name='breakMode'
             type='breakTime'
             everydayHours={breakEverydayHours}

@@ -2,23 +2,24 @@ import { storeApi, StoreOperatingHourBody } from '@repo/api/ceo';
 import { queryKeys } from '@repo/api/configs/query-keys';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 
-type CreateStoreOperatingHourParams = {
+type ModifyStoreOperatingHourParams = {
+  id: number;
   storeId: number;
   body: StoreOperatingHourBody;
 };
 
-export const useCreateStoreOperatingHour = () => {
+export const useModifyStoreOperatingHour = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: ({ storeId, body }: CreateStoreOperatingHourParams) =>
-      storeApi.createStoreOperatingHour(storeId, body),
+    mutationFn: ({ storeId, id, body }: ModifyStoreOperatingHourParams) =>
+      storeApi.updateStoreOperatingHour(storeId, id, body),
 
-    mutationKey: [queryKeys.ceo.store.operatingHour, 'create'],
+    mutationKey: [queryKeys.ceo.store.operatingHour, 'update'],
 
     onSuccess: (_, variables) => {
       queryClient.invalidateQueries({
-        queryKey: [queryKeys.ceo.store.operatingHour, variables.storeId],
+        queryKey: [queryKeys.ceo.store.operatingHour, variables.id, variables.storeId],
       });
     },
   });
