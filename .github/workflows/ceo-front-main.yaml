@@ -34,7 +34,7 @@ jobs:
           file: ./apps/ceo-front/Dockerfile
           push: true
           tags: hyperrealitycorp/fooding-ceo-front-production
-          platforms: linux/amd64, linux/arm64/v8
+          platforms: linux/amd64
           build-args: |
             API_SERVER_URL=${{ secrets.API_SERVER_URL }}
             NEXT_PUBLIC_OAUTH_REDIRECT_URI=${{ secrets.CEO_NEXT_PUBLIC_OAUTH_REDIRECT_URI }}
