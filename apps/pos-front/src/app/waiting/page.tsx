@@ -1,7 +1,7 @@
 'use client';
 
-import { useState, type KeyboardEvent } from 'react';
 import { useRouter } from 'next/navigation';
+import { useState, type KeyboardEvent } from 'react';
 
 type TabType = 'waiting' | 'seated' | 'cancelled';
 

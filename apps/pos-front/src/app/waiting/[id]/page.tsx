@@ -1,7 +1,7 @@
 'use client';
 
-import type { ReactNode } from 'react';
 import { useRouter } from 'next/navigation';
+import type { ReactNode } from 'react';
 
 const waitingDetail = {
   callNumber: '2 [ 현장 ]',
