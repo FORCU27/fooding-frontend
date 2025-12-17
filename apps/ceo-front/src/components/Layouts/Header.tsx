@@ -85,6 +85,14 @@ const UserProfile = () => {
   return (
     <>
       <span className='text-[14px] font-semibold'>{me.name} 사장님</span>
+      <Link href='/my'>
+        <button
+          type='button'
+          className={`cursor-pointer text-[14px] font-semibold text-gray-5 transition-all`}
+        >
+          내 상점
+        </button>
+      </Link>
       <button
         type='button'
         onClick={handleLogoutClick}
