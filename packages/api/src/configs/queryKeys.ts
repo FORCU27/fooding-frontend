@@ -112,6 +112,7 @@ export const queryKeys = {
     },
     coupon: {
       infiniteList: 'userCouponInfiniteList',
+      summary: 'userCouponSummary',
     },
     bookmark: { list: 'userBookmarkList' },
     plan: { list: 'userPlanList', detail: 'userPlanDetail' },
