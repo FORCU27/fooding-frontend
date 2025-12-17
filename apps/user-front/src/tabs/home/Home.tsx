@@ -6,6 +6,7 @@ import { StoreCategory } from '@repo/api/user';
 import { ErrorFallback } from '@repo/design-system/components/b2c';
 import { ActivityComponentType, useFlow } from '@stackflow/react/future';
 import { ErrorBoundary, ErrorBoundaryFallbackProps } from '@suspensive/react';
+import { useSuspenseQueries } from '@tanstack/react-query';
 
 import { CategoryTabs } from './components/CategoryTabs';
 import { HomeLoadingFallback } from './components/HomeLoadingFallback';
@@ -13,13 +14,12 @@ import { MainStoreList } from './components/MainStoreList';
 import { LoadingToggle } from '@/components/Devtool/LoadingToggle';
 import BottomTab from '@/components/Layout/BottomTab';
 import { Divider } from '@/components/Layout/Divider';
-import { LoadingScreen } from '@/components/Layout/LoadingScreen';
 import { Screen } from '@/components/Layout/Screen';
 import { StoresList } from '@/components/Store/StoresList';
 import { usePreferredRegions } from '@/hooks/regions/usePreferredRegions';
-import { useGetPopularViewedStoreList } from '@/hooks/store/useGetPopularVeiwedStoreList';
-import { useGetStoreImmediateEntryList } from '@/hooks/store/useGetStoreImmediateEntryList';
-import { useGetStoreList } from '@/hooks/store/useGetStoreList';
+import { getPopularViewedStoreListQueryOptions } from '@/hooks/store/useGetPopularVeiwedStoreList';
+import { getStoreImmediateEntryListQueryOptions } from '@/hooks/store/useGetStoreImmediateEntryList';
+import { getStoreListQueryOptions } from '@/hooks/store/useGetStoreList';
 import { Header } from '@/tabs/home/components/Header';
 import { Toolbar } from '@/tabs/home/components/Toolbar';
 
@@ -80,47 +80,28 @@ type StoreSectionProps = {
 };
 
 const StoreSection = ({ selectedRegions, category }: StoreSectionProps) => {
-  const {
-    data: stores,
-    isPending: storePending,
-    isFetching: storeFetching,
-  } = useGetStoreList({
-    pageNum: 1,
-    pageSize: 10,
-    sortType: 'RECENT',
-    sortDirection: 'DESCENDING',
-    regionIds: selectedRegions.map((region) => region.id),
-    category: category ?? undefined,
-  });
-
-  const {
-    data: popularStores,
-    isPending: poppularStorePending,
-    isFetching: poppularStoreFetching,
-  } = useGetPopularViewedStoreList();
-
-  const {
-    data: immediateEntryStores,
-    isPending: immediateEntryStorePending,
-    isFetching: immediateEntryStoreFetching,
-  } = useGetStoreImmediateEntryList({
-    pageNum: 1,
-    pageSize: 10,
-    regionIds: selectedRegions.map((region) => region.id),
-    category: category ?? undefined,
-  });
+  const [{ data: stores }, { data: popularStores }, { data: immediateEntryStores }] =
+    useSuspenseQueries({
+      queries: [
+        getStoreListQueryOptions({
+          pageNum: 1,
+          pageSize: 10,
+          sortType: 'RECENT',
+          sortDirection: 'DESCENDING',
+          regionIds: selectedRegions.map((region) => region.id),
+          category: category ?? undefined,
+        }),
+        getPopularViewedStoreListQueryOptions(),
+        getStoreImmediateEntryListQueryOptions({
+          pageNum: 1,
+          pageSize: 10,
+          regionIds: selectedRegions.map((region) => region.id),
+          category: category ?? undefined,
+        }),
+      ],
+    });
 
   const flow = useFlow();
-
-  const isLoading =
-    storePending ||
-    storeFetching ||
-    poppularStorePending ||
-    poppularStoreFetching ||
-    immediateEntryStorePending ||
-    immediateEntryStoreFetching;
-
-  if (isLoading) return <LoadingScreen />;
 
   return (
     <>
