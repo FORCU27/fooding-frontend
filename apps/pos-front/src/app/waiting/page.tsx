@@ -568,7 +568,7 @@ function WaitingCancelDialog({ item, onClose, onConfirm }: WaitingCancelDialogPr
   const infoLine = `총 ${item.totalPeople}명 · 성인 ${item.adults} · 유아 ${item.children} - 유아용 의자 ${item.childSeats}`;
 
   const handleConfirm = () => {
-    onConfirm?.({ reason: selectedReason, memo });
+    onConfirm?.({ reason: selectedReason!, memo });
     onClose();
   };
 
