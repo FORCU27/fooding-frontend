@@ -30,7 +30,7 @@ type ChangePasswordFormFields = z.infer<typeof changePasswordFormSchema>;
 
 const ChangePasswordForm = () => {
   const searchParams = useSearchParams();
-  const encodedLine = searchParams.get('key') || ''; // https://ceo.fooding.im/change-password?key=xxxx
+  const encodedLine = searchParams.get('encodedLine') || ''; // https://ceo.fooding.im/change-password?encodedLine=xxxx
   const router = useRouter();
 
   const [showPassword, setShowPassword] = useState(false);
