@@ -21,8 +21,9 @@ const AppBarSection = ({ handleDrawerToggle }: AppBarSectionProps) => {
 
   // 경로에 따라 활성 탭 결정
   const getActiveTab = (): TabType => {
-    if (pathname === '/reward') return '리워드';
-    if (pathname === '/waiting') return '웨이팅';
+    if (!pathname) return '주문';
+    if (pathname.startsWith('/reward')) return '리워드';
+    if (pathname.startsWith('/waiting')) return '웨이팅';
     return '주문';
   };
 
