@@ -20,6 +20,7 @@ export const deviceApi = {
     size: number = 10,
     storeId: number,
     searchString?: string,
+    sortType?: 'RECENT' | 'OLD',
   ) => {
     const params = new URLSearchParams({
       pageNum: page.toString(),
@@ -32,6 +33,10 @@ export const deviceApi = {
 
     if (searchString) {
       params.append('searchString', searchString);
+    }
+
+    if (sortType) {
+      params.append('sortType', sortType);
     }
 
     const response = await api.get(`${ENDPOINT}?${params.toString()}`);
@@ -49,6 +54,7 @@ export const deviceApi = {
     pageSize = 10,
     searchString,
     serviceType,
+    sortType,
   }: GetDeviceLogsParams) => {
     const params = new URLSearchParams({
       deviceId: deviceId.toString(),
@@ -62,6 +68,10 @@ export const deviceApi = {
 
     if (serviceType) {
       params.append('serviceType', serviceType);
+    }
+
+    if (sortType) {
+      params.append('sortType', sortType);
     }
 
     const response = await api.get(`${ENDPOINT}/logs?${params.toString()}`);

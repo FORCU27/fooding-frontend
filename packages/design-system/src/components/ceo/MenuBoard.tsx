@@ -54,6 +54,7 @@ type MenuBoardProps = {
   selectedCategoryId?: string | null;
   onEditMenuItem?: (categoryId: string, itemId: string) => void;
   onDeleteMenuItem?: (categoryId: string, itemId: string) => void;
+  onItemsReorder?: (categoryId: string, itemIds: string[]) => void;
 };
 
 const SortableCategory = ({ category, index, onDoubleClick }: { category: Category; index: number; onDoubleClick?: () => void }) => {
@@ -239,7 +240,7 @@ const SortableMenuItem = ({
         <div className='text-sm text-gray-500'>{item.description}</div>
       </div>
 
-      <div className='text-orange-600 font-semibold'>{item.price.toLocaleString()}원</div>
+      <div className='text-orange-600 font-semibold'>{item.price.toLocaleString() === '0' ? '변동가격' : item.price.toLocaleString()+'원'}</div>
 
       <DropdownMenu>
         <DropdownMenu.Trigger asChild>
@@ -271,6 +272,7 @@ export const MenuBoard = ({
   selectedCategoryId: externalSelectedCategoryId,
   onEditMenuItem,
   onDeleteMenuItem,
+  onItemsReorder,
 }: MenuBoardProps) => {
   const [categories, setCategories] = useState<Category[]>(initialCategories);
   const [activeId, setActiveId] = useState<string | null>(null);
@@ -386,6 +388,10 @@ export const MenuBoard = ({
     );
     setCategories(newCategories);
     onCategoriesChange(newCategories);
+    
+    // 메뉴 아이템 정렬 API 호출
+    const itemIds = items.map((item) => item.id);
+    onItemsReorder?.(categoryId, itemIds);
   };
 
   const activeCategory = activeId ? categories.find((cat) => cat.id === activeId) : null;

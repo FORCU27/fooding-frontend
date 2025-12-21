@@ -7,6 +7,8 @@ import {
   UpdateMenuBody,
   UpdateMenuResponse,
   MenuItem,
+  SortMenusBody,
+  SortMenusResponse,
 } from './type';
 import { api } from '../../shared';
 
@@ -40,6 +42,12 @@ export const menuApi = {
   // 메뉴 삭제
   deleteMenu: async (id: number): Promise<void> => {
     await api.delete(`${ENDPOINT}/${id}`);
+  },
+
+  // 메뉴 정렬
+  sortMenus: async (body: SortMenusBody): Promise<SortMenusResponse> => {
+    const response = await api.post<SortMenusResponse>(`${ENDPOINT}/sort`, body);
+    return response;
   },
 };
 

@@ -7,12 +7,13 @@ interface UseGetDevicesParams {
   pageNum: number;
   pageSize: number;
   searchString?: string;
+  sortType?: 'RECENT' | 'OLD';
 }
 
-export const useGetDevices = ({ storeId, pageNum, pageSize, searchString }: UseGetDevicesParams) => {
+export const useGetDevices = ({ storeId, pageNum, pageSize, searchString, sortType }: UseGetDevicesParams) => {
   return useQuery({
-    queryKey: [queryKeys.ceo.devices, storeId, pageNum, pageSize, searchString],
-    queryFn: () => deviceApi.getCeoDeviceList(pageNum, pageSize, storeId!, searchString),
+    queryKey: [queryKeys.ceo.devices, storeId, pageNum, pageSize, searchString, sortType],
+    queryFn: () => deviceApi.getCeoDeviceList(pageNum, pageSize, storeId!, searchString, sortType),
     enabled: !!storeId,
   });
 };
