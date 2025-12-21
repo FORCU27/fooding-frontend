@@ -66,6 +66,16 @@ const PhotoPage = () => {
   const editImage = useEditImage();
   const registerMainImage = useRegisterMainImage();
 
+  const handleChangeTag = (tag: ImageTag | null) => {
+    setParams((prev) => ({
+      ...prev,
+      tag,
+      page: 1,
+    }));
+
+    setSelectedTags(tag ? [tag] : []);
+  };
+
   // 파일 추가 버튼 클릭
   const handleAddImage = () => {
     fileInputRef.current?.click();
@@ -86,7 +96,7 @@ const PhotoPage = () => {
 
       await createImage.mutateAsync({
         storeId,
-        body: { imageId },
+        body: { imageId, tags: selectedTags },
       });
       toast.success('이미지가 업로드되었습니다.');
     } catch {
@@ -162,7 +172,7 @@ const PhotoPage = () => {
               sortType={params.sortType}
               tag={params.tag}
               onChangeSort={(sort) => setParams((prev) => ({ ...prev, sortType: sort, page: 1 }))}
-              onChangeTag={(tag) => setParams((prev) => ({ ...prev, tag, page: 1 }))}
+              onChangeTag={handleChangeTag}
             />
           </div>
 
@@ -192,7 +202,11 @@ const PhotoPage = () => {
                   },
                   {
                     onSuccess: () => {
-                      toast.success(isMain ? '대표 사진으로 설정되었습니다.' : '대표 사진 설정이 해제되었습니다.');
+                      toast.success(
+                        isMain
+                          ? '대표 사진으로 설정되었습니다.'
+                          : '대표 사진 설정이 해제되었습니다.',
+                      );
                     },
                     onError: () => {
                       toast.error('대표 사진 설정에 실패했습니다.');

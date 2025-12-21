@@ -34,6 +34,7 @@ const ChangePasswordForm = () => {
   const router = useRouter();
 
   const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const form = useForm<ChangePasswordFormFields>({
     resolver: zodResolver(changePasswordFormSchema),
@@ -94,11 +95,20 @@ const ChangePasswordForm = () => {
             name='confirmPassword'
             control={form.control}
             render={({ field }) => (
-              <Input
-                aria-invalid={!!form.formState.errors.confirmPassword}
-                type={'password'}
-                {...field}
-              />
+              <div className='relative'>
+                <Input
+                  aria-invalid={!!form.formState.errors.confirmPassword}
+                  type={showConfirmPassword ? 'text' : 'password'}
+                  {...field}
+                />
+                <button
+                  type='button'
+                  onClick={() => setShowConfirmPassword((prev) => !prev)}
+                  className='absolute right-5 top-1/2 -translate-y-1/2 text-gray-5 cursor-pointer hover:text-gray-6'
+                >
+                  {showConfirmPassword ? <EyeOnIcon /> : <EyeOffIcon />}
+                </button>
+              </div>
             )}
           />
           {form.formState.errors.confirmPassword && (

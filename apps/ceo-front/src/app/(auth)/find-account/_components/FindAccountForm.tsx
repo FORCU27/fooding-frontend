@@ -105,7 +105,7 @@ const FindAccountForm = () => {
   const isSendBtnDisabled = !(nameValue && phoneValue);
 
   return (
-    <main className='w-[450px]'>
+    <main className='min-w-[450px]'>
       <h1 className='headline-2'>아이디 · 비밀번호 찾기</h1>
 
       {verified ? (
