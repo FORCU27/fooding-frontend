@@ -54,6 +54,7 @@ export type GetDeviceLogsParams = {
   pageSize?: number;
   searchString?: string;
   serviceType?: string;
+  sortType?: 'RECENT' | 'OLD';
 };
 
 export type ChangeDeviceServiceParams = {

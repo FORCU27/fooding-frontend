@@ -408,7 +408,7 @@ const BasicInfoPage = () => {
         </CardSubtitle>
       </Card>
       <Card>
-        <CardSubtitle label='찾아오시는 길'>
+        <CardSubtitle label='찾아오시는 길' required>
           <TextArea
             id='direction'
             rows={3}

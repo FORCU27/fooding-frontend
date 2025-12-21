@@ -95,3 +95,14 @@ export type UpdateMenuResponse = {
   status: string;
   data: MenuItem;
 };
+
+// 메뉴 정렬 요청 바디
+export type SortMenusBody = {
+  menuIds: number[];
+};
+
+// 메뉴 정렬 응답 타입
+export type SortMenusResponse = {
+  status: string;
+  data: null;
+};
