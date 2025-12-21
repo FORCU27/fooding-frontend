@@ -36,12 +36,18 @@ export const storeApi = {
     const response = await api.get(`${ENDPOINT}/${id}`, config);
     return GetStoreResponse.parse(response);
   },
-  getStoreOperatingHour: async (id: number) => {
-    const response = await api.get(`${ENDPOINT}/${id}/operating-hour`);
+  getStoreOperatingHour: async (storeId: number) => {
+    const response = await api.get(`${ENDPOINT}/${storeId}/operating-hour`);
     return GetStoreOperatingHourResponse.parse(response);
   },
-  createStoreOperatingHour: async (id: number, body: StoreOperatingHourBody) => {
-    await api.post(`${ENDPOINT}/${id}/operating-hour`, body);
+  createStoreOperatingHour: async (storeId: number, body: StoreOperatingHourBody) => {
+    await api.post(`${ENDPOINT}/${storeId}/operating-hour`, body);
+  },
+  updateStoreOperatingHour: async (storeId: number, id: number, body: StoreOperatingHourBody) => {
+    await api.put(`${ENDPOINT}/${storeId}/operating-hour/${id}`, body);
+  },
+  deleteStoreOperatingHour: async (storeId: number, id: number) => {
+    await api.delete(`${ENDPOINT}/${storeId}/operating-hour/${id}`);
   },
   getStorePointShopList: async (storeId: string, query: PointShopQuery) => {
     const response = await api.get(`${ENDPOINT}/${storeId}/point-shop`, {

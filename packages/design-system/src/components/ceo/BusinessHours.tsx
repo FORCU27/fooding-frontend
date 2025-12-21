@@ -1,7 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 'use client';
 
-import { useState, Dispatch, SetStateAction } from 'react';
+import { useState, Dispatch, SetStateAction, useEffect } from 'react';
+
+import { MinusCircle, PlusIcon } from 'lucide-react';
 
 import { Checkbox } from './Checkbox';
 import RadioButtonGroup from './RadioButtonGroup';
@@ -12,15 +14,48 @@ export type BreakMode = 'same_everyday' | 'different_by_day' | 'none';
 export type DayHours = { start: string; end: string; isClosed: boolean };
 export type HoursByDay = { [day: string]: DayHours };
 
+export interface DailyOperatingTime {
+  id: number;
+  dayOfWeek: string;
+  openTime: string | null;
+  closeTime: string | null;
+  breakStartTime: string | null;
+  breakEndTime: string | null;
+}
+
+export interface StoreOperatingHourBody {
+  regularHolidayType: string | null;
+  regularHoliday: string | null;
+  closedNationalHolidays: string[];
+  hasHoliday: boolean;
+  customHolidays: string[];
+  operatingNotes: string;
+  dailyOperatingTimes: DailyOperatingTime[];
+}
+
+const dayMapping: Record<string, string> = {
+  월: 'MONDAY',
+  화: 'TUESDAY',
+  수: 'WEDNESDAY',
+  목: 'THURSDAY',
+  금: 'FRIDAY',
+  토: 'SATURDAY',
+  일: 'SUNDAY',
+};
+
+const mapKorDay = (korDay: string) => dayMapping[korDay];
+
 const daysOfWeek = ['월', '화', '수', '목', '금', '토', '일'];
 
 export interface BusinessHoursProps {
   mode?: OperatingMode;
-  BreakMode?: BreakMode;
+  breakMode?: BreakMode;
   type?: 'operating' | 'breakTime';
   name?: string;
+  hasAddButton?: boolean;
   everydayHours?: { start: string; end: string };
   bydayHours?: HoursByDay;
+  originValues?: StoreOperatingHourBody;
   onModeChange?: Dispatch<SetStateAction<OperatingMode>>;
   onBreakModeChange?: Dispatch<SetStateAction<BreakMode>>;
   onEverydayHoursChange?: Dispatch<SetStateAction<{ start: string; end: string }>>;
@@ -29,9 +64,11 @@ export interface BusinessHoursProps {
 
 export const BusinessHours = ({
   mode: externalMode,
-  BreakMode: externalBreakMode,
+  breakMode: externalBreakMode,
   name,
   type = 'operating',
+  hasAddButton = false,
+  originValues,
   everydayHours: externalEverydayHours,
   bydayHours: externalBydayHours,
   onModeChange,
@@ -63,6 +100,32 @@ export const BusinessHours = ({
   const bydayHours = externalBydayHours ?? defaultBydayHours;
   const setEverydayHours = onEverydayHoursChange ?? setDefaultEverydayHours;
   const setBydayHours = onBydayHoursChange ?? setDefaultBydayHours;
+  const [everydayHoursList, setEverydayHoursList] = useState<{ start: string; end: string }[]>([
+    { start: '', end: '' },
+  ]);
+
+  useEffect(() => {
+    if (!originValues) return;
+
+    // 영업시간 초기값
+    if (mode === 'same_everyday') {
+      setDefaultEverydayHours({
+        start: originValues.dailyOperatingTimes[0]?.openTime ?? '09:00',
+        end: originValues.dailyOperatingTimes[0]?.closeTime ?? '22:00',
+      });
+    } else if (mode === 'different_by_day') {
+      const newBydayHours: HoursByDay = {};
+      daysOfWeek.forEach((day) => {
+        const item = originValues.dailyOperatingTimes.find((d) => mapKorDay(day) === d.dayOfWeek);
+        newBydayHours[day] = {
+          start: item?.openTime ?? '09:00',
+          end: item?.closeTime ?? '22:00',
+          isClosed: item?.openTime === null || item?.closeTime === null,
+        };
+      });
+      setDefaultBydayHours(newBydayHours);
+    }
+  }, [originValues, mode]);
 
   const handleDayOffToggle = (day: string) => {
     setBydayHours((prev) => ({
@@ -81,6 +144,10 @@ export const BusinessHours = ({
       ...prev,
       [day]: { ...prev[day]!, [type]: time },
     }));
+  };
+
+  const handleAddHours = () => {
+    setEverydayHoursList((prev) => [...prev, { start: '', end: '' }]);
   };
 
   const options =
@@ -106,19 +173,68 @@ export const BusinessHours = ({
       />
 
       <div className='mt-6'>
-        {mode === 'same_everyday' && (
-          <div className='flex items-center gap-4'>
-            <TimePicker
-              value={everydayHours.start}
-              onChange={(start) => setEverydayHours((prev) => ({ ...prev, start }))}
-            />
-            <span>~</span>
-            <TimePicker
-              value={everydayHours.end}
-              onChange={(end) => setEverydayHours((prev) => ({ ...prev, end }))}
-            />
-          </div>
-        )}
+        {mode === 'same_everyday' &&
+          (hasAddButton ? (
+            /* 여러 시간대 */
+            <div className='flex flex-col gap-2 w-full items-center'>
+              {everydayHoursList.map((hours, index) => (
+                <div key={index} className='flex items-center gap-4 w-full'>
+                  <TimePicker
+                    value={hours.start}
+                    onChange={(start) =>
+                      setEverydayHoursList((prev) =>
+                        prev.map((h, i) => (i === index ? { ...h, start } : h)),
+                      )
+                    }
+                  />
+                  <span>~</span>
+                  <TimePicker
+                    value={hours.end}
+                    onChange={(end) =>
+                      setEverydayHoursList((prev) =>
+                        prev.map((h, i) => (i === index ? { ...h, end } : h)),
+                      )
+                    }
+                  />
+                  {index !== 0 && (
+                    <button
+                      type='button'
+                      onClick={() =>
+                        setEverydayHoursList((prev) => prev.filter((_, i) => i !== index))
+                      }
+                      className='text-red-500 hover:cursor-pointer'
+                    >
+                      <MinusCircle />
+                    </button>
+                  )}
+                </div>
+              ))}
+
+              <button
+                type='button'
+                onClick={handleAddHours}
+                className='body-2 text-fooding-purple flex items-center gap-1 mt-2'
+              >
+                <div className='w-5 h-5 bg-[#6366F1]/5 flex justify-center items-center rounded-full'>
+                  <PlusIcon />
+                </div>
+                <span>추가</span>
+              </button>
+            </div>
+          ) : (
+            /* 단일 시간 */
+            <div className='flex items-center gap-4'>
+              <TimePicker
+                value={everydayHours.start}
+                onChange={(start) => setEverydayHours((prev) => ({ ...prev, start }))}
+              />
+              <span>~</span>
+              <TimePicker
+                value={everydayHours.end}
+                onChange={(end) => setEverydayHours((prev) => ({ ...prev, end }))}
+              />
+            </div>
+          ))}
 
         {mode === 'different_by_day' && (
           <ul className='space-y-4'>
@@ -127,12 +243,9 @@ export const BusinessHours = ({
               if (!dayInfo) return null;
               return (
                 <li key={day} className='flex items-center gap-6'>
-                  <span className='w-8 font-medium'>{day}</span>
-                  <Checkbox
-                    labelText='휴무'
-                    checked={dayInfo.isClosed}
-                    onChange={() => handleDayOffToggle(day)}
-                  />
+                  <div className='flex justify-center items-center border border-gray-3 w-[54px] h-[58px] rounded-lg font-medium'>
+                    {day}
+                  </div>
                   <div className='flex flex-1 items-center gap-4'>
                     <TimePicker
                       value={dayInfo.start}
@@ -146,6 +259,11 @@ export const BusinessHours = ({
                       disabled={dayInfo.isClosed}
                     />
                   </div>
+                  <Checkbox
+                    labelText='휴무'
+                    checked={dayInfo.isClosed}
+                    onChange={() => handleDayOffToggle(day)}
+                  />
                 </li>
               );
             })}
