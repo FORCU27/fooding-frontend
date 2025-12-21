@@ -185,7 +185,7 @@ const SearchResult = ({ sort, keyword, regionIds }: SearchResultProps) => {
             reviewCount: store.reviewCount,
             estimatedWaitingTimeMinutes: store.estimatedWaitingTimeMinutes,
             address: store.address,
-            imageUrls: store.images.map((image) => image.imageUrl),
+            imageUrls: store.images.slice(0, 3).map((image) => image.imageUrl),
           }}
         />
       ))}

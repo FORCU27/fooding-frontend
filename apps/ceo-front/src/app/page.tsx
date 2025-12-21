@@ -32,9 +32,27 @@ export default function PortalLandingPage() {
   const posts = postsData?.list ?? [];
 
   const serviceItems = [
-    { icon: '👥', title: '웨이팅', color: 'text-blue-600', iconBg: 'bg-blue-100', path: '/my' },
-    { icon: '📖', title: '예약', color: 'text-green-600', iconBg: 'bg-green-100', path: '/my' },
-    { icon: '⭐', title: '리워드', color: 'text-yellow-600', iconBg: 'bg-yellow-100', path: '/my' },
+    {
+      icon: '👥',
+      title: '웨이팅',
+      color: 'text-blue-600',
+      iconBg: 'bg-blue-100',
+      path: 'https://www.notion.so/fooding-cs/FOODING-2b46b89156ba80c0a642d2c92949e178',
+    },
+    {
+      icon: '📖',
+      title: '예약',
+      color: 'text-green-600',
+      iconBg: 'bg-green-100',
+      path: 'https://fooding-cs.notion.site/FOODING-2b46b89156ba8079a645e3c879542f30',
+    },
+    {
+      icon: '⭐',
+      title: '리워드',
+      color: 'text-yellow-600',
+      iconBg: 'bg-yellow-100',
+      path: 'https://notion.so/FOODING-2716b89156ba81afb318ffe102e3573f?pvs=25',
+    },
   ];
 
   const appDownloads = [
@@ -138,6 +156,11 @@ export default function PortalLandingPage() {
               {isLoggedIn ? (
                 <div className='flex items-center space-x-3'>
                   <span className='text-sm text-gray-600'>{me.name} 사장님</span>
+                  <Link href='/my'>
+                    <button className='px-6 h-10 rounded-md border border-gray-200 text-gray-800 hover:border-red-300 hover:text-red-600 transition-colors'>
+                      내 상점
+                    </button>
+                  </Link>
                   <button
                     onClick={async () => {
                       const response = await fetch('/api/auth/logout', {
@@ -229,7 +252,12 @@ export default function PortalLandingPage() {
               <div className='p-6'>
                 <div className='grid grid-cols-2 md:grid-cols-3 gap-6'>
                   {serviceItems.map((item) => (
-                    <Link key={item.title} href={item.path}>
+                    <a
+                      key={item.title}
+                      href={item.path}
+                      target='_blank'
+                      rel='noopener noreferrer'
+                    >
                       <div className='flex flex-col items-center gap-4 p-6 bg-gray-50 rounded-lg border border-gray-200 hover:border-red-300 hover:shadow-sm transition-all cursor-pointer'>
                         <div
                           className={`w-14 h-14 rounded-full ${item.iconBg} flex items-center justify-center text-2xl`}
@@ -238,7 +266,7 @@ export default function PortalLandingPage() {
                         </div>
                         <span className='font-medium text-gray-700'>{item.title}</span>
                       </div>
-                    </Link>
+                    </a>
                   ))}
                 </div>
               </div>
@@ -361,20 +389,27 @@ export default function PortalLandingPage() {
                       <p className='text-sm text-gray-600'>{me.email}</p>
                     </div>
                   </div>
-                  <button
-                    onClick={async () => {
-                      const response = await fetch('/api/auth/logout', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                      });
-                      if (response.ok) {
-                        window.location.href = '/';
-                      }
-                    }}
-                    className='w-full h-10 rounded-md border border-gray-300 text-gray-700 hover:border-red-300 hover:text-red-600 transition-colors'
-                  >
-                    로그아웃
-                  </button>
+                  <div className='flex gap-2'>
+                    <Link href='/my' className='flex-1'>
+                      <button className='w-full h-10 rounded-md border border-gray-300 text-gray-700 hover:border-red-300 hover:text-red-600 transition-colors'>
+                        내 상점
+                      </button>
+                    </Link>
+                    <button
+                      onClick={async () => {
+                        const response = await fetch('/api/auth/logout', {
+                          method: 'POST',
+                          headers: { 'Content-Type': 'application/json' },
+                        });
+                        if (response.ok) {
+                          window.location.href = '/';
+                        }
+                      }}
+                      className='flex-1 h-10 rounded-md border border-gray-300 text-gray-700 hover:border-red-300 hover:text-red-600 transition-colors'
+                    >
+                      로그아웃
+                    </button>
+                  </div>
                 </div>
               </div>
             ) : (
@@ -436,36 +471,6 @@ export default function PortalLandingPage() {
                 </div>
               </div>
             ))}
-
-            {/* 서비스 신청 */}
-            <div className='border border-gray-200 rounded-lg bg-white shadow-sm'>
-              <div className='p-6 border-b border-gray-100'>
-                <div className='flex items-center gap-3'>
-                  <div className='w-8 h-8 bg-red-500 rounded-lg flex items-center justify-center text-white text-sm'>
-                    📝
-                  </div>
-                  <h3 className='text-lg font-semibold text-gray-900'>서비스 신청</h3>
-                </div>
-              </div>
-              <div className='p-6'>
-                <p className='text-sm text-gray-600 mb-4'>
-                  {isLoggedIn
-                    ? '새로운 매장을 등록하고 Fooding 서비스를 시작하세요'
-                    : '로그인 후 새로운 매장을 등록하고 Fooding 서비스를 시작하세요'}
-                </p>
-                {isLoggedIn ? (
-                  <button className='w-full h-10 rounded-md bg-red-500 text-white hover:bg-red-600 transition-colors'>
-                    서비스 신청하기
-                  </button>
-                ) : (
-                  <Link href='/login'>
-                    <button className='w-full h-10 rounded-md bg-red-500 text-white hover:bg-red-600 transition-colors'>
-                      로그인 후 신청하기
-                    </button>
-                  </Link>
-                )}
-              </div>
-            </div>
           </div>
         </div>
       </main>
@@ -522,7 +527,7 @@ export default function PortalLandingPage() {
               <div>
                 <h3 className='text-lg font-semibold text-white mb-4'>주요 서비스</h3>
                 <div className='space-y-2'>
-                  {['사장님 앱', '웨이팅', '예약', '쿠폰관리', '매출분석', '고객관리'].map(
+                  {['사장님 앱'].map(
                     (link) => (
                       <a
                         key={link}

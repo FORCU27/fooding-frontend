@@ -1,10 +1,12 @@
 import z from 'zod/v4';
 
 import { PageResponse } from '../../shared';
-import { StoreImage } from '../stores';
+import { STORE_CATEGORIES, StoreImage } from '../stores';
 
 export type Bookmark = z.infer<typeof Bookmark>;
 export const Bookmark = z.object({
+  address: z.string().optional(),
+  category: z.enum(STORE_CATEGORIES),
   averageRating: z.number(),
   bookmarkCount: z.number(),
   estimatedWaitingTimeMinutes: z.number().nullable(),

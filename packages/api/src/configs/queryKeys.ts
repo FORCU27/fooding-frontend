@@ -101,6 +101,7 @@ export const queryKeys = {
       rewardList: 'userStoreRewardList',
       searchInfiniteStoreList: 'userSearchInfiniteStoreList',
       recentlyViewedStores: 'recently-viewed-stores',
+      popularViewedStores: 'poplular-viewed-stores',
     },
     storePost: {
       list: 'userStorePostList',
@@ -112,6 +113,7 @@ export const queryKeys = {
     },
     coupon: {
       infiniteList: 'userCouponInfiniteList',
+      summary: 'userCouponSummary',
     },
     bookmark: { list: 'userBookmarkList' },
     plan: { list: 'userPlanList', detail: 'userPlanDetail' },

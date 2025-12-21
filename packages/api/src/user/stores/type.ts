@@ -77,6 +77,7 @@ export type Store = z.infer<typeof Store>;
 export const Store = z.object({
   id: z.number(),
   name: z.string(),
+  address: z.string().optional(),
   visitCount: z.number(),
   reviewCount: z.number(),
   averageRating: z.number(),
@@ -84,7 +85,10 @@ export const Store = z.object({
   isBookmarked: z.boolean(),
   isFinished: z.boolean(),
   category: z.enum(STORE_CATEGORIES),
-  images: z.array(StoreImage).nullable(),
+  images: z
+    .array(StoreImage)
+    .nullable()
+    .transform((val) => val ?? []),
 });
 
 export const StationInfo = z.object({
@@ -310,13 +314,17 @@ export const SearchStoreListResponse = PageResponse(
     isFinished: z.boolean(),
     address: z.string(),
     images: z
-      .object({
-        id: z.number(),
-        imageUrl: z.string(),
-        sortOrder: z.number(),
-        tags: z.array(z.string()).nullable(),
-      })
-      .array(),
+      .array(
+        z.object({
+          id: z.number(),
+          imageUrl: z.string(),
+          sortOrder: z.number(),
+          tags: z.array(z.string()).nullable(),
+          isMain: z.boolean().optional(),
+        }),
+      )
+      .nullable()
+      .transform((val) => val ?? []),
     category: z.enum(STORE_CATEGORIES),
   }),
 );

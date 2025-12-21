@@ -13,6 +13,7 @@ import {
 } from '@repo/design-system/icons';
 import { ActivityComponentType, useFlow } from '@stackflow/react/future';
 import { ErrorBoundary, ErrorBoundaryFallbackProps, Suspense } from '@suspensive/react';
+import { useSuspenseQueries } from '@tanstack/react-query';
 
 import { LoadingToggle } from '@/components/Devtool/LoadingToggle';
 import BottomTab from '@/components/Layout/BottomTab';
@@ -21,11 +22,11 @@ import { LoadingScreen } from '@/components/Layout/LoadingScreen';
 import { Screen } from '@/components/Layout/Screen';
 import { useAuth } from '@/components/Provider/AuthProvider';
 import { StoresList } from '@/components/Store/StoresList';
-import { useGetBookmarkList } from '@/hooks/bookmark/useGetBookmarkList';
-import { useGetInfiniteMyCouponList } from '@/hooks/coupon/useGetMyCouponList';
-import { useGetMyReviewList } from '@/hooks/review/useGetMyReviewList';
-import { useGetRewardPersonalLog } from '@/hooks/reward/useGetRewardPersonalLog';
-import { useGetRecentlyViewedStoreList } from '@/hooks/store/useGetRecentlyViewedStoreList';
+import { getBookmarkListQueryOptions } from '@/hooks/bookmark/useGetBookmarkList';
+import { getMyCouponSummaryQueryOptions } from '@/hooks/coupon/useGetMyCouponList';
+import { getMyReviewListQueryOptions } from '@/hooks/review/useGetMyReviewList';
+import { getRewardPersonalLogQueryOptions } from '@/hooks/reward/useGetRewardPersonalLog';
+import { getRecentlyViewedStoreListQueryOptions } from '@/hooks/store/useGetRecentlyViewedStoreList';
 import { BookmarkCard } from '@/tabs/my-page/components/BookmarkCard';
 
 const dummy = {
@@ -71,23 +72,29 @@ const Content = () => {
 
   const flow = useFlow();
 
-  const { data: bookmarks } = useGetBookmarkList({
-    pageNum: 1,
-    pageSize: 5,
+  const [
+    { data: bookmarks },
+    { data: couponSummary },
+    { data: myReviews },
+    { data: reward },
+    { data: recentlyViewedStores },
+  ] = useSuspenseQueries({
+    queries: [
+      getBookmarkListQueryOptions({
+        pageNum: 1,
+        pageSize: 5,
+      }),
+      getMyCouponSummaryQueryOptions({ used: false }),
+      getMyReviewListQueryOptions({
+        sortType: 'RECENT',
+        sortDirection: 'DESCENDING',
+        pageNum: 1,
+        pageSize: 1, // 개수만 필요하므로 1개만 조회
+      }),
+      getRewardPersonalLogQueryOptions(),
+      getRecentlyViewedStoreListQueryOptions(),
+    ],
   });
-
-  const { coupons } = useGetInfiniteMyCouponList({ used: false });
-
-  const { data: myReviews } = useGetMyReviewList({
-    sortType: 'RECENT',
-    sortDirection: 'DESCENDING',
-    pageNum: 1,
-    pageSize: 1, // 개수만 필요하므로 1개만 조회
-  });
-
-  const { data: reward } = useGetRewardPersonalLog();
-
-  const { data: recentlyViewedStores } = useGetRecentlyViewedStoreList();
 
   return (
     <div className='w-full'>
@@ -151,7 +158,7 @@ const Content = () => {
           >
             <TicketIcon />
             <p className='body-7 text-gray-5'>쿠폰</p>
-            <p className='subtitle-6'>{coupons && coupons.length}장</p>
+            <p className='subtitle-6'>{couponSummary.pageInfo.totalCount}장</p>
           </div>
           <hr className='w-[2px] h-[81px] bg-gray-2 text-gray-2 mx-2' />
           <div

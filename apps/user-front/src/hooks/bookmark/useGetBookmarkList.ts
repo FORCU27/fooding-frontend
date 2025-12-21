@@ -1,9 +1,9 @@
 import { queryKeys } from '@repo/api/configs/query-keys';
 import { bookmarkApi, GetBookmarkStoreListParams } from '@repo/api/user';
-import { useSuspenseQuery } from '@tanstack/react-query';
+import { queryOptions, useSuspenseQuery } from '@tanstack/react-query';
 
-export const useGetBookmarkList = (params?: GetBookmarkStoreListParams) => {
-  return useSuspenseQuery({
+export const getBookmarkListQueryOptions = (params?: GetBookmarkStoreListParams) =>
+  queryOptions({
     queryKey: [queryKeys.user.bookmark.list, params],
     queryFn: async () => {
       const response = await bookmarkApi.getBookmarkedStoreList({
@@ -12,4 +12,7 @@ export const useGetBookmarkList = (params?: GetBookmarkStoreListParams) => {
       return response.data;
     },
   });
+
+export const useGetBookmarkList = (params?: GetBookmarkStoreListParams) => {
+  return useSuspenseQuery(getBookmarkListQueryOptions(params));
 };

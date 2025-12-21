@@ -6,20 +6,20 @@ import { StoreCategory } from '@repo/api/user';
 import { ErrorFallback } from '@repo/design-system/components/b2c';
 import { ActivityComponentType, useFlow } from '@stackflow/react/future';
 import { ErrorBoundary, ErrorBoundaryFallbackProps } from '@suspensive/react';
+import { useSuspenseQueries } from '@tanstack/react-query';
 
-import { Banner } from './components/Banner';
 import { CategoryTabs } from './components/CategoryTabs';
 import { HomeLoadingFallback } from './components/HomeLoadingFallback';
 import { MainStoreList } from './components/MainStoreList';
 import { LoadingToggle } from '@/components/Devtool/LoadingToggle';
 import BottomTab from '@/components/Layout/BottomTab';
 import { Divider } from '@/components/Layout/Divider';
-import { LoadingScreen } from '@/components/Layout/LoadingScreen';
 import { Screen } from '@/components/Layout/Screen';
 import { StoresList } from '@/components/Store/StoresList';
 import { usePreferredRegions } from '@/hooks/regions/usePreferredRegions';
-import { useGetStoreImmediateEntryList } from '@/hooks/store/useGetStoreImmediateEntryList';
-import { useGetStoreList } from '@/hooks/store/useGetStoreList';
+import { getPopularViewedStoreListQueryOptions } from '@/hooks/store/useGetPopularVeiwedStoreList';
+import { getStoreImmediateEntryListQueryOptions } from '@/hooks/store/useGetStoreImmediateEntryList';
+import { getStoreListQueryOptions } from '@/hooks/store/useGetStoreList';
 import { Header } from '@/tabs/home/components/Header';
 import { Toolbar } from '@/tabs/home/components/Toolbar';
 
@@ -64,7 +64,7 @@ const ContentBody = () => {
         onSelectedRegionsChange={changePreferredRegions}
       />
       <div className='bg-white mb-3'>
-        <Banner />
+        {/* <Banner /> */}
         <CategoryTabs category={category} onCategoryChange={setCategory} />
         <Suspense>
           <StoreSection selectedRegions={preferredRegions} category={category} />
@@ -80,54 +80,28 @@ type StoreSectionProps = {
 };
 
 const StoreSection = ({ selectedRegions, category }: StoreSectionProps) => {
-  const {
-    data: stores,
-    isPending: storePending,
-    isFetching: storeFetching,
-  } = useGetStoreList({
-    pageNum: 1,
-    pageSize: 10,
-    sortType: 'RECENT',
-    sortDirection: 'DESCENDING',
-    regionIds: selectedRegions.map((region) => region.id),
-    category: category ?? undefined,
-  });
-
-  const {
-    data: popularStores,
-    isPending: poppularStorePending,
-    isFetching: poppularStoreFetching,
-  } = useGetStoreList({
-    pageNum: 1,
-    pageSize: 10,
-    sortType: 'REVIEW',
-    sortDirection: 'DESCENDING',
-    regionIds: selectedRegions.map((region) => region.id),
-    category: category ?? undefined,
-  });
-
-  const {
-    data: immediateEntryStores,
-    isPending: immediateEntryStorePending,
-    isFetching: immediateEntryStoreFetching,
-  } = useGetStoreImmediateEntryList({
-    pageNum: 1,
-    pageSize: 10,
-    regionIds: selectedRegions.map((region) => region.id),
-    category: category ?? undefined,
-  });
+  const [{ data: stores }, { data: popularStores }, { data: immediateEntryStores }] =
+    useSuspenseQueries({
+      queries: [
+        getStoreListQueryOptions({
+          pageNum: 1,
+          pageSize: 10,
+          sortType: 'RECENT',
+          sortDirection: 'DESCENDING',
+          regionIds: selectedRegions.map((region) => region.id),
+          category: category ?? undefined,
+        }),
+        getPopularViewedStoreListQueryOptions(),
+        getStoreImmediateEntryListQueryOptions({
+          pageNum: 1,
+          pageSize: 10,
+          regionIds: selectedRegions.map((region) => region.id),
+          category: category ?? undefined,
+        }),
+      ],
+    });
 
   const flow = useFlow();
-
-  const isLoading =
-    storePending ||
-    storeFetching ||
-    poppularStorePending ||
-    poppularStoreFetching ||
-    immediateEntryStorePending ||
-    immediateEntryStoreFetching;
-
-  if (isLoading) return <LoadingScreen />;
 
   return (
     <>
@@ -136,7 +110,9 @@ const StoreSection = ({ selectedRegions, category }: StoreSectionProps) => {
       <StoresList
         subtitle='푸딩에서 인기 많은 식당이에요'
         stores={popularStores.list}
-        onClickTotalBtn={() => flow.push('SearchResultScreen', { keyword: '', regions: [] })}
+        onClickTotalBtn={() =>
+          flow.push('PopularViewedStoreListScreen', { keyword: '', regions: [] })
+        }
       />
       <StoresList
         className='pt-0'
@@ -148,7 +124,9 @@ const StoreSection = ({ selectedRegions, category }: StoreSectionProps) => {
         className='pt-0'
         subtitle='지금 바로 입장하실 수 있어요!'
         stores={immediateEntryStores.list}
-        onClickTotalBtn={() => flow.push('SearchResultScreen', { keyword: '', regions: [] })}
+        onClickTotalBtn={() =>
+          flow.push('ImmediateEntryStoreListScreen', { keyword: '', regions: [] })
+        }
       />
     </>
   );
