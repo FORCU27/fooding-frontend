@@ -7,7 +7,7 @@ import { useState, useEffect } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Checkbox, Button } from '@repo/design-system/components/b2c';
 import { EyeOffIcon, EyeOnIcon } from '@repo/design-system/icons';
-import { isAxiosError } from 'axios';
+import { isAxiosError, AxiosError } from 'axios';
 import { Controller, useForm } from 'react-hook-form';
 import { z } from 'zod/v4';
 
@@ -54,6 +54,10 @@ export default function LoginForm() {
       if (isAxiosError(error) && error.response?.status === 400) {
         form.setError('root', {
           message: '이메일 또는 비밀번호가 일치하지 않습니다\n입력한 내용을 다시 확인해주세요',
+        });
+      } else {
+        form.setError('root', {
+          message: (error as AxiosError)?.message ?? '알 수 없는 오류가 발생했습니다',
         });
       }
     }
