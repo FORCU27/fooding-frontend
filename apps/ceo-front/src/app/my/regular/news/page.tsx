@@ -39,7 +39,7 @@ const NewsPage = () => {
   const [nextActiveStatus, setNextActiveStatus] = useState<'active' | 'inactive' | null>(null);
 
   const { data, isPending } = useQuery({
-    queryKey: [queryKeys.ceo.storePost.list, storeId, sortType, pageNum],
+    queryKey: [queryKeys.ceo.storePost.list, storeId],
     queryFn: () =>
       storePostApi.getStorePosts({
         searchString: '',
