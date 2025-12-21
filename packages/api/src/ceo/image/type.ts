@@ -27,7 +27,7 @@ export type GetStoreImagesParams = {
 export type CreateStoreImageParams = {
   imageId: string;
   sortOrder?: number;
-  tag?: ImageTag[];
+  tags?: ImageTag[];
 };
 
 export type PustStoreImageParams = {
