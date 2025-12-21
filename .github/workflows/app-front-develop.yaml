@@ -34,7 +34,7 @@ jobs:
           file: ./apps/app-front/Dockerfile
           push: true
           tags: hyperrealitycorp/fooding-app-front-stage
-          platforms: linux/amd64, linux/arm64/v8
+          platforms: linux/arm64/v8
           build-args: |
             API_SERVER_URL=${{ secrets.STAGE_API_SERVER_URL }}
             NEXT_PUBLIC_OAUTH_REDIRECT_URI=${{ secrets.STAGE_APP_NEXT_PUBLIC_OAUTH_REDIRECT_URI }}

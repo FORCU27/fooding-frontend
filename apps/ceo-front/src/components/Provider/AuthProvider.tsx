@@ -6,6 +6,8 @@ import { authApi, AuthLoginBody, AuthLoginUser, AuthSocialLoginBody } from '@rep
 import { STORAGE_KEYS } from '@repo/api/configs/storage-keys';
 import Cookies from 'js-cookie';
 
+import { StoreProvider } from '@/context/StoreContext';
+
 interface AuthContextType {
   user: AuthLoginUser | null;
   login: (credentials: AuthLoginBody) => Promise<void>;
@@ -117,7 +119,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         isLoading,
       }}
     >
-      {children}
+      <StoreProvider>
+        {children}
+      </StoreProvider>
     </AuthContext.Provider>
   );
 }

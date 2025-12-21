@@ -53,8 +53,8 @@ const MenuDialog = ({
   const [imageFiles, setImageFiles] = useState<File[]>([]);
   const [uploadedImageIds, setUploadedImageIds] = useState<string[]>([]);
 
-  // 기존 이미지 ID들을 직접 사용
-  const [existingImageIds] = useState<string[]>(menuItem?.imageIds || []);
+  // 기존 이미지 ID들 (삭제 가능하도록 state로 관리)
+  const [existingImageIds, setExistingImageIds] = useState<string[]>(menuItem?.imageIds || []);
   const [isUploadingImage, setIsUploadingImage] = useState(false);
 
   // 이미지 업로드 함수
@@ -180,9 +180,21 @@ const MenuDialog = ({
   };
 
   const handleRemoveImage = (index: number) => {
+    // 기존 이미지 개수 (menuItem에서 온 이미지들)
+    const existingImageCount = menuItem?.imageUrls?.length || 0;
+    
+    if (mode === 'edit' && index < existingImageCount) {
+      // 기존 이미지 삭제 - existingImageIds에서 제거
+      setExistingImageIds((prev) => prev.filter((_, i) => i !== index));
+    } else {
+      // 새로 추가된 이미지 삭제
+      const newImageIndex = index - existingImageCount;
+      setImageFiles((prev) => prev.filter((_, i) => i !== newImageIndex));
+      setUploadedImageIds((prev) => prev.filter((_, i) => i !== newImageIndex));
+    }
+    
+    // 미리보기 이미지 제거
     setImages((prev) => prev.filter((_, i) => i !== index));
-    setImageFiles((prev) => prev.filter((_, i) => i !== index));
-    setUploadedImageIds((prev) => prev.filter((_, i) => i !== index));
   };
 
   const handleSubmit = () => {

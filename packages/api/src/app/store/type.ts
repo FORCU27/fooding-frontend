@@ -77,7 +77,7 @@ export const WaitingUser = z.object({
 export const GetWaitingDetailResponse = z.object({
   id: z.number(),
   storeId: z.number(),
-  user: WaitingUser,
+  user: WaitingUser.nullable(),
   callNumber: z.number(),
   channel: z.string(),
   infantChairCount: z.number(),

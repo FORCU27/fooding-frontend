@@ -64,6 +64,7 @@ const DeviceDetailPage = () => {
     deviceId,
     pageNum: pagination.pageIndex + 1,
     pageSize: pagination.pageSize,
+    sortType: 'RECENT',
   });
 
   // Mutation for changing device service

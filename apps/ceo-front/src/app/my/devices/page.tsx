@@ -24,6 +24,7 @@ const DevicesPage = () => {
     storeId: selectedStoreId,
     pageNum: pagination.pageIndex + 1,
     pageSize: pagination.pageSize,
+    sortType: sortOrder,
   });
 
   const formatDateTime = (dateString: string) => {

@@ -262,7 +262,7 @@ const StoreUpdateDialog = ({ isOpen, onOpenChange, store }: StoreUpdateDialogPro
     if (updateStoreMutation.isPending) return;
 
     updateStoreMutation.mutate(
-      { id: store.id, body: store },
+      { id: store.id, body: { ...store, name: storeName.trim() } },
       {
         onSuccess: () => {
           onOpenChange(false);

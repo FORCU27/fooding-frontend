@@ -20,6 +20,7 @@ import AddMenuDialog from './AddMenuDialog';
 import DeleteMenuDialog from './DeleteMenuDialog';
 import MenuBoardImageUpload from './MenuBoardImageUpload';
 import { useDeleteMenu } from '@/hooks/menu/useDeleteMenu';
+import { useSortMenus } from '@/hooks/menu/useSortMenus';
 import { useCreateMenuCategory } from '@/hooks/menu-category/useCreateMenuCategory';
 import { useDeleteMenuCategory } from '@/hooks/menu-category/useDeleteMenuCategory';
 import { useGetMenuCategories } from '@/hooks/menu-category/useGetMenuCategories';
@@ -101,6 +102,7 @@ const MenusPage = () => {
   const updateCategoryMutation = useUpdateMenuCategory(selectedStoreId);
   const deleteCategoryMutation = useDeleteMenuCategory(selectedStoreId);
   const deleteMenuMutation = useDeleteMenu();
+  const sortMenusMutation = useSortMenus(selectedStoreId, selectedCategoryId);
 
   const [categories, setCategories] = useState<Category[]>([]);
   const [editingCategory, setEditingCategory] = useState<{ id: string; name: string } | null>(null);
@@ -411,6 +413,18 @@ const MenusPage = () => {
                 name: menuItem.name,
               });
             }
+          }}
+          onItemsReorder={(categoryId, itemIds) => {
+            // 메뉴 아이템 정렬 API 호출
+            const menuIds = itemIds.map((id) => parseInt(id));
+            sortMenusMutation.mutate(
+              { menuIds },
+              {
+                onError: () => {
+                  toast.error('메뉴 순서 변경에 실패했습니다.');
+                },
+              },
+            );
           }}
         />
       </Card>

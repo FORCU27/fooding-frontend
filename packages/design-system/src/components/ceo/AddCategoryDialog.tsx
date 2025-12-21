@@ -47,7 +47,7 @@ export const AddCategoryDialog = ({ onAdd, trigger }: AddCategoryDialogProps) =>
             value={categoryName}
             onChange={(e) => setCategoryName(e.target.value)}
             placeholder="카테고리명을 입력해주세요"
-            className="w-full"
+            className="w-full mx-4"
             onKeyPress={(e) => {
               if (e.key === 'Enter') {
                 handleSubmit();

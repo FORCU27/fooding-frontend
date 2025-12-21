@@ -4,6 +4,7 @@ import { VISIT_PURPOSES } from '../stores/type';
 
 export const ReviewSortType = z.enum(['RECENT', 'REVIEW']);
 export const SortDirection = z.enum(['ASCENDING', 'DESCENDING']);
+export const PurposeType = z.enum(['MEETING', 'DATE', 'FRIEND', 'FAMILY', 'BUSINESS', 'PARTY']);
 
 export const UserRetrieveReviewRequest = z.object({
   sortType: ReviewSortType,
@@ -57,3 +58,4 @@ export type GetMyReviewListData = z.infer<typeof GetMyReviewListData>;
 export type GetMyReviewListResponse = z.infer<typeof GetMyReviewListResponse>;
 export type ReviewSortType = z.infer<typeof ReviewSortType>;
 export type SortDirection = z.infer<typeof SortDirection>;
+export type PurposeType = z.infer<typeof PurposeType>;

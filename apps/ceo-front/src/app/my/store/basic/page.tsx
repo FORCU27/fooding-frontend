@@ -54,7 +54,6 @@ const BasicInfoPage = () => {
   const { data: store, isLoading: isLoadingStore } = useGetStore(selectedStoreId);
   const putStoreMutation = usePutStore();
 
-
   // React Hook Form 설정
   const {
     handleSubmit,
@@ -318,7 +317,9 @@ const BasicInfoPage = () => {
               onValueChange={(value) => setValue('category', value)}
               placeholder='업종을 선택해주세요'
             />
-            {errors.category && <p className='text-red-500 text-sm mt-1'>{errors.category.message}</p>}
+            {errors.category && (
+              <p className='text-red-500 text-sm mt-1'>{errors.category.message}</p>
+            )}
           </div>
         </CardSubtitle>
       </Card>
@@ -391,7 +392,9 @@ const BasicInfoPage = () => {
                 </Dialog.Footer>
               </Dialog.Content>
             </Dialog>
-            {errors.address && <p className='text-red-500 text-sm mt-1'>{errors.address.message}</p>}
+            {errors.address && (
+              <p className='text-red-500 text-sm mt-1'>{errors.address.message}</p>
+            )}
           </div>
 
           <div className='mt-4'>
@@ -405,7 +408,7 @@ const BasicInfoPage = () => {
         </CardSubtitle>
       </Card>
       <Card>
-        <CardSubtitle label='찾아오시는 길'>
+        <CardSubtitle label='찾아오시는 길' required>
           <TextArea
             id='direction'
             rows={3}

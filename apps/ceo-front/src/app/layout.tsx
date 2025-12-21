@@ -12,7 +12,6 @@ import Analytics from '@/components/GA/Analytics';
 import KakaoMapScript from '@/components/KakaoMapScript';
 import { AuthProvider } from '@/components/Provider/AuthProvider';
 import { ReactQueryProvider } from '@/components/Provider/ReactQueryProvider';
-import { StoreProvider } from '@/context/StoreContext';
 import { GA_TRACKING_ID } from '@/libs/ga/gtag';
 
 export const metadata: Metadata = {
@@ -22,6 +21,17 @@ export const metadata: Metadata = {
 
 export default async function RootLayout({ children }: { children: ReactNode }) {
   const qc = new QueryClient();
+
+  await qc.prefetchQuery({
+    // TODO 초기 렌더 시 깜박이는 현상 대응
+    queryKey: [queryKeys.ceo.me],
+    queryFn: async () => {
+      const res = await fetch('/api/auth/me', { cache: 'no-store' });
+      if (!res.ok) return null;
+      return res.json();
+    },
+    staleTime: 60_000,
+  });
 
   await qc.prefetchQuery({
     queryKey: [queryKeys.ceo.store.selectedStore],
@@ -77,10 +87,8 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
           <Suspense>
             <OverlayProvider>
               <AuthProvider>
-                <StoreProvider>
-                  {children}
-                  <Analytics />
-                </StoreProvider>
+                {children}
+                <Analytics />
               </AuthProvider>
             </OverlayProvider>
           </Suspense>

@@ -67,7 +67,7 @@ const CouponEditPage = () => {
         queryKey: [queryKeys.ceo.coupon.detail, couponId],
       });
       toast.success('쿠폰이 수정되었습니다.');
-      router.push('/reward/coupon');
+      router.push('/my/reward/coupon');
     },
     onError: (error: unknown) => {
       console.error('쿠폰 수정 실패:', error);
@@ -171,7 +171,7 @@ const CouponEditPage = () => {
         initialData={initialFormData}
         initialDateRange={initialDateRange}
         onSubmit={handleSubmit}
-        onCancel={() => router.push('/reward/coupon')}
+        onCancel={() => router.push('/my/reward/coupon')}
         submitText='수정하기'
         isSubmitting={updateCoupon.isPending}
       />
