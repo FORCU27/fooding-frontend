@@ -1,7 +1,6 @@
 import { z } from 'zod/v4';
 
 import { ApiResponse, PageResponse, SortDirection, SortType } from '../../shared';
-import { Review } from '../reviews';
 
 export const PARKING_TYPES = ['PAID', 'FREE'] as const;
 export type ParkingType = (typeof PARKING_TYPES)[number];
@@ -68,32 +67,37 @@ export const StoreImage = z.object({
   imageUrl: z.string(),
   sortOrder: z.number(),
   tags: z.array(z.string()).nullable(),
-  isMain: z.boolean().optional(),
+  isMain: z.boolean(),
+});
+export const StationInfo = z.object({
+  id: z.number(),
+  address: z.string(),
+  line: z.string(),
+  name: z.string(),
 });
 
 export type Store = z.infer<typeof Store>;
 export const Store = z.object({
   id: z.number(),
   name: z.string(),
-  address: z.string().optional(),
+  address: z.string(),
+  category: z.enum(STORE_CATEGORIES),
+  estimatedWaitingTimeMinutes: z.number().nullable(),
   visitCount: z.number(),
   reviewCount: z.number(),
+  bookmarkCount: z.number(),
   averageRating: z.number(),
-  estimatedWaitingTimeMinutes: z.number().nullable(),
   isBookmarked: z.boolean(),
   isFinished: z.boolean(),
-  category: z.enum(STORE_CATEGORIES),
+  regionId: z.preprocess((v) => {
+    if (v === undefined || v === null || v === '') return null;
+    const n = Number(v);
+    return Number.isNaN(n) ? null : n;
+  }, z.number().nullable()),
   images: z
     .array(StoreImage)
     .nullable()
-    .transform((val) => val ?? []),
-});
-
-export const StationInfo = z.object({
-  id: z.number(),
-  address: z.string(),
-  line: z.string(),
-  name: z.string(),
+    .transform((v) => v ?? []),
 });
 
 export type StoreInfo = z.infer<typeof StoreInfo>;
@@ -108,6 +112,7 @@ export const StoreInfo = Store.extend({
   latitude: z.number().nullable(),
   longitude: z.number().nullable(),
   bookmarkCount: z.number(),
+  viewingCount: z.number(),
 });
 
 export type GetStoreListParams = {
@@ -163,9 +168,6 @@ export const GetStoreMenuListResponse = ApiResponse(
     }),
   ),
 );
-
-export type GetStoreReviewListResponse = z.infer<typeof GetStoreReviewListResponse>;
-export const GetStoreReviewListResponse = PageResponse(Review);
 
 export type GetStoreOperatingHoursResponse = z.infer<typeof GetStoreOperatingHoursResponse>;
 export const GetStoreOperatingHoursResponse = ApiResponse(

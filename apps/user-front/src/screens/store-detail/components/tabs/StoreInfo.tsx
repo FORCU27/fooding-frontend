@@ -208,7 +208,7 @@ export const StoreDetailInfoTab = ({ store }: StoreDetailInfoTabProps) => {
                   </div>
                 );
               }
-              if (method === '제로페이') {
+              if (method === 'zeropay') {
                 return (
                   <div key={method} className='flex items-center gap-2'>
                     <SmartPhoneIcon />

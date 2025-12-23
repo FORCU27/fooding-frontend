@@ -11,8 +11,6 @@ export const useGetReviewList = (id: number) => {
         params: {
           sortType: 'RECENT',
           sortDirection: 'DESCENDING',
-          pageNum: 1,
-          pageSize: 10,
         },
       });
       return response.data;

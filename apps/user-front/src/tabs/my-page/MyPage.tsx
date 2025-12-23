@@ -89,7 +89,7 @@ const Content = () => {
         sortType: 'RECENT',
         sortDirection: 'DESCENDING',
         pageNum: 1,
-        pageSize: 1, // 개수만 필요하므로 1개만 조회
+        pageSize: 1,
       }),
       getRewardPersonalLogQueryOptions(),
       getRecentlyViewedStoreListQueryOptions(),

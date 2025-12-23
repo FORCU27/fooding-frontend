@@ -1,6 +1,6 @@
 import z from 'zod/v4';
 
-import { PageResponse } from '../../shared';
+import { PageInfo, PageResponse } from '../../shared';
 
 export const SortType = z.enum(['RECENT', 'REVIEW']);
 export const SortDirection = z.enum(['ASCENDING', 'DESCENDING']);
@@ -110,8 +110,21 @@ export type GetReviewListRequest = {
   params: {
     sortType: SortType;
     sortDirection: SortDirection;
+    writerId?: number;
+    parentId?: number;
+    pageNum?: number;
+    pageSize?: number;
   };
 };
+
+export const GetStoreReviewListResponse = z.object({
+  status: z.string(),
+  data: z.object({
+    list: z.array(Review),
+    pageInfo: PageInfo,
+  }),
+});
+export type GetStoreReviewListResponse = z.infer<typeof GetStoreReviewListResponse>;
 
 export type GetReviewResponse = z.infer<typeof GetReviewResponse>;
 export const GetReviewResponse = z.object({

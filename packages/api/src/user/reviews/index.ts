@@ -2,13 +2,14 @@ export * from './type';
 
 import { api } from '../../shared';
 import { CreateReportBody, GetUserReportResponse } from '../reports';
-import { GetStoreReviewListResponse as GetReviewListResponse } from '../stores';
 import {
   CreateReviewBody,
   GetMyReviewListRequest,
   GetMyReviewResponse,
+  GetReviewDetailResponse,
   GetReviewListRequest,
   GetReviewResponse,
+  GetStoreReviewListResponse,
   ModifyReviewBody,
 } from './type';
 
@@ -20,10 +21,16 @@ export const reviewApi = {
     return GetMyReviewResponse.parse(response);
   },
   getReviewList: async ({ id, params }: GetReviewListRequest) => {
-    const response = await api.get(`${ENDPOINT}/${id}/reviews`, { params });
-    return GetReviewListResponse.parse(response);
+    const response = await api.get(`${ENDPOINT}/store/${id}`, { params });
+    return GetStoreReviewListResponse.parse(response);
   },
-
+  getReviewDetail: async (id: string) => {
+    const response = await api.get(`${ENDPOINT}/${id}/details`);
+    return GetReviewDetailResponse.parse(response);
+  },
+  createReview: async (body: CreateReviewBody) => {
+    await api.post(`${ENDPOINT}`, body);
+  },
   modifyReview: async ({ reviewId, body }: { reviewId: number; body: ModifyReviewBody }) => {
     const response = await api.patch(`${ENDPOINT}/${reviewId}/update`, body);
     return GetReviewResponse.parse(response);
@@ -35,8 +42,5 @@ export const reviewApi = {
   createReviewReport: async (reviewId: number, body: CreateReportBody) => {
     const response = await api.post(`${ENDPOINT}/${reviewId}/report`, body);
     return GetUserReportResponse.parse(response);
-  },
-  createReview: async (body: CreateReviewBody) => {
-    await api.post(`${ENDPOINT}/reviews`, body);
   },
 };
