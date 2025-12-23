@@ -1,13 +1,16 @@
 import { queryKeys } from '@repo/api/configs/query-keys';
-import { storeApi } from '@repo/api/user';
+import { reviewApi } from '@repo/api/user';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 
-export const useModifyStoreReview = () => {
+export const useDeleteReview = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: storeApi.modifyStoreReview,
-    onSuccess: (_, { reviewId }) => {
+    mutationFn: async (reviewId: number) => {
+      const response = await reviewApi.deleteReview(reviewId);
+      return response.data;
+    },
+    onSuccess: (_, reviewId) => {
       queryClient.invalidateQueries({ queryKey: [queryKeys.user.store.review, reviewId] });
     },
   });

@@ -4,7 +4,7 @@ import { useSuspenseQuery } from '@tanstack/react-query';
 
 export const useGetUserInfo = () => {
   return useSuspenseQuery({
-    queryKey: [queryKeys.me.user],
+    queryKey: [queryKeys.user.me],
     queryFn: async () => {
       const response = await authApi.getSelf();
       return response.data;

@@ -85,7 +85,12 @@ export const queryKeys = {
     notification: {
       infiniteList: 'notificationInfiniteList',
     },
-    me: 'me',
+    me: {
+      me: 'me',
+      user: 'meUser',
+      nicknameCheck: 'meUserNicknameCheck',
+      review: 'meUserReviewList',
+    },
     store: {
       list: 'userStoreList',
       detail: 'userStoreDetail',
@@ -120,12 +125,9 @@ export const queryKeys = {
     region: { list: 'userRegionList' },
     reward: { list: 'userRewardList', log: 'userRewardLog' },
     report: { detail: 'userReportDetail' },
-    review: { myList: 'userReviewMyList' },
+    review: { list: 'userReviewList', detail: 'userReviewDetail' },
   },
-  me: {
-    user: 'meUser',
-    nicknameCheck: 'meUserNicknameCheck',
-  },
+
   file: {
     upload: 'fileUpload',
   },

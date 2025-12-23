@@ -197,7 +197,7 @@ const StoreDetail = ({ storeId, showHeader, initialTab = 'home' }: StoreDetailPr
         <div className='flex flex-col items-center flex-1'>
           <ColorFireIcon className='size-[50px]' />
           <span className='body-7 text-gray-5'>실시간</span>
-          <span className='subtitle-6 text-black'>{mock.realtimeViewers}명이 보고있어요</span>
+          <span className='subtitle-6 text-black'>{store.viewingCount}명이 보고있어요</span>
         </div>
         <div className='flex flex-col items-center flex-1'>
           <ColorSmileIcon className='size-[50px]' />

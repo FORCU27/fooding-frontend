@@ -10,8 +10,7 @@ interface ReviewCardProps {
 }
 
 export const ReviewCard = ({ review }: ReviewCardProps) => {
-  const hasImages = review.imageUrls && review.imageUrls.length > 0;
-  const firstImageUrl = hasImages ? review.imageUrls[0] : null;
+  const firstImageUrl = review.imageUrls?.[0] ?? null;
 
   return (
     <div className='w-[350px] h-[390px] flex flex-col rounded-[12px] shrink-0 shadow-[0_4px_16px_rgba(0,0,0,0.05)] bg-white'>
