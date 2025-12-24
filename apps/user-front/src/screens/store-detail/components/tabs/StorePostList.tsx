@@ -56,8 +56,8 @@ const StorePostListItem = ({ storePost, storeName }: StorePostListItemProps) => 
       tabIndex={0}
       onClick={() => flow.push('StorePostDetailScreen', { storePostId: storePost.id, storeName })}
     >
-      {storePost.tags.length > 0 && <StoreTagList tags={storePost.tags} />}
-      {isNonEmptyArray(storePost.images) && (
+      {storePost.tags && storePost.tags.length > 0 && <StoreTagList tags={storePost.tags} />}
+      {storePost.images && isNonEmptyArray(storePost.images) && (
         <Image
           src={
             storePost.images[0].imageUrl.startsWith('http')

@@ -1,5 +1,4 @@
 import {
-  mockStoreByIdResponse,
   mockStoreImageListResponse,
   mockStoreListResponse,
   mockStoreMenuListResponse,
@@ -31,22 +30,7 @@ export const storeHandlers = mockClient.createHandlerGroup('/user/stores', [
       },
     ],
   },
-  {
-    method: 'GET',
-    path: '/:id',
-    presets: [
-      {
-        label: '[성공] 기본 응답',
-        status: 200,
-        response: mockStoreByIdResponse,
-      },
-      {
-        label: '[실패] 존재하지 않는 가게',
-        status: 404,
-        response: null,
-      },
-    ],
-  },
+
   {
     method: 'GET',
     path: '/:id/menus',
