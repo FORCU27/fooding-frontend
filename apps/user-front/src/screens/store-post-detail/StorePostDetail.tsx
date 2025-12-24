@@ -35,13 +35,13 @@ const StorePostDetail = ({ storePostId }: StorePostDetailProps) => {
 
   return (
     <div className='flex flex-col px-grid-margin pb-24'>
-      <StoreTagList className='mt-5' tags={storePost.tags} />
+      {storePost.tags && <StoreTagList className='mt-5' tags={storePost.tags} />}
       <h1 className='mt-4 headline-2'>{storePost.title}</h1>
       <span className='mt-4 body-8 text-gray-5'>
         {formatDate(storePost.createdAt, { format: 'dot' })}
       </span>
       <div className='mt-5 h-[1px] w-full bg-gray-2' />
-      {storePost.images.length > 0 && (
+      {storePost.images && storePost.images.length > 0 && (
         <div className='flex flex-col gap-3 mt-5'>
           {storePost.images.map((image) => (
             <Image
@@ -50,7 +50,7 @@ const StorePostDetail = ({ storePostId }: StorePostDetailProps) => {
               width={180}
               height={180}
               className='rounded-[12px] w-full object-cover'
-              key={image.id}
+              key={image.imageId}
             />
           ))}
         </div>

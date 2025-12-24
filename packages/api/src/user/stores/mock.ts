@@ -1,10 +1,5 @@
-import {
-  GetStoreByIdResponse,
-  GetStoreImageListResponse,
-  GetStoreListResponse,
-  GetStoreMenuListResponse,
-  GetStoreReviewListResponse,
-} from './type';
+import { GetStoreReviewListResponse } from '../reviews';
+import { GetStoreImageListResponse, GetStoreListResponse, GetStoreMenuListResponse } from './type';
 
 const MENU_IMAGE_URL =
   'https://img.freepik.com/free-photo/top-view-table-full-food_23-2149209253.jpg';
@@ -36,6 +31,9 @@ export const mockStoreListResponse: GetStoreListResponse = {
         isBookmarked: false,
         isFinished: false,
         category: 'KOREAN',
+        address: '',
+        bookmarkCount: 0,
+        regionId: null,
       },
       {
         id: 2,
@@ -48,6 +46,9 @@ export const mockStoreListResponse: GetStoreListResponse = {
         isBookmarked: false,
         isFinished: false,
         category: 'KOREAN',
+        address: '',
+        bookmarkCount: 0,
+        regionId: null,
       },
       {
         id: 3,
@@ -60,6 +61,9 @@ export const mockStoreListResponse: GetStoreListResponse = {
         isBookmarked: false,
         isFinished: false,
         category: 'KOREAN',
+        address: '',
+        bookmarkCount: 0,
+        regionId: null,
       },
       {
         id: 4,
@@ -72,6 +76,9 @@ export const mockStoreListResponse: GetStoreListResponse = {
         isBookmarked: false,
         isFinished: false,
         category: 'KOREAN',
+        address: '',
+        bookmarkCount: 0,
+        regionId: null,
       },
       {
         id: 5,
@@ -84,71 +91,11 @@ export const mockStoreListResponse: GetStoreListResponse = {
         isBookmarked: false,
         isFinished: false,
         category: 'KOREAN',
+        address: '',
+        bookmarkCount: 0,
+        regionId: null,
       },
     ],
-  },
-};
-
-export const mockStoreByIdResponse: GetStoreByIdResponse = {
-  status: 'OK',
-  data: {
-    id: 1,
-    name: '홍길동 식당',
-    addressDetail: '마포',
-    address: '서울특별시 마포구',
-    category: 'KOREAN',
-    description: '설명설명',
-    contactNumber: '010-0000-0000',
-    direction: '홍대입구역 2번출구 앞',
-    visitCount: 1000,
-    reviewCount: 246,
-    averageRating: 4.5,
-    estimatedWaitingTimeMinutes: 20,
-    latitude: 37.5665,
-    longitude: 126.978,
-    bookmarkCount: 2,
-    stations: [
-      {
-        id: 8,
-        name: '신논현역',
-        line: '9호선',
-        address: '서울 강남구 봉은사로 지하 102',
-      },
-      {
-        id: 9,
-        name: '강남역',
-        line: '2호선',
-        address: '서울 강남구 강남대로 지하 396',
-      },
-      {
-        id: 10,
-        name: '신논현역',
-        line: '신분당선',
-        address: '서울 강남구 강남대로 302-2',
-      },
-    ],
-    images: [
-      {
-        id: 1,
-        imageUrl: MENU_IMAGE_URL,
-        sortOrder: 1,
-        tags: ['태그1', '태그2'],
-      },
-      {
-        id: 2,
-        imageUrl: MENU_IMAGE_URL,
-        sortOrder: 2,
-        tags: ['태그1'],
-      },
-      {
-        id: 3,
-        imageUrl: MENU_IMAGE_URL,
-        sortOrder: 3,
-        tags: ['태그3'],
-      },
-    ],
-    isBookmarked: false,
-    isFinished: false,
   },
 };
 
@@ -281,6 +228,7 @@ export const mockStoreImageListResponse: GetStoreImageListResponse = {
       imageUrl: DUMMY_IMAGES[(index + 1) % DUMMY_IMAGES.length] ?? '',
       sortOrder: index + 1,
       tags: [],
+      isMain: false,
     })),
     pageInfo: {
       pageNum: 1,
