@@ -23,7 +23,7 @@ const ConfirmModal = ({
 
   return (
     <div className='fixed inset-0 z-50 flex items-center justify-center bg-black/50'>
-      <div className='flex flex-col gap-[24px] relative rounded-4xl bg-white px-[24px] py-8 shadow-lg'>
+      <div className='flex flex-col gap-[24px] relative rounded-3xl bg-white px-[24px] py-[32px] shadow-lg'>
         {title && <h2 className='subtitle-2 text-center'>{title}</h2>}
         {children && <div className='text-center'>{children}</div>}
         <div className='flex gap-[12px] px-[74px]'>
