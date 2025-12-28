@@ -25,6 +25,7 @@ import { ProfileUserInfoScreen } from '@/screens/profile-user-info/ProfileUserIn
 import { RecentlyViewedStoreListScreen } from '@/screens/recently-viewed-stores/RecentlyViewedStores';
 import { ReviewReportCreateScreen } from '@/screens/reports/ReivewReportCreate';
 import { ReviewCreateScreen, ReviewCreateScreenParams } from '@/screens/reviews/ReviewCreate';
+import { ReviewDetailScreen } from '@/screens/reviews/ReviewDetail';
 import { ReviewModifyScreen, ReviewModifyScreenParams } from '@/screens/reviews/ReviewModify';
 import { SearchResultScreen, SearchResultScreenParams } from '@/screens/search-result/SearchResult';
 import { NotificationSettingScreen } from '@/screens/settings/Notifications';
@@ -78,6 +79,7 @@ declare module '@stackflow/config' {
     MyReviewsScreen: object;
     PopularViewedStoreListScreen: object;
     ImmediateEntryStoreListScreen: object;
+    ReviewDetailScreen: { review: Review; storeName: string };
   }
 }
 
@@ -111,6 +113,7 @@ const config = defineConfig({
     { name: 'MyReviewsScreen' },
     { name: 'PopularViewedStoreListScreen' },
     { name: 'ImmediateEntryStoreListScreen' },
+    { name: 'ReviewDetailScreen' },
   ],
 
   transitionDuration: SCREEN_TRANSITION_DURATION,
@@ -148,6 +151,7 @@ export const { Stack } = stackflow({
     MyReviewsScreen,
     PopularViewedStoreListScreen,
     ImmediateEntryStoreListScreen,
+    ReviewDetailScreen,
   },
   plugins: [
     basicRendererPlugin(),

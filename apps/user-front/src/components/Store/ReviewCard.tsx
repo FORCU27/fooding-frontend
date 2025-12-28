@@ -47,7 +47,7 @@ export const ReviewCard = ({ review }: ReviewCardProps) => {
           <div className='flex flex-col justify-center items-end'>
             <div className='flex items-center gap-1'>
               <StarIcon className='size-[18px] stroke-fooding-yellow fill-fooding-yellow' />
-              <span className='subtitle-6 text-fooding-yellow'>{review.score.total}</span>
+              <span className='subtitle-6 text-fooding-yellow'>{review.score?.total ?? 0}</span>
             </div>
             <span className='mt-[10px] body-7 text-gray-5'>
               {formatRelativeTime(review.createdAt)}

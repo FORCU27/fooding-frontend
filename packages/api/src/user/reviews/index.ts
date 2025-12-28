@@ -4,9 +4,11 @@ import { api } from '../../shared';
 import { CreateReportBody, GetUserReportResponse } from '../reports';
 import {
   CreateReviewBody,
+  CreateReviewCommentBody,
   GetMyReviewListRequest,
   GetMyReviewResponse,
   GetReviewDetailResponse,
+  GetReviewLikeResponse,
   GetReviewListRequest,
   GetReviewResponse,
   GetStoreReviewListResponse,
@@ -24,8 +26,8 @@ export const reviewApi = {
     const response = await api.get(`${ENDPOINT}/store/${id}`, { params });
     return GetStoreReviewListResponse.parse(response);
   },
-  getReviewDetail: async (id: string) => {
-    const response = await api.get(`${ENDPOINT}/${id}/details`);
+  getReviewDetail: async (reviewId: number) => {
+    const response = await api.get(`${ENDPOINT}/${reviewId}/details`);
     return GetReviewDetailResponse.parse(response);
   },
   createReview: async (body: CreateReviewBody) => {
@@ -42,5 +44,13 @@ export const reviewApi = {
   createReviewReport: async (reviewId: number, body: CreateReportBody) => {
     const response = await api.post(`${ENDPOINT}/${reviewId}/report`, body);
     return GetUserReportResponse.parse(response);
+  },
+  updateLikeStatus: async (reviewId: number) => {
+    const response = await api.post(`${ENDPOINT}/${reviewId}/like`);
+    return GetReviewLikeResponse.parse(response);
+  },
+  createReivewComment: async (reviewId: number, body: CreateReviewCommentBody) => {
+    const response = await api.post(`${ENDPOINT}/${reviewId}/comment`, body);
+    return GetReviewResponse.parse(response);
   },
 };

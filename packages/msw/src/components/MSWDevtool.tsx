@@ -11,7 +11,7 @@ export const MSWDevtool = () => {
   return (
     <Sheet>
       <Sheet.Trigger
-        className='fixed bottom-4 right-4 z-50 flex justify-center items-center rounded-full size-8 bg-primary-pink text-white shadow-lg cursor-pointer hover:bg-primary-pink/90 transition-colors'
+        className='fixed bottom-4 right-10 z-50 flex justify-center items-center rounded-full size-8 bg-primary-pink text-white shadow-lg cursor-pointer hover:bg-primary-pink/90 transition-colors'
         aria-label='MSW 설정 열기'
       >
         <SettingsIcon className='size-4.5' />

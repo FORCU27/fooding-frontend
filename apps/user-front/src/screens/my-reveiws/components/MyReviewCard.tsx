@@ -84,7 +84,7 @@ export const MyReviewCard = ({ review, storeId }: MyReviewCardProps) => {
               <p className='subtitle-5 mr-2'>{storeInfo?.name || '가게정보가 없습니다.'}</p>
             </div>
             <div className='flex gap-2'>
-              <StarRating score={review.score.total} />
+              <StarRating score={review.score?.total ?? 0} />
               <p className='body-8 text-gray-5'>{formatDotDate(review.createdAt)}</p>
             </div>
           </div>
@@ -215,7 +215,7 @@ export const StoreCard = ({ review, store }: { review: Review; store?: StoreInfo
       <div className='flex flex-col'>
         <p className='subtitle-4 text-left'>{store?.name}</p>
         <div className='flex items-center gap-2'>
-          <StarRating score={review.score.total} />
+          <StarRating score={review.score?.total ?? 0} />
           <p className='body-8 text-gray-5'>{formatDotDate(review.createdAt)}</p>
         </div>
       </div>

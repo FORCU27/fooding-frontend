@@ -38,9 +38,9 @@ export const ReviewForm = ({ review, handleSubmit }: PropsWithoutRef<ReviewFormP
       imageUrls: review?.imageUrls || [],
       imageFiles: [],
       visitPurpose: (review?.purpose as VisitPurpose) || 'DATE',
-      taste: review?.score.taste || 0,
-      mood: review?.score.mood || 0,
-      service: review?.score.service || 0,
+      taste: review?.score?.taste || 0,
+      mood: review?.score?.mood || 0,
+      service: review?.score?.service || 0,
     },
   });
 
