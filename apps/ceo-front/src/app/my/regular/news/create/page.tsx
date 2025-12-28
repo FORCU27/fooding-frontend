@@ -4,7 +4,9 @@ import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
 import { storePostApi } from '@repo/api/ceo';
+import { queryKeys } from '@repo/api/configs/query-keys';
 import { toast, Toaster } from '@repo/design-system/components/b2c';
+import { useQueryClient } from '@tanstack/react-query';
 
 import NewsForm, { NewsFormSubmitPayload } from '../components/NewsForm';
 import { useStore } from '@/context/StoreContext';
@@ -12,6 +14,7 @@ import { useUploadFile } from '@/hooks/useUploadFile';
 
 const NewsCreatePage = () => {
   const router = useRouter();
+  const queryClient = useQueryClient();
   const { storeId } = useStore();
   const selectedStoreId = Number(storeId);
   const { mutateAsync: uploadFile } = useUploadFile();
@@ -39,6 +42,10 @@ const NewsCreatePage = () => {
         isNotice: payload.isNotice,
         isCommentAvailable: payload.isCommentAvailable,
         imageIds,
+      });
+
+      await queryClient.refetchQueries({
+        queryKey: [queryKeys.ceo.storePost.list, storeId],
       });
 
       toast.success('소식이 등록되었습니다.');

@@ -4,14 +4,19 @@ import { useParams, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
 import { storePostApi } from '@repo/api/ceo';
+import { queryKeys } from '@repo/api/configs/query-keys';
 import { toast, Toaster } from '@repo/design-system/components/b2c';
 import { Spinner } from '@repo/design-system/components/ceo';
+import { useQueryClient } from '@tanstack/react-query';
 
 import NewsForm, { NewsFormInitialValue, NewsFormSubmitPayload } from '../../components/NewsForm';
+import { useStore } from '@/context/StoreContext';
 import { useUploadFile } from '@/hooks/useUploadFile';
 
 const EditNewsPage = () => {
   const router = useRouter();
+  const queryClient = useQueryClient();
+  const { storeId } = useStore();
   const params = useParams();
   const postId = Number(params.id);
 
@@ -61,6 +66,10 @@ const EditNewsPage = () => {
         isCommentAvailable: payload.isCommentAvailable,
         imageIds: newImageIds,
         deleteImageIds: payload.deleteImageIds,
+      });
+
+      await queryClient.refetchQueries({
+        queryKey: [queryKeys.ceo.storePost.list, storeId],
       });
 
       toast.success('소식이 수정되었습니다.');

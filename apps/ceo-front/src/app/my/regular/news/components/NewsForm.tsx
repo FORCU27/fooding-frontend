@@ -45,6 +45,7 @@ export const NewsForm = ({ initialValue, onSubmit, submitLabel, loading }: Props
   const [isCommentAvailable, setIsCommentAvailable] = useState(
     initialValue?.isCommentAvailable ?? true,
   );
+  const [errors, setErrors] = useState<{ title?: string; content?: string }>({});
 
   // 기존 이미지
   const [existingImages, setExistingImages] = useState<{ imageId: string; imageUrl: string }[]>(
@@ -119,6 +120,22 @@ export const NewsForm = ({ initialValue, onSubmit, submitLabel, loading }: Props
   };
 
   const handleSubmit = () => {
+    const newErrors: { title?: string; content?: string } = {};
+
+    if (!title.trim()) {
+      newErrors.title = '필수 입력 항목입니다.';
+    }
+
+    if (!content.trim()) {
+      newErrors.content = '필수 입력 항목입니다.';
+    }
+
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      return;
+    }
+
+    setErrors({});
     onSubmit({
       title,
       content,
@@ -134,7 +151,19 @@ export const NewsForm = ({ initialValue, onSubmit, submitLabel, loading }: Props
     <CardForm className='mb-[80px]'>
       <Card>
         <CardSubtitle label='제목'>
-          <Input value={title} onChange={(e) => setTitle(e.target.value)} />
+          <Input
+            value={title}
+            onChange={(e) => {
+              setTitle(e.target.value);
+              if (errors.title) {
+                setErrors((prev) => ({ ...prev, title: undefined }));
+              }
+            }}
+            aria-invalid={!!errors.title}
+          />
+          {errors.title && (
+            <p className='text-error-red mt-1 text-[15px] font-medium'>{errors.title}</p>
+          )}
         </CardSubtitle>
       </Card>
 
@@ -143,8 +172,17 @@ export const NewsForm = ({ initialValue, onSubmit, submitLabel, loading }: Props
           <TextArea
             className='min-h-[200px]'
             value={content}
-            onChange={(e) => setContent(e.target.value)}
+            onChange={(e) => {
+              setContent(e.target.value);
+              if (errors.content) {
+                setErrors((prev) => ({ ...prev, content: undefined }));
+              }
+            }}
+            aria-invalid={!!errors.content}
           />
+          {errors.content && (
+            <p className='text-error-red mt-1 text-[15px] font-medium'>{errors.content}</p>
+          )}
         </CardSubtitle>
       </Card>
 
