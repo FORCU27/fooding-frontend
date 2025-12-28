@@ -5,8 +5,8 @@ import { ChevronDownIcon, StarIcon } from '@repo/design-system/icons';
 import { LoadingScreen } from '@/components/Layout/LoadingScreen';
 import { Section } from '@/components/Layout/Section';
 import { ReviewsDetailList } from '@/components/Store/ReviewsDetailList';
-import { useGetStoreDetail } from '@/hooks/store/useGetStoreDetail';
 import { useGetReviewList } from '@/hooks/review/useGetReviewList';
+import { useGetStoreDetail } from '@/hooks/store/useGetStoreDetail';
 import { getRatingRatios } from '@/utils/rating';
 
 type StoreDetailReviewTabProps = {
@@ -29,7 +29,7 @@ export const StoreDetailReviewTab = ({ store }: StoreDetailReviewTabProps) => {
     const counts: { [score: number]: number } = {};
 
     for (const review of reviews.list) {
-      const roundedScore = Math.round(review.score.total);
+      const roundedScore = Math.round(review.score?.total ?? 0);
       counts[roundedScore] = (counts[roundedScore] ?? 0) + 1;
     }
 

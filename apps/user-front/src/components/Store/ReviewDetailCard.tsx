@@ -3,7 +3,7 @@ import { useState } from 'react';
 
 import { Review, StoreInfo } from '@repo/api/user';
 import { BottomSheet, Button, Dialog, toast } from '@repo/design-system/components/b2c';
-import { FoodingIcon, HeartIcon } from '@repo/design-system/icons';
+import { FoodingIcon, HeartIcon, MessageSquareIcon } from '@repo/design-system/icons';
 import { useFlow } from '@stackflow/react/future';
 import { overlay } from 'overlay-kit';
 
@@ -83,7 +83,7 @@ export const ReviewDetailCard = ({ review, store }: ReviewCardProps) => {
               <p className='body-7 text-gray-5'>리뷰 {review.userReviewCount}</p>
             </div>
             <div className='flex gap-2'>
-              <StarRating score={review.score.total} />
+              <StarRating score={review.score?.total ?? 0} />
               <p className='body-8 text-gray-5'>{formatDotDate(review.createdAt)}</p>
             </div>
           </div>
@@ -93,30 +93,46 @@ export const ReviewDetailCard = ({ review, store }: ReviewCardProps) => {
           <span className='body-7 text-primary-pink'>BEST</span>
         </div>
       </div>
-
-      <div className='flex flex-col'>
-        <p className='my-4 body-8 text-gray-5'>{review.content}</p>
-        {imageUrls && imageUrls.length > 0 && (
-          <div className='flex overflow-x-auto scrollbar-hide gap-3'>
-            {imageUrls.map((url, idx) => (
-              <button key={idx} onClick={() => onImageClick(idx)}>
-                <Image
-                  width={140}
-                  height={140}
-                  src={url}
-                  alt={`리뷰이미지_${idx}`}
-                  className='size-[140px] rounded-2xl shrink-0 object-cover'
-                />
-              </button>
-            ))}
-          </div>
-        )}
+      <div
+        onClick={() => {
+          flow.push('ReviewDetailScreen', { review, storeName: store.name });
+        }}
+      >
+        <div className='flex flex-col'>
+          <p className='my-4 body-8 text-gray-5'>{review.content}</p>
+          {imageUrls && imageUrls.length > 0 && (
+            <div className='flex overflow-x-auto scrollbar-hide gap-3'>
+              {imageUrls.map((url, idx) => (
+                <button
+                  key={idx}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onImageClick(idx);
+                  }}
+                >
+                  <Image
+                    width={140}
+                    height={140}
+                    src={url}
+                    alt={`리뷰이미지_${idx}`}
+                    className='size-[140px] rounded-2xl shrink-0 object-cover'
+                  />
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
       </div>
-
       <div className='flex justify-between items-center mt-3 gap-5'>
-        <div className='flex gap-2'>
-          <HeartIcon size={12} />
-          <span className='body-7 text-gray-6'>{review.likeCount}</span>
+        <div className='flex gap-4'>
+          <div className='flex gap-2'>
+            <HeartIcon size={12} />
+            <span className='body-7 text-gray-6'>{review.likeCount}</span>
+          </div>
+          <div className='flex gap-2'>
+            <MessageSquareIcon size={12} />
+            <span className='body-7 text-gray-6'>{review.replies.length}</span>
+          </div>
         </div>
         <button
           type='button'
@@ -225,7 +241,7 @@ export const StoreCard = ({ review, store }: { review: Review; store: StoreInfo 
       <div className='flex flex-col'>
         <p className='subtitle-4 text-left'>{store.name}</p>
         <div className='flex items-center gap-2'>
-          <StarRating score={review.score.total} />
+          <StarRating score={review.score?.total ?? 0} />
           <p className='body-8 text-gray-5'>{formatDotDate(review.createdAt)}</p>
         </div>
       </div>
