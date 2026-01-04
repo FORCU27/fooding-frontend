@@ -1,6 +1,6 @@
 'use client';
 
-import { RegularHolidayType, StoreOperatingHourBody } from '@repo/api/ceo';
+import { DAY_OF_WEEK, DayOfWeek, RegularHolidayType, StoreOperatingHourBody } from '@repo/api/ceo';
 import { ProgressCircle, toast, Toaster } from '@repo/design-system/components/b2c';
 
 import { OperatingHoursForm } from './components/OperatingHourForm';
@@ -8,8 +8,6 @@ import { useStore } from '@/context/StoreContext';
 import { useCreateStoreOperatingHour } from '@/hooks/store/useCreateStoreOperatingHour';
 import { useGetStoreOperatingHour } from '@/hooks/store/useGetStoreOperatingHour';
 import { useModifyStoreOperatingHour } from '@/hooks/store/useModifyStoreOperatingHour';
-
-type DayOfWeek = 'SUNDAY' | 'MONDAY' | 'TUESDAY' | 'WEDNESDAY' | 'THURSDAY' | 'FRIDAY' | 'SATURDAY';
 
 const SeatGuidePage = () => {
   const { storeId } = useStore();
@@ -32,49 +30,57 @@ const SeatGuidePage = () => {
     closedNationalHolidays: storeOperatingHour.closedNationalHolidays ?? [],
     customHolidays: storeOperatingHour.customHolidays ?? [],
     operatingNotes: storeOperatingHour.operatingNotes ?? '',
-    dailyOperatingTimes: storeOperatingHour.dailyOperatingTimes.map((item, index) => ({
-      id: item.id ?? index + 1,
-      dayOfWeek: item.dayOfWeek as DayOfWeek,
-      openTime: item.openTime ?? null,
-      closeTime: item.closeTime ?? null,
-      breakStartTime: item.breakStartTime ?? null,
-      breakEndTime: item.breakEndTime ?? null,
-    })),
+
+    dailyOperatingTimes:
+      storeOperatingHour.dailyOperatingTimes?.map((b) => ({
+        id: b.id,
+        dayOfWeek: b.dayOfWeek as DayOfWeek,
+        openTime: b.openTime,
+        closeTime: b.closeTime,
+      })) ?? [],
+
+    dailyBreakTimes:
+      storeOperatingHour.dailyBreakTimes?.map((b) => ({
+        id: b.id,
+        dayOfWeek: b.dayOfWeek as DayOfWeek,
+        breakStartTime: b.breakStartTime,
+        breakEndTime: b.breakEndTime,
+      })) ?? [],
   };
 
   const handleFormSubmit = (formData: StoreOperatingHourBody) => {
     if (!storeId || isPending) return;
+    const dailyOperatingTimes = formData.dailyOperatingTimes.map((item) => ({
+      id: item.id,
+      dayOfWeek: item.dayOfWeek,
+      openTime: item.openTime ? item.openTime : null,
+      closeTime: item.closeTime ? item.closeTime : null,
+    }));
 
-    const dailyOperatingTimesForServer = formData.dailyOperatingTimes.map((item) => {
-      const existing = originValues?.dailyOperatingTimes.find(
-        (d) => d.dayOfWeek === item.dayOfWeek,
-      );
-
+    const dailyBreakTimes = DAY_OF_WEEK.map((day) => {
+      const breakItem = formData.dailyBreakTimes?.find((b) => b.dayOfWeek === day);
       return {
-        id: existing?.id ?? 0,
-        dayOfWeek: item.dayOfWeek as DayOfWeek,
-        openTime: item.openTime,
-        closeTime: item.closeTime,
-        breakStartTime: item.breakStartTime,
-        breakEndTime: item.breakEndTime,
+        ...(breakItem?.id ? { id: breakItem.id } : {}),
+        dayOfWeek: day,
+        breakStartTime: breakItem?.breakStartTime ?? null,
+        breakEndTime: breakItem?.breakEndTime ?? null,
       };
     });
+    const body: StoreOperatingHourBody = {
+      hasHoliday: formData.hasHoliday,
+      regularHolidayType: formData.hasHoliday ? formData.regularHolidayType : null,
+      regularHoliday: formData.hasHoliday ? formData.regularHoliday : null,
+      closedNationalHolidays: formData.closedNationalHolidays,
+      customHolidays: formData.customHolidays,
+      operatingNotes: formData.operatingNotes,
 
-    const body = {
-      regularHolidayType:
-        formData.regularHoliday && formData.regularHoliday.length > 0
-          ? formData.regularHolidayType
-          : null,
-      regularHoliday: formData.regularHoliday ?? originValues?.regularHoliday ?? null,
-      closedNationalHolidays:
-        formData.closedNationalHolidays ?? originValues?.closedNationalHolidays ?? [],
-      customHolidays: formData.customHolidays ?? originValues?.customHolidays ?? [],
-      operatingNotes: formData.operatingNotes ?? originValues?.operatingNotes ?? '',
-      hasHoliday: formData.hasHoliday ?? originValues?.hasHoliday ?? false,
-      dailyOperatingTimes: dailyOperatingTimesForServer,
+      dailyOperatingTimes,
+      dailyBreakTimes,
     };
 
-    if (!storeOperatingHour?.id) {
+    const isCreate = storeOperatingHour?.id == null;
+
+    if (isCreate) {
       createMutate(
         { storeId: Number(storeId), body },
         {
