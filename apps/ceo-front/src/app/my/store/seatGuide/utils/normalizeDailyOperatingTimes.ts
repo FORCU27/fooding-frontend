@@ -1,17 +1,17 @@
-import { DailyOperatingTime } from '@repo/api/ceo';
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { FormDailyOperatingTime } from '../components/OperatingHourForm';
 
-export const normalizeDailyOperatingTimes = (times: DailyOperatingTime[]): DailyOperatingTime[] => {
+export const normalizeDailyOperatingTimes = (
+  times: FormDailyOperatingTime[],
+): FormDailyOperatingTime[] => {
   return times.map((item) => {
-    const isClosed = item.openTime == null && item.closeTime == null;
+    const isClosed = !item.openTime || !item.closeTime;
 
-    if (isClosed) {
-      return {
-        ...item,
-        breakStartTime: null,
-        breakEndTime: null,
-      };
-    }
-
-    return item;
+    return {
+      ...item,
+      // 휴무일이면 breakStartTime/breakEndTime는 null
+      breakStartTime: isClosed ? null : ((item as any).breakStartTime ?? null),
+      breakEndTime: isClosed ? null : ((item as any).breakEndTime ?? null),
+    };
   });
 };
