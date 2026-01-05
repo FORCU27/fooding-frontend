@@ -1,4 +1,4 @@
-import { Dispatch, SetStateAction, useEffect, useState } from 'react';
+import { Dispatch, SetStateAction, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 import { DAY_OF_WEEK, StoreOperatingHourBody } from '@repo/api/ceo';
 import {
@@ -48,81 +48,98 @@ export const BusinessHourForm = ({
   const originBreak = originValues?.dailyBreakTimes;
 
   // 단일/다중 시간대 모두 지원하는 구조
-  const defaultEverydayHours: { start: string[]; end: string[]; isClosed?: boolean } =
-    originOperating?.[0]
-      ? {
-          start: [toHHmm(originOperating[0].openTime)],
-          end: [toHHmm(originOperating[0].closeTime)],
-          isClosed: false,
-        }
-      : { start: ['09:00'], end: ['22:00'], isClosed: false };
+  const defaultEverydayHours = useMemo(() => {
+    if (!originOperating || originOperating.length === 0) {
+      return { start: ['09:00'], end: ['22:00'], isClosed: false };
+    }
+    const firstDay = originOperating[0]?.dayOfWeek;
+    const sameDayOp = originOperating.filter((op) => op.dayOfWeek === firstDay);
+    return {
+      start: sameDayOp.map((op) => toHHmm(op.openTime)),
+      end: sameDayOp.map((op) => toHHmm(op.closeTime)),
+      isClosed: false,
+    };
+  }, [originOperating]);
 
   // by day 초기값
-  const defaultBydayHours: HoursByDay = Object.fromEntries(
-    daysOfWeekKor.map((day) => {
-      const engDay = dayMapping[day];
-      const opItems =
-        originValues?.dailyOperatingTimes?.filter((d) => d.dayOfWeek === engDay) ?? [];
+  const defaultBydayHours: HoursByDay = useMemo(() => {
+    return Object.fromEntries(
+      daysOfWeekKor.map((day) => {
+        const engDay = dayMapping[day];
+        const opItems =
+          originValues?.dailyOperatingTimes?.filter((d) => d.dayOfWeek === engDay) ?? [];
 
-      const isClosed =
-        opItems.length === 0 ||
-        (opItems.every((d) => d.openTime === null) && opItems.every((d) => d.closeTime === null));
+        const isClosed =
+          opItems.length === 0 ||
+          (opItems.every((d) => d.openTime === null) && opItems.every((d) => d.closeTime === null));
 
-      return [
-        day,
-        {
-          start: opItems.length && !isClosed ? opItems.map((d) => toHHmm(d.openTime)) : [''],
-          end: opItems.length && !isClosed ? opItems.map((d) => toHHmm(d.closeTime)) : [''],
-          isClosed,
-        },
-      ];
-    }),
-  ) as HoursByDay;
+        return [
+          day,
+          {
+            start: opItems.length && !isClosed ? opItems.map((d) => toHHmm(d.openTime)) : [''],
+            end: opItems.length && !isClosed ? opItems.map((d) => toHHmm(d.closeTime)) : [''],
+            isClosed,
+          },
+        ];
+      }),
+    ) as HoursByDay;
+  }, [originValues, daysOfWeekKor, dayMapping]);
 
-  const defaultBreakBydayHours: HoursByDay = Object.fromEntries(
-    daysOfWeekKor.map((day) => {
-      const engDay = dayMapping[day];
-      const brItems = originValues?.dailyBreakTimes?.filter((d) => d.dayOfWeek === engDay) ?? [];
-      const opItems =
-        originValues?.dailyOperatingTimes?.filter((d) => d.dayOfWeek === engDay) ?? [];
+  const defaultBreakBydayHours: HoursByDay = useMemo(() => {
+    return Object.fromEntries(
+      daysOfWeekKor.map((day) => {
+        const engDay = dayMapping[day];
+        const brItems = originValues?.dailyBreakTimes?.filter((d) => d.dayOfWeek === engDay) ?? [];
+        const opItems =
+          originValues?.dailyOperatingTimes?.filter((d) => d.dayOfWeek === engDay) ?? [];
 
-      const isClosed =
-        opItems.length === 0 ||
-        (opItems.every((d) => d.openTime === null) && opItems.every((d) => d.closeTime === null));
-      return [
-        day,
-        {
-          start:
-            brItems.length && !isClosed ? brItems.map((d) => toHHmm(d.breakStartTime)) : ['15:00'],
-          end: brItems.length && !isClosed ? brItems.map((d) => toHHmm(d.breakEndTime)) : ['17:00'],
-          isClosed,
-        },
-      ];
-    }),
-  ) as HoursByDay;
+        const isClosed =
+          opItems.length === 0 ||
+          (opItems.every((d) => d.openTime === null) && opItems.every((d) => d.closeTime === null));
+        return [
+          day,
+          {
+            start:
+              brItems.length && !isClosed ? brItems.map((d) => toHHmm(d.breakStartTime)) : ['15:00'],
+            end: brItems.length && !isClosed ? brItems.map((d) => toHHmm(d.breakEndTime)) : ['17:00'],
+            isClosed,
+          },
+        ];
+      }),
+    ) as HoursByDay;
+  }, [originValues, daysOfWeekKor, dayMapping]);
 
   // 상태
+  const getInitialBreakEveryday = () => {
+    if (!originBreak || originBreak.length === 0) {
+      return { start: ['13:00'], end: ['17:00'], isClosed: false };
+    }
+    const firstDay = originBreak[0]?.dayOfWeek;
+    const firstDayBreaks = originBreak.filter((b) => b.dayOfWeek === firstDay);
+    return {
+      start: firstDayBreaks.map((b) => toHHmm(b.breakStartTime)),
+      end: firstDayBreaks.map((b) => toHHmm(b.breakEndTime)),
+      isClosed: false,
+    };
+  };
+
   const [everydayHours, setEverydayHours] = useState(defaultEverydayHours);
   const [bydayHours, setBydayHours] = useState<HoursByDay>(defaultBydayHours);
   const [breakEverydayHours, setBreakEverydayHours] = useState<{
     start: string[];
     end: string[];
     isClosed?: boolean;
-  }>(
-    originBreak?.[0]
-      ? {
-          start: [toHHmm(originBreak[0].breakStartTime)],
-          end: [toHHmm(originBreak[0].breakEndTime)],
-          isClosed: false,
-        }
-      : { start: ['13:00'], end: ['17:00'], isClosed: false },
-  );
+  }>(getInitialBreakEveryday());
   const [breakBydayHours, setBreakBydayHours] = useState<HoursByDay>(defaultBreakBydayHours);
   const mapDayToKor = (day: string) =>
     Object.entries(dayMapping).find(([, eng]) => eng === day)?.[0] || '';
 
+
+
+  const hasInitializedRef = useRef(false);
+
   useEffect(() => {
-    if (!originValues?.dailyBreakTimes) return;
+    if (!originValues || hasInitializedRef.current) return;
 
     const allBreakNull = originValues.dailyBreakTimes.every(
       (b) => b.breakStartTime === null && b.breakEndTime === null,
@@ -131,14 +148,32 @@ export const BusinessHourForm = ({
     if (allBreakNull) {
       onBreakModeChange('none');
     } else {
-      // 모든 휴게시간이 동일한지 확인
       const first = originValues.dailyBreakTimes[0];
       const allSame = originValues.dailyBreakTimes.every(
         (b) => b.breakStartTime === first?.breakStartTime && b.breakEndTime === first.breakEndTime,
       );
       onBreakModeChange(allSame ? 'same_everyday' : 'different_by_day');
     }
-  }, [originValues, onBreakModeChange]);
+
+    // 초기 데이터 로드 시에만 상태 설정
+    setEverydayHours(defaultEverydayHours);
+    setBydayHours(defaultBydayHours);
+
+    const firstDay = originValues.dailyBreakTimes[0]?.dayOfWeek;
+    const firstDayBreaks = originValues.dailyBreakTimes.filter((b) => b.dayOfWeek === firstDay);
+    setBreakEverydayHours(
+      firstDayBreaks.length > 0
+        ? {
+            start: firstDayBreaks.map((b) => toHHmm(b.breakStartTime)),
+            end: firstDayBreaks.map((b) => toHHmm(b.breakEndTime)),
+            isClosed: false,
+          }
+        : { start: ['15:00'], end: ['17:00'], isClosed: false }
+    );
+    setBreakBydayHours(defaultBreakBydayHours);
+    
+    hasInitializedRef.current = true;
+  }, [originValues, onBreakModeChange, defaultEverydayHours, defaultBydayHours, defaultBreakBydayHours]);
 
   // form 반영
   useEffect(() => {
@@ -180,48 +215,67 @@ export const BusinessHourForm = ({
       };
     });
 
-    const breakTimes = DAY_OF_WEEK.map((day) => {
-      let start: string | null = null;
-      let end: string | null = null;
-
+    const breakTimesFlat = DAY_OF_WEEK.flatMap((day) => {
       if (breakMode === 'none') {
-        start = null;
-        end = null;
+        return [{ day, start: null, end: null }];
       } else if (breakMode === 'same_everyday') {
-        // 입력값이 있으면 사용, 없으면 null (빈 문자열도 null)
-        start = breakEverydayHours.start[0]?.trim() || null;
-        end = breakEverydayHours.end[0]?.trim() || null;
+        // 모든 휴게시간을 리스트에 담음
+        if (breakEverydayHours.start.length === 0) {
+          return [{ day, start: null, end: null }];
+        }
+        return breakEverydayHours.start.map((s, i) => ({
+          day,
+          start: s?.trim() || null,
+          end: breakEverydayHours.end[i]?.trim() || null,
+        }));
       } else if (breakMode === 'different_by_day') {
         const korDay = mapDayToKor(day);
         const item = korDay ? breakBydayHours[korDay] : undefined;
 
         if (item && !item.isClosed) {
-          // 영업 휴무가 아니면 휴게시간 입력 가능
-          start = item.start[0]?.trim() || null;
-          end = item.end[0]?.trim() || null;
+          if (item.start.length === 0) {
+            return [{ day, start: null, end: null }];
+          }
+          return item.start.map((s, i) => ({
+            day,
+            start: s?.trim() || null,
+            end: item.end[i]?.trim() || null,
+          }));
         }
-        // item.isClosed === true 이면 → 영업 휴무 → 휴게시간도 null (자동)
+        return [{ day, start: null, end: null }];
       }
-
-      return { day, start, end };
+      return [];
     });
 
-    const merged = operatingTimes.map((op) => {
-      const breakItem = breakTimes.find((b) => b.day === op.dayOfWeek);
+    const breakTimesForm = breakTimesFlat.map((b) => {
+      // 해당 요일에서 몇 번째 휴게시간인지 확인
+      const sameDayBreaks = breakTimesFlat.filter((x) => x.day === b.day);
+      const position = sameDayBreaks.indexOf(b);
 
-      // 영업시간 휴무 처리 (기존 로직 유지)
-      const isOperatingClosed = !op.openTime || op.openTime.trim() === '';
+      // 원본 데이터에서 같은 요일의 같은 순서인 항목의 ID를 찾음
+      const originSameDayBreaks = originBreak?.filter((ob) => ob.dayOfWeek === b.day) || [];
+      const originItem = originSameDayBreaks[position];
 
       return {
-        ...op,
-        openTime: isOperatingClosed ? null : op.openTime,
-        closeTime: isOperatingClosed ? null : op.closeTime,
-        breakStartTime: breakItem?.start ?? null,
-        breakEndTime: breakItem?.end ?? null,
+        ...(originItem?.id && { id: originItem.id }),
+        dayOfWeek: b.day as any,
+        openTime: null,
+        closeTime: null,
+        breakStartTime: b.start,
+        breakEndTime: b.end,
       };
     });
 
-    setValue('dailyOperatingTimes', merged);
+    console.log('=== [DEBUG] BusinessHourForm: setValue 호출 직전 ===');
+    console.log('현재 breakMode:', breakMode);
+    console.log('breakEverydayHours(상태):', JSON.stringify(breakEverydayHours));
+    console.log('breakTimesFlat 개수:', breakTimesFlat.length);
+    console.log('breakTimesForm 개수:', breakTimesForm.length);
+    console.log('breakTimesForm 데이터:', breakTimesForm);
+    console.log('==================================================');
+
+    setValue('dailyOperatingTimes', operatingTimes);
+    setValue('dailyBreakTimes', breakTimesForm);
   }, [
     mode,
     breakMode,
@@ -231,7 +285,13 @@ export const BusinessHourForm = ({
     breakBydayHours,
     setValue,
     originOperating,
+    originBreak,
   ]);
+
+  // breakEverydayHours 상태 변화 추적 로그
+  useEffect(() => {
+    console.log('=== [DEBUG] breakEverydayHours 상태 변경됨:', breakEverydayHours);
+  }, [breakEverydayHours]);
 
   return (
     <div className='flex flex-col gap-4 w-full'>

@@ -57,15 +57,17 @@ const SeatGuidePage = () => {
       closeTime: item.closeTime ? item.closeTime : null,
     }));
 
-    const dailyBreakTimes = DAY_OF_WEEK.map((day) => {
-      const breakItem = formData.dailyBreakTimes?.find((b) => b.dayOfWeek === day);
-      return {
-        ...(breakItem?.id ? { id: breakItem.id } : {}),
-        dayOfWeek: day,
-        breakStartTime: breakItem?.breakStartTime ?? null,
-        breakEndTime: breakItem?.breakEndTime ?? null,
-      };
-    });
+    // 모든 휴게시간 구간을 유지 (요일별 여러 개 허용)
+    // 새 항목에는 임시 ID 부여 (기존 최대 ID + 순서)
+    const existingMaxId = Math.max(...(formData.dailyBreakTimes ?? []).map((b) => b.id ?? 0), 0);
+    let tempIdCounter = existingMaxId + 1;
+
+    const dailyBreakTimes = (formData.dailyBreakTimes ?? []).map((item) => ({
+      id: item.id ?? tempIdCounter++,
+      dayOfWeek: item.dayOfWeek,
+      breakStartTime: item.breakStartTime ?? null,
+      breakEndTime: item.breakEndTime ?? null,
+    }));
     const body: StoreOperatingHourBody = {
       hasHoliday: formData.hasHoliday,
       regularHolidayType: formData.hasHoliday ? formData.regularHolidayType : null,

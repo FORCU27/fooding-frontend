@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, Dispatch, SetStateAction, useEffect } from 'react';
+import { useState, Dispatch, SetStateAction, useEffect, useRef } from 'react';
 
 import { MinusCircle, PlusIcon } from 'lucide-react';
 
@@ -54,12 +54,9 @@ export interface BusinessHoursProps {
   hasAddButton?: boolean;
   everydayHours?: { start: string[]; end: string[] };
   bydayHours?: HoursByDay;
-  originValues?: StoreOperatingHourBody;
   onModeChange?: Dispatch<SetStateAction<OperatingMode>>;
   onBreakModeChange?: Dispatch<SetStateAction<BreakMode>>;
-  onEverydayHoursChange?: Dispatch<
-    SetStateAction<{ start: string[]; end: string[]; isClosed?: boolean }>
-  >;
+  onEverydayHoursChange?: Dispatch<SetStateAction<{ start: string[]; end: string[] }>>;
   onBydayHoursChange?: Dispatch<SetStateAction<HoursByDay>>;
 }
 
@@ -69,7 +66,6 @@ export const BusinessHours = ({
   name,
   type = 'operating',
   hasAddButton = false,
-  originValues,
   everydayHours: externalEverydayHours,
   bydayHours: externalBydayHours,
   onModeChange,
@@ -106,23 +102,69 @@ export const BusinessHours = ({
   const setBydayHours = onBydayHoursChange ?? setDefaultBydayHours;
 
   // UI용 리스트 상태
-  const [everydayHoursList, setEverydayHoursList] = useState<{ start: string; end: string }[]>(
-    everydayHours.start.map((s, i) => ({
-      start: s,
-      end: everydayHours.end[i] ?? '22:00',
-    })),
-  );
+  const [everydayHoursList, setEverydayHoursList] = useState<{ start: string; end: string }[]>(() => {
+    // 최소 1개의 데이터 보장
+    if (!everydayHours.start || everydayHours.start.length === 0) {
+      return [{ start: '09:00', end: '22:00' }];
+    }
+    return everydayHours.start.map((s, i) => ({
+      start: s || '09:00',
+      end: everydayHours.end[i] || '22:00',
+    }));
+  });
+
+  // 외부 everydayHours 변경시 everydayHoursList 동기화 (useRef로 무한루프 방지)
+  const prevPropsEverydayHoursRef = useRef(everydayHours);
+  
+  useEffect(() => {
+    // 외부 프로퍼티가 실제로 변경된 경우에만 동기화
+    const prevStart = prevPropsEverydayHoursRef.current.start?.join(',') || '';
+    const prevEnd = prevPropsEverydayHoursRef.current.end?.join(',') || '';
+    const newStart = everydayHours.start?.join(',') || '';
+    const newEnd = everydayHours.end?.join(',') || '';
+    
+    if (prevStart !== newStart || prevEnd !== newEnd) {
+      const newList = (everydayHours.start || []).map((s, i) => ({
+        start: s || '09:00',
+        end: everydayHours.end?.[i] || '22:00',
+      }));
+      setEverydayHoursList(newList.length > 0 ? newList : [{ start: '09:00', end: '22:00' }]);
+      prevPropsEverydayHoursRef.current = everydayHours;
+    }
+  }, [everydayHours]);
+
+  // TimePicker 값 변경 핸들러 (내부 상태 + 상위 상태 동시 업데이트)
+  const handleTimePickerChange = (index: number, type: 'start' | 'end', value: string) => {
+    const newList = everydayHoursList.map((h, i) => 
+      i === index ? { ...h, [type]: value } : h
+    );
+    setEverydayHoursList(newList);
+    
+    // 상위 상태도 즉시 업데이트
+    const updatedValue = {
+      start: newList.map((h) => h.start),
+      end: newList.map((h) => h.end),
+    };
+    
+    // 내부 업데이트임을 알 수 있게 Ref 최신화
+    prevPropsEverydayHoursRef.current = updatedValue;
+    setEverydayHours(updatedValue);
+  };
 
   const handleAddHours = () => {
-    // 리스트 상태 먼저 업데이트
-    const newList = [...everydayHoursList, { start: '', end: '' }];
+    // 리스트 상태 먼저 업데이트 (브레이크 타임일 경우의 기본값 고려)
+    const lastItem = everydayHoursList[everydayHoursList.length - 1];
+    const newStart = lastItem ? lastItem.end : (type === 'breakTime' ? '15:00' : '09:00');
+    const newEnd = lastItem ? lastItem.end : (type === 'breakTime' ? '17:00' : '22:00');
+
+    const newList = [...everydayHoursList, { start: newStart, end: newEnd }];
     setEverydayHoursList(newList);
 
-    // form용 상태도 같이 업데이트
     const newEverydayHours = {
       start: newList.map((h) => h.start),
       end: newList.map((h) => h.end),
     };
+    prevPropsEverydayHoursRef.current = newEverydayHours;
     setEverydayHours(newEverydayHours);
   };
 
@@ -136,105 +178,11 @@ export const BusinessHours = ({
       start: newList.map((h) => h.start),
       end: newList.map((h) => h.end),
     };
+    prevPropsEverydayHoursRef.current = newEverydayHours;
     setEverydayHours(newEverydayHours);
   };
 
-  useEffect(() => {
-    if (type !== 'breakTime') return;
-
-    if (!originValues || !originValues.dailyBreakTimes?.length) {
-      // 휴게시간 데이터 없음 → 'none'
-      setDefaultBreakMode('none');
-      if (onBreakModeChange) onBreakModeChange('none');
-
-      setEverydayHours({ start: [''], end: [''] });
-
-      if (setBydayHours) {
-        const emptyByDay: HoursByDay = {};
-        daysOfWeek.forEach((day) => {
-          emptyByDay[day] = { start: [''], end: [''], isClosed: false };
-        });
-        setBydayHours(emptyByDay);
-      }
-      return;
-    }
-
-    const breakTimes = originValues.dailyBreakTimes;
-    const firstBreak = breakTimes[0];
-
-    // 모든 휴게시간이 동일한지 (null 포함)
-    const allSame = breakTimes.every(
-      (b) =>
-        b.breakStartTime === firstBreak?.breakStartTime &&
-        b.breakEndTime === firstBreak?.breakEndTime,
-    );
-
-    // 모든 휴게시간이 null인지 → 'none'
-    const allNone = breakTimes.every((b) => b.breakStartTime === null && b.breakEndTime === null);
-
-    let initialMode: BreakMode;
-
-    if (allNone) {
-      initialMode = 'none';
-    } else if (allSame) {
-      initialMode = 'same_everyday';
-    } else {
-      initialMode = 'different_by_day';
-    }
-
-    // 여기서 setModeFn 대신 직접 분기 호출
-    setDefaultBreakMode(initialMode);
-    if (onBreakModeChange) {
-      onBreakModeChange(initialMode);
-    }
-
-    // 나머지 로직...
-    if (initialMode === 'same_everyday') {
-      const start = firstBreak?.breakStartTime ?? '';
-      const end = firstBreak?.breakEndTime ?? '';
-      setDefaultEverydayHours({ start: [start], end: [end] });
-      setEverydayHoursList([{ start, end }]);
-    } else if (initialMode === 'different_by_day') {
-      const newBydayHours: HoursByDay = {};
-      daysOfWeek.forEach((day) => {
-        const engDay = dayMapping[day];
-        const operating = originValues.dailyOperatingTimes?.find((d) => d.dayOfWeek === engDay);
-        const breakTime = breakTimes.find((d) => d.dayOfWeek === engDay);
-
-        const isShopClosed =
-          !operating || operating.openTime === null || operating.closeTime === null;
-
-        newBydayHours[day] = {
-          start: [breakTime?.breakStartTime ?? ''],
-          end: [breakTime?.breakEndTime ?? ''],
-          isClosed: isShopClosed, // 영업 휴무일 때만 휴게시간도 휴무 체크
-        };
-      });
-      setDefaultBydayHours(newBydayHours);
-      setBydayHours?.(newBydayHours);
-    }
-  }, [originValues, type, onBreakModeChange, setEverydayHours, setBydayHours]);
-
-  useEffect(() => {
-    if (mode === 'none') {
-      // UI용 리스트 초기화
-      setEverydayHoursList((prev) => prev.map(() => ({ start: '', end: '' })));
-
-      // form용 bydayHours 초기화 (요일별 브레이크타임)
-      if (setBydayHours) {
-        const emptyByDay: HoursByDay = {};
-        daysOfWeek.forEach((day) => {
-          emptyByDay[day] = { start: [''], end: [''], isClosed: false };
-        });
-        setBydayHours(emptyByDay);
-      }
-
-      // form용 everydayHours도 초기화
-      setEverydayHours({ start: [''], end: [''] });
-    }
-  }, [mode, setBydayHours, setEverydayHours]);
-
-  // same_everyday 모드일 때 휴게시간 byday 동기화
+  // 브레이크 타임일 때 매일 같아요 모드면 요일별 데이터로 동기화
   useEffect(() => {
     if (type !== 'breakTime' || mode !== 'same_everyday' || !setBydayHours) return;
     const newBydayHours = Object.fromEntries(
@@ -248,56 +196,6 @@ export const BusinessHours = ({
     setBydayHours(newBydayHours);
   }, [everydayHoursList, mode, type, setBydayHours]);
 
-  // originValues로 초기값 세팅
-  useEffect(() => {
-    if (!originValues) return;
-
-    if (mode === 'same_everyday') {
-      const firstBreak = originValues.dailyBreakTimes?.[0];
-      const start = firstBreak?.breakStartTime ?? '09:00';
-      const end = firstBreak?.breakEndTime ?? '22:00';
-      setDefaultEverydayHours({ start: [start], end: [end] });
-      setEverydayHoursList([{ start, end }]);
-    } else if (mode === 'different_by_day') {
-      const newBydayHours: HoursByDay = {};
-      daysOfWeek.forEach((day) => {
-        const korDay = mapKorDay(day);
-        const operating = originValues.dailyOperatingTimes?.find((d) => d.dayOfWeek === korDay);
-        const breakTime = originValues.dailyBreakTimes?.find((d) => d.dayOfWeek === korDay);
-
-        // 영업시간이 없으면 휴무
-        const isClosed = !operating || operating.openTime === null || operating.closeTime === null;
-        newBydayHours[day] = {
-          start: isClosed ? [''] : [breakTime?.breakStartTime ?? operating.openTime ?? '09:00'],
-          end: isClosed ? [''] : [breakTime?.breakEndTime ?? operating.closeTime ?? '22:00'],
-          isClosed,
-        };
-      });
-      setDefaultBydayHours(newBydayHours);
-    }
-  }, [originValues, mode]);
-
-  useEffect(() => {
-    if (mode === 'none') {
-      //  UI용 리스트 초기화 (렌더링용, hidden일 수 있음)
-      setEverydayHoursList(
-        Array(1).fill({ start: '', end: '' }), // UI에 표시할 리스트, 1개라도 충분
-      );
-
-      // form용 everydayHours 초기화
-      setEverydayHours({ start: [''], end: [''] });
-
-      // form용 bydayHours 초기화 (요일별 브레이크타임)
-      if (setBydayHours) {
-        const emptyByDay: HoursByDay = {};
-        daysOfWeek.forEach((day) => {
-          emptyByDay[day] = { start: [''], end: [''], isClosed: true }; // 휴무 처리
-        });
-        setBydayHours(emptyByDay);
-      }
-    }
-  }, [mode, setBydayHours, setEverydayHours]);
-
   // 요일 휴무 토글
   const handleDayOffToggle = (day: string) => {
     setBydayHours((prev) => {
@@ -308,9 +206,8 @@ export const BusinessHours = ({
         [day]: {
           ...current,
           isClosed: newClosed,
-          // 휴무라면 start/end 비우기, 아니면 기존 값 유지
-          start: newClosed ? [''] : current.start.length ? current.start : ['09:00'],
-          end: newClosed ? [''] : current.end.length ? current.end : ['22:00'],
+          start: newClosed ? [''] : current.start.length && current.start[0] !== '' ? current.start : ['09:00'],
+          end: newClosed ? [''] : current.end.length && current.end[0] !== '' ? current.end : ['22:00'],
         },
       };
     });
@@ -327,11 +224,7 @@ export const BusinessHours = ({
     }));
   };
 
-  useEffect(() => {
-    if (mode === 'none') {
-      setEverydayHoursList((prev) => prev.map(() => ({ start: '', end: '' })));
-    }
-  }, [mode]);
+
 
   const options =
     type === 'operating'
@@ -356,22 +249,30 @@ export const BusinessHours = ({
           const newMode = val as any;
 
           // 핵심: breakTime이고 none에서 다른 모드로 바꿀 때 강제로 15:00 ~ 17:00 주입
+          // 단, 이미 값이 있는 경우에는(API 데이터 등) 덮어쓰지 않음
           if (type === 'breakTime' && mode === 'none' && newMode !== 'none') {
-            // everydayHours 강제 설정
-            const defaultHours = { start: ['15:00'], end: ['17:00'] };
-            onEverydayHoursChange?.(defaultHours);
+            const hasExistingData = everydayHours.start.some((s) => s && s !== '') || 
+                                   (bydayHours && Object.values(bydayHours).some(day => day.start.some(s => s && s !== '')));
 
-            // bydayHours도 모든 요일에 강제 설정
-            if (onBydayHoursChange) {
-              const filledByDay: HoursByDay = {};
-              daysOfWeek.forEach((day) => {
-                filledByDay[day] = {
-                  start: ['15:00'],
-                  end: ['17:00'],
-                  isClosed: false,
-                };
-              });
-              onBydayHoursChange(filledByDay);
+            if (!hasExistingData) {
+              const defaultHours = { start: ['15:00'], end: ['17:00'] };
+              
+              // UI 리스트와 Ref, 상위 상태를 모두 동기화
+              setEverydayHoursList([{ start: '15:00', end: '17:00' }]);
+              prevPropsEverydayHoursRef.current = defaultHours;
+              onEverydayHoursChange?.(defaultHours);
+
+              if (onBydayHoursChange) {
+                const filledByDay: HoursByDay = {};
+                daysOfWeek.forEach((day) => {
+                  filledByDay[day] = {
+                    start: ['15:00'],
+                    end: ['17:00'],
+                    isClosed: false,
+                  };
+                });
+                onBydayHoursChange(filledByDay);
+              }
             }
           }
 
@@ -397,20 +298,12 @@ export const BusinessHours = ({
                 <div key={index} className='flex items-center gap-4 w-full'>
                   <TimePicker
                     value={hours.start}
-                    onChange={(start) =>
-                      setEverydayHoursList((prev) =>
-                        prev.map((h, i) => (i === index ? { ...h, start } : h)),
-                      )
-                    }
+                    onChange={(start) => handleTimePickerChange(index, 'start', start)}
                   />
                   <span>~</span>
                   <TimePicker
                     value={hours.end}
-                    onChange={(end) =>
-                      setEverydayHoursList((prev) =>
-                        prev.map((h, i) => (i === index ? { ...h, end } : h)),
-                      )
-                    }
+                    onChange={(end) => handleTimePickerChange(index, 'end', end)}
                   />
 
                   <button
@@ -441,20 +334,12 @@ export const BusinessHours = ({
                 <div key={index} className='flex items-center gap-4 w-full'>
                   <TimePicker
                     value={hours.start}
-                    onChange={(start) =>
-                      setEverydayHoursList((prev) =>
-                        prev.map((h, i) => (i === index ? { ...h, start } : h)),
-                      )
-                    }
+                    onChange={(start) => handleTimePickerChange(index, 'start', start)}
                   />
                   <span>~</span>
                   <TimePicker
                     value={hours.end}
-                    onChange={(end) =>
-                      setEverydayHoursList((prev) =>
-                        prev.map((h, i) => (i === index ? { ...h, end } : h)),
-                      )
-                    }
+                    onChange={(end) => handleTimePickerChange(index, 'end', end)}
                   />
                 </div>
               ))}
