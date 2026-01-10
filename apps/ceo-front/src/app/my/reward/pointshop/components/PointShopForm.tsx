@@ -32,10 +32,10 @@ interface PointShopFormProps {
       dateRange?: Date[] | null;
     },
   ) => void;
+  isSubmitting?: boolean;
 }
 
-const PointShopForm = ({ originValue, onSubmit }: PointShopFormProps) => {
-  const [loading, setLoading] = useState(false);
+const PointShopForm = ({ originValue, onSubmit, isSubmitting }: PointShopFormProps) => {
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [previewImage, setPreviewImage] = useState<string>(originValue?.image?.url || '');
   const {
@@ -99,12 +99,9 @@ const PointShopForm = ({ originValue, onSubmit }: PointShopFormProps) => {
     data: CreateStorePointShopItemBody & { quantityLimit: boolean; dateRange?: Date[] | null },
   ) => {
     try {
-      setLoading(true);
       onSubmit({ ...data, file: imageFile });
     } catch (error: any) {
       toast.error(error?.response?.data?.message || '처리에 실패했습니다.');
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -351,8 +348,8 @@ const PointShopForm = ({ originValue, onSubmit }: PointShopFormProps) => {
         </Form.Item>
 
         <div className='w-full flex justify-center'>
-          <Button type='submit' disabled={loading} className='w-fit'>
-            {loading
+          <Button type='submit' disabled={isSubmitting} className='w-fit'>
+            {isSubmitting
               ? originValue
                 ? '수정중...'
                 : '등록중...'
@@ -378,6 +375,8 @@ const PointShopForm = ({ originValue, onSubmit }: PointShopFormProps) => {
           usedCount={0}
           conditions={conditions}
           image={previewImage}
+          isActive={true}
+          onSwitchChange={undefined}
         />
       </div>
     </div>

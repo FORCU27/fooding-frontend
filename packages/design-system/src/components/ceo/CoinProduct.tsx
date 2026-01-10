@@ -1,5 +1,6 @@
 import { FoodingIcon } from '../../icons';
 import { cn } from '../../utils/cn';
+import { Switch } from '../b2c';
 
 type CoinProductProps = {
   image?: string;
@@ -17,6 +18,8 @@ type CoinProductProps = {
   isActive?: boolean;
   conditions?: string;
   className?: string;
+  onClick?: () => void;
+  onSwitchChange?: (checked: boolean) => void;
 };
 
 const CoinProduct = ({
@@ -33,7 +36,9 @@ const CoinProduct = ({
   canceledCount,
   conditions,
   onOrderClick,
-  isActive = false,
+  onClick,
+  onSwitchChange,
+  isActive = true,
   className,
 }: CoinProductProps) => {
   const statusColors: Record<string, string> = {
@@ -47,6 +52,7 @@ const CoinProduct = ({
         isActive ? 'border-2 border-fooding-purple' : 'border-gray-200',
         className,
       )}
+      onClick={onClick}
     >
       <div className='flex gap-4'>
         <div>
@@ -62,15 +68,26 @@ const CoinProduct = ({
             </div>
           )}
         </div>
-        <div className='flex flex-col gap-2'>
-          <span
-            className={cn(
-              'inline-flex items-center rounded-md px-2 py-1 w-fit text-xs font-medium whitespace-nowrap',
-              statusColors[status] || 'bg-gray-100 text-gray-700',
-            )}
-          >
-            {status}
-          </span>
+        <div className='flex flex-col gap-2 w-full'>
+          <div className='flex justify-between w-full'>
+            <span
+              className={cn(
+                'inline-flex items-center rounded-md px-2 py-1 w-fit text-xs font-medium whitespace-nowrap',
+                statusColors[status] || 'bg-gray-100 text-gray-700',
+              )}
+            >
+              {status}
+            </span>
+            <div
+              onClick={(e) => {
+                e.stopPropagation();
+                e.preventDefault();
+              }}
+              className='cursor-pointer'
+            >
+              <Switch checked={isActive} onChange={onSwitchChange} />
+            </div>
+          </div>
           <h3 className='mb-1 text-xl font-semibold text-gray-900'>{title}</h3>
 
           {dateRange && <p className='text-sm text-gray-5 whitespace-nowrap'>{dateRange}</p>}
@@ -104,7 +121,10 @@ const CoinProduct = ({
           </div>
           {onOrderClick && (
             <button
-              onClick={onOrderClick}
+              onClick={(e) => {
+                e.stopPropagation();
+                if (onOrderClick) onOrderClick();
+              }}
               className='h-[48px] w-fit rounded-[8px] bg-fooding-purple px-6 text-base font-medium text-white transition-colors hover:bg-fooding-purple/90 active:bg-fooding-purple/80'
             >
               수정하기
