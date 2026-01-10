@@ -29,6 +29,7 @@ export type CreateStorePointShopItemBody = {
   issueStartOn: string | null;
   issueEndOn: string | null;
   imageId?: string;
+  isActive?: boolean;
 };
 
 export interface PointShopQuery {
@@ -201,7 +202,7 @@ export const GetStorePointShopListResponse = z.object({
 export type GetStorePointShopStatusResponse = z.infer<typeof GetStorePointShopStatusResponse>;
 export const GetStorePointShopStatusResponse = z.object({
   status: z.string(),
-  data: z.object({}),
+  data: z.null(),
 });
 export type GetStorePointShopNullResponse = z.infer<typeof GetStorePointShopNullResponse>;
 export const GetStorePointShopNullResponse = z.object({

@@ -3,26 +3,30 @@
 
 import { useParams, useRouter } from 'next/navigation';
 
-import { CreateStorePointShopItemBody, storeApi } from '@repo/api/ceo';
+import { CreateStorePointShopItemBody } from '@repo/api/ceo';
 import { EmptyState, toast, Toaster } from '@repo/design-system/components/b2c';
 
 import PointShopForm from '../../components/PointShopForm';
 import { useStore } from '@/context/StoreContext';
-import { useGetStorePointShop } from '@/hooks/store/useGetStorePointShop';
+import { useGetStorePointShopItem } from '@/hooks/store/useGetStorePointShopItem';
+import { useUpdateStorePointShopItem } from '@/hooks/store/useUpdateStorePointShopItem';
 import { useUploadFile } from '@/hooks/useUploadFile';
 
 const PointShopModifyPage = () => {
   const { storeId } = useStore();
   const params = useParams();
-  const id = params.id as string;
   const router = useRouter();
-  const { data: pointShopItem } = useGetStorePointShop({
-    storeId,
-    id: id,
+  const itemId = Number(params.id);
+  const selectedStoreId = Number(storeId);
+
+  const { data: pointShopItem } = useGetStorePointShopItem({
+    storeId: selectedStoreId,
+    id: itemId,
   });
 
-  const selectedStoreId = storeId;
   const { mutateAsync: uploadFile } = useUploadFile();
+  const { mutateAsync: updateItem, isPending: isUpdating } =
+    useUpdateStorePointShopItem(selectedStoreId);
 
   const handleSubmit = async (data: CreateStorePointShopItemBody & { file?: File | null }) => {
     try {
@@ -34,9 +38,14 @@ const PointShopModifyPage = () => {
         data.imageId = uploadResult.data[0]?.id || '';
       }
 
-      await storeApi.updateStorePointShopItem(selectedStoreId, id, data);
+      await updateItem({
+        id: itemId,
+        body: {
+          ...data,
+        },
+      });
       toast.success('포인트샵 상품이 수정되었습니다.');
-      router.push(`/my/reward/pointshop/${id}`);
+      router.push(`/my/reward/pointshop/${itemId}`);
     } catch (error: any) {
       toast.error(error?.response?.data?.message || '수정에 실패했습니다.');
     }
@@ -52,6 +61,7 @@ const PointShopModifyPage = () => {
           ...pointShopItem,
           image: pointShopItem.image ?? undefined,
         }}
+        isSubmitting={isUpdating}
       />
       <Toaster />
     </>

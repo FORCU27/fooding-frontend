@@ -49,13 +49,13 @@ export const storeApi = {
   deleteStoreOperatingHour: async (storeId: number, id: number) => {
     await api.delete(`${ENDPOINT}/${storeId}/operating-hour/${id}`);
   },
-  getStorePointShopList: async (storeId: string, query: PointShopQuery) => {
+  getStorePointShopList: async (storeId: number, query: PointShopQuery) => {
     const response = await api.get(`${ENDPOINT}/${storeId}/point-shop`, {
       params: query,
     });
     return GetStorePointShopListResponse.parse(response);
   },
-  getStorePointShopItemById: async (storeId: string, id: string) => {
+  getStorePointShopItemById: async (storeId: number, id: number) => {
     const response = await api.get(`${ENDPOINT}/${storeId}/point-shop/${id}`);
     return GetStorePointShopResponse.parse(response);
   },
@@ -64,8 +64,8 @@ export const storeApi = {
     return CreateStorePointShopResponse.parse(response);
   },
   updateStorePointShopItem: async (
-    storeId: string,
-    id: string,
+    storeId: number,
+    id: number,
     body: CreateStorePointShopItemBody,
   ) => {
     const response = await api.put(`${ENDPOINT}/${storeId}/point-shop/${id}`, body);
