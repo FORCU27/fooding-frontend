@@ -5,13 +5,15 @@ import {
   Card,
   CardSubtitle,
   BusinessHours,
-  HoursByDay,
+  BreakHoursByDay,
   OperatingMode,
+  BreakHours,
   BreakMode,
+  EverydayBreak,
 } from '@repo/design-system/components/ceo';
 import { UseFormSetValue } from 'react-hook-form';
 
-import { OperatingHoursFormValues } from './OperatingHourForm';
+import { FormDailyBreakTime, OperatingHoursFormValues } from './OperatingHourForm';
 
 const daysOfWeekKor = ['월', '화', '수', '목', '금', '토', '일'];
 const dayMapping: Record<string, string> = {
@@ -36,7 +38,7 @@ type BusinessHourFormProps = {
 export const BusinessHourForm = ({
   setValue,
   mode,
-  breakMode,
+  breakMode: externalBreakMode,
   originValues,
   onModeChange,
   onBreakModeChange,
@@ -45,123 +47,108 @@ export const BusinessHourForm = ({
 
   // 초기값
   const originOperating = originValues?.dailyOperatingTimes;
-  const originBreak = originValues?.dailyBreakTimes;
 
-  // 단일/다중 시간대 모두 지원하는 구조
-  const defaultEverydayHours: { start: string[]; end: string[]; isClosed?: boolean } =
-    originOperating?.[0]
-      ? {
-          start: [toHHmm(originOperating[0].openTime)],
-          end: [toHHmm(originOperating[0].closeTime)],
-          isClosed: false,
-        }
-      : { start: ['09:00'], end: ['22:00'], isClosed: false };
-
-  // by day 초기값
-  const defaultBydayHours: HoursByDay = Object.fromEntries(
+  const defaultBydayOperating: BreakHoursByDay = Object.fromEntries(
     daysOfWeekKor.map((day) => {
-      const engDay = dayMapping[day];
-      const opItems =
-        originValues?.dailyOperatingTimes?.filter((d) => d.dayOfWeek === engDay) ?? [];
-
-      const isClosed =
-        opItems.length === 0 ||
-        (opItems.every((d) => d.openTime === null) && opItems.every((d) => d.closeTime === null));
-
+      const eng = dayMapping[day];
+      const op = originOperating?.find((d) => d.dayOfWeek === eng);
+      const closed = !op || !op.openTime || !op.closeTime;
       return [
         day,
         {
-          start: opItems.length && !isClosed ? opItems.map((d) => toHHmm(d.openTime)) : [''],
-          end: opItems.length && !isClosed ? opItems.map((d) => toHHmm(d.closeTime)) : [''],
-          isClosed,
+          start: closed ? '' : toHHmm(op!.openTime),
+          end: closed ? '' : toHHmm(op!.closeTime),
+          isClosed: closed,
         },
       ];
     }),
-  ) as HoursByDay;
-
-  const defaultBreakBydayHours: HoursByDay = Object.fromEntries(
-    daysOfWeekKor.map((day) => {
-      const engDay = dayMapping[day];
-      const brItems = originValues?.dailyBreakTimes?.filter((d) => d.dayOfWeek === engDay) ?? [];
-      const opItems =
-        originValues?.dailyOperatingTimes?.filter((d) => d.dayOfWeek === engDay) ?? [];
-
-      const isClosed =
-        opItems.length === 0 ||
-        (opItems.every((d) => d.openTime === null) && opItems.every((d) => d.closeTime === null));
-      return [
-        day,
-        {
-          start:
-            brItems.length && !isClosed ? brItems.map((d) => toHHmm(d.breakStartTime)) : ['15:00'],
-          end: brItems.length && !isClosed ? brItems.map((d) => toHHmm(d.breakEndTime)) : ['17:00'],
-          isClosed,
-        },
-      ];
-    }),
-  ) as HoursByDay;
-
-  // 상태
-  const [everydayHours, setEverydayHours] = useState(defaultEverydayHours);
-  const [bydayHours, setBydayHours] = useState<HoursByDay>(defaultBydayHours);
-  const [breakEverydayHours, setBreakEverydayHours] = useState<{
-    start: string[];
-    end: string[];
-    isClosed?: boolean;
-  }>(
-    originBreak?.[0]
-      ? {
-          start: [toHHmm(originBreak[0].breakStartTime)],
-          end: [toHHmm(originBreak[0].breakEndTime)],
-          isClosed: false,
-        }
-      : { start: ['13:00'], end: ['17:00'], isClosed: false },
   );
-  const [breakBydayHours, setBreakBydayHours] = useState<HoursByDay>(defaultBreakBydayHours);
-  const mapDayToKor = (day: string) =>
-    Object.entries(dayMapping).find(([, eng]) => eng === day)?.[0] || '';
+  const [bydayHours, setBydayHours] = useState<BreakHoursByDay>(defaultBydayOperating);
 
-  useEffect(() => {
-    if (!originValues?.dailyBreakTimes) return;
+  const determineBreakMode = (bk: StoreOperatingHourBody['dailyBreakTimes'] = []): BreakMode => {
+    if (bk.length === 0) return 'none';
 
-    const allBreakNull = originValues.dailyBreakTimes.every(
-      (b) => b.breakStartTime === null && b.breakEndTime === null,
+    if (bk.length > 7) return 'same_everyday';
+
+    const allNull = bk.every((item) => !item.breakStartTime && !item.breakEndTime);
+    if (allNull) return 'none';
+
+    const firstValid = bk.find((item) => item.breakStartTime && item.breakEndTime);
+    if (!firstValid) return 'none';
+
+    const isSameEveryday = bk.every(
+      (item) =>
+        (!item.breakStartTime && !item.breakEndTime) ||
+        (item.breakStartTime === firstValid.breakStartTime &&
+          item.breakEndTime === firstValid.breakEndTime),
     );
 
-    if (allBreakNull) {
-      onBreakModeChange('none');
-    } else {
-      // 모든 휴게시간이 동일한지 확인
-      const first = originValues.dailyBreakTimes[0];
-      const allSame = originValues.dailyBreakTimes.every(
-        (b) => b.breakStartTime === first?.breakStartTime && b.breakEndTime === first.breakEndTime,
-      );
-      onBreakModeChange(allSame ? 'same_everyday' : 'different_by_day');
-    }
-  }, [originValues, onBreakModeChange]);
+    return isSameEveryday ? 'same_everyday' : 'different_by_day';
+  };
+
+  const [internalBreakMode, setInternalBreakMode] = useState<BreakMode>(
+    () => externalBreakMode ?? determineBreakMode(originValues?.dailyBreakTimes),
+  );
+
+  const currentBreakMode = externalBreakMode ?? internalBreakMode;
+
+  // 매일 같아요용 (여러 시간대 지원)
+  const [everydayBreaks, setEverydayBreaks] = useState<EverydayBreak[]>(() => {
+    const bk = originValues?.dailyBreakTimes ?? [];
+    if (bk.length === 0) return [{ start: '15:00', end: '17:00' }];
+
+    const uniqueMap = new Map<string, EverydayBreak>();
+    bk.forEach((item) => {
+      if (item.breakStartTime && item.breakEndTime) {
+        const start = toHHmm(item.breakStartTime);
+        const end = toHHmm(item.breakEndTime);
+        const key = `${start}-${end}`;
+        if (!uniqueMap.has(key)) uniqueMap.set(key, { start, end });
+      }
+    });
+
+    const sorted = Array.from(uniqueMap.values()).sort((a, b) => a.start.localeCompare(b.start));
+    return sorted.length > 0 ? sorted : [{ start: '15:00', end: '17:00' }];
+  });
+
+  // 요일별 휴게시간
+  const [bydayBreaks, setBydayBreaks] = useState<BreakHoursByDay>(() => {
+    const initial: BreakHoursByDay = {};
+    daysOfWeekKor.forEach((day) => {
+      const eng = dayMapping[day];
+      const bk = originValues?.dailyBreakTimes?.find((d) => d.dayOfWeek === eng);
+      const isClosed = !bk || !bk.breakStartTime || !bk.breakEndTime;
+
+      initial[day] = {
+        start: isClosed ? '' : toHHmm(bk?.breakStartTime),
+        end: isClosed ? '' : toHHmm(bk?.breakEndTime),
+        isClosed,
+      };
+    });
+    return initial;
+  });
+
+  const mapDayToKor = (day: string) =>
+    Object.entries(dayMapping).find(([, eng]) => eng === day)?.[0] ?? '';
 
   // form 반영
   useEffect(() => {
+    // 운영시간 세팅
     const operatingTimes = DAY_OF_WEEK.map((day) => {
-      const originItem = originOperating?.find((d) => d.dayOfWeek === day);
-
       let openTime: string | null = null;
       let closeTime: string | null = null;
 
       if (mode === 'same_everyday') {
-        // 체크박스가 휴무라면 null, 아니면 첫 번째 값 사용
-        const isClosed = everydayHours.start[0] === everydayHours.end[0];
-        openTime = isClosed ? null : everydayHours.start[0]!;
-        closeTime = isClosed ? null : everydayHours.end[0]!;
+        openTime = bydayHours[mapDayToKor(day)!]?.start || null;
+        closeTime = bydayHours[mapDayToKor(day)!]?.end || null;
       }
 
       if (mode === 'different_by_day') {
-        const korDay = mapDayToKor(day);
-        const item = korDay ? bydayHours[korDay] : undefined;
-        if (item) {
-          const isClosed = item.isClosed || item.start[0] === item.end[0];
-          openTime = isClosed ? null : item.start[0]!;
-          closeTime = isClosed ? null : item.end[0]!;
+        const kor = mapDayToKor(day);
+        const item = kor && bydayHours[kor];
+        if (item && !item.isClosed) {
+          openTime = item.start || null;
+          closeTime = item.end || null;
         }
       }
 
@@ -170,68 +157,52 @@ export const BusinessHourForm = ({
         closeTime = '24:00';
       }
 
-      return {
-        id: originItem?.id,
-        dayOfWeek: day,
-        openTime,
-        closeTime,
-        breakStartTime: null,
-        breakEndTime: null,
-      };
+      return { dayOfWeek: day, openTime, closeTime };
     });
 
-    const breakTimes = DAY_OF_WEEK.map((day) => {
-      let start: string | null = null;
-      let end: string | null = null;
+    setValue('dailyOperatingTimes', operatingTimes);
+  }, [bydayHours, everydayBreaks, mode, setValue]);
 
-      if (breakMode === 'none') {
-        start = null;
-        end = null;
-      } else if (breakMode === 'same_everyday') {
-        // 입력값이 있으면 사용, 없으면 null (빈 문자열도 null)
-        start = breakEverydayHours.start[0]?.trim() || null;
-        end = breakEverydayHours.end[0]?.trim() || null;
-      } else if (breakMode === 'different_by_day') {
-        const korDay = mapDayToKor(day);
-        const item = korDay ? breakBydayHours[korDay] : undefined;
+  useEffect(() => {
+    const breakTimes: FormDailyBreakTime[] = [];
 
-        if (item && !item.isClosed) {
-          // 영업 휴무가 아니면 휴게시간 입력 가능
-          start = item.start[0]?.trim() || null;
-          end = item.end[0]?.trim() || null;
-        }
-        // item.isClosed === true 이면 → 영업 휴무 → 휴게시간도 null (자동)
-      }
+    if (currentBreakMode === 'none') {
+      DAY_OF_WEEK.forEach((dayOfWeek) => {
+        breakTimes.push({
+          dayOfWeek,
+          breakStartTime: null,
+          breakEndTime: null,
+        });
+      });
+    } else if (currentBreakMode === 'same_everyday') {
+      everydayBreaks.forEach((brk) => {
+        DAY_OF_WEEK.forEach((dayOfWeek) => {
+          breakTimes.push({
+            dayOfWeek,
+            breakStartTime: brk.start ? `${brk.start}:00` : null,
+            breakEndTime: brk.end ? `${brk.end}:00` : null,
+          });
+        });
+      });
+    } else if (currentBreakMode === 'different_by_day') {
+      DAY_OF_WEEK.forEach((dayOfWeek) => {
+        const kor = mapDayToKor(dayOfWeek);
+        const item = bydayBreaks[kor];
 
-      return { day, start, end };
-    });
+        const existing = originValues?.dailyBreakTimes?.find((b) => b.dayOfWeek === dayOfWeek);
 
-    const merged = operatingTimes.map((op) => {
-      const breakItem = breakTimes.find((b) => b.day === op.dayOfWeek);
+        breakTimes.push({
+          id: existing?.id,
+          dayOfWeek,
+          breakStartTime:
+            item && !item.isClosed && item.start && item.end ? `${item.start}:00` : null,
+          breakEndTime: item && !item.isClosed && item.start && item.end ? `${item.end}:00` : null,
+        });
+      });
+    }
 
-      // 영업시간 휴무 처리 (기존 로직 유지)
-      const isOperatingClosed = !op.openTime || op.openTime.trim() === '';
-
-      return {
-        ...op,
-        openTime: isOperatingClosed ? null : op.openTime,
-        closeTime: isOperatingClosed ? null : op.closeTime,
-        breakStartTime: breakItem?.start ?? null,
-        breakEndTime: breakItem?.end ?? null,
-      };
-    });
-
-    setValue('dailyOperatingTimes', merged);
-  }, [
-    mode,
-    breakMode,
-    everydayHours,
-    bydayHours,
-    breakEverydayHours,
-    breakBydayHours,
-    setValue,
-    originOperating,
-  ]);
+    setValue('dailyBreakTimes', breakTimes);
+  }, [currentBreakMode, everydayBreaks, bydayBreaks, originValues, setValue]);
 
   return (
     <div className='flex flex-col gap-4 w-full'>
@@ -240,27 +211,27 @@ export const BusinessHourForm = ({
           <BusinessHours
             mode={mode}
             name='operatingMode'
-            everydayHours={everydayHours}
             bydayHours={bydayHours}
             onModeChange={onModeChange}
-            onEverydayHoursChange={setEverydayHours}
             onBydayHoursChange={setBydayHours}
           />
         </CardSubtitle>
       </Card>
-
       <Card>
         <CardSubtitle label='휴게 시간을 알려주세요'>
-          <BusinessHours
-            breakMode={breakMode}
+          <BreakHours
+            breakMode={currentBreakMode}
             name='breakMode'
-            type='breakTime'
-            hasAddButton
-            everydayHours={breakEverydayHours}
-            bydayHours={breakBydayHours}
-            onBreakModeChange={onBreakModeChange}
-            onEverydayHoursChange={setBreakEverydayHours}
-            onBydayHoursChange={setBreakBydayHours}
+            hasAddButton={currentBreakMode === 'same_everyday'}
+            everydayBreaks={everydayBreaks}
+            bydayBreaks={bydayBreaks}
+            originValues={originValues}
+            onBreakModeChange={(newMode) => {
+              setInternalBreakMode(newMode);
+              onBreakModeChange(newMode);
+            }}
+            onEverydayBreaksChange={setEverydayBreaks}
+            onBydayBreaksChange={setBydayBreaks}
           />
         </CardSubtitle>
       </Card>

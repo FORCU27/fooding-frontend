@@ -1,6 +1,6 @@
 'use client';
 
-import { DAY_OF_WEEK, DayOfWeek, RegularHolidayType, StoreOperatingHourBody } from '@repo/api/ceo';
+import { DayOfWeek, RegularHolidayType, StoreOperatingHourBody } from '@repo/api/ceo';
 import { ProgressCircle, toast, Toaster } from '@repo/design-system/components/b2c';
 
 import { OperatingHoursForm } from './components/OperatingHourForm';
@@ -41,7 +41,7 @@ const SeatGuidePage = () => {
 
     dailyBreakTimes:
       storeOperatingHour.dailyBreakTimes?.map((b) => ({
-        id: b.id,
+        id: b.id ?? undefined,
         dayOfWeek: b.dayOfWeek as DayOfWeek,
         breakStartTime: b.breakStartTime,
         breakEndTime: b.breakEndTime,
@@ -57,15 +57,23 @@ const SeatGuidePage = () => {
       closeTime: item.closeTime ? item.closeTime : null,
     }));
 
-    const dailyBreakTimes = DAY_OF_WEEK.map((day) => {
-      const breakItem = formData.dailyBreakTimes?.find((b) => b.dayOfWeek === day);
-      return {
-        ...(breakItem?.id ? { id: breakItem.id } : {}),
-        dayOfWeek: day,
-        breakStartTime: breakItem?.breakStartTime ?? null,
-        breakEndTime: breakItem?.breakEndTime ?? null,
-      };
-    });
+    const breakTimesToUpdate = formData.dailyBreakTimes
+      .filter((item) => item.id != null) // id 있는 것 → update
+      .map((item) => ({
+        id: item.id!,
+        dayOfWeek: item.dayOfWeek,
+        breakStartTime: item.breakStartTime ? item.breakStartTime : null,
+        breakEndTime: item.breakEndTime ? item.breakEndTime : null,
+      }));
+
+    const breakTimesToCreate = formData.dailyBreakTimes
+      .filter((item) => item.id == null) // id 없는 것 → create
+      .map((item) => ({
+        dayOfWeek: item.dayOfWeek,
+        breakStartTime: item.breakStartTime ? item.breakStartTime : null,
+        breakEndTime: item.breakEndTime ? item.breakEndTime : null,
+      }));
+
     const body: StoreOperatingHourBody = {
       hasHoliday: formData.hasHoliday,
       regularHolidayType: formData.hasHoliday ? formData.regularHolidayType : null,
@@ -75,7 +83,7 @@ const SeatGuidePage = () => {
       operatingNotes: formData.operatingNotes,
 
       dailyOperatingTimes,
-      dailyBreakTimes,
+      dailyBreakTimes: [...breakTimesToUpdate, ...breakTimesToCreate],
     };
 
     const isCreate = storeOperatingHour?.id == null;

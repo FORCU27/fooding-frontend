@@ -1,11 +1,6 @@
 import { PropsWithoutRef, useEffect, useMemo, useState } from 'react';
 
-import {
-  DailyBreakTime,
-  DayOfWeek,
-  RegularHolidayType,
-  StoreOperatingHourBody,
-} from '@repo/api/ceo';
+import { DayOfWeek, RegularHolidayType, StoreOperatingHourBody } from '@repo/api/ceo';
 import {
   Card,
   CardSubtitle,
@@ -22,6 +17,7 @@ import {
   type SelectedItem,
   Checkbox,
   ChipList,
+  EverydayBreak,
 } from '@repo/design-system/components/ceo';
 import { ClockIcon } from '@repo/design-system/icons';
 import { Controller, useForm } from 'react-hook-form';
@@ -34,6 +30,10 @@ export interface FormDailyOperatingTime {
   dayOfWeek: DayOfWeek;
   openTime: string | null;
   closeTime: string | null;
+}
+export interface FormDailyBreakTime {
+  id?: number;
+  dayOfWeek: DayOfWeek;
   breakStartTime: string | null;
   breakEndTime: string | null;
 }
@@ -46,6 +46,8 @@ export interface OperatingHoursFormValues {
   customHolidays: string[];
   operatingNotes: string;
   dailyOperatingTimes: FormDailyOperatingTime[];
+  dailyBreakTimes: FormDailyBreakTime[];
+  everydayBreaks?: EverydayBreak[];
 }
 
 export interface OperatingHoursFormProps {
@@ -133,12 +135,14 @@ export const OperatingHoursForm = ({
       customHolidays: [],
       operatingNotes: '',
       dailyOperatingTimes: [],
+      dailyBreakTimes: [],
     },
   });
 
   const closedHolidays = watch('closedNationalHolidays');
   const customHolidays = watch('customHolidays');
   const dailyOperatingTimes = watch('dailyOperatingTimes');
+  const dailyBreakTimes = watch('dailyBreakTimes');
 
   const customHolidaysArr = useMemo(
     () => customHolidays.map((d) => new Date(d)).filter((d) => !isNaN(d.getTime())),
@@ -154,12 +158,25 @@ export const OperatingHoursForm = ({
     }
   };
 
-  const previewDailyTimes = useMemo(
-    () => normalizeDailyOperatingTimes(dailyOperatingTimes),
-    [dailyOperatingTimes],
-  );
+  const previewDailyTimes = useMemo(() => {
+    const normalizedOps = normalizeDailyOperatingTimes(dailyOperatingTimes);
 
-  const getStoreStatus = (item: FormDailyOperatingTime) => {
+    return normalizedOps.map((op) => {
+      const dayBreaks = dailyBreakTimes.filter(
+        (b) => b.dayOfWeek === op.dayOfWeek && b.breakStartTime && b.breakEndTime,
+      );
+
+      return {
+        ...op,
+        breakTimes: dayBreaks.map((b) => ({
+          start: b.breakStartTime ?? '',
+          end: b.breakEndTime ?? '',
+        })),
+      };
+    });
+  }, [dailyOperatingTimes, dailyBreakTimes]);
+
+  const getStoreStatus = (item: FormDailyOperatingTime, breakItem: FormDailyBreakTime) => {
     const now = new Date();
     const toDate = (time: string) => {
       const [hStr, mStr] = time.split(':');
@@ -178,9 +195,9 @@ export const OperatingHoursForm = ({
 
     if (now < open || now > close) return '영업종료';
 
-    if (item.breakStartTime && item.breakEndTime) {
-      const bs = toDate(item.breakStartTime);
-      const be = toDate(item.breakEndTime);
+    if (breakItem.breakStartTime && breakItem.breakEndTime) {
+      const bs = toDate(breakItem.breakStartTime);
+      const be = toDate(breakItem.breakEndTime);
       if (now >= bs && now <= be) return '휴게중';
     }
 
@@ -189,7 +206,9 @@ export const OperatingHoursForm = ({
 
   const today = DAY_MAP[new Date().getDay()];
   const todayItem = dailyOperatingTimes.find((d) => d.dayOfWeek === today);
-  const status = todayItem ? getStoreStatus(todayItem) : '영업종료';
+  const todayBreakItem = dailyBreakTimes.find((d) => d.dayOfWeek === today);
+  const status =
+    todayItem && todayBreakItem ? getStoreStatus(todayItem, todayBreakItem) : '영업종료';
 
   useEffect(() => {
     if (!originValues) return;
@@ -201,41 +220,29 @@ export const OperatingHoursForm = ({
       closedNationalHolidays: originValues.closedNationalHolidays,
       customHolidays: originValues.customHolidays,
       operatingNotes: originValues.operatingNotes ?? '',
-      dailyOperatingTimes: originValues.dailyOperatingTimes.map((op) => {
-        const breakTime = originValues.dailyBreakTimes?.find((b) => b.dayOfWeek === op.dayOfWeek);
 
-        const isClosed = !op.openTime || !op.closeTime;
+      dailyOperatingTimes: originValues.dailyOperatingTimes.map((op) => ({
+        id: op.id,
+        dayOfWeek: op.dayOfWeek,
+        openTime: op.openTime,
+        closeTime: op.closeTime,
+      })),
 
-        return {
-          id: op.id,
-          dayOfWeek: op.dayOfWeek,
-          openTime: op.openTime,
-          closeTime: op.closeTime,
-          breakStartTime: isClosed ? null : (breakTime?.breakStartTime ?? op.openTime),
-          breakEndTime: isClosed ? null : (breakTime?.breakEndTime ?? op.closeTime),
-        };
-      }),
+      dailyBreakTimes: originValues.dailyBreakTimes.map((bk) => ({
+        id: bk.id ?? undefined,
+        dayOfWeek: bk.dayOfWeek,
+        breakStartTime: bk.breakStartTime,
+        breakEndTime: bk.breakEndTime,
+      })),
     });
   }, [originValues, reset]);
 
-  const onSubmit = (form: OperatingHoursFormValues) => {
-    const dailyBreakTimes: DailyBreakTime[] =
-      breakMode === 'none'
-        ? form.dailyOperatingTimes.map((item) => ({
-            id: item.id,
-            dayOfWeek: item.dayOfWeek,
-            breakStartTime: null,
-            breakEndTime: null,
-          }))
-        : form.dailyOperatingTimes
-            .filter((d) => d.breakStartTime && d.breakEndTime)
-            .map(({ id, dayOfWeek, breakStartTime, breakEndTime }) => ({
-              id,
-              dayOfWeek,
-              breakStartTime,
-              breakEndTime,
-            }));
+  const formatTime = (time: string | null | undefined) => {
+    if (!time) return '';
+    return time.slice(0, 5); // "15:00:00" → "15:00"
+  };
 
+  const onSubmit = (form: OperatingHoursFormValues) => {
     const body: StoreOperatingHourBody = {
       hasHoliday: form.hasHoliday,
       regularHolidayType: form.regularHolidayType,
@@ -243,19 +250,21 @@ export const OperatingHoursForm = ({
       closedNationalHolidays: form.closedNationalHolidays,
       customHolidays: form.customHolidays,
       operatingNotes: form.operatingNotes,
-      dailyOperatingTimes: form.dailyOperatingTimes.map(
-        ({ id, dayOfWeek, openTime, closeTime }) => ({
-          ...(id && { id }),
-          dayOfWeek,
-          openTime,
-          closeTime,
-        }),
-      ),
+      dailyOperatingTimes: form.dailyOperatingTimes.map((op) => ({
+        id: originValues?.dailyOperatingTimes?.find((d) => d.dayOfWeek === op.dayOfWeek)?.id,
+        dayOfWeek: op.dayOfWeek,
+        openTime: op.openTime || null,
+        closeTime: op.closeTime || null,
+      })),
 
-      dailyBreakTimes,
+      dailyBreakTimes: form.dailyBreakTimes.map((bk) => ({
+        id: bk?.id,
+        dayOfWeek: bk.dayOfWeek,
+        breakStartTime: bk.breakStartTime || null,
+        breakEndTime: bk.breakEndTime || null,
+      })),
     };
 
-    console.log(body);
     handleSubmit(body);
   };
 
@@ -366,7 +375,8 @@ export const OperatingHoursForm = ({
                   <span>매일</span>
                   {previewDailyTimes?.[0] && (
                     <span>
-                      {previewDailyTimes[0].openTime} - {previewDailyTimes[0].closeTime}
+                      {formatTime(previewDailyTimes[0].openTime)} -{' '}
+                      {formatTime(previewDailyTimes[0].closeTime)}
                     </span>
                   )}
                 </>
@@ -375,18 +385,6 @@ export const OperatingHoursForm = ({
 
             {previewDailyTimes.map((item) => {
               const isClosed = !item.openTime || !item.closeTime;
-
-              // HH:mm:ss → HH:mm 변환 헬퍼
-              const formatTime = (time: string | null | undefined) => {
-                if (!time) return '';
-                return time.slice(0, 5); // "15:00:00" → "15:00"
-              };
-
-              const hasBreakTime =
-                item.breakStartTime !== null &&
-                item.breakEndTime !== null &&
-                item.breakStartTime !== '' &&
-                item.breakEndTime !== '';
 
               return (
                 <div key={item.dayOfWeek} className='flex gap-4 mb-2'>
@@ -399,11 +397,13 @@ export const OperatingHoursForm = ({
                         : `${formatTime(item.openTime)} - ${formatTime(item.closeTime)}`}
                     </div>
 
-                    {/* 영업 중이고, 브레이크 타임이 있을 때만 표시 */}
-                    {!isClosed && hasBreakTime && (
-                      <div>
-                        {formatTime(item.breakStartTime)} - {formatTime(item.breakEndTime)} 브레이크
-                        타임
+                    {!isClosed && item.breakTimes?.length > 0 && (
+                      <div className='mt-1'>
+                        {item.breakTimes.map((brk, idx) => (
+                          <div key={idx}>
+                            {formatTime(brk.start)} ~ {formatTime(brk.end)} 브레이크 타임
+                          </div>
+                        ))}
                       </div>
                     )}
                   </div>
