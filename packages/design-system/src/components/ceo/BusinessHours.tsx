@@ -1,38 +1,15 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 'use client';
 
 import { useState, Dispatch, SetStateAction, useEffect } from 'react';
-
-import { MinusCircle, PlusIcon } from 'lucide-react';
 
 import { Checkbox } from './Checkbox';
 import RadioButtonGroup from './RadioButtonGroup';
 import { TimePicker } from './TimePicker';
 
 export type OperatingMode = 'same_everyday' | 'different_by_day' | 'open_24h';
-export type BreakMode = 'same_everyday' | 'different_by_day' | 'none';
-export type DayHours = { start: string; end: string; isClosed: boolean };
-export type HoursByDay = { [day: string]: DayHours };
+export type HoursByDay = { [day: string]: { start: string; end: string; isClosed: boolean } };
 
-export interface DailyOperatingTime {
-  id: number;
-  dayOfWeek: string;
-  openTime: string | null;
-  closeTime: string | null;
-  breakStartTime: string | null;
-  breakEndTime: string | null;
-}
-
-export interface StoreOperatingHourBody {
-  regularHolidayType: string | null;
-  regularHoliday: string | null;
-  closedNationalHolidays: string[];
-  hasHoliday: boolean;
-  customHolidays: string[];
-  operatingNotes: string;
-  dailyOperatingTimes: DailyOperatingTime[];
-}
-
+const daysOfWeek = ['월', '화', '수', '목', '금', '토', '일'];
 const dayMapping: Record<string, string> = {
   월: 'MONDAY',
   화: 'TUESDAY',
@@ -43,222 +20,192 @@ const dayMapping: Record<string, string> = {
   일: 'SUNDAY',
 };
 
-const mapKorDay = (korDay: string) => dayMapping[korDay];
-
-const daysOfWeek = ['월', '화', '수', '목', '금', '토', '일'];
+const toHHmm = (time?: string | null): string => (time ? time.slice(0, 5) : '');
 
 export interface BusinessHoursProps {
   mode?: OperatingMode;
-  breakMode?: BreakMode;
-  type?: 'operating' | 'breakTime';
   name?: string;
-  hasAddButton?: boolean;
   everydayHours?: { start: string; end: string };
   bydayHours?: HoursByDay;
-  originValues?: StoreOperatingHourBody;
+  originValues?: {
+    dailyOperatingTimes?: Array<{
+      id?: number;
+      dayOfWeek: string;
+      openTime: string | null;
+      closeTime: string | null;
+    }>;
+  };
   onModeChange?: Dispatch<SetStateAction<OperatingMode>>;
-  onBreakModeChange?: Dispatch<SetStateAction<BreakMode>>;
   onEverydayHoursChange?: Dispatch<SetStateAction<{ start: string; end: string }>>;
   onBydayHoursChange?: Dispatch<SetStateAction<HoursByDay>>;
 }
 
 export const BusinessHours = ({
   mode: externalMode,
-  breakMode: externalBreakMode,
   name,
-  type = 'operating',
-  hasAddButton = false,
   originValues,
   everydayHours: externalEverydayHours,
   bydayHours: externalBydayHours,
   onModeChange,
-  onBreakModeChange,
   onEverydayHoursChange,
   onBydayHoursChange,
 }: BusinessHoursProps) => {
-  // 내부 상태
-  const [defaultMode, setDefaultMode] = useState<OperatingMode>('same_everyday');
-  const [defaultBreakMode, setDefaultBreakMode] = useState<BreakMode>('none');
-  const [defaultEverydayHours, setDefaultEverydayHours] = useState({
-    start: '09:00',
-    end: '22:00',
-  });
-  const [defaultBydayHours, setDefaultBydayHours] = useState<HoursByDay>(() =>
+  const [internalMode, setInternalMode] = useState<OperatingMode>('same_everyday');
+
+  const [internalEverydayHours, setInternalEverydayHours] = useState<{
+    start: string;
+    end: string;
+  }>({ start: '09:00', end: '22:00' });
+
+  const [internalBydayHours, setInternalBydayHours] = useState<HoursByDay>(() =>
     Object.fromEntries(
       daysOfWeek.map((day) => [day, { start: '09:00', end: '22:00', isClosed: false }]),
     ),
   );
 
-  // 외부 prop 우선
-  const mode =
-    type === 'operating' ? (externalMode ?? defaultMode) : (externalBreakMode ?? defaultBreakMode);
-  const setModeFn =
-    type === 'operating'
-      ? (onModeChange ?? setDefaultMode)
-      : (onBreakModeChange ?? setDefaultBreakMode);
-  const everydayHours = externalEverydayHours ?? defaultEverydayHours;
-  const bydayHours = externalBydayHours ?? defaultBydayHours;
-  const setEverydayHours = onEverydayHoursChange ?? setDefaultEverydayHours;
-  const setBydayHours = onBydayHoursChange ?? setDefaultBydayHours;
-  const [everydayHoursList, setEverydayHoursList] = useState<{ start: string; end: string }[]>([
-    { start: '', end: '' },
-  ]);
+  const mode = externalMode ?? internalMode;
+  const everydayHours = externalEverydayHours ?? internalEverydayHours;
+  const bydayHours = externalBydayHours ?? internalBydayHours;
 
-  useEffect(() => {
-    if (!originValues) return;
-
-    // 영업시간 초기값
-    if (mode === 'same_everyday') {
-      setDefaultEverydayHours({
-        start: originValues.dailyOperatingTimes[0]?.openTime ?? '09:00',
-        end: originValues.dailyOperatingTimes[0]?.closeTime ?? '22:00',
-      });
-    } else if (mode === 'different_by_day') {
-      const newBydayHours: HoursByDay = {};
-      daysOfWeek.forEach((day) => {
-        const item = originValues.dailyOperatingTimes.find((d) => mapKorDay(day) === d.dayOfWeek);
-        newBydayHours[day] = {
-          start: item?.openTime ?? '09:00',
-          end: item?.closeTime ?? '22:00',
-          isClosed: item?.openTime === null || item?.closeTime === null,
-        };
-      });
-      setDefaultBydayHours(newBydayHours);
-    }
-  }, [originValues, mode]);
+  const setEverydayHours = onEverydayHoursChange ?? setInternalEverydayHours;
+  const setBydayHours = onBydayHoursChange ?? setInternalBydayHours;
 
   const handleDayOffToggle = (day: string) => {
-    setBydayHours((prev) => ({
-      ...prev,
-      [day]: {
-        ...prev[day]!,
-        isClosed: !prev[day]!.isClosed,
-        start: prev[day]!.isClosed ? prev[day]!.start : '',
-        end: prev[day]!.isClosed ? prev[day]!.end : '',
-      },
-    }));
+    setBydayHours((prev) => {
+      const current = prev[day] ?? { start: '09:00', end: '22:00', isClosed: false };
+      const newClosed = !current.isClosed;
+      return {
+        ...prev,
+        [day]: {
+          ...current,
+          isClosed: newClosed,
+          start: newClosed ? '' : current.start || '09:00',
+          end: newClosed ? '' : current.end || '22:00',
+        },
+      };
+    });
   };
 
+  // 요일별 시간 변경
   const handleTimeChange = (day: string, type: 'start' | 'end', time: string) => {
-    setBydayHours((prev) => ({
-      ...prev,
-      [day]: { ...prev[day]!, [type]: time },
-    }));
+    setBydayHours((prev) => {
+      const current = prev[day] ?? {
+        start: '09:00',
+        end: '22:00',
+        isClosed: false,
+      };
+
+      return {
+        ...prev,
+        [day]: {
+          ...current,
+          [type]: time,
+        },
+      };
+    });
   };
 
-  const handleAddHours = () => {
-    setEverydayHoursList((prev) => [...prev, { start: '', end: '' }]);
-  };
+  // originValues 기반 초기화
+  useEffect(() => {
+    if (!originValues?.dailyOperatingTimes || originValues.dailyOperatingTimes.length === 0) return;
 
-  const options =
-    type === 'operating'
-      ? [
-          { label: '매일 같아요', value: 'same_everyday' },
-          { label: '요일마다 달라요', value: 'different_by_day' },
-          { label: '24시간 영업', value: 'open_24h' },
-        ]
-      : [
-          { label: '매일 같아요', value: 'same_everyday' },
-          { label: '요일마다 달라요', value: 'different_by_day' },
-          { label: '없어요', value: 'none' },
-        ];
+    const opTimes = originValues.dailyOperatingTimes;
+
+    if (mode === 'same_everyday') {
+      // 첫 번째 유효한 값 사용 (모든 요일 동일 가정)
+      const firstValid = opTimes.find((t) => t.openTime && t.closeTime);
+      const newHours = {
+        start: firstValid ? toHHmm(firstValid.openTime) : '09:00',
+        end: firstValid ? toHHmm(firstValid.closeTime) : '22:00',
+      };
+      setInternalEverydayHours(newHours);
+      setEverydayHours(newHours);
+    } else if (mode === 'different_by_day') {
+      const newByday: HoursByDay = {};
+
+      daysOfWeek.forEach((day) => {
+        const engDay = dayMapping[day];
+        const item = opTimes.find((t) => t.dayOfWeek === engDay);
+
+        const isClosed = !item || !item.openTime || !item.closeTime;
+
+        newByday[day] = {
+          start: isClosed ? '' : toHHmm(item?.openTime || '09:00'),
+          end: isClosed ? '' : toHHmm(item?.closeTime || '22:00'),
+          isClosed,
+        };
+      });
+
+      setInternalBydayHours(newByday);
+      setBydayHours(newByday);
+    }
+  }, [originValues, mode, setEverydayHours, setBydayHours]);
+
+  const options = [
+    { label: '매일 같아요', value: 'same_everyday' },
+    { label: '요일마다 달라요', value: 'different_by_day' },
+    { label: '24시간 영업', value: 'open_24h' },
+  ];
 
   return (
     <div className='w-full'>
       <RadioButtonGroup
         options={options}
-        name={name || 'business-hours'}
+        name={name || 'operating-mode'}
         selectedValue={mode}
-        onChange={(val) => setModeFn(val as any)}
+        onChange={(val) => {
+          const newMode = val as OperatingMode;
+
+          if (!externalMode) {
+            setInternalMode(newMode);
+          }
+
+          onModeChange?.(newMode);
+        }}
       />
 
       <div className='mt-6'>
-        {mode === 'same_everyday' &&
-          (hasAddButton ? (
-            /* 여러 시간대 */
-            <div className='flex flex-col gap-2 w-full items-center'>
-              {everydayHoursList.map((hours, index) => (
-                <div key={index} className='flex items-center gap-4 w-full'>
-                  <TimePicker
-                    value={hours.start}
-                    onChange={(start) =>
-                      setEverydayHoursList((prev) =>
-                        prev.map((h, i) => (i === index ? { ...h, start } : h)),
-                      )
-                    }
-                  />
-                  <span>~</span>
-                  <TimePicker
-                    value={hours.end}
-                    onChange={(end) =>
-                      setEverydayHoursList((prev) =>
-                        prev.map((h, i) => (i === index ? { ...h, end } : h)),
-                      )
-                    }
-                  />
-                  {index !== 0 && (
-                    <button
-                      type='button'
-                      onClick={() =>
-                        setEverydayHoursList((prev) => prev.filter((_, i) => i !== index))
-                      }
-                      className='text-red-500 hover:cursor-pointer'
-                    >
-                      <MinusCircle />
-                    </button>
-                  )}
-                </div>
-              ))}
+        {/* same_everyday - 단일 시간대 */}
+        {mode === 'same_everyday' && (
+          <div className='flex items-center gap-4'>
+            <TimePicker
+              value={everydayHours.start}
+              onChange={(v) => setEverydayHours({ ...everydayHours, start: v })}
+            />
+            <span>~</span>
+            <TimePicker
+              value={everydayHours.end}
+              onChange={(v) => setEverydayHours({ ...everydayHours, end: v })}
+            />
+          </div>
+        )}
 
-              <button
-                type='button'
-                onClick={handleAddHours}
-                className='body-2 text-fooding-purple flex items-center gap-1 mt-2'
-              >
-                <div className='w-5 h-5 bg-[#6366F1]/5 flex justify-center items-center rounded-full'>
-                  <PlusIcon />
-                </div>
-                <span>추가</span>
-              </button>
-            </div>
-          ) : (
-            /* 단일 시간 */
-            <div className='flex items-center gap-4'>
-              <TimePicker
-                value={everydayHours.start}
-                onChange={(start) => setEverydayHours((prev) => ({ ...prev, start }))}
-              />
-              <span>~</span>
-              <TimePicker
-                value={everydayHours.end}
-                onChange={(end) => setEverydayHours((prev) => ({ ...prev, end }))}
-              />
-            </div>
-          ))}
-
+        {/* different_by_day */}
         {mode === 'different_by_day' && (
           <ul className='space-y-4'>
             {daysOfWeek.map((day) => {
-              const dayInfo = bydayHours[day];
-              if (!dayInfo) return null;
+              const dayInfo = bydayHours[day] ?? { start: '', end: '', isClosed: false };
+
               return (
                 <li key={day} className='flex items-center gap-6'>
-                  <div className='flex justify-center items-center border border-gray-3 w-[54px] h-[58px] rounded-lg font-medium'>
+                  <div className='flex justify-center items-center border border-gray-300 w-14 h-14 rounded-lg font-medium'>
                     {day}
                   </div>
-                  <div className='flex flex-1 items-center gap-4'>
+
+                  <div className='flex flex-1 items-center gap-2'>
                     <TimePicker
                       value={dayInfo.start}
-                      onChange={(newStart) => handleTimeChange(day, 'start', newStart)}
+                      onChange={(v) => handleTimeChange(day, 'start', v)}
                       disabled={dayInfo.isClosed}
                     />
                     <span>~</span>
                     <TimePicker
                       value={dayInfo.end}
-                      onChange={(newEnd) => handleTimeChange(day, 'end', newEnd)}
+                      onChange={(v) => handleTimeChange(day, 'end', v)}
                       disabled={dayInfo.isClosed}
                     />
                   </div>
+
                   <Checkbox
                     labelText='휴무'
                     checked={dayInfo.isClosed}
@@ -270,15 +217,14 @@ export const BusinessHours = ({
           </ul>
         )}
 
+        {/* 24시간 영업 */}
         {mode === 'open_24h' && (
           <div className='flex items-center gap-4'>
-            <TimePicker value='00:00' onChange={() => {}} />
+            <TimePicker value='00:00' onChange={() => {}} disabled />
             <span>~</span>
-            <TimePicker value='24:00' onChange={() => {}} />
+            <TimePicker value='24:00' onChange={() => {}} disabled />
           </div>
         )}
-
-        {mode === 'none' && <div className='text-gray-400'>휴게시간 없음</div>}
       </div>
     </div>
   );

@@ -3,22 +3,19 @@ import { queryKeys } from '@repo/api/configs/query-keys';
 import { useQuery } from '@tanstack/react-query';
 
 interface UseGetStorePointShopParams {
-  id: string;
-  storeId: string;
-  enabled?: boolean;
+  id: number;
+  storeId: number;
 }
 
-export const useGetStorePointShop = ({
-  id,
-  storeId,
-  enabled = true,
-}: UseGetStorePointShopParams) => {
+export const useGetStorePointShopItem = ({ id, storeId }: UseGetStorePointShopParams) => {
   return useQuery<PointShop>({
     queryKey: [queryKeys.ceo.pointShop.detail, storeId, id],
+
     queryFn: async () => {
       const response = await storeApi.getStorePointShopItemById(storeId, id);
       return response.data;
     },
-    enabled,
+
+    enabled: !!storeId && storeId > 0 && !!id,
   });
 };

@@ -1,17 +1,11 @@
-import { DailyOperatingTime } from '@repo/api/ceo';
+import { FormDailyOperatingTime } from '../components/OperatingHourForm';
 
-export const normalizeDailyOperatingTimes = (times: DailyOperatingTime[]): DailyOperatingTime[] => {
+export const normalizeDailyOperatingTimes = (
+  times: FormDailyOperatingTime[],
+): FormDailyOperatingTime[] => {
   return times.map((item) => {
-    const isClosed = item.openTime == null && item.closeTime == null;
-
-    if (isClosed) {
-      return {
-        ...item,
-        breakStartTime: null,
-        breakEndTime: null,
-      };
-    }
-
-    return item;
+    return {
+      ...item,
+    };
   });
 };
