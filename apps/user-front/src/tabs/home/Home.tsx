@@ -66,9 +66,7 @@ const ContentBody = () => {
       <div className='bg-white mb-3'>
         {/* <Banner /> */}
         <CategoryTabs category={category} onCategoryChange={setCategory} />
-        <Suspense>
-          <StoreSection selectedRegions={preferredRegions} category={category} />
-        </Suspense>
+        <StoreSection selectedRegions={preferredRegions} category={category} />
       </div>
     </div>
   );
