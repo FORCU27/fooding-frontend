@@ -50,14 +50,8 @@ const PointShopPage = () => {
   const { storeId } = useStore();
   const selectedStoreId = Number(storeId);
 
-  const { data: activeListData, isPending: activePending } = useGetStorePointShopList({
+  const { data: pointshopList, isPending: activePending } = useGetStorePointShopList({
     storeId: selectedStoreId,
-    isActive: true,
-    sortType: sortOrder,
-  });
-  const { data: inactiveListData, isPending: inactivePending } = useGetStorePointShopList({
-    storeId: selectedStoreId,
-    isActive: false,
     sortType: sortOrder,
   });
 
@@ -70,7 +64,7 @@ const PointShopPage = () => {
     setLocalActiveStates((prev) => {
       const next = { ...prev };
 
-      [...(activeListData?.list ?? []), ...(inactiveListData?.list ?? [])].forEach((shop) => {
+      [...(pointshopList?.list ?? [])].forEach((shop) => {
         // 서버에서 내려온 값이 있고, 아직 로컬에 optimistic update가 없는 경우에만 덮어쓰기
         if (next[shop.id] === undefined) {
           next[shop.id] = shop.isActive;
@@ -79,7 +73,7 @@ const PointShopPage = () => {
 
       return next;
     });
-  }, [activeListData?.list, inactiveListData?.list]);
+  }, [pointshopList?.list]);
 
   const handleSwitchChange = (id: number, prevIsActive: boolean) => (checked: boolean) => {
     // optimistic update
@@ -127,8 +121,7 @@ const PointShopPage = () => {
     });
   };
 
-  const isLoading =
-    activePending || inactivePending || activateMutation.isPending || deactivateMutation.isPending;
+  const isLoading = activePending || activateMutation.isPending || deactivateMutation.isPending;
   if (isLoading) {
     return (
       <div className='flex flex-col h-dvh w-full max-w-[1080px] gap-5'>
@@ -138,17 +131,7 @@ const PointShopPage = () => {
     );
   }
 
-  const allShopsMap = new Map<number, StorePointShopItem>();
-
-  [...(activeListData?.list ?? []), ...(inactiveListData?.list ?? [])].forEach(
-    (shop: StorePointShopItem) => {
-      allShopsMap.set(shop.id, shop);
-    },
-  );
-
-  const allShops = Array.from(allShopsMap.values());
-
-  if (allShops.length === 0) {
+  if (pointshopList?.list.length === 0) {
     return (
       <div className='flex flex-col h-dvh w-full max-w-[1080px] gap-5'>
         <h1 className='headline-2'>포인트샵</h1>
@@ -176,7 +159,7 @@ const PointShopPage = () => {
         <SortToggle value={sortOrder} onSortChange={setSortOrder} />
       </div>
       <div className='flex flex-col justify-center gap-5 py-5'>
-        {allShops.map((shop) => {
+        {pointshopList?.list.map((shop) => {
           const isCurrentlyActive = localActiveStates[shop.id] ?? shop.isActive;
 
           return (
@@ -194,7 +177,7 @@ const PointShopPage = () => {
               purchaseCount={shop.issuedQuantity}
               receivedCount={shop.totalQuantity}
               registrationDate={formatDate(shop.createdAt, { format: 'dot' }) || '-'}
-              status={isCurrentlyActive ? '발급중' : '발급중지'}
+              status={isCurrentlyActive ? '발급중' : '판매중지'}
               title={shop.name}
               usedCount={0}
               conditions={shop.conditions}
