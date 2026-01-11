@@ -93,7 +93,6 @@ const PointShopInfoPage = () => {
       <p className='headline-2'>포인트 상품 상세</p>
       {pointShopItem && (
         <CoinProduct
-          className='border-fooding-purple'
           canceledCount={pointShopItem.totalQuantity - pointShopItem.issuedQuantity}
           exchangePoint={pointShopItem.point}
           imageAlt={pointShopItem.name}
@@ -105,7 +104,7 @@ const PointShopInfoPage = () => {
               ? `${pointShopItem.issueStartOn} ~ ${pointShopItem.issueEndOn}`
               : undefined
           }
-          status={pointShopItem.isActive ? '발급중' : '발급중지'}
+          status={pointShopItem.isActive ? '발급중' : '판매중지'}
           title={pointShopItem.name}
           usedCount={0}
           conditions={pointShopItem.conditions}

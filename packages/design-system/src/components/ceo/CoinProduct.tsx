@@ -43,6 +43,7 @@ const CoinProduct = ({
 }: CoinProductProps) => {
   const statusColors: Record<string, string> = {
     발급중: 'bg-[#0080F81A] text-[#0080F8]',
+    판매중지: 'bg-[#0BB76D]/10 text-[#0BB76D]',
   };
 
   return (
@@ -114,7 +115,12 @@ const CoinProduct = ({
             <p className='mt-1 text-xl font-semibold text-black'>{canceledCount}</p>
           </div>
         </div>
-        <div className='flex justify-between mt-[18px] min-h-[80px] bg-[#6366F10D] rounded-[16px] p-4 w-full'>
+        <div
+          className={cn(
+            'flex justify-between mt-[18px] min-h-[80px] rounded-[16px] p-4 w-full',
+            isActive ? 'bg-[#6366F10D]' : 'bg-gray-1',
+          )}
+        >
           <div>
             <p className='text-base text-gray-5'>이용안내 {conditions ? conditions : '-'}</p>
             <p className='text-base text-gray-5'>교환 포인트 {exchangePoint} P</p>
