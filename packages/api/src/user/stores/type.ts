@@ -65,7 +65,7 @@ export const STORE_CATEOGORY_LABELS: Record<(typeof STORE_CATEGORIES)[number], s
   SIDE_DISH: '술안주',
 };
 
-const StoreImage = z.object({
+export const StoreImage = z.object({
   id: z.number(),
   imageUrl: z.string(),
   sortOrder: z.number(),
@@ -77,6 +77,7 @@ export type Store = z.infer<typeof Store>;
 export const Store = z.object({
   id: z.number(),
   name: z.string(),
+  address: z.string().optional(),
   visitCount: z.number(),
   reviewCount: z.number(),
   averageRating: z.number(),
@@ -84,13 +85,24 @@ export const Store = z.object({
   isBookmarked: z.boolean(),
   isFinished: z.boolean(),
   category: z.enum(STORE_CATEGORIES),
-  images: z.array(StoreImage).nullable(),
+  images: z
+    .array(StoreImage)
+    .nullable()
+    .transform((val) => val ?? []),
+});
+
+export const StationInfo = z.object({
+  id: z.number(),
+  address: z.string(),
+  line: z.string(),
+  name: z.string(),
 });
 
 export type StoreInfo = z.infer<typeof StoreInfo>;
 export const StoreInfo = Store.extend({
   address: z.string(),
   addressDetail: z.string().nullable(),
+  stations: z.array(StationInfo),
   category: z.enum(STORE_CATEGORIES),
   description: z.string(),
   contactNumber: z.string(),
@@ -106,6 +118,10 @@ export type GetStoreListParams = {
   pageSize?: number;
   sortType?: SortType;
   sortDirection?: SortDirection;
+  regionIds?: string[];
+  category?: StoreCategory;
+  latitude?: number;
+  longitude?: number;
 };
 
 export type Review = z.infer<typeof Review>;
@@ -133,7 +149,7 @@ export const StoreMenu = z.object({
   id: z.number(),
   name: z.string(),
   description: z.string(),
-  imageUrl: z.string().nullable(),
+  imageUrls: z.array(z.string()),
   price: z.number(),
   sortOrder: z.number(),
   signature: z.boolean(),
@@ -145,6 +161,11 @@ export type GetStoreReviewListRequest = {
   params: {
     sortType: SortType;
     sortDirection: SortDirection;
+    searchString?: string;
+    pageNum: number;
+    pageSize: number;
+    writerId?: string;
+    parentId?: string;
   };
 };
 
@@ -248,7 +269,7 @@ export type ModifyStoreReviewBody = {
 export type GetStoreReviewResponse = z.infer<typeof GetStoreReviewResponse>;
 export const GetStoreReviewResponse = z.object({
   status: z.string(),
-  data: null,
+  data: z.null(),
 });
 
 export type StoreReward = z.infer<typeof StoreReward>;
@@ -293,13 +314,19 @@ export const SearchStoreListResponse = PageResponse(
     isFinished: z.boolean(),
     address: z.string(),
     images: z
-      .object({
-        id: z.number(),
-        imageUrl: z.string(),
-        sortOrder: z.number(),
-        tags: z.array(z.string()).nullable(),
-      })
-      .array(),
+      .array(
+        z.object({
+          id: z.number(),
+          imageUrl: z.string(),
+          sortOrder: z.number(),
+          tags: z.array(z.string()).nullable(),
+          isMain: z.boolean().optional(),
+        }),
+      )
+      .nullable()
+      .transform((val) => val ?? []),
     category: z.enum(STORE_CATEGORIES),
   }),
 );
+
+export const GetRecentlyViewedStoreListResponse = PageResponse(Store);

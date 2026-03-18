@@ -1,8 +1,10 @@
 'use client';
 
+import { toast } from '@repo/design-system/components/b2c';
+
 const DashboardPage = () => {
   const handleAlert = () => {
-    alert('CEO-FRONT!');
+    toast.success('CEO-FRONT!');
 
     if (window.interop) {
       window.interop.setBadgeCount(12345);

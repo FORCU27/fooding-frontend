@@ -1,6 +1,6 @@
 import { z } from 'zod/v4';
 
-import { ApiResponse } from '../../shared';
+import { ApiResponse, PageResponse } from '../../shared';
 
 export type StorePost = z.infer<typeof StorePost>;
 export const StorePost = z.object({
@@ -15,7 +15,7 @@ export const StorePost = z.object({
     }),
   ),
   createdAt: z.iso.datetime({ local: true }),
-  fixed: z.boolean(),
+  isFixed: z.boolean(),
 });
 
 export type GetStorePostListParams = {
@@ -23,7 +23,7 @@ export type GetStorePostListParams = {
 };
 
 export type GetStorePostListResponse = z.infer<typeof GetStorePostListResponse>;
-export const GetStorePostListResponse = ApiResponse(z.array(StorePost));
+export const GetStorePostListResponse = PageResponse(StorePost);
 
 export type GetStorePostByIdResponse = z.infer<typeof GetStorePostByIdResponse>;
 export const GetStorePostByIdResponse = ApiResponse(StorePost);

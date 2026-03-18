@@ -77,7 +77,7 @@ export const WaitingUser = z.object({
 export const GetWaitingDetailResponse = z.object({
   id: z.number(),
   storeId: z.number(),
-  user: WaitingUser,
+  user: WaitingUser.nullable(),
   callNumber: z.number(),
   channel: z.string(),
   infantChairCount: z.number(),
@@ -132,3 +132,11 @@ export const GetStoreWaitingOverviewType = z.object({
 export type GetStoreWaitingOverviewResult = z.infer<typeof GetStoreWaitingOverviewType>;
 
 export const GetStoreWaitingOverviewResponse = ApiResponse(GetStoreWaitingOverviewType);
+
+export const UserWaitingAvailable = z.object({
+  available: z.boolean(),
+});
+
+export type UserWaitingAvailable = z.infer<typeof UserWaitingAvailable>;
+
+export const GetUserWaitingAvailableResponse = ApiResponse(UserWaitingAvailable);

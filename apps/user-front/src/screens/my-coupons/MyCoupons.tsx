@@ -11,8 +11,10 @@ import { Suspense } from '@suspensive/react';
 import { overlay } from 'overlay-kit';
 
 import { IntersectionObserver } from '@/components/IntersectionObserver';
+import BottomTab from '@/components/Layout/BottomTab';
 import { DefaultErrorBoundary } from '@/components/Layout/DefaultErrorBoundary';
 import { Header } from '@/components/Layout/Header';
+import { LoadingScreen } from '@/components/Layout/LoadingScreen';
 import { Screen } from '@/components/Layout/Screen';
 import { useApplyCoupon } from '@/hooks/coupon/useApplyCoupon';
 import { useGetInfiniteMyCouponList } from '@/hooks/coupon/useGetMyCouponList';
@@ -44,6 +46,7 @@ export const MyCouponListScreen: ActivityComponentType<'MyCouponListScreen'> = (
       ref={screenRef}
       className='bg-gray-1'
       header={<Header left={<Header.Back />} title='쿠폰함' />}
+      bottomTab={<BottomTab currentTab='mypage' />}
     >
       <Tabs value={tabs} onChange={onTabsChange} className='flex-1 flex flex-col'>
         <Tabs.List className='sticky top-0' fullWidth>
@@ -77,13 +80,15 @@ export const MyCouponListScreen: ActivityComponentType<'MyCouponListScreen'> = (
 };
 
 const AvailableCouponList = () => {
-  const { coupons, totalCount, fetchNextPage } = useGetInfiniteMyCouponList({
+  const { coupons, totalCount, fetchNextPage, isPending, isFetching } = useGetInfiniteMyCouponList({
     used: false,
   });
 
   if (coupons.length === 0) {
     return <EmptyState className='flex-1' title='사용 가능한 쿠폰이 없어요.' />;
   }
+
+  if (isPending || isFetching) return <LoadingScreen />;
 
   return (
     <div className='px-grid-margin'>
@@ -117,9 +122,12 @@ const AvailableCouponList = () => {
 };
 
 const UsedCouponList = () => {
-  const { coupons, totalCount, fetchNextPage } = useGetInfiniteMyCouponList({
-    used: true,
-  });
+  const { coupons, totalCount, fetchNextPage, isPending, isFetching, isFetchingNextPage } =
+    useGetInfiniteMyCouponList({
+      used: true,
+    });
+
+  if (isPending || isFetching || isFetchingNextPage) return <LoadingScreen />;
 
   if (coupons.length === 0) {
     return <EmptyState className='flex-1' title='사용한 쿠폰이 없어요.' />;
@@ -256,7 +264,7 @@ const ApplyCouponDialog = ({ isOpen, onOpenChange, coupon }: ApplyCouponDialogPr
               </Dialog.Header>
               <Dialog.Body>
                 <div className='flex items-center gap-4 mt-6'>
-                  <CouponStoreThumbnail mainImage={coupon.mainImage} />
+                  <CouponStoreThumbnail mainImage={coupon.images?.[0]?.imageUrl ?? null} />
                   <div className='flex flex-col gap-2 justify-center'>
                     <span className='subtitle-1'>{coupon.name}</span>
                     <span className='body-6 text-gray-5'>{coupon.storeName}</span>
@@ -298,7 +306,7 @@ const ApplyCouponDialog = ({ isOpen, onOpenChange, coupon }: ApplyCouponDialogPr
               </Dialog.Header>
               <Dialog.Body>
                 <div className='mt-5 bg-gray-1 rounded-[12px] flex gap-4 p-6'>
-                  <CouponStoreThumbnail mainImage={coupon.mainImage} />
+                  <CouponStoreThumbnail mainImage={coupon.images?.[0]?.imageUrl ?? null} />
                   <div className='flex flex-col gap-2 justify-center'>
                     <span className='subtitle-1'>{coupon.name}</span>
                     <span className='body-6 text-gray-5'>{coupon.storeName}</span>

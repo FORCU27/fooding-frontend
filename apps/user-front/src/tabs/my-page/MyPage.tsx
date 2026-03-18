@@ -13,23 +13,25 @@ import {
 } from '@repo/design-system/icons';
 import { ActivityComponentType, useFlow } from '@stackflow/react/future';
 import { ErrorBoundary, ErrorBoundaryFallbackProps, Suspense } from '@suspensive/react';
+import { useSuspenseQueries } from '@tanstack/react-query';
 
 import { LoadingToggle } from '@/components/Devtool/LoadingToggle';
 import BottomTab from '@/components/Layout/BottomTab';
 import { Header } from '@/components/Layout/Header';
+import { LoadingScreen } from '@/components/Layout/LoadingScreen';
 import { Screen } from '@/components/Layout/Screen';
 import { useAuth } from '@/components/Provider/AuthProvider';
 import { StoresList } from '@/components/Store/StoresList';
-import { useGetBookmarkList } from '@/hooks/bookmark/useGetBookmarkList';
-import { useGetInfiniteMyCouponList } from '@/hooks/coupon/useGetMyCouponList';
-import { useGetRewardPersonalLog } from '@/hooks/reward/useGetRewardPersonalLog';
-import { useGetStoreList } from '@/hooks/store/useGetStoreList';
-import { BookmarkCard } from '@/screens/bookmarks/components/BookmarkCard';
+import { getBookmarkListQueryOptions } from '@/hooks/bookmark/useGetBookmarkList';
+import { getMyCouponSummaryQueryOptions } from '@/hooks/coupon/useGetMyCouponList';
+import { getMyReviewListQueryOptions } from '@/hooks/review/useGetMyReviewList';
+import { getRewardPersonalLogQueryOptions } from '@/hooks/reward/useGetRewardPersonalLog';
+import { getRecentlyViewedStoreListQueryOptions } from '@/hooks/store/useGetRecentlyViewedStoreList';
+import { BookmarkCard } from '@/tabs/my-page/components/BookmarkCard';
 
 const dummy = {
   followers: 0,
   followings: 0,
-  reviews: 5,
 };
 
 export const MyPageTab: ActivityComponentType<'MyPageTab'> = () => {
@@ -52,7 +54,7 @@ export const MyPageTab: ActivityComponentType<'MyPageTab'> = () => {
     >
       <ErrorBoundary fallback={MyPageErrorFallback}>
         <LoadingToggle fallback={<MyPageLoadingFallback />}>
-          <Suspense fallback={null}>
+          <Suspense fallback={<LoadingScreen />}>
             <Content />
           </Suspense>
         </LoadingToggle>
@@ -70,19 +72,29 @@ const Content = () => {
 
   const flow = useFlow();
 
-  const { data: bookmarks } = useGetBookmarkList({
-    pageNum: 1,
-    pageSize: 5,
+  const [
+    { data: bookmarks },
+    { data: couponSummary },
+    { data: myReviews },
+    { data: reward },
+    { data: recentlyViewedStores },
+  ] = useSuspenseQueries({
+    queries: [
+      getBookmarkListQueryOptions({
+        pageNum: 1,
+        pageSize: 5,
+      }),
+      getMyCouponSummaryQueryOptions({ used: false }),
+      getMyReviewListQueryOptions({
+        sortType: 'RECENT',
+        sortDirection: 'DESCENDING',
+        pageNum: 1,
+        pageSize: 1, // 개수만 필요하므로 1개만 조회
+      }),
+      getRewardPersonalLogQueryOptions(),
+      getRecentlyViewedStoreListQueryOptions(),
+    ],
   });
-
-  const { data: stores } = useGetStoreList({
-    pageNum: 1,
-    pageSize: 5,
-  });
-
-  const { coupons } = useGetInfiniteMyCouponList({ used: false });
-
-  const { data: reward } = useGetRewardPersonalLog();
 
   return (
     <div className='w-full'>
@@ -129,23 +141,28 @@ const Content = () => {
           </div>
         </div>
         <div className='flex justify-around items-center h-[88px] mt-5 p-5'>
-          <div className='flex flex-col justify-center items-center gap-1 cursor-pointer'>
+          <div
+            className='flex flex-col justify-center items-center gap-1 cursor-pointer w-full'
+            onClick={() => {
+              flow.push('MyReviewsScreen', {});
+            }}
+          >
             <MessageDotsSquareIcon />
             <p className='body-7 text-gray-5'>내 리뷰</p>
-            <p className='subtitle-6'>{dummy.reviews}건</p>
+            <p className='subtitle-6'>{myReviews.pageInfo.totalCount}건</p>
           </div>
           <hr className='w-[2px] h-[81px] bg-gray-2 text-gray-2 mx-2' />
           <div
-            className='flex flex-col justify-center items-center gap-1 cursor-pointer'
+            className='flex flex-col justify-center items-center gap-1 cursor-pointer w-full'
             onClick={() => flow.push('MyCouponListScreen', {})}
           >
             <TicketIcon />
             <p className='body-7 text-gray-5'>쿠폰</p>
-            <p className='subtitle-6'>{coupons && coupons.length}장</p>
+            <p className='subtitle-6'>{couponSummary.pageInfo.totalCount}장</p>
           </div>
           <hr className='w-[2px] h-[81px] bg-gray-2 text-gray-2 mx-2' />
           <div
-            className='flex flex-col justify-center items-center gap-1 cursor-pointer'
+            className='flex flex-col justify-center items-center gap-1 cursor-pointer w-full'
             onClick={() => flow.push('MyRewardListScreen', {})}
           >
             <GiftIcon />
@@ -158,35 +175,25 @@ const Content = () => {
         <div className='flex flex-col py-grid-margin bg-white/80'>
           <div className='flex justify-between mb-4 px-grid-margin'>
             <div className='subtitle-3'>찜해 둔 식당</div>
-            {bookmarks.list.length === 0 ? (
-              <button
-                className='flex justify-center items-center body-5 text-gray-3'
-                onClick={() => flow.push('BookmarkListScreen', {})}
-                disabled
-              >
-                <span>전체보기</span>
-                <ChevronRightIcon size={14} />
-              </button>
-            ) : (
-              <button
-                className='flex justify-center items-center body-5 text-gray-5 cursor-pointer hover:text-black'
-                onClick={() => flow.push('BookmarkListScreen', {})}
-              >
-                <span>전체보기</span>
-                <ChevronRightIcon size={14} />
-              </button>
-            )}
+            <button
+              className='flex justify-center items-center body-5 text-gray-5 disabled:text-gray-3'
+              onClick={() => flow.push('BookmarkListScreen', {})}
+              disabled={bookmarks.list.length === 0}
+            >
+              전체보기
+              <ChevronRightIcon size={18} />
+            </button>
           </div>
           <ul className='flex px-grid-margin overflow-x-auto scrollbar-hide w-dvw gap-3'>
-            {bookmarks.list.map((bookmark) => (
-              <BookmarkCard bookmark={bookmark} key={bookmark.id} />
+            {bookmarks.list.map((bookmark, idx) => (
+              <BookmarkCard bookmark={bookmark} key={`${bookmark.id}-${idx}`} />
             ))}
           </ul>
         </div>
         <StoresList
-          stores={stores.list}
+          stores={recentlyViewedStores.list}
           subtitle='최근 본 식당'
-          onClickTotalBtn={() => flow.push('MyPageTab', {})}
+          onClickTotalBtn={() => flow.push('RecentlyViewedStoreListScreen', {})}
         />
       </div>
     </div>

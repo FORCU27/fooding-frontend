@@ -19,6 +19,7 @@ export * from './devices';
 export * from './banners';
 export * from './coupons';
 export * from './waitings';
+export * from './store-waitings';
 export * from './waiting-settings';
 export * from './reports';
 export * from './file';

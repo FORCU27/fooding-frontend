@@ -41,3 +41,9 @@ export const GetCreateWaitingReseponse = z.object({
     planId: z.string(),
   }),
 });
+
+export type GetCancelWaitingResponse = z.infer<typeof GetCancelWaitingResponse>;
+export const GetCancelWaitingResponse = z.object({
+  status: z.string(),
+  data: z.object({}),
+});

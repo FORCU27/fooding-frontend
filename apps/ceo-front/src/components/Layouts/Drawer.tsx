@@ -10,6 +10,7 @@ import { Dialog as DialogPrimitives } from 'radix-ui';
 import { allMenus, Menu } from './Navigation';
 import { FoodingLogo } from '@/components/FoodingLogo';
 import { StoreSelector } from '@/components/StoreSelector';
+import { useStore } from '@/context/StoreContext';
 import { useGetSelf } from '@/hooks/auth/useGetSelf';
 import { useLogout } from '@/hooks/auth/useLogout';
 
@@ -21,6 +22,7 @@ type DrawerProps = {
 
 export const Drawer = ({ trigger, isOpen, onOpenChange }: DrawerProps) => {
   const router = useRouter();
+  const { clearStore } = useStore();
 
   const logout = useLogout();
 
@@ -29,6 +31,7 @@ export const Drawer = ({ trigger, isOpen, onOpenChange }: DrawerProps) => {
 
     logout.mutate(undefined, {
       onSuccess: () => {
+        clearStore();
         router.push('/login');
       },
       onError: () => {
@@ -70,7 +73,10 @@ export const Drawer = ({ trigger, isOpen, onOpenChange }: DrawerProps) => {
             </Suspense>
           </div>
           <Navigation />
-          <div className='px-8 py-[18px] flex justify-end border-t border-gray-8 bg-gray-7'>
+          <div className='px-8 py-[18px] flex justify-end border-t border-gray-8 bg-gray-7 gap-4'>
+            <Link href='/my' className='flex items-center gap-2 text-gray-5 body-2 cursor-pointer'>
+              내 상점
+            </Link>
             <button
               className='flex items-center gap-2 text-gray-5 body-2 cursor-pointer'
               onClick={handleLogoutClick}

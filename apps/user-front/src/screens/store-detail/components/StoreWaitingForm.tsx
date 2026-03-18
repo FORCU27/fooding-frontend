@@ -96,7 +96,7 @@ export const StoreWaitingForm = ({ storeId, handleSubmit }: StoreWaitingFormProp
               <AgreementCheckBox
                 className='px-10 py-1'
                 label={agreement.label}
-                link={agreement.link.toString()}
+                link={agreement.link}
                 checked={field.value}
                 onChange={field.onChange}
               />
@@ -115,7 +115,7 @@ const agreements = [
   {
     name: 'termsAgreed',
     label: '[필수] 서비스 이용약관에 동의합니다.',
-    link: urlConfig.terms,
+    link: urlConfig.terms.service,
   },
   {
     name: 'privacyPolicyAgreed',

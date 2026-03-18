@@ -20,6 +20,50 @@ export type CreateStoreBody = {
   name: string;
 };
 
+export type CreateStorePointShopItemBody = {
+  name: string;
+  point: number;
+  provideType: 'ALL' | 'REGULAR_CUSTOMER';
+  conditions: string;
+  totalQuantity: number;
+  issueStartOn: string | null;
+  issueEndOn: string | null;
+  imageId?: string;
+  isActive?: boolean;
+};
+
+export interface PointShopQuery {
+  searchString?: string;
+  pageNum?: number;
+  pageSize?: number;
+  isActive?: boolean;
+  sortType?: string;
+}
+
+export const PointShop = z.object({
+  id: z.number(),
+  name: z.string(),
+  point: z.number(),
+  provideType: z.enum(['ALL', 'REGULAR_CUSTOMER']),
+  conditions: z.string(),
+  isActive: z.boolean(),
+  totalQuantity: z.number(),
+  issuedQuantity: z.number(),
+  issueStartOn: z.string().nullable(),
+  issueEndOn: z.string().nullable(),
+  createdAt: z.string(),
+  image: z
+    .object({
+      id: z.string(),
+      name: z.string(),
+      url: z.string(),
+      size: z.number(),
+    })
+    .nullable(),
+});
+
+export type PointShop = z.infer<typeof PointShop>;
+
 export const SubwayStation = z.object({
   id: z.number(),
   name: z.string(),
@@ -64,50 +108,77 @@ export const Store = z.object({
 
 export type Store = z.infer<typeof Store>;
 
-export const StoreOperatingHour = z.object({
+export const DailyOperatingTimeSchema = z.object({
+  id: z.number(),
+  dayOfWeek: z.enum(DAY_OF_WEEK),
+  openTime: z.string().nullable(),
+  closeTime: z.string().nullable(),
+});
+
+export const DailyBreakTimeSchema = z.object({
+  id: z.number(),
+  dayOfWeek: z.enum(DAY_OF_WEEK),
+  breakStartTime: z.string().nullable(),
+  breakEndTime: z.string().nullable(),
+});
+
+export const StoreOperatingHourSchema = z.object({
   id: z.number(),
   hasHoliday: z.boolean(),
-  regularHolidayType: z.enum(REGULAR_HOLIDAY_TYPES),
-  regularHoliday: z.enum(DAY_OF_WEEK),
-  closedNationalHolidays: z.string().array(),
-  customHolidays: z.string().array(),
-  operatingNotes: z.string(),
-  dailyOperatingTimes: z.object({
-    dayOfWeek: z.enum(DAY_OF_WEEK),
-    openTime: z.string(),
-    closeTime: z.string(),
-    breakStartTime: z.string(),
-    breakEndTime: z.string(),
-  }),
+  regularHolidayType: z.enum(REGULAR_HOLIDAY_TYPES).nullable(),
+  regularHoliday: z.enum(DAY_OF_WEEK).nullable(),
+  closedNationalHolidays: z.array(z.string()),
+  customHolidays: z.array(z.string()),
+  operatingNotes: z.string().nullable(),
+
+  dailyOperatingTimes: z.array(DailyOperatingTimeSchema),
+  dailyBreakTimes: z.array(DailyBreakTimeSchema),
 });
 
-export const StoreOperatingHourBody = z.object({
-  hasHoliday: z.boolean(),
-  regularHolidayType: z.enum(REGULAR_HOLIDAY_TYPES),
-  regularHoliday: z.enum(DAY_OF_WEEK).array(),
-  closedNationalHolidays: z.string().array(),
-  customHolidays: z.string().array(),
-  operatingNotes: z.string(),
-  dailyOperatingTimes: z.array(
-    z.object({
-      dayOfWeek: z.enum([
-        'MONDAY',
-        'TUESDAY',
-        'WEDNESDAY',
-        'THURSDAY',
-        'FRIDAY',
-        'SATURDAY',
-        'SUNDAY',
-      ]),
-      openTime: z.string(),
-      closeTime: z.string(),
-      breakStartTime: z.string(),
-      breakEndTime: z.string(),
-    }),
-  ),
-});
+export interface DailyOperatingTime {
+  id?: number;
+  dayOfWeek: DayOfWeek;
+  openTime: string | null;
+  closeTime: string | null;
+}
 
-export const GetStoreOperatingHourResponse = ApiResponse(StoreOperatingHour);
+export interface DailyBreakTime {
+  id?: number;
+  dayOfWeek: DayOfWeek;
+  breakStartTime: string | null;
+  breakEndTime: string | null;
+}
+
+export interface StoreOperatingHour {
+  id: number;
+  hasHoliday: boolean;
+  regularHolidayType: RegularHolidayType | null;
+  regularHoliday: DayOfWeek | null;
+  closedNationalHolidays: string[];
+  customHolidays: string[];
+  operatingNotes: string | null;
+
+  dailyOperatingTimes: DailyOperatingTime[];
+  dailyBreakTimes: DailyBreakTime[];
+}
+
+export interface StoreOperatingHourBody {
+  hasHoliday: boolean;
+  regularHolidayType: RegularHolidayType | null;
+  regularHoliday: DayOfWeek | null;
+  closedNationalHolidays: string[];
+  customHolidays: string[];
+  operatingNotes: string;
+  dailyOperatingTimes: DailyOperatingTime[];
+  dailyBreakTimes: DailyBreakTime[];
+}
+
+export const GetStoreOperatingHourResponse = z.object({
+  status: z.string(),
+  data: StoreOperatingHourSchema,
+});
+export type StoreOperatingHourType = z.infer<typeof StoreOperatingHourSchema>;
+export type GetStoreOperatingHourResponseType = z.infer<typeof GetStoreOperatingHourResponse>;
 
 export const GetStoreResponse = ApiResponse(Store);
 export const GetStoreListResponse = ApiResponse(z.array(Store));
@@ -115,4 +186,65 @@ export const GetStoreListResponse = ApiResponse(z.array(Store));
 export type GetStore = z.infer<typeof GetStoreResponse>;
 export type GetStoreList = z.infer<typeof GetStoreListResponse>;
 
-export type StoreOperatingHourBody = z.infer<typeof StoreOperatingHourBody>;
+export const GetStorePointShopResponse = ApiResponse(PointShop);
+export const GetStorePointShopListResponse = z.object({
+  status: z.string().nullable(),
+  data: z.object({
+    list: z.array(PointShop),
+    pageInfo: z.object({
+      pageNum: z.number(),
+      pageSize: z.number(),
+      totalCount: z.number(),
+      totalPages: z.number(),
+    }),
+  }),
+});
+export type GetStorePointShopStatusResponse = z.infer<typeof GetStorePointShopStatusResponse>;
+export const GetStorePointShopStatusResponse = z.object({
+  status: z.string(),
+  data: z.null(),
+});
+export type GetStorePointShopNullResponse = z.infer<typeof GetStorePointShopNullResponse>;
+export const GetStorePointShopNullResponse = z.object({
+  status: z.string(),
+  data: z.null(),
+});
+
+export type CreateStorePointShopResponse = z.infer<typeof CreateStorePointShopResponse>;
+export const CreateStorePointShopResponse = z.object({
+  status: z.string(),
+  data: z.number(),
+});
+
+export type UpdateStoreBody = {
+  name: Store['name'];
+  regionId: Store['regionId'];
+  address: Store['address'];
+  addressDetail: Store['addressDetail'];
+  category: Store['category'];
+  description: Store['description'];
+  contactNumber: Store['contactNumber'];
+  direction: Store['direction'];
+  latitude: Store['latitude'];
+  longitude: Store['longitude'];
+};
+
+export const CeoStoreStatisticsResponse = z.object({
+  totalSales: z.number(),
+  totalSalesChangeRate: z.number(),
+  totalVisitors: z.number(),
+  visitorChangeRate: z.number(),
+  annualTargetSalesRate: z.number(),
+  currentWaitingCount: z.number(),
+  expectedWaitingTime: z.number(),
+  lastEntranceMinutesAgo: z.number(),
+});
+
+export type CeoStoreStatistics = z.infer<typeof CeoStoreStatisticsResponse>;
+
+export const GetStoreStatisticsResponse = ApiResponse(CeoStoreStatisticsResponse);
+
+export type GetStoreStatisticsParams = {
+  storeId: number;
+  date: string; // YYYY-MM-DD format
+};

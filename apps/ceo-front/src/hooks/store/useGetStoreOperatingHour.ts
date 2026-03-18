@@ -5,10 +5,8 @@ import { useQuery } from '@tanstack/react-query';
 export const useGetStoreOperatingHour = (id: number) => {
   return useQuery({
     queryKey: [queryKeys.ceo.store.operatingHour, id],
-    queryFn: async () => {
-      const result = await storeApi.getStoreOperatingHour(id);
-      return result.data;
-    },
+    enabled: !!id && id > 0,
+    queryFn: async () => (await storeApi.getStoreOperatingHour(id)).data,
     staleTime: 0,
   });
 };

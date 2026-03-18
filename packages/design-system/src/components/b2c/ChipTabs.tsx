@@ -66,7 +66,7 @@ const ChipTabsList = ({ className, children, size, variant, ...props }: ChipTabs
     <ChipTabsListContext value={{ size, variant }}>
       <TabsPrimitives.List
         className={cn(
-          'bg-white inline-flex items-center gap-2',
+          'inline-flex items-center gap-2',
           scrollable && 'overflow-x-auto w-full scrollbar-hide px-grid-margin',
           className,
         )}

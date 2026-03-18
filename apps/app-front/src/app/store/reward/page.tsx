@@ -97,7 +97,7 @@ export default function WaitingPage() {
     };
   };
 
-  const { handleNumberClick, isPhoneNumberComplete } = usePhoneNumber(phoneNumber);
+  const { handleNumberClick, isPhoneNumberComplete } = usePhoneNumber('010-');
 
   const [isRewardComplete, setIsRewardComplete] = useState(false);
 

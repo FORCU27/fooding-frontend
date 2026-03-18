@@ -107,7 +107,12 @@ export const PageResponse = <TListItem extends z.ZodType>(listItem: TListItem) =
   ApiResponse(
     z.object({
       list: z.array(listItem),
-      pageInfo: PageInfo,
+      pageInfo: PageInfo.optional().default({
+        pageNum: 1,
+        pageSize: 10,
+        totalCount: 0,
+        totalPages: 1,
+      }),
     }),
   );
 

@@ -4,17 +4,17 @@ import React from 'react';
 
 interface Props {
   children: React.ReactNode;
+  isSidebarOpen?: boolean;
 }
 
-const MainContent = ({ children }: Props) => (
+const MainContent = ({ children, isSidebarOpen = false }: Props) => (
   <main
-    className={`
-      flex flex-col overflow-hidden
-      h-[calc(100vh-64px)] mt-[64px]
-      w-full sm:ml-[240px] sm:w-[calc(100vw-240px)]
-    `}
+    aria-hidden={isSidebarOpen}
+    className='flex flex-col overflow-hidden h-[calc(100vh-60px)] mt-[60px] w-full'
   >
-    {children}
+    <div className='w-full h-full overflow-auto'>
+      {children}
+    </div>
   </main>
 );
 

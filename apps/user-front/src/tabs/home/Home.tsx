@@ -1,13 +1,13 @@
 'use client';
 
-import { Suspense } from 'react';
+import { Suspense, useState } from 'react';
 
-import { STORE_CATEGORIES } from '@repo/api/user';
+import { StoreCategory } from '@repo/api/user';
 import { ErrorFallback } from '@repo/design-system/components/b2c';
-import { ActivityComponentType } from '@stackflow/react/future';
+import { ActivityComponentType, useFlow } from '@stackflow/react/future';
 import { ErrorBoundary, ErrorBoundaryFallbackProps } from '@suspensive/react';
+import { useSuspenseQueries } from '@tanstack/react-query';
 
-import { Banner } from './components/Banner';
 import { CategoryTabs } from './components/CategoryTabs';
 import { HomeLoadingFallback } from './components/HomeLoadingFallback';
 import { MainStoreList } from './components/MainStoreList';
@@ -16,11 +16,12 @@ import BottomTab from '@/components/Layout/BottomTab';
 import { Divider } from '@/components/Layout/Divider';
 import { Screen } from '@/components/Layout/Screen';
 import { StoresList } from '@/components/Store/StoresList';
-import { useGetStoreImmediateEntryList } from '@/hooks/store/useGetStoreImmediateEntryList';
-import { useGetStoreList } from '@/hooks/store/useGetStoreList';
-import Header from '@/tabs/home/components/Header';
-import Menubar from '@/tabs/home/components/Menubar';
-import { noop } from '@/utils/noop';
+import { usePreferredRegions } from '@/hooks/regions/usePreferredRegions';
+import { getPopularViewedStoreListQueryOptions } from '@/hooks/store/useGetPopularVeiwedStoreList';
+import { getStoreImmediateEntryListQueryOptions } from '@/hooks/store/useGetStoreImmediateEntryList';
+import { getStoreListQueryOptions } from '@/hooks/store/useGetStoreList';
+import { Header } from '@/tabs/home/components/Header';
+import { Toolbar } from '@/tabs/home/components/Toolbar';
 
 export const HomeTab: ActivityComponentType<'HomeTab'> = () => {
   return (
@@ -53,54 +54,79 @@ const Content = () => {
 };
 
 const ContentBody = () => {
-  const { data: stores } = useGetStoreList({
-    pageNum: 1,
-    pageSize: 10,
-    sortType: 'RECENT',
-    sortDirection: 'DESCENDING',
-  });
-
-  const { data: popularStores } = useGetStoreList({
-    pageNum: 1,
-    pageSize: 10,
-    sortType: 'REVIEW',
-    sortDirection: 'DESCENDING',
-  });
-
-  const { data: immediateEntryStores } = useGetStoreImmediateEntryList({
-    pageNum: 1,
-    pageSize: 10,
-  });
+  const { preferredRegions, changePreferredRegions } = usePreferredRegions();
+  const [category, setCategory] = useState<StoreCategory | null>(null);
 
   return (
     <div className='flex flex-col w-full'>
-      <Menubar />
+      <Toolbar
+        selectedRegions={preferredRegions}
+        onSelectedRegionsChange={changePreferredRegions}
+      />
       <div className='bg-white mb-3'>
-        <Banner />
-        <div className='flex flex-col py-grid-margin'>
-          <CategoryTabs categories={STORE_CATEGORIES} />
-          <MainStoreList stores={stores.list} />
-        </div>
-        <Divider />
-        <StoresList
-          subtitle='푸딩에서 인기 많은 식당이에요'
-          stores={popularStores.list}
-          onClickTotalBtn={noop}
-        />
-        <StoresList
-          className='pt-0'
-          subtitle='새로 오픈했어요!'
-          stores={stores.list}
-          onClickTotalBtn={noop}
-        />
-        <StoresList
-          className='pt-0'
-          subtitle='지금 바로 입장하실 수 있어요!'
-          stores={immediateEntryStores.list}
-          onClickTotalBtn={noop}
-        />
+        {/* <Banner /> */}
+        <CategoryTabs category={category} onCategoryChange={setCategory} />
+        <StoreSection selectedRegions={preferredRegions} category={category} />
       </div>
     </div>
+  );
+};
+
+type StoreSectionProps = {
+  selectedRegions: { id: string; name: string }[];
+  category: StoreCategory | null;
+};
+
+const StoreSection = ({ selectedRegions, category }: StoreSectionProps) => {
+  const [{ data: stores }, { data: popularStores }, { data: immediateEntryStores }] =
+    useSuspenseQueries({
+      queries: [
+        getStoreListQueryOptions({
+          pageNum: 1,
+          pageSize: 10,
+          sortType: 'RECENT',
+          sortDirection: 'DESCENDING',
+          regionIds: selectedRegions.map((region) => region.id),
+          category: category ?? undefined,
+        }),
+        getPopularViewedStoreListQueryOptions(),
+        getStoreImmediateEntryListQueryOptions({
+          pageNum: 1,
+          pageSize: 10,
+          regionIds: selectedRegions.map((region) => region.id),
+          category: category ?? undefined,
+        }),
+      ],
+    });
+
+  const flow = useFlow();
+
+  return (
+    <>
+      {stores.list.length > 0 && <MainStoreList stores={stores.list} />}
+      <Divider />
+      <StoresList
+        subtitle='푸딩에서 인기 많은 식당이에요'
+        stores={popularStores.list}
+        onClickTotalBtn={() =>
+          flow.push('PopularViewedStoreListScreen', { keyword: '', regions: [] })
+        }
+      />
+      <StoresList
+        className='pt-0'
+        subtitle='새로 오픈했어요!'
+        stores={stores.list}
+        onClickTotalBtn={() => flow.push('SearchResultScreen', { keyword: '', regions: [] })}
+      />
+      <StoresList
+        className='pt-0'
+        subtitle='지금 바로 입장하실 수 있어요!'
+        stores={immediateEntryStores.list}
+        onClickTotalBtn={() =>
+          flow.push('ImmediateEntryStoreListScreen', { keyword: '', regions: [] })
+        }
+      />
+    </>
   );
 };
 

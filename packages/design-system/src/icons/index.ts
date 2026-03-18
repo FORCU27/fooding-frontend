@@ -3,6 +3,8 @@ export * from './arrowIcons';
 export * from './chevronIcons';
 export * from './socialIcons';
 export * from './b2b';
+export * from './facilitiesIcons';
+export * from './SNSIcons';
 
 export { default as CloseIcon } from './CloseIcon';
 export { default as VisibilityIcon } from './VisibilityIcon';
@@ -43,3 +45,9 @@ export { default as CirclePlusIcon } from './CirclePlusIcon';
 export { default as LinkIcon } from './LinkIcon';
 export { default as TrashIcon } from './TrashIcon';
 export { default as LogoutIcon } from './LogoutIcon';
+export { EllipsisVerticalIcon } from './EllipsisVerticalIcon';
+export { X } from './XIcon';
+export { default as MoreVerticalIcon } from './MoreVerticalIcon';
+export { default as ProgressCircleIcon } from './ProgressCircleIcon';
+export { default as MobileProgressDotIcon } from './MobileProgressDotIcon';
+export { default as ImagePlaceholderIcon } from './ImagePlaceholderIcon';

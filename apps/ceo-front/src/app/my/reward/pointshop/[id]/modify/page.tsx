@@ -1,0 +1,71 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+'use client';
+
+import { useParams, useRouter } from 'next/navigation';
+
+import { CreateStorePointShopItemBody } from '@repo/api/ceo';
+import { EmptyState, toast, Toaster } from '@repo/design-system/components/b2c';
+
+import PointShopForm from '../../components/PointShopForm';
+import { useStore } from '@/context/StoreContext';
+import { useGetStorePointShopItem } from '@/hooks/store/useGetStorePointShopItem';
+import { useUpdateStorePointShopItem } from '@/hooks/store/useUpdateStorePointShopItem';
+import { useUploadFile } from '@/hooks/useUploadFile';
+
+const PointShopModifyPage = () => {
+  const { storeId } = useStore();
+  const params = useParams();
+  const router = useRouter();
+  const itemId = Number(params.id);
+  const selectedStoreId = Number(storeId);
+
+  const { data: pointShopItem } = useGetStorePointShopItem({
+    storeId: selectedStoreId,
+    id: itemId,
+  });
+
+  const { mutateAsync: uploadFile } = useUploadFile();
+  const { mutateAsync: updateItem, isPending: isUpdating } =
+    useUpdateStorePointShopItem(selectedStoreId);
+
+  const handleSubmit = async (data: CreateStorePointShopItemBody & { file?: File | null }) => {
+    try {
+      if (data.file) {
+        const formData = new FormData();
+        formData.append('files', data.file);
+
+        const uploadResult = await uploadFile(formData);
+        data.imageId = uploadResult.data[0]?.id || '';
+      }
+
+      await updateItem({
+        id: itemId,
+        body: {
+          ...data,
+        },
+      });
+      toast.success('포인트샵 상품이 수정되었습니다.');
+      router.push(`/my/reward/pointshop/${itemId}`);
+    } catch (error: any) {
+      toast.error(error?.response?.data?.message || '수정에 실패했습니다.');
+    }
+  };
+
+  if (!pointShopItem) return <EmptyState title='포인트샵 아이템 정보가 없습니다.' />;
+
+  return (
+    <>
+      <PointShopForm
+        onSubmit={handleSubmit}
+        originValue={{
+          ...pointShopItem,
+          image: pointShopItem.image ?? undefined,
+        }}
+        isSubmitting={isUpdating}
+      />
+      <Toaster />
+    </>
+  );
+};
+
+export default PointShopModifyPage;

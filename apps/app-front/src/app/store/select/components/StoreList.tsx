@@ -27,7 +27,7 @@ export default function StoreList({
       <div className='flex-1 overflow-y-auto scrollbar-hide'>
         <ul className='space-y-4 pb-[89px]'>
           {stores?.map((store) => {
-            const isSelected = selectedStore === store;
+            const isSelected = selectedStore?.id === store.id;
             return (
               <li
                 key={store.id}

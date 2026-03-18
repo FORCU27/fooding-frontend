@@ -1,0 +1,103 @@
+'use client';
+
+import { useState } from 'react';
+
+import { GiftCouponBody, UserResponse } from '@repo/api/ceo';
+import { toast, Toaster } from '@repo/design-system/components/b2c';
+import { Card, Spinner, type SelectedRangeItem } from '@repo/design-system/components/ceo';
+
+import { CouponForm, type CouponFormData } from '@/components/coupon/CouponForm';
+import { UserSearchInput } from '@/components/coupon/UserSearchInput';
+import { useGiftCoupon } from '@/hooks/coupon/useGiftCoupon';
+import { useSelectedStoreId } from '@/hooks/useSelectedStoreId';
+
+const GiftCouponPage = () => {
+  const giftCoupon = useGiftCoupon();
+  const { selectedStoreId, isLoading: isLoadingStoreId, isInitialized } = useSelectedStoreId();
+  const [selectedUser, setSelectedUser] = useState<UserResponse | null>(null);
+
+  const handleSubmit = async (
+    formData: CouponFormData,
+    selectedDateRange: SelectedRangeItem | null,
+  ) => {
+    if (!selectedUser) {
+      toast.error('선물받을 고객을 선택해주세요.');
+      return;
+    }
+
+    if (!selectedDateRange) {
+      toast.error('사용 기간을 선택해주세요.');
+      return;
+    }
+
+    if (!selectedStoreId) {
+      toast.error('스토어를 선택해주세요.');
+      return;
+    }
+
+    // 쿠폰 이름 자동 생성: "{닉네임}님을 위한 쿠폰"
+    const couponName = `${selectedUser.nickname}님을 위한 쿠폰`;
+
+    // API 요청 데이터 변환
+    const apiData: GiftCouponBody = {
+      userId: selectedUser.id,
+      storeId: selectedStoreId,
+      benefitType: formData.benefitType === 'discount' ? 'DISCOUNT' : 'GIFT',
+      discountType:
+        formData.benefitType === 'discount'
+          ? formData.discountType === 'percentage'
+            ? 'PERCENT'
+            : 'FIXED'
+          : 'FIXED',
+      name: couponName,
+      conditions: formData.usageConditions || undefined,
+      discountValue:
+        formData.benefitType === 'discount'
+          ? formData.discountType === 'percentage'
+            ? parseInt(formData.discountPercentage || '0')
+            : parseInt(formData.discountAmount || '0')
+          : undefined,
+      expiredOn: selectedDateRange.endDate.toISOString().split('T')[0],
+    };
+
+    await giftCoupon.mutateAsync(apiData);
+  };
+
+  if (isLoadingStoreId || !isInitialized) {
+    return (
+      <div className='space-y-4'>
+        <div className='headline-2'>쿠폰 선물</div>
+        <div className='bg-white rounded-lg shadow p-6'>
+          <Spinner text='스토어 정보를 불러오는 중...' />
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className='p-grid-margin space-y-6'>
+      <div className='headline-2'>쿠폰 선물</div>
+
+      {/* 고객 검색 섹션 */}
+      <Card>
+        <div className='p-6'>
+          <h3 className='text-lg font-semibold mb-4'>대상 고객 *</h3>
+          <UserSearchInput selectedUser={selectedUser} onSelectUser={setSelectedUser} />
+        </div>
+      </Card>
+
+      {/* 쿠폰 폼 */}
+      <CouponForm
+        mode='gift'
+        title=''
+        onSubmit={handleSubmit}
+        submitText='선물하기'
+        isSubmitting={giftCoupon.isPending}
+        previewCouponName={selectedUser ? `${selectedUser.nickname}님을 위한 쿠폰` : undefined}
+      />
+      <Toaster />
+    </div>
+  );
+};
+
+export default GiftCouponPage;

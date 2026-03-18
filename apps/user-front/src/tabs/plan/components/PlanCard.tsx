@@ -1,11 +1,12 @@
 import Image from 'next/image';
 
 import { Plan } from '@repo/api/user';
-import { Button } from '@repo/design-system/components/b2c';
+import { Button, toast } from '@repo/design-system/components/b2c';
 import { CloseIcon, FoodingIcon } from '@repo/design-system/icons';
 import { useFlow } from '@stackflow/react/future';
 
 import { useGetStoreDetail } from '@/hooks/store/useGetStoreDetail';
+import { useCancelStoreWaiting } from '@/hooks/store-waiting/useCancelStoreWaiting';
 import { useGetStoreWaitingDetail } from '@/hooks/store-waiting/useGetStoreWaitingDetail';
 import { isNonEmptyArray } from '@/utils/array';
 import { formatDotDate } from '@/utils/date';
@@ -19,6 +20,7 @@ export const PlanCard = ({ plan }: PlanCardProps) => {
 
   const { data: storeInfo } = useGetStoreDetail(plan.storeId);
   const { data: waitingInfo } = useGetStoreWaitingDetail(plan.originId);
+  const cancelStoreWaiting = useCancelStoreWaiting();
 
   const handlePlanCardClick = (isWaiting: boolean, planId: string) => {
     if (isWaiting) {
@@ -27,6 +29,20 @@ export const PlanCard = ({ plan }: PlanCardProps) => {
       flow.push('WaitingDetailScreen', { waitingId: planId });
     }
   };
+
+  const handleCancelPlanClick = (id: number) => {
+    if (cancelStoreWaiting.isPending) return;
+
+    cancelStoreWaiting.mutate(id, {
+      onSuccess: () => {
+        toast.success('취소 되었습니다.');
+      },
+      onError: () => {
+        toast.error('에러가 발생했습니다. 잠시 후 다시 시도해주세요.');
+      },
+    });
+  };
+
   return (
     <div
       className='flex flex-col bg-white/80 rounded-xl p-4 gap-3'
@@ -44,7 +60,7 @@ export const PlanCard = ({ plan }: PlanCardProps) => {
             <Image
               fill
               style={{ objectFit: 'cover' }}
-              src={storeInfo.images[0].imageUrl}
+              src={storeInfo.images[0].imageUrl.toString()}
               alt='가게 이미지'
             />
           </div>
@@ -69,7 +85,14 @@ export const PlanCard = ({ plan }: PlanCardProps) => {
         </div>
       </div>
       <div>
-        <Button size='large' variant='outlined'>
+        <Button
+          size='large'
+          variant='outlined'
+          isLoading={cancelStoreWaiting.isPending}
+          onClick={() => {
+            if (plan.reservationType !== 'RESERVATION') handleCancelPlanClick(plan.originId);
+          }}
+        >
           {plan.reservationType !== 'RESERVATION' ? '웨이팅 취소' : '예약 취소'}
         </Button>
       </div>

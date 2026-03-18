@@ -1,11 +1,14 @@
+import { FoodingIcon } from '../../icons';
 import { cn } from '../../utils/cn';
+import { Switch } from '../b2c';
 
 type CoinProductProps = {
-  image: string;
+  image?: string;
   imageAlt?: string;
   status: '발급중' | string;
   title: string;
   registrationDate: string;
+  dateRange?: string;
   exchangePoint: number;
   receivedCount: number;
   purchaseCount: number;
@@ -13,7 +16,10 @@ type CoinProductProps = {
   canceledCount: number;
   onOrderClick?: () => void;
   isActive?: boolean;
+  conditions?: string;
   className?: string;
+  onClick?: () => void;
+  onSwitchChange?: (checked: boolean) => void;
 };
 
 const CoinProduct = ({
@@ -22,17 +28,22 @@ const CoinProduct = ({
   status,
   title,
   registrationDate,
+  dateRange,
   exchangePoint,
   receivedCount,
   purchaseCount,
   usedCount,
   canceledCount,
+  conditions,
   onOrderClick,
-  isActive = false,
+  onClick,
+  onSwitchChange,
+  isActive = true,
   className,
 }: CoinProductProps) => {
   const statusColors: Record<string, string> = {
     발급중: 'bg-[#0080F81A] text-[#0080F8]',
+    판매중지: 'bg-[#0BB76D]/10 text-[#0BB76D]',
   };
 
   return (
@@ -42,59 +53,89 @@ const CoinProduct = ({
         isActive ? 'border-2 border-fooding-purple' : 'border-gray-200',
         className,
       )}
+      onClick={onClick}
     >
-      <div className='flex items-start gap-6'>
-        <img
-          src={image}
-          alt={imageAlt}
-          className='h-[180px] w-[180px] rounded-[12px] object-cover'
-        />
-        <div className='flex flex-1 flex-col'>
-          <div className='mb-2'>
+      <div className='flex gap-4'>
+        <div>
+          {image ? (
+            <img
+              src={image}
+              alt={imageAlt}
+              className='w-[240px] h-[170px] rounded-[12px] object-cover'
+            />
+          ) : (
+            <div className='flex justify-center items-center w-[240px] h-[170px] rounded-[12px] bg-gray-7'>
+              <FoodingIcon className='text-[#E2DFDF]' />
+            </div>
+          )}
+        </div>
+        <div className='flex flex-col gap-2 w-full'>
+          <div className='flex justify-between w-full'>
             <span
               className={cn(
-                'inline-flex items-center rounded-md px-2 py-1 text-xs font-medium whitespace-nowrap',
+                'inline-flex items-center rounded-md px-2 py-1 w-fit text-xs font-medium whitespace-nowrap',
                 statusColors[status] || 'bg-gray-100 text-gray-700',
               )}
             >
               {status}
             </span>
-          </div>
-          <div className='flex items-start justify-between'>
-            <div>
-              <h3 className='mb-1 text-xl font-semibold text-gray-900'>{title}</h3>
-              <p className='text-sm text-gray-5 whitespace-nowrap'>등록일 {registrationDate}</p>
-            </div>
-            <div className='ml-6 grid grid-cols-4 gap-6 text-center'>
-              <div>
-                <p className='text-base text-gray-5 whitespace-nowrap'>총 발급수</p>
-                <p className='mt-1 text-xl font-semibold text-black'>{receivedCount}</p>
-              </div>
-              <div>
-                <p className='text-base text-gray-5 whitespace-nowrap'>구매 수량</p>
-                <p className='mt-1 text-xl font-semibold text-black'>{purchaseCount}</p>
-              </div>
-              <div>
-                <p className='text-base text-gray-5 whitespace-nowrap'>사용 수량</p>
-                <p className='mt-1 text-xl font-semibold text-black'>{usedCount}</p>
-              </div>
-              <div>
-                <p className='text-base text-gray-5 whitespace-nowrap'>남은 수량</p>
-                <p className='mt-1 text-xl font-semibold text-black'>{canceledCount}</p>
-              </div>
+            <div
+              onClick={(e) => {
+                e.stopPropagation();
+                e.preventDefault();
+              }}
+              className='cursor-pointer'
+            >
+              <Switch checked={isActive} onChange={onSwitchChange} />
             </div>
           </div>
-          <div className='flex flex-row mt-[18px] justify-between bg-[#6366F10D] rounded-[16px] p-4 w-full'>
+          <h3 className='mb-1 text-xl font-semibold text-gray-900'>{title}</h3>
+
+          {dateRange && <p className='text-sm text-gray-5 whitespace-nowrap'>{dateRange}</p>}
+          <p className='text-sm text-gray-5 whitespace-nowrap'>등록일 {registrationDate}</p>
+        </div>
+      </div>
+
+      <div className='flex flex-col'>
+        <div className='flex gap-6 text-center justify-end'>
+          <div>
+            <p className='text-base text-gray-5 whitespace-nowrap'>총 발급수</p>
+            <p className='mt-1 text-xl font-semibold text-black'>{receivedCount}</p>
+          </div>
+          <div>
+            <p className='text-base text-gray-5 whitespace-nowrap'>구매 수량</p>
+            <p className='mt-1 text-xl font-semibold text-black'>{purchaseCount}</p>
+          </div>
+          <div>
+            <p className='text-base text-gray-5 whitespace-nowrap'>사용 수량</p>
+            <p className='mt-1 text-xl font-semibold text-black'>{usedCount}</p>
+          </div>
+          <div>
+            <p className='text-base text-gray-5 whitespace-nowrap'>남은 수량</p>
+            <p className='mt-1 text-xl font-semibold text-black'>{canceledCount}</p>
+          </div>
+        </div>
+        <div
+          className={cn(
+            'flex justify-between mt-[18px] min-h-[80px] rounded-[16px] p-4 w-full',
+            isActive ? 'bg-[#6366F10D]' : 'bg-gray-1',
+          )}
+        >
+          <div>
+            <p className='text-base text-gray-5'>이용안내 {conditions ? conditions : '-'}</p>
             <p className='text-base text-gray-5'>교환 포인트 {exchangePoint} P</p>
-            {onOrderClick && (
-              <button
-                onClick={onOrderClick}
-                className='h-[48px] rounded-[8px] bg-fooding-purple px-6 text-base font-medium text-white transition-colors hover:bg-fooding-purple/90 active:bg-fooding-purple/80'
-              >
-                수정하기
-              </button>
-            )}
           </div>
+          {onOrderClick && (
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                if (onOrderClick) onOrderClick();
+              }}
+              className='h-[48px] w-fit rounded-[8px] bg-fooding-purple px-6 text-base font-medium text-white transition-colors hover:bg-fooding-purple/90 active:bg-fooding-purple/80'
+            >
+              수정하기
+            </button>
+          )}
         </div>
       </div>
     </div>

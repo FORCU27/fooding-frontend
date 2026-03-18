@@ -1,5 +1,6 @@
 'use client';
 
+import Image from 'next/image';
 import { useState, useEffect } from 'react';
 
 import {
@@ -24,12 +25,10 @@ import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { MoreVertical } from 'lucide-react';
 
+import { DropdownMenu } from './DropdownMenu';
 import { MenuBadgeList, type BadgeType } from './MenuBadge';
-import { ChevronsLeftRightIcon, ChevronsUpDownIcon } from '../../icons';
+import { ChevronsLeftRightIcon, ChevronsUpDownIcon, ImagePlaceholderIcon } from '../../icons';
 import { cn } from '../../utils/cn';
-
-// Use a default placeholder image URL instead of importing PNG
-const menuItemImg = '/images/menu-item-placeholder.png';
 
 export type MenuItem = {
   id: string;
@@ -53,6 +52,9 @@ type MenuBoardProps = {
   onEditCategory?: (categoryId: string, name: string) => void;
   onCategorySelect?: (categoryId: string) => void;
   selectedCategoryId?: string | null;
+  onEditMenuItem?: (categoryId: string, itemId: string) => void;
+  onDeleteMenuItem?: (categoryId: string, itemId: string) => void;
+  onItemsReorder?: (categoryId: string, itemIds: string[]) => void;
 };
 
 const SortableCategory = ({ category, index, onDoubleClick }: { category: Category; index: number; onDoubleClick?: () => void }) => {
@@ -96,10 +98,14 @@ const SortableMenuItems = ({
   categoryId,
   items,
   onItemsReorder,
+  onEditMenuItem,
+  onDeleteMenuItem,
 }: {
   categoryId: string;
   items: MenuItem[];
   onItemsReorder: (categoryId: string, items: MenuItem[]) => void;
+  onEditMenuItem?: (categoryId: string, itemId: string) => void;
+  onDeleteMenuItem?: (categoryId: string, itemId: string) => void;
 }) => {
   const [activeId, setActiveId] = useState<string | null>(null);
 
@@ -138,7 +144,13 @@ const SortableMenuItems = ({
       <SortableContext items={items.map((item) => item.id)} strategy={verticalListSortingStrategy}>
         <div className='space-y-2 mb-4'>
           {items.map((item) => (
-            <SortableMenuItem key={item.id} item={item} />
+            <SortableMenuItem
+              key={item.id}
+              item={item}
+              categoryId={categoryId}
+              onEdit={onEditMenuItem}
+              onDelete={onDeleteMenuItem}
+            />
           ))}
         </div>
       </SortableContext>
@@ -147,11 +159,17 @@ const SortableMenuItems = ({
           <div className='bg-white rounded-lg border-2 border-blue-500 p-3 shadow-lg'>
             <div className='flex items-center justify-between'>
               <div className='flex items-center gap-3'>
-                <img
-                  src={activeItem.image || menuItemImg}
-                  alt={activeItem.name}
-                  className='w-16 h-16 rounded object-cover'
-                />
+                {activeItem.image ? (
+                  <Image
+                    src={activeItem.image}
+                    alt={activeItem.name}
+                    width={64}
+                    height={64}
+                    className='rounded object-cover'
+                  />
+                ) : (
+                  <ImagePlaceholderIcon size={64} />
+                )}
                 <div>
                   <div className='flex items-center gap-2'>
                     <span className='font-medium'>{activeItem.name}</span>
@@ -171,7 +189,17 @@ const SortableMenuItems = ({
   );
 };
 
-const SortableMenuItem = ({ item }: { item: MenuItem }) => {
+const SortableMenuItem = ({
+  item,
+  categoryId,
+  onEdit,
+  onDelete,
+}: {
+  item: MenuItem;
+  categoryId: string;
+  onEdit?: (categoryId: string, itemId: string) => void;
+  onDelete?: (categoryId: string, itemId: string) => void;
+}) => {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
     id: item.id,
   });
@@ -192,11 +220,17 @@ const SortableMenuItem = ({ item }: { item: MenuItem }) => {
         <ChevronsUpDownIcon className='h-4 w-4 text-gray-400' />
       </button>
 
-      <img
-        src={item.image || menuItemImg}
-        alt={item.name}
-        className='w-16 h-16 rounded object-cover'
-      />
+      {item.image ? (
+        <Image
+          src={item.image}
+          alt={item.name}
+          width={64}
+          height={64}
+          className='rounded object-cover'
+        />
+      ) : (
+        <ImagePlaceholderIcon size={64} />
+      )}
 
       <div className='flex-1'>
         <div className='flex items-center gap-2'>
@@ -206,11 +240,26 @@ const SortableMenuItem = ({ item }: { item: MenuItem }) => {
         <div className='text-sm text-gray-500'>{item.description}</div>
       </div>
 
-      <div className='text-orange-600 font-semibold'>{item.price.toLocaleString()}원</div>
+      <div className='text-orange-600 font-semibold'>{item.price.toLocaleString() === '0' ? '변동가격' : item.price.toLocaleString()+'원'}</div>
 
-      <button className='p-2 hover:bg-gray-200 rounded'>
-        <MoreVertical className='h-4 w-4 text-gray-600' />
-      </button>
+      <DropdownMenu>
+        <DropdownMenu.Trigger asChild>
+          <button className='p-2 hover:bg-gray-200 rounded'>
+            <MoreVertical className='h-4 w-4 text-gray-600' />
+          </button>
+        </DropdownMenu.Trigger>
+        <DropdownMenu.Content>
+          <DropdownMenu.Item onClick={() => onEdit?.(categoryId, item.id)}>
+            수정
+          </DropdownMenu.Item>
+          <DropdownMenu.Item
+            variant="danger"
+            onClick={() => onDelete?.(categoryId, item.id)}
+          >
+            삭제
+          </DropdownMenu.Item>
+        </DropdownMenu.Content>
+      </DropdownMenu>
     </div>
   );
 };
@@ -221,6 +270,9 @@ export const MenuBoard = ({
   onEditCategory,
   onCategorySelect,
   selectedCategoryId: externalSelectedCategoryId,
+  onEditMenuItem,
+  onDeleteMenuItem,
+  onItemsReorder,
 }: MenuBoardProps) => {
   const [categories, setCategories] = useState<Category[]>(initialCategories);
   const [activeId, setActiveId] = useState<string | null>(null);
@@ -336,6 +388,10 @@ export const MenuBoard = ({
     );
     setCategories(newCategories);
     onCategoriesChange(newCategories);
+    
+    // 메뉴 아이템 정렬 API 호출
+    const itemIds = items.map((item) => item.id);
+    onItemsReorder?.(categoryId, itemIds);
   };
 
   const activeCategory = activeId ? categories.find((cat) => cat.id === activeId) : null;
@@ -417,6 +473,8 @@ export const MenuBoard = ({
               categoryId={selectedCategory.id}
               items={selectedCategory.items}
               onItemsReorder={handleItemsReorder}
+              onEditMenuItem={onEditMenuItem}
+              onDeleteMenuItem={onDeleteMenuItem}
             />
           </div>
         )}

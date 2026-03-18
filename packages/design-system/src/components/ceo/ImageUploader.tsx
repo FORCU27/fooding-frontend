@@ -113,7 +113,7 @@ const ImageUploader = ({
       );
     }
 
-    const imageIndex = position === 'left' ? index - 1 : index;
+    const imageIndex = images.indexOf(item);
 
     return (
       <div key={index} className={baseClass}>
@@ -136,7 +136,7 @@ const ImageUploader = ({
 
   return (
     <div
-      className={`min-w-[1080px] p-8 rounded-xl shadow-[0_0_2px_rgba(0,0,0,0.06),0_0_3px_rgba(0,0,0,0.1)] ${className}`}
+      className={`p-8 rounded-xl shadow-[0_0_2px_rgba(0,0,0,0.06),0_0_3px_rgba(0,0,0,0.1)] ${className}`}
     >
       <div className='flex flex-wrap gap-5'>{items.map((item, idx) => renderItem(item, idx))}</div>
     </div>

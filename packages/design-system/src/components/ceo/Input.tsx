@@ -7,7 +7,7 @@ import { cn } from '../../utils/cn';
 type InputProps = ComponentPropsWithRef<'input'> & {
   inputType?: 'search' | 'url' | 'text';
   disabled?: boolean;
-  suffix?: string;
+  suffix?: React.ReactNode;
 };
 
 const Input = ({

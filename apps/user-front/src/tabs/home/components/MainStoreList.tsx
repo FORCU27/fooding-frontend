@@ -6,7 +6,6 @@ import { useFlow } from '@stackflow/react/future';
 
 import { isNonEmptyArray } from '@/utils/array';
 
-
 interface MainStoreListProps {
   stores: Store[];
 }
@@ -15,7 +14,7 @@ export const MainStoreList = ({ stores }: MainStoreListProps) => {
   const flow = useFlow();
 
   return (
-    <div className='flex flex-col px-grid-margin bg-white/80'>
+    <div className='flex flex-col px-grid-margin bg-white/80 pb-grid-margin'>
       <ul className='flex gap-3 overflow-x-auto scrollbar-hide -mx-grid-margin px-grid-margin'>
         {stores.map((store) => (
           <li key={store.id} className='flex flex-col relative'>

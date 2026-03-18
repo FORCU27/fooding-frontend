@@ -9,6 +9,7 @@ import BottomTab from '@/components/Layout/BottomTab';
 import { Header } from '@/components/Layout/Header';
 import { Screen } from '@/components/Layout/Screen';
 import { RegionMultiSelectBottomSheet } from '@/components/RegionMultiSelectBottomSheet';
+import { useDebouncedValue } from '@/hooks/useDebouncedValue';
 import { SCREEN_TRANSITION_DURATION } from '@/libs/stackflow/configs';
 import { isNonEmptyArray } from '@/utils/array';
 
@@ -57,6 +58,8 @@ export const SearchTab: ActivityComponentType<'SearchTab'> = () => {
     };
   }, []);
 
+  const debouncedSearchInputValue = useDebouncedValue(searchInputValue, 300);
+
   return (
     <Screen
       header={
@@ -84,7 +87,7 @@ export const SearchTab: ActivityComponentType<'SearchTab'> = () => {
       {searchInputValue && searchInputFocused && (
         <AutoComplete
           className='absolute inset-0 z-10'
-          keyword={searchInputValue}
+          keyword={debouncedSearchInputValue}
           onSelect={search}
           onSwipeStart={() => {
             searchInputRef.current?.blur();

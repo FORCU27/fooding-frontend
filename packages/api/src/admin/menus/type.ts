@@ -9,7 +9,8 @@ export const AdminMenuResponseSchema = z.object({
   name: z.string(),
   price: z.number(),
   description: z.string(),
-  imageUrl: z.string(),
+  imageIds: z.array(z.string()),
+  imageUrls: z.array(z.string()),
   sortOrder: z.number(),
   isSignature: z.boolean(),
   isRecommend: z.boolean(),
@@ -23,7 +24,7 @@ export const AdminMenuCreateRequestSchema = z.object({
   name: z.string(),
   price: z.number(),
   description: z.string(),
-  imageId: z.string(),
+  imageIds: z.array(z.string()).min(1),
   sortOrder: z.number(),
   isSignature: z.boolean(),
   isRecommend: z.boolean(),
@@ -35,7 +36,7 @@ export const AdminMenuUpdateRequestSchema = z.object({
   name: z.string(),
   price: z.number(),
   description: z.string(),
-  imageId: z.string().optional(),
+  imageIds: z.array(z.string()).min(1),
   sortOrder: z.number(),
   isSignature: z.boolean(),
   isRecommend: z.boolean(),
@@ -45,4 +46,3 @@ export type AdminMenuCreateRequest = z.infer<typeof AdminMenuCreateRequestSchema
 export type AdminMenuUpdateRequest = z.infer<typeof AdminMenuUpdateRequestSchema>;
 
 export const GetMenuListResponse = PageResponse(AdminMenuResponseSchema);
-

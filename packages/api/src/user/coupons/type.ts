@@ -1,6 +1,7 @@
 import { z } from 'zod/v4';
 
 import { PageResponse } from '../../shared';
+import { StoreImage } from '../stores';
 
 export const BENEFIT_TYPES = ['DISCOUNT', 'GIFT'] as const;
 export type BenefitType = (typeof BENEFIT_TYPES)[number];
@@ -35,7 +36,7 @@ export const Coupon = z.object({
   createdDateAt: z.string(),
   tableNumber: z.string().nullable(),
   point: z.number().nullable(),
-  mainImage: z.string().nullable(),
+  images: z.array(StoreImage).nullable(),
 });
 
 export type GetMyCouponListResponse = z.infer<typeof GetMyCouponListResponse>;

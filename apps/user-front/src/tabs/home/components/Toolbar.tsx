@@ -1,18 +1,19 @@
-import { useState } from 'react';
-
 import { ChevronDownIcon, MarkPinIcon } from '@repo/design-system/icons';
 
 import { RegionMultiSelectBottomSheet } from '@/components/RegionMultiSelectBottomSheet';
 import { isNonEmptyArray } from '@/utils/array';
 
-function Menubar() {
-  const [selectedRegions, setSelectedRegions] = useState<{ id: string; name: string }[]>([]);
+type ToolbarProps = {
+  selectedRegions: { id: string; name: string }[];
+  onSelectedRegionsChange: (regions: { id: string; name: string }[]) => void;
+};
 
+export const Toolbar = ({ selectedRegions, onSelectedRegionsChange }: ToolbarProps) => {
   return (
     <div className='flex px-grid-margin pt-2 pb-4 bg-white w-full h-[44px]'>
       <RegionMultiSelectBottomSheet
         value={selectedRegions}
-        onChange={setSelectedRegions}
+        onChange={onSelectedRegionsChange}
         trigger={
           <button className='flex items-center gap-1'>
             <MarkPinIcon className='size-5' />
@@ -34,6 +35,4 @@ function Menubar() {
       />
     </div>
   );
-}
-
-export default Menubar;
+};

@@ -1,5 +1,5 @@
 'use client';
-import { useSearchParams } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useState } from 'react';
 
 import { rewardApi, userApi, UserCouponsResponse, UserRewardLogsResponse } from '@repo/api/app';
@@ -20,6 +20,7 @@ const MainTabSearchParam = z.enum(REWARD_MAIN_TABS).catch('coupon');
 const SubTabSearchParam = z.enum(REWARD_SUB_TABS).catch('available');
 
 export default function RewardUsePage() {
+  const router = useRouter();
   const [selectedCouponId, setSelectedCouponId] = useState<number | null>(null);
   const searchParams = useSearchParams();
   const mainTab = MainTabSearchParam.parse(searchParams.get('tab'));
@@ -77,7 +78,7 @@ export default function RewardUsePage() {
   return (
     <div>
       <header className='relative w-full bg-primary-pink flex py-[38px]'>
-        <button className='absolute top-[30px] left-[80px]'>
+        <button className='absolute top-[30px] left-[80px] cursor-pointer' onClick={() => router.back()}>
           <ArrowLeftIcon color='white' />
         </button>
         <h1 className='text-white headline-5 text-center flex-1'>

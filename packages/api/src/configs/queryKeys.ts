@@ -7,6 +7,7 @@ export const queryKeys = {
     store: {
       waiting: 'waiting',
       waitingOverview: 'waitingOverview',
+      waitingList: 'waitingList',
       storeInfo: 'storeStoreInfo',
       stores: 'storeStores',
     },
@@ -17,10 +18,22 @@ export const queryKeys = {
     },
   },
   ceo: {
+    me: 'ceoMe',
     devices: 'ceoDevices',
+    notifications: 'ceoNotifications',
+    device: {
+      logs: 'ceoDeviceLogs',
+    },
+    reward: {
+      history: 'ceoRewardHistory',
+    },
     store: {
+      selectedStore: 'ceoSelectedStore',
+      storeList: 'ceoStoreList',
       getStore: 'ceoStoreGetStore',
       operatingHour: 'ceoStoreOperatingHour',
+      images: 'ceoStoreImages',
+      statistics: 'ceoStoreStatistics',
     },
     menuCategory: {
       list: 'ceoMenuCategoryList',
@@ -32,6 +45,13 @@ export const queryKeys = {
       update: 'ceoMenuUpdate',
       delete: 'ceoMenuDelete',
     },
+    menuBoard: {
+      list: 'ceoMenuBoardList',
+      detail: 'ceoMenuBoardDetail',
+      create: 'ceoMenuBoardCreate',
+      update: 'ceoMenuBoardUpdate',
+      delete: 'ceoMenuBoardDelete',
+    },
     storeInformation: {
       get: 'ceoStoreInformationGet',
     },
@@ -41,7 +61,24 @@ export const queryKeys = {
       create: 'ceoCouponCreate',
       update: 'ceoCouponUpdate',
       delete: 'ceoCouponDelete',
+      usages: 'ceoCouponUsages',
+      gift: 'ceoCouponGift',
     },
+    user: {
+      search: 'ceoUserSearch',
+    },
+    pointShop: {
+      list: 'ceoStoreGetPointShopList',
+      detail: 'ceoStoreGetPointShopDetail',
+      status: 'ceoStoreGetPointShopStatus',
+    },
+    bookmark: {
+      list: 'ceoBookmarkList',
+    },
+    storePost: {
+      list: 'ceoStorePosts',
+    },
+    review: 'ceoReviewList',
   },
   pos: {},
   user: {
@@ -63,6 +100,8 @@ export const queryKeys = {
       reward: 'userStoreReward',
       rewardList: 'userStoreRewardList',
       searchInfiniteStoreList: 'userSearchInfiniteStoreList',
+      recentlyViewedStores: 'recently-viewed-stores',
+      popularViewedStores: 'poplular-viewed-stores',
     },
     storePost: {
       list: 'userStorePostList',
@@ -70,15 +109,18 @@ export const queryKeys = {
     },
     storeWaiting: {
       detail: 'userStoreWaitingDetail',
+      available: 'userStoreWaitingAvailable',
     },
     coupon: {
       infiniteList: 'userCouponInfiniteList',
+      summary: 'userCouponSummary',
     },
     bookmark: { list: 'userBookmarkList' },
     plan: { list: 'userPlanList', detail: 'userPlanDetail' },
     region: { list: 'userRegionList' },
     reward: { list: 'userRewardList', log: 'userRewardLog' },
     report: { detail: 'userReportDetail' },
+    review: { myList: 'userReviewMyList' },
   },
   me: {
     user: 'meUser',

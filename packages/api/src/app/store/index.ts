@@ -7,6 +7,7 @@ import {
   GetStoresWaitingResponse,
   PostStoreWaitingResponse,
   GetStoreWaitingOverviewResponse,
+  GetUserWaitingAvailableResponse,
 } from './type';
 import { api } from '../../shared';
 
@@ -34,5 +35,24 @@ export const storeApi = {
   createStoreWaiting: async (params: CreateStoreWaitingRequest, storeId: number) => {
     const response = await api.post(`/app/waitings/stores/${storeId}/requests`, params.body);
     return PostStoreWaitingResponse.parse(response);
+  },
+
+  getUserWaitingAvailable: async (storeId: number) => {
+    const response = await api.get(`/user/stores/${storeId}/waitings/available`);
+    return GetUserWaitingAvailableResponse.parse(response);
+  },
+
+  // 웨이팅 목록 조회
+  getWaitingList: async (params: {
+    storeId: number;
+    pageNum?: number;
+    pageSize?: number;
+    status?: string;
+  }) => {
+    const { storeId, pageNum = 1, pageSize = 20, status = 'WAITING' } = params;
+    const response = await api.get(`/app/waitings/stores/${storeId}/requests`, {
+      params: { pageNum, pageSize, status },
+    });
+    return GetStoresWaitingResponse.parse(response);
   },
 };

@@ -1,11 +1,14 @@
 import { EmptyState } from '@repo/design-system/components/b2c';
 
 import { PlanCompletedCard } from './PlanCompletedCard';
+import { LoadingScreen } from '@/components/Layout/LoadingScreen';
 import { useGetPlanList } from '@/hooks/plan/useGetPlanList';
 import { isReviewWithin20Days } from '@/utils/date';
 
 export const PlanCompletedList = () => {
-  const { data: plans } = useGetPlanList({ visitStatus: 'COMPLETED' });
+  const { data: plans, isPending, isFetching } = useGetPlanList({ visitStatus: 'COMPLETED' });
+
+  if (isPending || isFetching) return <LoadingScreen />;
 
   return (
     <div className='flex flex-col gap-5 px-grid-margin py-grid-margin'>

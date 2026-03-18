@@ -49,7 +49,7 @@ export default function WaitingDetailPage() {
   const [page, setPage] = useState(1);
   const { data: settingsPage } = useQuery({
     queryKey: ['adminWaitingSettings', waitingId, page],
-    queryFn: () => adminWaitingSettingsApi.list(page, 20, { waitingId }),
+    queryFn: () => adminWaitingSettingsApi.list(page, 20, {}),
     enabled: !!waitingId,
   });
 
@@ -208,7 +208,7 @@ export default function WaitingDetailPage() {
         onClose={() => setIsCreateOpen(false)}
         onSubmit={(v) => {
           const payload: AdminWaitingSettingCreateRequest = {
-            waitingId,
+            storeServiceId: waitingId,
             label: v.label,
             minimumCapacity: v.minimumCapacity === '' ? undefined : Number(v.minimumCapacity),
             maximumCapacity: Number(v.maximumCapacity),
@@ -244,13 +244,14 @@ export default function WaitingDetailPage() {
         onSubmit={(v) => {
           if (!selected) return;
           const payload: AdminWaitingSettingUpdateRequest = {
-            waitingId,
+            storeServiceId: waitingId,
             label: v.label,
             minimumCapacity: Number(v.minimumCapacity || 0),
             maximumCapacity: Number(v.maximumCapacity || 0),
             estimatedWaitingTimeMinutes: Number(v.estimatedWaitingTimeMinutes || 0),
             isActive: v.isActive,
             entryTimeLimitMinutes: Number(v.entryTimeLimitMinutes || 0),
+            status: selected.status,
           };
           updateMutation.mutate({ id: selected.id, body: payload });
         }}

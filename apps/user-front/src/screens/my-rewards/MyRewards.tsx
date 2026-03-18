@@ -1,10 +1,11 @@
 import { useState } from 'react';
 
-import { BottomSheet, Button } from '@repo/design-system/components/b2c';
+import { BottomSheet, Button, EmptyState } from '@repo/design-system/components/b2c';
 import { ChevronDownIcon, ChevronUpIcon, GiftIcon } from '@repo/design-system/icons';
 import { ActivityComponentType, useFlow } from '@stackflow/react/future';
 
 import { RewardMonthGroup } from './components/RewardMonthGroup';
+import BottomTab from '@/components/Layout/BottomTab';
 import { Header } from '@/components/Layout/Header';
 import { Screen } from '@/components/Layout/Screen';
 import { useGetRewardPersonalLog } from '@/hooks/reward/useGetRewardPersonalLog';
@@ -32,7 +33,7 @@ export const MyRewardListScreen: ActivityComponentType<'MyRewardListScreen'> = (
 
   const storePoints: Record<number, number> = {};
 
-  storeRewardListQueries.forEach(({ data }) => {
+  storeRewardListQueries?.forEach(({ data }) => {
     const id = data.storeId;
 
     storePoints[id] = data.point;
@@ -77,12 +78,24 @@ export const MyRewardListScreen: ActivityComponentType<'MyRewardListScreen'> = (
       ? sortedRewards.slice(0, MAX_VISIBLE_REWARDS)
       : sortedRewards;
 
+  if (sortedRewards.length === 0)
+    return (
+      <Screen
+        header={<Header left={<Header.Back />} title='리워드 목록' />}
+        bottomTab={<BottomTab currentTab='mypage' />}
+      >
+        <div className='flex flex-col gap-3 bg-gray-1 p-5 h-full'>
+          <EmptyState title='리워드 목록이 없습니다.' />
+        </div>
+      </Screen>
+    );
+
   return (
-    <Screen header={<Header left={<Header.Back />} title='리워드 목록' />}>
+    <Screen
+      header={<Header left={<Header.Back />} title='리워드 목록' />}
+      bottomTab={<BottomTab currentTab='mypage' />}
+    >
       <div className='flex flex-col gap-3 bg-gray-1 p-5'>
-        {visibleRewards.length === 0 && (
-          <p className='text-gray-4 text-center py-12'>사용 가능한 리워드가 없어요.</p>
-        )}
         {visibleRewards.map((reward) => (
           <div key={reward.id} className='flex p-5 bg-white rounded-xl justify-between'>
             <div

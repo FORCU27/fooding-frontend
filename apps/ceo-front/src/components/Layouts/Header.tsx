@@ -1,6 +1,7 @@
 'use client';
 
 import Image from 'next/image';
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
@@ -9,6 +10,7 @@ import { Suspense } from '@suspensive/react';
 
 import { Drawer } from './Drawer';
 import { StoreSelector } from '@/components/StoreSelector';
+import { useStore } from '@/context/StoreContext';
 import { useGetSelf } from '@/hooks/auth/useGetSelf';
 import { useLogout } from '@/hooks/auth/useLogout';
 
@@ -32,13 +34,15 @@ export const Header = () => {
           }
         />
         <div className='items-center gap-3 hidden desktop:flex'>
-          <Image
-            src='/images/fooding-ceo-logo.svg'
-            width={162}
-            height={28}
-            alt='ceo-logo'
-            className='object-contain'
-          />
+          <Link href='/my'>
+            <Image
+              src='/images/fooding-ceo-logo.svg'
+              width={162}
+              height={28}
+              alt='ceo-logo'
+              className='object-contain cursor-pointer'
+            />
+          </Link>
         </div>
         {/* TODO: 페이지 제목 표시 */}
         {/* <div className='desktop:hidden absolute left-1/2 -translate-x-1/2 subtitle-2'>부가정보</div> */}
@@ -58,6 +62,7 @@ export const Header = () => {
 
 const UserProfile = () => {
   const { data: me } = useGetSelf();
+  const { clearStore } = useStore();
 
   const router = useRouter();
 
@@ -68,6 +73,7 @@ const UserProfile = () => {
 
     logout.mutate(undefined, {
       onSuccess: () => {
+        clearStore();
         router.push('/login');
       },
       onError: () => {
@@ -79,6 +85,14 @@ const UserProfile = () => {
   return (
     <>
       <span className='text-[14px] font-semibold'>{me.name} 사장님</span>
+      <Link href='/my'>
+        <button
+          type='button'
+          className={`cursor-pointer text-[14px] font-semibold text-gray-5 transition-all`}
+        >
+          내 상점
+        </button>
+      </Link>
       <button
         type='button'
         onClick={handleLogoutClick}
@@ -91,7 +105,17 @@ const UserProfile = () => {
 };
 
 const Notifications = () => {
-  return <CeoBellIcon size={24} />;
+  const router = useRouter();
+
+  return (
+    <button
+      onClick={() => router.push('/my/notifications')}
+      className='p-2 hover:bg-gray-100 rounded-lg transition-colors cursor-pointer'
+      aria-label='알림'
+    >
+      <CeoBellIcon size={24} />
+    </button>
+  );
 };
 
 const XIcon = () => {

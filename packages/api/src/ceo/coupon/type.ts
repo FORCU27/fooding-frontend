@@ -108,3 +108,89 @@ export type GetCouponListParams = {
   searchString?: string;
   status?: 'ACTIVE' | 'INACTIVE';
 };
+
+// 쿠폰 사용내역 상태
+export const CouponUsageStatus = z.enum(['AVAILABLE', 'USED', 'EXPIRED']);
+export type CouponUsageStatus = z.infer<typeof CouponUsageStatus>;
+
+// 쿠폰 사용내역 스키마
+export const CouponUsageSchema = z.object({
+  id: z.number(),
+  userId: z.number(),
+  profileImage: z.string().nullable(),
+  nickname: z.string(),
+  status: CouponUsageStatus,
+  usedAt: z.string().nullable(),
+  createdAt: z.string(),
+});
+
+export type CouponUsageSchema = z.infer<typeof CouponUsageSchema>;
+
+// 쿠폰 사용내역 조회 파라미터
+export type GetCouponUsageParams = {
+  searchString?: string;
+  pageNum?: number;
+  pageSize?: number;
+  sortType?: 'RECENT' | 'OLD';
+};
+
+// 쿠폰 사용내역 조회 응답
+export type GetCouponUsageResponse = {
+  status: string;
+  data: {
+    list: CouponUsageSchema[];
+    pageInfo: {
+      pageNum: number;
+      pageSize: number;
+      totalCount: number;
+      totalPages: number;
+    };
+  };
+};
+
+// 쿠폰 선물 요청 바디
+export const GiftCouponBody = z.object({
+  userId: z.number(),
+  storeId: z.number(),
+  benefitType: BenefitType,
+  discountType: DiscountType,
+  name: z.string().min(1).max(50),
+  conditions: z.string().max(200).optional(),
+  discountValue: z.number().optional(),
+  expiredOn: z.string().optional(),
+});
+
+export type GiftCouponBody = z.infer<typeof GiftCouponBody>;
+
+// 고객 검색 파라미터
+export type SearchUserParams = {
+  storeId: number;
+  keyword: string;
+  page?: number;
+  size?: number;
+};
+
+// 고객 정보 스키마
+export const UserSchema = z.object({
+  id: z.number(),
+  name: z.string(),
+  phoneNumber: z.string(),
+  visitCount: z.number().optional(),
+  lastVisitDate: z.string().optional(),
+});
+
+export type UserSchema = z.infer<typeof UserSchema>;
+
+// 고객 검색 응답
+export type SearchUserResponse = {
+  status: string;
+  data: {
+    list: UserSchema[];
+    pageInfo: {
+      pageNum: number;
+      pageSize: number;
+      totalCount: number;
+      totalPages: number;
+    };
+  };
+};

@@ -28,6 +28,11 @@ export const useAddBookmark = () => {
 
       return { data };
     },
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: [queryKeys.user.store.recentlyViewedStores],
+      });
+    },
 
     onError: (_error, _, context) => {
       if (context?.data) {

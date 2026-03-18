@@ -12,9 +12,9 @@ import { GA_TRACKING_ID } from '@/lib/GA/gtag';
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
-    <html lang='en'>
+    <html lang='en' className='overflow-x-hidden'>
       <head />
-      <body>
+      <body className='overflow-x-hidden'>
         {process.env.NODE_ENV === 'production' && (
           <>
             <Script

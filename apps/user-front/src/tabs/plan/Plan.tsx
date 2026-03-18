@@ -8,6 +8,7 @@ import { PlanScheuledList } from './components/PlanScheuledList';
 import BottomTab from '@/components/Layout/BottomTab';
 import { DefaultErrorBoundary } from '@/components/Layout/DefaultErrorBoundary';
 import { Header } from '@/components/Layout/Header';
+import { LoadingScreen } from '@/components/Layout/LoadingScreen';
 import { Screen } from '@/components/Layout/Screen';
 
 const tabItems = [
@@ -34,7 +35,7 @@ export const PlanTab: ActivityComponentType<'PlanTab'> = () => {
             className='overflow-y-auto scrollbar-hide bg-gray-1 flex-1 flex flex-col'
           >
             <DefaultErrorBoundary>
-              <Suspense>{content}</Suspense>
+              <Suspense fallback={<LoadingScreen />}>{content}</Suspense>
             </DefaultErrorBoundary>
           </Tabs.Content>
         ))}

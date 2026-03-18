@@ -6,6 +6,7 @@ import { ActivityComponentType, useFlow } from '@stackflow/react/future';
 
 import { RewardMonthGroup } from '../my-rewards/components/RewardMonthGroup';
 import { Header } from '@/components/Layout/Header';
+import { LoadingScreen } from '@/components/Layout/LoadingScreen';
 import { Screen } from '@/components/Layout/Screen';
 import { useGetRewardLog } from '@/hooks/reward/useGetRewardLog';
 import { useGetStoreDetail } from '@/hooks/store/useGetStoreDetail';
@@ -18,10 +19,22 @@ const DATE_OPTIONS = ['1개월', '3개월', '6개월', '1년'] as const;
 export const MyRewardDetailScreen: ActivityComponentType<'MyRewardDetailScreen'> = ({ params }) => {
   const flow = useFlow();
 
-  const { data: rewardLog } = useGetRewardLog({ storeId: params.storeId });
+  const {
+    data: rewardLog,
+    isPending: logPending,
+    isFetching: logFetching,
+  } = useGetRewardLog({ storeId: params.storeId });
   // TODO: 나의 리워드 상세 조회 API로 변경
-  const { data: point } = useGetStoreRewardList(params.storeId);
-  const { data: store } = useGetStoreDetail(params.storeId);
+  const {
+    data: point,
+    isPending: pointPending,
+    isFetching: pointFetching,
+  } = useGetStoreRewardList(params.storeId);
+  const {
+    data: store,
+    isPending: storePending,
+    isFetching: storeFetching,
+  } = useGetStoreDetail(params.storeId);
 
   const [filter, setFilter] = useState('전체');
   const [date, setDate] = useState('1개월');
@@ -56,6 +69,11 @@ export const MyRewardDetailScreen: ActivityComponentType<'MyRewardDetailScreen'>
   );
 
   const sortedGroupedKeys = Object.keys(groupedRewards).sort((a, b) => (a < b ? 1 : -1));
+
+  const isLoading =
+    logPending || logFetching || pointPending || pointFetching || storePending || storeFetching;
+
+  if (isLoading) return <LoadingScreen />;
 
   return (
     <Screen header={<Header left={<Header.Back />} title='리워드' />} className='p-5'>

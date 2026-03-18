@@ -3,30 +3,56 @@
 import Image from 'next/image';
 import Link from 'next/link';
 
+import type { CeoPost } from '@repo/api/ceo';
+
+import { useStore } from '@/context/StoreContext';
 import { useGetSelfQuery } from '@/hooks/auth/useGetSelf';
+import { useGetRecentPosts } from '@/hooks/post/useGetRecentPosts';
+
+const POST_TYPE_LABEL: Record<CeoPost['type'], string> = {
+  NOTICE: '공지',
+  EVENT: '이벤트',
+};
+
+const formatPostDate = (value: string) => {
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) {
+    return '';
+  }
+
+  return date.toLocaleDateString('ko-KR');
+};
 
 export default function PortalLandingPage() {
   const { data: me } = useGetSelfQuery();
+  const { data: postsData, isLoading: isPostsLoading, isError: isPostsError } = useGetRecentPosts();
+  const { clearStore } = useStore();
 
   const isLoggedIn = !!me;
-
-  const managementItems = [
-    { icon: '🕒', title: '영업시간', color: 'text-red-600', iconBg: 'bg-red-100' },
-    { icon: '🎁', title: '쿠폰관리', color: 'text-orange-600', iconBg: 'bg-orange-100' },
-    { icon: '📅', title: '휴무일', color: 'text-purple-600', iconBg: 'bg-purple-100' },
-  ];
+  const posts = postsData?.list ?? [];
 
   const serviceItems = [
-    { icon: '👥', title: '웨이팅', color: 'text-blue-600', iconBg: 'bg-blue-100' },
-    { icon: '📖', title: '예약', color: 'text-green-600', iconBg: 'bg-green-100' },
-    { icon: '⭐', title: '리워드', color: 'text-yellow-600', iconBg: 'bg-yellow-100' },
-  ];
-
-  const notices = [
-    '새로운 웨이팅 시스템 업데이트 안내',
-    '쿠폰 관리 기능 개선 사항',
-    '매장 운영 가이드북 제공',
-    '고객 리뷰 관리 팁',
+    {
+      icon: '👥',
+      title: '웨이팅',
+      color: 'text-blue-600',
+      iconBg: 'bg-blue-100',
+      path: 'https://www.notion.so/fooding-cs/FOODING-2b46b89156ba80c0a642d2c92949e178',
+    },
+    {
+      icon: '📖',
+      title: '예약',
+      color: 'text-green-600',
+      iconBg: 'bg-green-100',
+      path: 'https://fooding-cs.notion.site/FOODING-2b46b89156ba8079a645e3c879542f30',
+    },
+    {
+      icon: '⭐',
+      title: '리워드',
+      color: 'text-yellow-600',
+      iconBg: 'bg-yellow-100',
+      path: 'https://notion.so/FOODING-2716b89156ba81afb318ffe102e3573f?pvs=25',
+    },
   ];
 
   const appDownloads = [
@@ -34,8 +60,20 @@ export default function PortalLandingPage() {
       title: '사장님 앱',
       subtitle: '매장 관리 앱',
       platforms: [
-        { name: 'Google Play', icon: '🤖' },
-        { name: 'App Store', icon: '🍎' },
+        {
+          name: 'Google Play',
+          icon: '🤖',
+          url: 'https://play.google.com/store/apps/details?id=com.openai.chatgpt&hl=ko',
+          rating: 4.8,
+          reviewCount: 1250,
+        },
+        {
+          name: 'App Store',
+          icon: '🍎',
+          url: 'https://apps.apple.com/kr/app/%EB%84%A4%EC%9D%B4%EB%B2%84-naver/id393499958',
+          rating: 4.7,
+          reviewCount: 892,
+        },
       ],
       color: 'bg-red-500',
     },
@@ -43,10 +81,34 @@ export default function PortalLandingPage() {
       title: '포스 앱',
       subtitle: '주문, 예약, 웨이팅, 리워드 통합 관리 앱',
       platforms: [
-        { name: 'Google Play', icon: '🤖' },
-        { name: 'App Store', icon: '🍎' },
-        { name: 'Windows', icon: '💻' },
-        { name: 'Mac', icon: '💻' },
+        {
+          name: 'Google Play',
+          icon: '🤖',
+          url: 'https://play.google.com/store/apps/details?id=com.openai.chatgpt&hl=ko',
+          rating: 4.6,
+          reviewCount: 756,
+        },
+        {
+          name: 'App Store',
+          icon: '🍎',
+          url: 'https://apps.apple.com/kr/app/%EB%84%A4%EC%9D%B4%EB%B2%84-naver/id393499958',
+          rating: 4.5,
+          reviewCount: 634,
+        },
+        {
+          name: 'Windows',
+          icon: '💻',
+          url: 'https://github.com/FORCU27/',
+          rating: null,
+          reviewCount: null,
+        },
+        {
+          name: 'Mac',
+          icon: '💻',
+          url: 'https://github.com/FORCU27/',
+          rating: null,
+          reviewCount: null,
+        },
       ],
       color: 'bg-red-500',
     },
@@ -54,18 +116,23 @@ export default function PortalLandingPage() {
       title: '매장 앱',
       subtitle: '웨이팅, 리워드 앱',
       platforms: [
-        { name: 'Google Play', icon: '🤖' },
-        { name: 'App Store', icon: '🍎' },
+        {
+          name: 'Google Play',
+          icon: '🤖',
+          url: 'https://play.google.com/store/apps/details?id=com.openai.chatgpt&hl=ko',
+          rating: 4.9,
+          reviewCount: 2103,
+        },
+        {
+          name: 'App Store',
+          icon: '🍎',
+          url: 'https://apps.apple.com/kr/app/%EB%84%A4%EC%9D%B4%EB%B2%84-naver/id393499958',
+          rating: 4.8,
+          reviewCount: 1547,
+        },
       ],
       color: 'bg-red-500',
     },
-  ];
-
-  const faqItems = [
-    '서비스 신청은 어떻게 하나요?',
-    '앱 설치가 안될 때는?',
-    '요금제는 어떻게 되나요?',
-    '기술지원은 어떻게 받나요?',
   ];
 
   return (
@@ -89,6 +156,11 @@ export default function PortalLandingPage() {
               {isLoggedIn ? (
                 <div className='flex items-center space-x-3'>
                   <span className='text-sm text-gray-600'>{me.name} 사장님</span>
+                  <Link href='/my'>
+                    <button className='px-6 h-10 rounded-md border border-gray-200 text-gray-800 hover:border-red-300 hover:text-red-600 transition-colors'>
+                      내 상점
+                    </button>
+                  </Link>
                   <button
                     onClick={async () => {
                       const response = await fetch('/api/auth/logout', {
@@ -96,6 +168,7 @@ export default function PortalLandingPage() {
                         headers: { 'Content-Type': 'application/json' },
                       });
                       if (response.ok) {
+                        clearStore();
                         window.location.href = '/';
                       }
                     }}
@@ -138,9 +211,11 @@ export default function PortalLandingPage() {
               </p>
               <div className='flex flex-col sm:flex-row gap-4'>
                 {isLoggedIn ? (
-                  <button className='px-8 py-4 rounded-md bg-red-500 text-white hover:bg-red-600 shadow-lg text-base'>
-                    서비스 신청하기
-                  </button>
+                  <Link href='/my'>
+                    <button className='px-8 py-4 rounded-md bg-red-500 text-white hover:bg-red-600 shadow-lg text-base'>
+                      서비스 신청하기
+                    </button>
+                  </Link>
                 ) : (
                   <Link href='/login'>
                     <button className='px-8 py-4 rounded-md bg-red-500 text-white hover:bg-red-600 shadow-lg text-base'>
@@ -148,9 +223,6 @@ export default function PortalLandingPage() {
                     </button>
                   </Link>
                 )}
-                <button className='px-8 py-4 rounded-md border border-red-300 text-red-600 hover:bg-red-50 text-base'>
-                  더 알아보기
-                </button>
               </div>
             </div>
 
@@ -172,49 +244,36 @@ export default function PortalLandingPage() {
         <div className='grid grid-cols-1 lg:grid-cols-3 gap-8'>
           {/* 왼쪽 컬럼 - 매장 관리 기능들 */}
           <div className='lg:col-span-2 space-y-8'>
-            {/* 아이콘 그리드 */}
-            <div className='grid grid-cols-3 gap-4'>
-              {managementItems.map((item) => (
-                <button
-                  key={item.title}
-                  className='flex flex-col items-center gap-3 p-6 bg-white rounded-lg border border-gray-200 hover:border-red-300 hover:shadow-sm transition-all'
-                >
-                  <div
-                    className={`w-12 h-12 rounded-full ${item.iconBg} flex items-center justify-center text-xl`}
-                  >
-                    <span className={item.color}>{item.icon}</span>
-                  </div>
-                  <span className='text-sm font-medium text-gray-700'>{item.title}</span>
-                </button>
-              ))}
-            </div>
-
             {/* 서비스 관리 카드 */}
             <div className='border border-gray-200 rounded-lg bg-white shadow-sm'>
               <div className='p-6 border-b border-gray-100'>
-                <h3 className='text-lg font-semibold text-gray-900'>서비스 관리</h3>
+                <h3 className='text-lg font-semibold text-gray-900'>서비스</h3>
               </div>
               <div className='p-6'>
                 <div className='grid grid-cols-2 md:grid-cols-3 gap-6'>
                   {serviceItems.map((item) => (
-                    <button
+                    <a
                       key={item.title}
-                      className='flex flex-col items-center gap-4 p-6 bg-gray-50 rounded-lg border border-gray-200 hover:border-red-300 hover:shadow-sm transition-all'
+                      href={item.path}
+                      target='_blank'
+                      rel='noopener noreferrer'
                     >
-                      <div
-                        className={`w-14 h-14 rounded-full ${item.iconBg} flex items-center justify-center text-2xl`}
-                      >
-                        <span className={item.color}>{item.icon}</span>
+                      <div className='flex flex-col items-center gap-4 p-6 bg-gray-50 rounded-lg border border-gray-200 hover:border-red-300 hover:shadow-sm transition-all cursor-pointer'>
+                        <div
+                          className={`w-14 h-14 rounded-full ${item.iconBg} flex items-center justify-center text-2xl`}
+                        >
+                          <span className={item.color}>{item.icon}</span>
+                        </div>
+                        <span className='font-medium text-gray-700'>{item.title}</span>
                       </div>
-                      <span className='font-medium text-gray-700'>{item.title}</span>
-                    </button>
+                    </a>
                   ))}
                 </div>
               </div>
             </div>
 
             {/* 추천 기능들 */}
-            <div className='grid grid-cols-1 md:grid-cols-3 gap-6'>
+            {/* <div className='grid grid-cols-1 md:grid-cols-3 gap-6'>
               <div className='border border-gray-200 rounded-lg bg-white shadow-sm hover:shadow-md transition-shadow'>
                 <div className='p-6'>
                   <div className='w-full h-32 bg-gradient-to-br from-red-100 to-red-200 rounded-lg mb-4 flex items-center justify-center'>
@@ -246,7 +305,7 @@ export default function PortalLandingPage() {
                   <p className='text-sm text-gray-600'>효율적인 매장 운영을 위한 팁과 가이드</p>
                 </div>
               </div>
-            </div>
+            </div> */}
 
             {/* 공지사항 */}
             <div className='border border-gray-200 rounded-lg bg-white shadow-sm'>
@@ -260,15 +319,53 @@ export default function PortalLandingPage() {
               </div>
               <div className='p-6'>
                 <div className='space-y-4'>
-                  {notices.map((notice) => (
-                    <div
-                      key={notice}
-                      className='flex items-start gap-4 p-4 bg-red-50 rounded-lg cursor-pointer hover:bg-red-100 transition-colors border border-red-100'
-                    >
-                      <div className='w-2 h-2 bg-red-500 rounded-full mt-2 flex-shrink-0'></div>
-                      <span className='text-gray-700'>{notice}</span>
+                  {isPostsLoading && (
+                    <div className='space-y-4'>
+                      {Array.from({ length: 3 }).map((_, index) => (
+                        <div
+                          key={index}
+                          className='flex items-start gap-4 p-4 bg-red-50 rounded-lg border border-red-100 animate-pulse'
+                        >
+                          <div className='w-2 h-2 bg-red-200 rounded-full mt-2 flex-shrink-0' />
+                          <div className='flex-1 space-y-2'>
+                            <div className='h-3 bg-red-200 rounded w-20' />
+                            <div className='h-3 bg-red-200 rounded w-3/4' />
+                          </div>
+                        </div>
+                      ))}
                     </div>
-                  ))}
+                  )}
+                  {!isPostsLoading && isPostsError && (
+                    <div className='p-4 bg-red-50 border border-red-200 rounded text-sm text-red-600'>
+                      공지사항을 불러오지 못했습니다. 잠시 후 다시 시도해주세요.
+                    </div>
+                  )}
+                  {!isPostsLoading && !isPostsError && posts.length === 0 && (
+                    <div className='p-4 bg-red-50 border border-red-100 rounded text-sm text-gray-600'>
+                      등록된 공지사항이 없습니다.
+                    </div>
+                  )}
+                  {!isPostsLoading && !isPostsError && posts.length > 0 && (
+                    <div className='space-y-4'>
+                      {posts.map((post) => (
+                        <div
+                          key={post.id}
+                          className='flex items-start gap-4 p-4 bg-red-50 rounded-lg border border-red-100 hover:bg-red-100 transition-colors'
+                        >
+                          <div className='w-2 h-2 bg-red-500 rounded-full mt-2 flex-shrink-0' />
+                          <div className='flex-1 space-y-1'>
+                            <div className='flex flex-wrap items-center gap-2 text-xs text-gray-500'>
+                              <span className='px-2 py-0.5 rounded-full bg-red-100 text-red-600 font-medium'>
+                                {POST_TYPE_LABEL[post.type]}
+                              </span>
+                              {post.createdAt && <span>{formatPostDate(post.createdAt)}</span>}
+                            </div>
+                            <p className='text-gray-800 font-medium line-clamp-2'>{post.title}</p>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
@@ -292,20 +389,27 @@ export default function PortalLandingPage() {
                       <p className='text-sm text-gray-600'>{me.email}</p>
                     </div>
                   </div>
-                  <button
-                    onClick={async () => {
-                      const response = await fetch('/api/auth/logout', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                      });
-                      if (response.ok) {
-                        window.location.href = '/';
-                      }
-                    }}
-                    className='w-full h-10 rounded-md border border-gray-300 text-gray-700 hover:border-red-300 hover:text-red-600 transition-colors'
-                  >
-                    로그아웃
-                  </button>
+                  <div className='flex gap-2'>
+                    <Link href='/my' className='flex-1'>
+                      <button className='w-full h-10 rounded-md border border-gray-300 text-gray-700 hover:border-red-300 hover:text-red-600 transition-colors'>
+                        내 상점
+                      </button>
+                    </Link>
+                    <button
+                      onClick={async () => {
+                        const response = await fetch('/api/auth/logout', {
+                          method: 'POST',
+                          headers: { 'Content-Type': 'application/json' },
+                        });
+                        if (response.ok) {
+                          window.location.href = '/';
+                        }
+                      }}
+                      className='flex-1 h-10 rounded-md border border-gray-300 text-gray-700 hover:border-red-300 hover:text-red-600 transition-colors'
+                    >
+                      로그아웃
+                    </button>
+                  </div>
                 </div>
               </div>
             ) : (
@@ -326,25 +430,9 @@ export default function PortalLandingPage() {
                   {/* 로그인 버튼 */}
                   <Link href='/login'>
                     <button className='w-full h-12 rounded-lg bg-red-500 text-white hover:bg-red-600 transition-colors font-medium text-base shadow-sm'>
-                      로그인하기
+                      로그인/회원가입 하기
                     </button>
                   </Link>
-
-                  {/* 하단 링크들 */}
-                  <div className='flex justify-between items-center pt-2'>
-                    <Link
-                      href='/login'
-                      className='text-sm text-gray-500 hover:text-red-600 transition-colors'
-                    >
-                      아이디/비밀번호 찾기
-                    </Link>
-                    <Link
-                      href='/login'
-                      className='text-sm text-red-600 hover:text-red-700 transition-colors font-medium'
-                    >
-                      회원가입
-                    </Link>
-                  </div>
                 </div>
               </div>
             )}
@@ -368,72 +456,21 @@ export default function PortalLandingPage() {
                 <div className='p-6'>
                   <div className='grid grid-cols-2 gap-2'>
                     {app.platforms.map((p) => (
-                      <button
+                      <a
                         key={p.name}
+                        href={p.url}
+                        target='_blank'
+                        rel='noopener noreferrer'
                         className='flex items-center justify-center gap-2 h-9 rounded-md border border-gray-200 hover:bg-red-50 hover:border-red-200 text-sm'
                       >
                         <span>{p.icon}</span>
                         {p.name}
-                      </button>
+                      </a>
                     ))}
                   </div>
                 </div>
               </div>
             ))}
-
-            {/* 자주묻는 질문 */}
-            <div className='border border-gray-200 rounded-lg bg-white shadow-sm'>
-              <div className='p-6 border-b border-gray-100'>
-                <div className='flex items-center gap-3'>
-                  <div className='w-8 h-8 bg-red-500 rounded-lg flex items-center justify-center text-white text-sm'>
-                    ❓
-                  </div>
-                  <h3 className='text-lg font-semibold text-gray-900'>자주묻는 질문</h3>
-                </div>
-              </div>
-              <div className='p-6'>
-                <div className='space-y-3'>
-                  {faqItems.map((faq) => (
-                    <button
-                      key={faq}
-                      className='w-full text-left p-3 hover:bg-red-50 rounded-lg text-sm text-gray-700 transition-colors border border-gray-100'
-                    >
-                      • {faq}
-                    </button>
-                  ))}
-                </div>
-              </div>
-            </div>
-
-            {/* 서비스 신청 */}
-            <div className='border border-gray-200 rounded-lg bg-white shadow-sm'>
-              <div className='p-6 border-b border-gray-100'>
-                <div className='flex items-center gap-3'>
-                  <div className='w-8 h-8 bg-red-500 rounded-lg flex items-center justify-center text-white text-sm'>
-                    📝
-                  </div>
-                  <h3 className='text-lg font-semibold text-gray-900'>서비스 신청</h3>
-                </div>
-              </div>
-              <div className='p-6'>
-                <p className='text-sm text-gray-600 mb-4'>
-                  {isLoggedIn
-                    ? '새로운 매장을 등록하고 Fooding 서비스를 시작하세요'
-                    : '로그인 후 새로운 매장을 등록하고 Fooding 서비스를 시작하세요'}
-                </p>
-                {isLoggedIn ? (
-                  <button className='w-full h-10 rounded-md bg-red-500 text-white hover:bg-red-600 transition-colors'>
-                    서비스 신청하기
-                  </button>
-                ) : (
-                  <Link href='/login'>
-                    <button className='w-full h-10 rounded-md bg-red-500 text-white hover:bg-red-600 transition-colors'>
-                      로그인 후 신청하기
-                    </button>
-                  </Link>
-                )}
-              </div>
-            </div>
           </div>
         </div>
       </main>
@@ -461,23 +498,25 @@ export default function PortalLandingPage() {
                   <h4 className='font-semibold text-white mb-3'>앱 다운로드</h4>
                   <div className='flex flex-col space-y-2'>
                     <a
-                      href='#'
+                      href='https://play.google.com/store/apps/details?id=com.fooding.ceo'
+                      target='_blank'
+                      rel='noopener noreferrer'
                       className='flex items-center gap-3 p-3 bg-gray-800 rounded-lg hover:bg-gray-700 transition-colors'
                     >
                       <span className='text-lg'>🤖</span>
-                      <div>
+                      <div className='flex-1'>
                         <div className='text-sm text-gray-300'>Google Play</div>
-                        <div className='text-xs text-gray-400'>사장님 앱 다운로드</div>
                       </div>
                     </a>
                     <a
-                      href='#'
+                      href='https://apps.apple.com/app/fooding-ceo/id123456789'
+                      target='_blank'
+                      rel='noopener noreferrer'
                       className='flex items-center gap-3 p-3 bg-gray-800 rounded-lg hover:bg-gray-700 transition-colors'
                     >
                       <span className='text-lg'>🍎</span>
-                      <div>
+                      <div className='flex-1'>
                         <div className='text-sm text-gray-300'>App Store</div>
-                        <div className='text-xs text-gray-400'>사장님 앱 다운로드</div>
                       </div>
                     </a>
                   </div>
@@ -488,11 +527,11 @@ export default function PortalLandingPage() {
               <div>
                 <h3 className='text-lg font-semibold text-white mb-4'>주요 서비스</h3>
                 <div className='space-y-2'>
-                  {['사장님 앱', '웨이팅', '예약', '쿠폰관리', '매출분석', '고객관리'].map(
+                  {['사장님 앱'].map(
                     (link) => (
                       <a
                         key={link}
-                        href='#'
+                        href='/my'
                         className='block text-gray-300 hover:text-red-400 transition-colors'
                       >
                         {link}
@@ -503,20 +542,41 @@ export default function PortalLandingPage() {
               </div>
 
               {/* 고객지원 */}
-              <div>
+              {/* <div>
                 <h3 className='text-lg font-semibold text-white mb-4'>고객지원</h3>
                 <div className='space-y-2'>
-                  {['자주묻는 질문', '이용가이드', '기술지원', '공지사항', '이벤트'].map((link) => (
-                    <a
-                      key={link}
-                      href='#'
-                      className='block text-gray-300 hover:text-red-400 transition-colors'
-                    >
-                      {link}
-                    </a>
-                  ))}
+                  <a
+                    href='#'
+                    className='block text-gray-300 hover:text-red-400 transition-colors'
+                  >
+                    자주묻는 질문
+                  </a>
+                  <a
+                    href='#'
+                    className='block text-gray-300 hover:text-red-400 transition-colors'
+                  >
+                    이용가이드
+                  </a>
+                  <a
+                    href='#'
+                    className='block text-gray-300 hover:text-red-400 transition-colors'
+                  >
+                    기술지원
+                  </a>
+                  <a
+                    href='/notice'
+                    className='block text-gray-300 hover:text-red-400 transition-colors'
+                  >
+                    공지사항
+                  </a>
+                  <a
+                    href='#'
+                    className='block text-gray-300 hover:text-red-400 transition-colors'
+                  >
+                    이벤트
+                  </a>
                 </div>
-              </div>
+              </div> */}
 
               {/* 연락처 정보 */}
               <div>
@@ -576,24 +636,39 @@ export default function PortalLandingPage() {
               {/* 약관 링크 */}
               <div className='flex flex-wrap gap-6 lg:justify-end'>
                 <a
-                  href='#'
+                  href='https://fooding-cs.notion.site/2025-09-14-ver-26e6b89156ba81a083a8feed50bda06?pvs=25'
                   className='text-sm text-gray-300 hover:text-red-400 transition-colors flex items-center gap-1'
+                  target='_blank'
+                  rel='noopener noreferrer'
                 >
-                  서비스 이용약관
+                  사이트 이용약관
                   <span className='text-xs'>🔗</span>
                 </a>
                 <a
-                  href='#'
+                  href='https://fooding-cs.notion.site/2025-09-14-ver-26e6b89156ba81659fb3c2ac4dab36bb'
                   className='text-sm text-gray-300 hover:text-red-400 transition-colors flex items-center gap-1'
+                  target='_blank'
+                  rel='noopener noreferrer'
                 >
-                  개인정보처리방침
+                  개인정보 처리방침
                   <span className='text-xs'>🔗</span>
                 </a>
                 <a
-                  href='#'
+                  href='https://fooding-cs.notion.site/2025-09-14-ver-26e6b89156ba81a7b020fca6b8d9dc06'
                   className='text-sm text-gray-300 hover:text-red-400 transition-colors flex items-center gap-1'
+                  target='_blank'
+                  rel='noopener noreferrer'
                 >
-                  사업자정보확인
+                  마케팅 수집약관
+                  <span className='text-xs'>🔗</span>
+                </a>
+                <a
+                  href='https://fooding-cs.notion.site/2025-09-14-ver-2716b89156ba802599f7c69e7d581241'
+                  className='text-sm text-gray-300 hover:text-red-400 transition-colors flex items-center gap-1'
+                  target='_blank'
+                  rel='noopener noreferrer'
+                >
+                  위치정보 이용약관
                   <span className='text-xs'>🔗</span>
                 </a>
               </div>

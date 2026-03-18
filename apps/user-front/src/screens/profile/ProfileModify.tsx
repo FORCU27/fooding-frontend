@@ -24,7 +24,7 @@ export const ProfileModifyScreen: ActivityComponentType<'ProfileModifyScreen'> =
     throw new Error('로그인이 필요합니다.');
   }
 
-  const { mutateAsync: updateUserInfo } = useUpdateUserInfo();
+  const { mutateAsync: updateUserInfo, isPending } = useUpdateUserInfo();
   const { mutateAsync: uploadImageFile } = useUploadFile();
   const { mutateAsync: updateUserProfileImage } = useUpdateUserProfileImage();
 
@@ -62,7 +62,6 @@ export const ProfileModifyScreen: ActivityComponentType<'ProfileModifyScreen'> =
         }
       }
 
-      flow.pop();
       toast.success('프로필이 수정되었어요.');
     } catch {
       toast.error('프로필 수정에 실패했어요. 잠시 후 다시 시도해주세요.');
@@ -89,6 +88,7 @@ export const ProfileModifyScreen: ActivityComponentType<'ProfileModifyScreen'> =
                 handleSubmit={handleFormSubmit}
                 editOriginValue={editOriginValue}
                 isUpdateMode={true}
+                isLoading={isPending}
               />
             </Suspense>
           </ErrorBoundary>

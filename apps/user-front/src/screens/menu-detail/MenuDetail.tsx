@@ -17,9 +17,9 @@ export const MenuDetailScreen: ActivityComponentType<'MenuDetailScreen'> = ({ pa
 
   return (
     <Screen className='bg-gray-1' header={<Header left={<Header.Back />} title={storeName} />}>
-      {menu.imageUrl && (
+      {menu.imageUrls[0] && (
         <div className='relative h-[240px]'>
-          <Image objectFit='cover' fill src={menu.imageUrl} alt={menu.name} />
+          <Image objectFit='cover' fill src={menu.imageUrls[0]} alt={menu.name} />
         </div>
       )}
       <div className='px-grid-margin pt-grid-margin bg-white pb-6'>

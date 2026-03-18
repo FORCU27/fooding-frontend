@@ -24,9 +24,14 @@ export function RewardComplete({ onClose }: { onClose: () => void }) {
       {/* 상단 5/8 영역 */}
       <div className='w-full h-[512px] bg-primary-pink flex items-center justify-center'>
         <div className='text-center flex flex-col items-center'>
-          <div>
-            <div className='w-[290] h-[287px] bg-blue-400'></div>
-          </div>
+            <Image
+                src='/images/reward/reward-finish.png'
+                alt='complete-step'
+                width={290}
+                height={287}
+                className=''
+              />
+
           <div className='mt-[21px] flex flex-col items-center'>
             <h1 className='headline-1 mb-4 text-white'>리워드 적립완료!</h1>
             <div className='flex flex-row items-center gap-2.5'>
