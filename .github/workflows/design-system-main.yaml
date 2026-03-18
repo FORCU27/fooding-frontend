@@ -34,7 +34,7 @@ jobs:
           file: ./packages/design-system/Dockerfile
           push: true
           tags: hyperrealitycorp/fooding-design-system-production
-          platforms: linux/amd64, linux/arm64/v8
+          platforms: linux/amd64
           build-args: |
             COMMIT_HASH=${{ github.sha }}
       - name: Deployment
