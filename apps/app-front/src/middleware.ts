@@ -10,7 +10,7 @@ export enum AuthType {
 }
 
 // 가게 선택이 필요하지 않은 경로 목록
-const STORE_SELECTION_EXCLUDED_PATHS = ['/store/select', '/store/service-select', '/login'];
+const STORE_SELECTION_EXCLUDED_PATHS = ['/store/select', '/store/service-select', '/login', '/ping'];
 
 // 각 경로별 접근 권한 설정
 export const pathConfig: Record<string, AuthType> = {
@@ -29,7 +29,7 @@ export async function middleware(request: NextRequest) {
   const storeId = request.cookies.get('selected_store_id');
 
   // 1. 로그인 체크 (가장 먼저)
-  if (!isAuthenticated && path !== '/login') {
+  if (!isAuthenticated && path !== '/login' && path !== '/ping') {
     const url = new URL('/login', request.url);
     url.searchParams.set('returnTo', path);
     return NextResponse.redirect(url);
