@@ -21,7 +21,7 @@ export async function middleware(request: NextRequest) {
   const token = request.cookies.get(STORAGE_KEYS.ACCESS_TOKEN);
   const isAuthenticated = !!token;
 
-  if (!isAuthenticated && path !== '/login') {
+  if (!isAuthenticated && path !== '/login' && path !== '/ping') {
     const url = new URL('/login', request.url);
     url.searchParams.set('returnTo', path);
     return NextResponse.redirect(url);

@@ -13,6 +13,7 @@ export enum AuthType {
 export const pathConfig: Record<string, AuthType> = {
   '/': AuthType.PUBLIC,
   '/login': AuthType.GUEST,
+  '/ping': AuthType.PUBLIC,
 };
 
 export async function middleware(request: NextRequest) {

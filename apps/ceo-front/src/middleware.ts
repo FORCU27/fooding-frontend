@@ -17,7 +17,7 @@ export const pathConfig: Record<string, AuthType> = {
   '/select-store': AuthType.PRIVATE,
 };
 
-const PUBLIC_ROUTES = ['/login', '/register', '/find-account', '/change-password'];
+const PUBLIC_ROUTES = ['/login', '/register', '/find-account', '/change-password', '/ping'];
 
 export async function middleware(request: NextRequest) {
   const path = request.nextUrl.pathname;
@@ -63,5 +63,5 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/((?!api|ping|_next/static|_next/image|favicon.ico|.*\\.(?:png|jpg|jpeg|gif|svg|ico)$).*)'],
+  matcher: ['/((?!api|_next/static|_next/image|favicon.ico|.*\\.(?:png|jpg|jpeg|gif|svg|ico)$).*)'],
 };
