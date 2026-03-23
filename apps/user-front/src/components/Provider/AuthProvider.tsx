@@ -24,10 +24,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const { data: user, isLoading } = useQuery<AuthLoginUser | null>({
     queryKey: [queryKeys.me.user],
     queryFn: async () => {
-      const accessToken = Cookies.get(STORAGE_KEYS.ACCESS_TOKEN);
-      if (!accessToken) return null;
-      const response = await authApi.getSelf();
-      return response.data;
+      try {
+        const accessToken = Cookies.get(STORAGE_KEYS.ACCESS_TOKEN);
+        if (!accessToken) return null;
+        const response = await authApi.getSelf();
+        return response.data;
+      } catch {
+        return null;
+      }
     },
     retry: false,
   });
