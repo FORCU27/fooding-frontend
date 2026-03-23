@@ -7,6 +7,7 @@ const isDev = process.env.NODE_ENV === 'development';
 const withNextIntl = createNextIntlPlugin();
 
 const nextConfig: NextConfig = {
+  output: 'standalone',
   eslint: {
     ignoreDuringBuilds: true,
   },
