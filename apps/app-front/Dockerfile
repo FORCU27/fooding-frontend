@@ -48,7 +48,7 @@ WORKDIR /app
 RUN addgroup --system --gid 1001 nodejs && \
     adduser --system --uid 1001 nextjs
 
-COPY --from=installer /app/apps/app-front/public ./public
+COPY --from=installer /app/apps/app-front/public ./apps/app-front/public
 COPY --from=installer --chown=nextjs:nodejs /app/apps/app-front/.next/standalone ./
 COPY --from=installer --chown=nextjs:nodejs /app/apps/app-front/.next/static ./apps/app-front/.next/static
 
